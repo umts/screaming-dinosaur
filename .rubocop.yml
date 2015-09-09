@@ -9,3 +9,6 @@ AllCops:
 
 Style/Documentation:
   Enabled: false
+
+Rails/Date:
+  Enabled: false
