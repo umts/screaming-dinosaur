@@ -1,0 +1,12 @@
+language: ruby
+rvm:
+  - 2.2.2
+# Codeclimate repo token goes here
+before_script:
+  - cp config/database.yml.example config/database.yml
+  - mysql -e 'create database garrulous_garbanzo_test'
+script: 'bundle exec rake travis'
+notifications:
+  email:
+    recipients:
+      - transit-programmers@admin.umass.edu
