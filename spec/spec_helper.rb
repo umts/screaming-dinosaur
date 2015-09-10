@@ -21,3 +21,7 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 end
+
+def when_current_user_is(user)
+  session[:user_id] = user.id
+end

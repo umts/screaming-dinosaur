@@ -7,8 +7,12 @@ AllCops:
     - 'script/**/*'
     - 'vendor/**/*'
 
-Style/Documentation:
-  Enabled: false
+Metrics/AbcSize:
+  Max: 20
 
 Rails/Date:
   Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
