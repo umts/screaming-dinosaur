@@ -59,7 +59,7 @@ describe SessionsController do
       expect(response).to render_template 'dev_login'
     end
   end
-  
+
   describe 'POST #dev_login' do
     before :each do
       @user = create :user
