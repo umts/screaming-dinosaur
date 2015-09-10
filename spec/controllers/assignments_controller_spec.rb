@@ -116,6 +116,12 @@ describe AssignmentsController do
         expect(assigns.fetch :assignments).to include new_assignment
         expect(assigns.fetch :assignments).not_to include old_assignment
       end
+      it 'populates a current_assignment variable of Assignment.current' do
+        assignment = create :assignment
+        expect(Assignment).to receive(:current).and_return assignment
+        submit
+        expect(assigns.fetch :current_assignment).to eql assignment
+      end
       it 'renders the correct template' do
         submit
         expect(response).to render_template :index
