@@ -5,6 +5,13 @@ class Assignment < ActiveRecord::Base
             presence: true
   validate :overlaps_any?
 
+  # returns the assignment which takes place on a particular date
+  def self.on(date)
+    find_by("
+      start_date <= ? AND end_date >=?
+    ", date, date)
+  end
+
   private
 
   def overlaps_any?

@@ -1,1 +1,18 @@
-%h1 Calendar
+%h1 On-Call Rotation Calendar
+
+%table#calendar
+  %tr
+    - @week.each do |date|
+      %th= date.strftime '%a'
+  - 4.times do |i|
+    %tr
+      - 7.times do |j|
+        %td
+          - date = @date + i.weeks + j.days
+          - assignment = Assignment.on(date)
+          = date.strftime '%d'
+          #assignment
+            - if assignment.present?
+              = assignment.user.last_name
+            - else
+              None assigned
