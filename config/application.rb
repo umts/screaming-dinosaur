@@ -15,5 +15,8 @@ module GarrulousGarbanzo
       g.template_engine :haml
       g.test_framework  :rspec
     end
+    config.encoding = 'utf-8'
+    config.time_zone = 'Eastern Time (US & Canada)'
+    config.filter_parameters += [:password, :spire, :secret, :github]
   end
 end

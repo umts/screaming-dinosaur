@@ -7,6 +7,14 @@ class Assignment < ActiveRecord::Base
 
   scope :upcoming, -> { where 'start_date > ?', Date.today }
 
+  # The current assignment - this method accounts for the 5pm switchover hour.
+  def self.current
+    if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
+      on Date.yesterday
+    else on Date.today
+    end
+  end
+
   # returns the assignment which takes place on a particular date
   def self.on(date)
     find_by("

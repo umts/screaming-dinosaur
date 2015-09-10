@@ -3,6 +3,7 @@ rvm:
   - 2.2.2
 env: 'CODECLIMATE_REPO_TOKEN=c6e0d19e44805f348da3b0f55bb3fc7c71c18059f1a12ad789283d0ef4843cc3'
 before_script:
+  - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
   - mysql -e 'create database garrulous_garbanzo_test'
 script: 'bundle exec rake travis'

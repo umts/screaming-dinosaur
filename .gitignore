@@ -1,3 +1,4 @@
+/config/application.yml
 /config/database.yml
 *.rbc
 capybara-*.html
@@ -37,3 +38,6 @@ bower.json
 
 # Ignore pow environment settings
 .powenv
+
+# Ignore application secrets.
+/config/application.secrets.yml
