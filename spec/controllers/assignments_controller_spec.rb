@@ -105,6 +105,17 @@ describe AssignmentsController do
         submit
         expect(assigns.fetch :current_user).to eql @user
       end
+      it 'populates an assignments variable of upcoming assignments' do
+        old_assignment = create :assignment, user: @user,
+                                             start_date: 1.month.ago.to_date,
+                                             end_date: 3.weeks.ago.to_date
+        new_assignment = create :assignment, user: @user,
+                                             start_date: 1.month.since.to_date,
+                                             end_date: 5.weeks.since.to_date
+        submit
+        expect(assigns.fetch :assignments).to include new_assignment
+        expect(assigns.fetch :assignments).not_to include old_assignment
+      end
       it 'renders the correct template' do
         submit
         expect(response).to render_template :index

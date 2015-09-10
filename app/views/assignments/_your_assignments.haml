@@ -1,0 +1,10 @@
+#assignments
+  %h2.title Your upcoming assignments
+  %table#assignments_table
+    %tr
+      %th Start date
+      %th End date
+    - @assignments.each do |assignment|
+      %tr
+        %td= assignment.start_date.strftime '%A, %B %e, %Y'
+        %td= assignment.end_date.strftime '%A, %B %e, %Y'

@@ -5,6 +5,8 @@ class Assignment < ActiveRecord::Base
             presence: true
   validate :overlaps_any?
 
+  scope :upcoming, -> { where 'start_date > ?', Date.today }
+
   # returns the assignment which takes place on a particular date
   def self.on(date)
     find_by("
