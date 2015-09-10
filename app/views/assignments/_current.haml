@@ -1,0 +1,5 @@
+#current_assignment
+  - if @current_assignment.present?
+    %h3.slightly-green Currently on call: #{@current_assignment.user.last_name}
+  - else
+    %h3.slightly-red No one currently on call!

@@ -12,11 +12,12 @@ table#calendar{
     .assignment{
       padding: 1em;
       text-align: center;
-      .slightly-red{
-        background-color: #f7bcbc;
-      }
     }
   }
+}
+
+#current_assignment{
+  text-align: center;
 }
 
 #assignments{
@@ -24,4 +25,12 @@ table#calendar{
   table#assignments_table{
     margin: 0 auto;
   }
+}
+
+.slightly-red{
+  background-color: #f7bcbc;
+}
+
+.slightly-green{
+  background-color: #c1f7bc;
 }

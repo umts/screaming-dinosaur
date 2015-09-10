@@ -31,6 +31,7 @@ class AssignmentsController < ApplicationController
             end.beginning_of_week :sunday
     @week = @date..(@date + 6.days)
     @assignments = @current_user.assignments.upcoming.order :start_date
+    @current_assignment = Assignment.current
   end
 
   def new
