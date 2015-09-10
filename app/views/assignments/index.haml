@@ -11,12 +11,12 @@
           - date = @date + i.weeks + j.days
           - assignment = Assignment.on(date)
           = date.strftime '%-m/%-d'
-          #assignment
+          .assignment
             - if assignment.present?
               = link_to assignment.user.last_name,
                 edit_assignment_url(assignment)
             - else
-              = link_to 'None assigned',
+              .slightly-red= link_to 'None assigned',
                 new_assignment_url(date: date)
 %span.left= link_to 'Back 1 month', assignments_path(date: @date - 1.month)
 %span.right= link_to 'Forward 1 month', assignments_path(date: @date + 1.month)

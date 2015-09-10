@@ -9,8 +9,12 @@ table#calendar{
     height: 4em;
     border: 1px solid black;
     vertical-align: top;
-    #assignment{
+    .assignment{
+      padding: 1em;
       text-align: center;
+      .slightly-red{
+        background-color: #f7bcbc;
+      }
     }
   }
 }
