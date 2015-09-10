@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root 'assignments#index'
 
-  resources :assignments, only: :index
+  resources :assignments, except: :show
 
   unless Rails.env.production?
     get  'sessions/dev_login', to: 'sessions#dev_login', as: :dev_login

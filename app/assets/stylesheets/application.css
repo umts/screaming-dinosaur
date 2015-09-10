@@ -10,6 +10,7 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
+ *= require jquery-ui
  *= require_tree .
  *= require_self
  */
@@ -20,6 +21,10 @@ body{
   font-family: sans-serif;
   margin: 0px;
   min-height: 100vh;
+}
+
+h1.title{
+  text-align: center;
 }
 
 #content_wrapper{
@@ -65,4 +70,12 @@ body{
 #links a{
   font-size: 16px;
   margin-right: 5px;
+}
+
+.left{
+  float: left;
+}
+
+.right{
+  float: right;
 }

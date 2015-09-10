@@ -1,6 +1,27 @@
 require 'rails_helper'
 
 RSpec.describe Assignment do
+  describe 'on' do
+    before :each do
+      @date = Date.today
+      create :assignment,
+             start_date: 1.week.ago.to_date,
+             end_date: Date.yesterday
+      @correct_assignment = create :assignment,
+                                   start_date: Date.today,
+                                   end_date: 6.days.since.to_date
+      create :assignment,
+             start_date: 1.week.since.to_date,
+             end_date: 13.days.since.to_date
+    end
+    let :call do
+      Assignment.on @date
+    end
+    it 'finds the assignment which covers the given date' do
+      expect(call).to eql @correct_assignment
+    end
+  end
+
   describe 'overlaps_any? (private)' do
     before :each do
       @assignment = create :assignment,

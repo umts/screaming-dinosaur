@@ -1,4 +1,4 @@
-%h1 On-Call Rotation Calendar
+%h1.title Calendar
 
 %table#calendar
   %tr
@@ -10,9 +10,13 @@
         %td
           - date = @date + i.weeks + j.days
           - assignment = Assignment.on(date)
-          = date.strftime '%d'
+          = date.strftime '%-m/%-d'
           #assignment
             - if assignment.present?
-              = assignment.user.last_name
+              = link_to assignment.user.last_name,
+                edit_assignment_url(assignment)
             - else
-              None assigned
+              = link_to 'None assigned',
+                new_assignment_url(date: date)
+%span.left= link_to 'Back 1 month', assignments_path(date: @date - 1.month)
+%span.right= link_to 'Forward 1 month', assignments_path(date: @date + 1.month)
