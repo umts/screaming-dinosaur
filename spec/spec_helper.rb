@@ -23,5 +23,10 @@ RSpec.configure do |config|
 end
 
 def when_current_user_is(user)
-  session[:user_id] = user.id
+  session[:user_id] = case user
+                      when User
+                        user
+                      when :whoever
+                        create :user
+                      end.id
 end

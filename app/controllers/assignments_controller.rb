@@ -3,9 +3,9 @@ class AssignmentsController < ApplicationController
 
   def create
     assignment_params = params.require(:assignment)
-                        .permit(:start_date, :end_date, :user_id)
-    assignment = Assignment.create assignment_params
-    if assignment
+                        .permit :start_date, :end_date, :user_id
+    assignment = Assignment.new assignment_params
+    if assignment.save
       flash[:message] = 'Assignment has been updated.'
       redirect_to assignments_path
     else
@@ -15,13 +15,9 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
-    if @assignment.destroy
-      flash[:message] = 'Assignment has been deleted.'
-      redirect_to assignments_path
-    else
-      flash[:errors] = @assignment.errors.full_messages
-      redirect_to :back
-    end
+    @assignment.destroy
+    flash[:message] = 'Assignment has been deleted.'
+    redirect_to assignments_path
   end
 
   def edit
