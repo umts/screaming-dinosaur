@@ -13,6 +13,7 @@ unless Rails.env.production?
 
     desc 'Run HAML style checks'
     HamlLint::RakeTask.new do |t|
+      t.config = '.haml_lint.yml'
       t.files = %w(app/views)
     end
   end
