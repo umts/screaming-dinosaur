@@ -15,7 +15,7 @@ describe AssignmentsController do
       post :create, assignment: @attributes
     end
     context 'without errors' do
-      it 'creates an assignment based on the attributes' do
+      it 'creates an assignment' do
         submit
         expect(Assignment.count).to eql 1
       end
@@ -78,6 +78,10 @@ describe AssignmentsController do
     end
     let :submit do
       get :edit, id: @assignment.id
+    end
+    it 'finds the correct assignment' do
+      submit
+      expect(assigns.fetch :assignment).to eql @assignment
     end
     it 'populates a users variable of all users' do
       user_1 = create :user

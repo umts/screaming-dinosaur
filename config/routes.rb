@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   resources :assignments, except: :show
 
+  resources :users, except: :show
+
   get 'twilio/call', to: 'twilio#call', as: :twilio_call
   get 'twilio/text', to: 'twilio#text', as: :twilio_text
 

@@ -6,7 +6,7 @@ class AssignmentsController < ApplicationController
                         .permit :start_date, :end_date, :user_id
     assignment = Assignment.new assignment_params
     if assignment.save
-      flash[:message] = 'Assignment has been updated.'
+      flash[:message] = 'Assignment has been created.'
       redirect_to assignments_path
     else
       flash[:errors] = assignment.errors.full_messages
@@ -41,9 +41,8 @@ class AssignmentsController < ApplicationController
   end
 
   def update
-    assignment_params = params.require(:assignment).permit(:start_date,
-                                                           :end_date,
-                                                           :user_id)
+    assignment_params = params.require(:assignment)
+                        .permit :start_date, :end_date, :user_id
     if @assignment.update assignment_params
       flash[:message] = 'Assignment has been updated.'
       redirect_to assignments_path
