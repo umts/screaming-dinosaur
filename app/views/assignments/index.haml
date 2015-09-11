@@ -2,25 +2,25 @@
 
 %table#calendar
   %tr
-    - @week.each do |date|
-      %th= date.strftime '%a'
-  - 4.times do |i|
+    - WEEKDAYS.each do |day|
+      %th= day
+  - @weeks.each do |week|
     %tr
-      - 7.times do |j|
+      - week.each do |day|
         %td
-          - date = @date + i.weeks + j.days
-          - assignment = Assignment.on(date)
-          = date.strftime '%-m/%-d'
+          - assignment = Assignment.on(day)
+          %div{ class: ('lightgrey' if day.month != @month_date.month) }
+            = day.strftime '%-m/%-d'
           .assignment
             - if assignment.present?
               = link_to assignment.user.last_name,
                 edit_assignment_url(assignment)
             - else
               .slightly-red= link_to 'None assigned',
-                new_assignment_url(date: date)
-  %span.left= link_to 'Back 1 month',
-    assignments_path(date: @date - 1.month)
-  %span.right= link_to 'Forward 1 month',
-    assignments_path(date: @date + 1.month)
+                new_assignment_url(date: day)
+  %span.left= link_to @month_date.last_month.strftime('%B %Y'),
+    assignments_path(date: @month_date.last_month)
+  %span.right= link_to @month_date.next_month.strftime('%B %Y'),
+    assignments_path(date: @month_date.next_month)
 = render partial: 'current'
 = render partial: 'your_assignments'

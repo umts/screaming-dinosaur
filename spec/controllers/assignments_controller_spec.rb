@@ -133,29 +133,17 @@ describe AssignmentsController do
         expect(response).to render_template :index
       end
       context 'date given' do
-        before :each do
-          @date = Date.today
-        end
-        it 'sets the date variable to the sunday prior to the date given' do
-          get :index, date: @date
-          expect(assigns.fetch :date).to eql @date.beginning_of_week(:sunday)
-        end
-        it 'sets the week variable to the week starting with date variable' do
-          get :index, date: @date
-          sunday = assigns.fetch :date
-          expect(assigns.fetch :week).to eql sunday..(sunday + 6.days)
+        it 'sets the month date variable to the 1st day of that month' do
+          date = 5.months.ago
+          get :index, date: date
+          expect(assigns.fetch :month_date)
+            .to eql date.beginning_of_month.to_date
         end
       end
       context 'no date given' do
-        it 'sets the date variable to the sunday prior to today' do
+        it 'sets the month date variable to the 1st day of current month' do
           submit
-          expect(assigns.fetch :date)
-            .to eql Date.today.beginning_of_week(:sunday)
-        end
-        it 'sets the week variable to the week starting with date variable' do
-          submit
-          sunday = assigns.fetch :date
-          expect(assigns.fetch :week).to eql sunday..(sunday + 6.days)
+          expect(assigns.fetch :month_date).to eql Date.today.beginning_of_month
         end
       end
     end
@@ -219,9 +207,11 @@ describe AssignmentsController do
         submit
         expect(@assignment.reload.user).to eql @user
       end
-      it 'redirects to the index' do
+      it 'redirects to the index with a date of the assignment start date' do
         submit
-        expect(response).to redirect_to assignments_url
+        expect(response).to redirect_to(
+          assignments_url(date: @assignment.start_date)
+        )
       end
     end
     context 'with errors' do
