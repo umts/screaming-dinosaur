@@ -66,6 +66,7 @@ body{
 #links{
   float: right;
   padding: 0 2em 0 0;
+  margin: 1em;
 }
 #links a{
   font-size: 16px;

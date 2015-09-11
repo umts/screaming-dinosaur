@@ -1,6 +1,7 @@
 table#calendar{
-  width: 100%;
+  width: 90%;
   border-collapse: collapse;
+  margin: 0 auto;
   text-align: left;
   th{
     text-align: center;
@@ -18,12 +19,16 @@ table#calendar{
 
 #current_assignment{
   text-align: center;
+  margin: 2em 1em;
 }
 
 #assignments{
   text-align: center;
   table#assignments_table{
     margin: 0 auto;
+    td{
+      padding: 0.5em;
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-%h1.title Calendar
+%h1.title Transportation IT On-Call Calendar
 
 %table#calendar
   %tr
@@ -18,7 +18,9 @@
             - else
               .slightly-red= link_to 'None assigned',
                 new_assignment_url(date: date)
-%span.left= link_to 'Back 1 month', assignments_path(date: @date - 1.month)
-%span.right= link_to 'Forward 1 month', assignments_path(date: @date + 1.month)
+  %span.left= link_to 'Back 1 month',
+    assignments_path(date: @date - 1.month)
+  %span.right= link_to 'Forward 1 month',
+    assignments_path(date: @date + 1.month)
 = render partial: 'current'
 = render partial: 'your_assignments'

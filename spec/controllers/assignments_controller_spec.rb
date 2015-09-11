@@ -19,9 +19,11 @@ describe AssignmentsController do
         submit
         expect(Assignment.count).to eql 1
       end
-      it 'redirects to the index' do
+      it 'redirects to the index with a date of the assignment start date' do
         submit
-        expect(response).to redirect_to assignments_url
+        expect(response).to redirect_to(
+          assignments_url(date: @attributes[:start_date])
+        )
       end
     end
     context 'with errors' do

@@ -7,7 +7,7 @@ class AssignmentsController < ApplicationController
     assignment = Assignment.new assignment_params
     if assignment.save
       flash[:message] = 'Assignment has been created.'
-      redirect_to assignments_path
+      redirect_to assignments_path(date: assignment.start_date)
     else
       flash[:errors] = assignment.errors.full_messages
       redirect_to :back
