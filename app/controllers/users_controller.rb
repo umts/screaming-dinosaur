@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 
   def destroy
     @user.destroy
-    flash[:message] = 'Assignment has been deleted.'
+    flash[:message] = 'User has been deleted.'
     redirect_to users_path
   end
 
