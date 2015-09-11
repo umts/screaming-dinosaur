@@ -3,3 +3,4 @@
     %h3.slightly-green Currently on call: #{@current_assignment.user.last_name}
   - else
     %h3.slightly-red No one currently on call!
+  On-call switches at: #{HOURS[@switchover_hour]}

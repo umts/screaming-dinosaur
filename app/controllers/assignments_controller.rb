@@ -34,6 +34,7 @@ class AssignmentsController < ApplicationController
     @weeks = (start_date..end_date).each_slice(7)
     @assignments = @current_user.assignments.upcoming.order :start_date
     @current_assignment = Assignment.current
+    @switchover_hour = CONFIG[:switchover_hour]
   end
 
   def new

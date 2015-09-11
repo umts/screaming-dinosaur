@@ -128,6 +128,11 @@ describe AssignmentsController do
         submit
         expect(assigns.fetch :current_assignment).to eql assignment
       end
+      it 'includes the switchover hour as a variable' do
+        expect(CONFIG).to receive(:[]).with(:switchover_hour).and_return 12
+        submit
+        expect(assigns.fetch :switchover_hour).to eql 12
+      end
       it 'renders the correct template' do
         submit
         expect(response).to render_template :index
