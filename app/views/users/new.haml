@@ -1,0 +1,14 @@
+%h1.title New user
+
+= form_for User.new do |f|
+  = f.label :first_name
+  = f.text_field :first_name
+  = f.label :last_name
+  = f.text_field :last_name
+  = f.label :spire
+  = f.text_field :spire, size: 25
+  = f.label :email
+  = f.text_field :email, size: 30
+  = f.label :phone
+  = f.text_field :phone
+  = f.submit 'Save'

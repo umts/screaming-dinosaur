@@ -23,7 +23,7 @@ class UsersController < ApplicationController
   end
 
   def index
-    @users = User.order :last_name
+    @users = User.all
   end
 
   def new
