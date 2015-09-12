@@ -98,6 +98,35 @@ describe AssignmentsController do
     end
   end
 
+  describe 'POST #generate_rotation' do
+    before :each do
+      @start_date = Date.today.strftime '%Y-%m-%d'
+      @end_date = Date.tomorrow.strftime '%Y-%m-%d'
+      user_1 = create :user
+      user_2 = create :user
+      user_3 = create :user
+      @user_ids = [user_1.id.to_s, user_2.id.to_s, user_3.id.to_s]
+      when_current_user_is :whoever
+    end
+    let :submit do
+      post :generate_rotation,
+           start_date: @start_date, end_date: @end_date, user_ids: @user_ids
+    end
+    it 'calls Assignment#generate rotation with the given arguments' do
+      expect(Assignment).to receive(:generate_rotation)
+        .with @user_ids, Date.today, Date.tomorrow
+      submit
+    end
+    it 'has a flash message' do
+      submit
+      expect(flash[:message]).not_to be_empty
+    end
+    it 'redirects to the calendar with the start date given' do
+      submit
+      expect(response).to redirect_to assignments_path(date: Date.today)
+    end
+  end
+
   describe 'GET #index' do
     let :submit do
       get :index

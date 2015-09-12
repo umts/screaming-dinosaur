@@ -24,6 +24,15 @@ class AssignmentsController < ApplicationController
     @users = User.order :last_name
   end
 
+  def generate_rotation
+    start_date = Date.parse(params.require :start_date)
+    end_date = Date.parse(params.require :end_date)
+    user_ids = params.require :user_ids
+    Assignment.generate_rotation user_ids, start_date, end_date
+    flash[:message] = 'Rotation has been generated.'
+    redirect_to assignments_path date: start_date
+  end
+
   def index
     @month_date = if params[:date].present?
                     Date.parse params[:date]
