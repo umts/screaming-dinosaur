@@ -16,13 +16,13 @@ RSpec.describe Assignment do
     end
     context 'before switchover hour' do
       it "returns yesterday's assignment" do
-        Timecop.freeze(@switchover_time - 1.second)
+        Timecop.freeze(@switchover_time - 1.minute)
         expect(call).to eql @yesterday
       end
     end
     context 'after switchover hour' do
       it "returns today's assignment" do
-        Timecop.freeze(@switchover_time + 1.second)
+        Timecop.freeze(@switchover_time + 1.minute)
         expect(call).to eql @today
       end
     end
