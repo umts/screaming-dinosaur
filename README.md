@@ -1,7 +1,7 @@
 # screaming-dinosaur
 [![Build Status](https://travis-ci.org/umts/screaming-dinosaur.svg?branch=master)](https://travis-ci.org/umts/screaming-dinosaur)
-[![Code Climate](https://codeclimate.com/github/umts/garrulous-garbanzo/badges/gpa.svg)](https://codeclimate.com/github/umts/garrulous-garbanzo)
-[![Test Coverage](https://codeclimate.com/github/umts/garrulous-garbanzo/badges/coverage.svg)](https://codeclimate.com/github/umts/garrulous-garbanzo/coverage)
+[![Code Climate](https://codeclimate.com/github/umts/screaming-dinosaur/badges/gpa.svg)](https://codeclimate.com/github/umts/screaming-dinosaur)
+[![Test Coverage](https://codeclimate.com/github/umts/screaming-dinosaur/badges/coverage.svg)](https://codeclimate.com/github/umts/screaming-dinosaur/coverage)
 
 Other candidates for the repo name included:
 
