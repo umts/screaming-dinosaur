@@ -1,4 +1,7 @@
 # screaming-dinosaur
+
+![screaming dinosaur](app/assets/images/screaming_dinosaur.jpg)
+
 [![Build Status](https://travis-ci.org/umts/screaming-dinosaur.svg?branch=master)](https://travis-ci.org/umts/screaming-dinosaur)
 [![Code Climate](https://codeclimate.com/github/umts/screaming-dinosaur/badges/gpa.svg)](https://codeclimate.com/github/umts/screaming-dinosaur)
 [![Test Coverage](https://codeclimate.com/github/umts/screaming-dinosaur/badges/coverage.svg)](https://codeclimate.com/github/umts/screaming-dinosaur/coverage)
