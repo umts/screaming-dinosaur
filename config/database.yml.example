@@ -5,8 +5,8 @@ default: &default
 
 development:
   <<: *default
-  database: garrulous_garbanzo_development
+  database: screaming_dinosaur_development
 
 test:
   <<: *default
-  database: garrulous_garbanzo_test
+  database: screaming_dinosaur_test

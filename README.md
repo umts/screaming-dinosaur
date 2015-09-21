@@ -1,5 +1,5 @@
 # screaming-dinosaur
-[![Build Status](https://travis-ci.org/umts/garrulous-garbanzo.svg?branch=master)](https://travis-ci.org/umts/garrulous-garbanzo)
+[![Build Status](https://travis-ci.org/umts/screaming-dinosaur.svg?branch=master)](https://travis-ci.org/umts/screaming-dinosaur)
 [![Code Climate](https://codeclimate.com/github/umts/garrulous-garbanzo/badges/gpa.svg)](https://codeclimate.com/github/umts/garrulous-garbanzo)
 [![Test Coverage](https://codeclimate.com/github/umts/garrulous-garbanzo/badges/coverage.svg)](https://codeclimate.com/github/umts/garrulous-garbanzo/coverage)
 
