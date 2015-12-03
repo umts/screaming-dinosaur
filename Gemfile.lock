@@ -262,7 +262,7 @@ DEPENDENCIES
   mocha
   mysql
   pry-byebug
-  rails (~> 4)
+  rails (~> 4.2)
   rspec-html-matchers
   rspec-rails
   rubocop
