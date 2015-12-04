@@ -19,7 +19,9 @@ describe User do
       expect { create :user, is_fallback: true }
         .not_to raise_error
       expect { create :user, is_fallback: true }
-        .to raise_error(ActiveRecord::RecordInvalid)
+        .to raise_error(ActiveRecord::RecordInvalid,
+                        'Validation failed: ' \
+                        'Fallback may be true for only one user')
     end
   end
 end

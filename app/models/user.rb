@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
             format: { with: /\+1\d{10}/,
                       message: 'must be 1+ followed by 10 digits' }
   validates :is_fallback,
-            uniqueness: true,
+            uniqueness: { message: 'may be true for only one user' },
             if: -> { is_fallback }
 
   def full_name
