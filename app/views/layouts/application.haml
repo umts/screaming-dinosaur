@@ -12,6 +12,7 @@
       - case params[:controller]
       - when 'assignments'
         = link_to 'Manage users', users_path
+        = link_to 'Generate rotation', generate_rotation_assignments_path
       - when 'users'
         = link_to 'Calendar', assignments_path
     #current_user_name= @current_user.full_name

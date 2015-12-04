@@ -17,6 +17,7 @@ class Assignment < ActiveRecord::Base
 
   # Generates a weekly rotation over a date range
   # switching on the weekday of the start date
+  # user_ids should be an array of Fixnums
   def self.generate_rotation(user_ids, start_date, end_date)
     assignments = []
     (start_date..end_date).each_slice(7).with_index do |week, i|
