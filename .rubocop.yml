@@ -10,6 +10,9 @@ AllCops:
 Metrics/AbcSize:
   Max: 20
 
+Metrics/MethodLength:
+  Max: 11
+
 Rails/Date:
   Enabled: false
 

@@ -22,4 +22,8 @@ class User < ActiveRecord::Base
   def proper_name
     "#{last_name}, #{first_name}"
   end
+
+  def self.fallback
+    User.find_by is_fallback: true
+  end
 end
