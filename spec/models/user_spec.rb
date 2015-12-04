@@ -14,4 +14,12 @@ describe User do
         .to eql [user.last_name, user.first_name].join(', ')
     end
   end
+  describe 'validations' do
+    it 'allows only one fallback user' do
+      expect { create :user, is_fallback: true }
+        .not_to raise_error
+      expect { create :user, is_fallback: true }
+        .to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
 end
