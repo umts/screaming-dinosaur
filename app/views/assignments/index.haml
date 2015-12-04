@@ -15,6 +15,11 @@
             - if assignment.present?
               = link_to assignment.user.last_name,
                 edit_assignment_url(assignment)
+              .arrows
+                - if day == assignment.start_date
+                  %span.left &#8594;
+                - if day == assignment.end_date
+                  %span.right &#8592;
             - else
               .slightly-red= link_to 'None assigned',
                 new_assignment_url(date: day)
@@ -23,4 +28,4 @@
   %span.right= link_to @month_date.next_month.strftime('%B %Y'),
     assignments_path(date: @month_date.next_month)
 = render partial: 'current'
-= render partial: 'your_assignments'
+= render partial: 'your_assignments' if @assignments.present?
