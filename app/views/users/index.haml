@@ -21,3 +21,5 @@
       %td= button_to 'Destroy', user_path(user), method: :delete
   %tr
     %td{ colspan: 6 }= link_to 'Add user', new_user_path
+- if @no_fallback
+  %h3.slightly-red No fallback user!
