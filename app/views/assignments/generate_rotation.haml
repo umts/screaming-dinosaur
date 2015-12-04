@@ -7,6 +7,7 @@
   = text_field_tag :end_date, @end_date, class: 'datepicker'
   = label_tag :user_ids, 'Users'
   = select_tag :user_ids,
-    options_from_collection_for_select(@users, :id, :last_name, @users.pluck(:id)),
+    options_from_collection_for_select(@users, :id, :last_name,
+                                       @users.pluck(:id)),
     multiple: true, size: 10
   = submit_tag 'Generate rotation'

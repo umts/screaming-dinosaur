@@ -26,12 +26,8 @@ class AssignmentsController < ApplicationController
 
   def generate_rotation
     if request.get?
-      @start_date = 1.week.since.beginning_of_week(:friday).to_date
-      @end_date = 2.months.since.end_of_week(:friday).to_date
       @users = User.order :last_name
-      render 'generate_rotation'
     elsif request.post?
-      binding.pry
       start_date = Date.parse(params.require :start_date)
       end_date = Date.parse(params.require :end_date)
       user_ids = params.require :user_ids
