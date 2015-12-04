@@ -10,7 +10,10 @@
     %th
   - @users.each do |user|
     %tr
-      %td= user.full_name
+      %td
+        = user.full_name
+        - if user.is_fallback?
+          (fallback)
       %td= user.spire
       %td= user.email
       %td= user.phone
