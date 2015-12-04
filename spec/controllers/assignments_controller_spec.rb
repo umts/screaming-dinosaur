@@ -98,6 +98,19 @@ describe AssignmentsController do
     end
   end
 
+  describe 'GET #generate_rotation' do
+    before :each do
+      when_current_user_is :whoever
+    end
+    let :submit do
+      get :generate_rotation
+    end
+    it 'renders the generate_rotation template' do
+      submit
+      expect(response).to render_template :generate_rotation
+    end
+  end
+
   describe 'POST #generate_rotation' do
     before :each do
       @start_date = Date.today.strftime '%Y-%m-%d'

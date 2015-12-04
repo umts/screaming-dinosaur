@@ -25,12 +25,16 @@ class AssignmentsController < ApplicationController
   end
 
   def generate_rotation
-    start_date = Date.parse(params.require :start_date)
-    end_date = Date.parse(params.require :end_date)
-    user_ids = params.require :user_ids
-    Assignment.generate_rotation user_ids, start_date, end_date
-    flash[:message] = 'Rotation has been generated.'
-    redirect_to assignments_path date: start_date
+    if request.get?
+      render 'generate_rotation'
+    elsif request.post?
+      start_date = Date.parse(params.require :start_date)
+      end_date = Date.parse(params.require :end_date)
+      user_ids = params.require :user_ids
+      Assignment.generate_rotation user_ids, start_date, end_date
+      flash[:message] = 'Rotation has been generated.'
+      redirect_to assignments_path date: start_date
+    end
   end
 
   def index
