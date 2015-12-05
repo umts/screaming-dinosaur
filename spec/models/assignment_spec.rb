@@ -34,13 +34,13 @@ RSpec.describe Assignment do
       @user_2 = create :user
       @user_3 = create :user
       start_date = Date.today
-      # A day short of three weeks, to test that the end date
+      # A day short of four weeks, to test that the end date
       # is a day short as well
-      end_date = (3.weeks.since - 2.days).to_date
+      end_date = (4.weeks.since - 2.days).to_date
       @assignments = Assignment.generate_rotation(
         [@user_1.id, @user_2.id, @user_3.id], start_date, end_date
       )
-      expect(@assignments.size).to eql 3
+      expect(@assignments.size).to eql 4
     end
     it 'creates the expected assignments (part 1)' do
       assignment = @assignments[0]
@@ -58,7 +58,15 @@ RSpec.describe Assignment do
       assignment = @assignments[2]
       expect(assignment.user).to eql @user_3
       expect(assignment.start_date).to eql 2.weeks.since.to_date
-      expect(assignment.end_date).to eql 19.days.since.to_date
+      expect(assignment.end_date).to eql 20.days.since.to_date
+    end
+    # this one is significant because there are more weeks than
+    # people - just make sure the modular arithmetic works
+    it 'creates the expected assignments (part 4)' do
+      assignment = @assignments[3]
+      expect(assignment.user).to eql @user_1 # wraps back around
+      expect(assignment.start_date).to eql 3.weeks.since.to_date
+      expect(assignment.end_date).to eql 26.days.since.to_date
     end
   end
 

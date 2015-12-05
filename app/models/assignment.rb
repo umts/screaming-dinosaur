@@ -24,7 +24,7 @@ class Assignment < ActiveRecord::Base
       assignments << create(
         start_date: week.first,
         end_date: week.last,
-        user_id: user_ids[i]
+        user_id: user_ids[i % user_ids.size]
       )
     end
     assignments
