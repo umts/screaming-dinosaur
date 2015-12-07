@@ -131,15 +131,19 @@ describe AssignmentsController do
       user_2 = create :user
       user_3 = create :user
       @user_ids = [user_1.id.to_s, user_2.id.to_s, user_3.id.to_s]
+      @starting_user_id = @user_ids[1]
       when_current_user_is :whoever
     end
     let :submit do
       post :generate_rotation,
-           start_date: @start_date, end_date: @end_date, user_ids: @user_ids
+           start_date: @start_date,
+           end_date: @end_date,
+           user_ids: @user_ids,
+           starting_user_id: @starting_user_id
     end
     it 'calls Assignment#generate rotation with the given arguments' do
       expect(Assignment).to receive(:generate_rotation)
-        .with @user_ids, Date.today, Date.tomorrow
+        .with @user_ids, Date.today, Date.tomorrow, @starting_user_id
       submit
     end
     it 'has a flash message' do

@@ -14,4 +14,7 @@
     options_from_collection_for_select(@users, :id, :last_name,
                                        @users.pluck(:id)),
     multiple: true, size: 10
+  = label_tag :starting_user_id, 'Starting with'
+  = select_tag :starting_user_id,
+    options_from_collection_for_select(@users, :id, :last_name)
   = submit_tag 'Generate rotation'
