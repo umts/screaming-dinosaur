@@ -3,8 +3,8 @@ Rails.application.routes.draw do
 
   resources :assignments, except: :show do
     collection do
-      get  :generate_rotation
       post :generate_rotation
+      get  :rotation_generator
     end
   end
 

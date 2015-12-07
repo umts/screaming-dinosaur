@@ -98,31 +98,6 @@ describe AssignmentsController do
     end
   end
 
-  describe 'GET #generate_rotation' do
-    before :each do
-      when_current_user_is :whoever
-    end
-    let :submit do
-      get :generate_rotation
-    end
-    it 'sets the users instance variable' do
-      expect(User).to receive(:order).with(:last_name)
-        .and_return 'whatever'
-      submit
-      expect(assigns.fetch :users).to eql 'whatever'
-    end
-    it 'sets the start date instance variable' do
-      expect(Assignment).to receive(:next_rotation_start_date)
-        .and_return 'whatever'
-      submit
-      expect(assigns.fetch :start_date).to eql 'whatever'
-    end
-    it 'renders the generate_rotation template' do
-      submit
-      expect(response).to render_template :generate_rotation
-    end
-  end
-
   describe 'POST #generate_rotation' do
     before :each do
       @start_date = Date.today.strftime '%Y-%m-%d'
@@ -258,6 +233,31 @@ describe AssignmentsController do
     it 'renders the new template' do
       submit
       expect(response).to render_template :new
+    end
+  end
+
+  describe 'GET #rotation_generator' do
+    before :each do
+      when_current_user_is :whoever
+    end
+    let :submit do
+      get :rotation_generator
+    end
+    it 'sets the users instance variable' do
+      expect(User).to receive(:order).with(:last_name)
+        .and_return 'whatever'
+      submit
+      expect(assigns.fetch :users).to eql 'whatever'
+    end
+    it 'sets the start date instance variable' do
+      expect(Assignment).to receive(:next_rotation_start_date)
+        .and_return 'whatever'
+      submit
+      expect(assigns.fetch :start_date).to eql 'whatever'
+    end
+    it 'renders the rotation_generator template' do
+      submit
+      expect(response).to render_template :rotation_generator
     end
   end
 
