@@ -70,6 +70,18 @@ RSpec.describe Assignment do
     end
   end
 
+  describe 'next_rotation_start_date' do
+    before :each do
+      create :assignment, end_date: 1.week.since.to_date
+      create :assignment, end_date: 2.weeks.since.to_date
+      create :assignment, end_date: 3.weeks.since.to_date
+    end
+    it 'returns the day after the last assignment ends' do
+      result = Assignment.next_rotation_start_date
+      expect(result).to eql 22.days.since.to_date
+    end
+  end
+
   describe 'on' do
     before :each do
       @date = Date.today

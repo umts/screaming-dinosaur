@@ -30,6 +30,13 @@ class Assignment < ActiveRecord::Base
     assignments
   end
 
+  # Returns the day AFTER the last assignment ends.
+  # If there is no last assignment, returns nil.
+  def self.next_rotation_start_date
+    last = order(:end_date).last
+    last.end_date + 1.day if last.present?
+  end
+
   # returns the assignment which takes place on a particular date
   def self.on(date)
     find_by("

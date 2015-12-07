@@ -105,6 +105,18 @@ describe AssignmentsController do
     let :submit do
       get :generate_rotation
     end
+    it 'sets the users instance variable' do
+      expect(User).to receive(:order).with(:last_name)
+        .and_return 'whatever'
+      submit
+      expect(assigns.fetch :users).to eql 'whatever'
+    end
+    it 'sets the start date instance variable' do
+      expect(Assignment).to receive(:next_rotation_start_date)
+        .and_return 'whatever'
+      submit
+      expect(assigns.fetch :start_date).to eql 'whatever'
+    end
     it 'renders the generate_rotation template' do
       submit
       expect(response).to render_template :generate_rotation

@@ -27,6 +27,7 @@ class AssignmentsController < ApplicationController
   def generate_rotation
     if request.get?
       @users = User.order :last_name
+      @start_date = Assignment.next_rotation_start_date
     elsif request.post?
       start_date = Date.parse(params.require :start_date)
       end_date = Date.parse(params.require :end_date)
