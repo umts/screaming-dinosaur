@@ -162,6 +162,12 @@ describe AssignmentsController do
         submit
         expect(assigns.fetch :switchover_hour).to eql 12
       end
+      it 'includes a variable of the fallback user' do
+        fallback = create :user
+        expect(User).to receive(:fallback).and_return fallback
+        submit
+        expect(assigns.fetch :fallback_user).to eql fallback
+      end
       it 'renders the correct template' do
         submit
         expect(response).to render_template :index

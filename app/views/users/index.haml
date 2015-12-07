@@ -10,7 +10,10 @@
     %th
   - @users.each do |user|
     %tr
-      %td= user.full_name
+      %td
+        = user.full_name
+        - if user.is_fallback?
+          (fallback)
       %td= user.spire
       %td= user.email
       %td= user.phone
@@ -18,3 +21,5 @@
       %td= button_to 'Destroy', user_path(user), method: :delete
   %tr
     %td{ colspan: 6 }= link_to 'Add user', new_user_path
+- if @no_fallback
+  %h3.slightly-red No fallback user!

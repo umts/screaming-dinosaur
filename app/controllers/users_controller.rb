@@ -24,6 +24,7 @@ class UsersController < ApplicationController
 
   def index
     @users = User.all
+    @no_fallback = User.fallback.nil?
   end
 
   def new
