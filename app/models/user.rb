@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
                       message: 'must be 8 digits followed by @umass.edu' }
   validates :phone,
             format: { with: /\+1\d{10}/,
-                      message: 'must be 1+ followed by 10 digits' }
+                      message: 'must be "+1" followed by 10 digits' }
   validates :is_fallback,
             uniqueness: { message: 'may be true for only one user' },
             if: -> { is_fallback }
