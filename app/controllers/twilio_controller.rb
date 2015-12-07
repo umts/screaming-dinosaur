@@ -19,6 +19,10 @@ class TwilioController < ApplicationController
   private
 
   def set_on_call_user
-    @user = Assignment.current.user
+    assignment = Assignment.current
+    @user = if assignment.present?
+              assignment.user
+            else User.fallback
+            end
   end
 end

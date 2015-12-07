@@ -48,6 +48,7 @@ class AssignmentsController < ApplicationController
     @assignments = @current_user.assignments.upcoming.order :start_date
     @current_assignment = Assignment.current
     @switchover_hour = CONFIG[:switchover_hour]
+    @fallback_user = User.fallback
   end
 
   def new

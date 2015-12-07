@@ -2,5 +2,9 @@
   - if @current_assignment.present?
     %h3.slightly-green Currently on call: #{@current_assignment.user.last_name}
   - else
-    %h3.slightly-red No one currently on call!
+    %h3.slightly-red
+      No one is currently on call!
+      - if @fallback_user.present?
+        #{@fallback_user.last_name} is the fallback.
+
   On-call switches at: #{HOURS[@switchover_hour]}
