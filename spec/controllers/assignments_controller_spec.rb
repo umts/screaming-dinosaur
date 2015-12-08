@@ -106,15 +106,19 @@ describe AssignmentsController do
       user_2 = create :user
       user_3 = create :user
       @user_ids = [user_1.id.to_s, user_2.id.to_s, user_3.id.to_s]
+      @starting_user_id = @user_ids[1]
       when_current_user_is :whoever
     end
     let :submit do
       post :generate_rotation,
-           start_date: @start_date, end_date: @end_date, user_ids: @user_ids
+           start_date: @start_date,
+           end_date: @end_date,
+           user_ids: @user_ids,
+           starting_user_id: @starting_user_id
     end
     it 'calls Assignment#generate rotation with the given arguments' do
       expect(Assignment).to receive(:generate_rotation)
-        .with @user_ids, Date.today, Date.tomorrow
+        .with @user_ids, Date.today, Date.tomorrow, @starting_user_id
       submit
     end
     it 'has a flash message' do
@@ -229,6 +233,31 @@ describe AssignmentsController do
     it 'renders the new template' do
       submit
       expect(response).to render_template :new
+    end
+  end
+
+  describe 'GET #rotation_generator' do
+    before :each do
+      when_current_user_is :whoever
+    end
+    let :submit do
+      get :rotation_generator
+    end
+    it 'sets the users instance variable' do
+      expect(User).to receive(:order).with(:last_name)
+        .and_return 'whatever'
+      submit
+      expect(assigns.fetch :users).to eql 'whatever'
+    end
+    it 'sets the start date instance variable' do
+      expect(Assignment).to receive(:next_rotation_start_date)
+        .and_return 'whatever'
+      submit
+      expect(assigns.fetch :start_date).to eql 'whatever'
+    end
+    it 'renders the rotation_generator template' do
+      submit
+      expect(response).to render_template :rotation_generator
     end
   end
 

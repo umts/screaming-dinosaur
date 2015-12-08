@@ -17,16 +17,25 @@ class Assignment < ActiveRecord::Base
 
   # Generates a weekly rotation over a date range
   # switching on the weekday of the start date
-  def self.generate_rotation(user_ids, start_date, end_date)
+  # starting with the user whose ID is in start_user_id
+  def self.generate_rotation(user_ids, start_date, end_date, start_user_id)
     assignments = []
+    user_ids.rotate! user_ids.index(start_user_id)
     (start_date..end_date).each_slice(7).with_index do |week, i|
       assignments << create(
         start_date: week.first,
         end_date: week.last,
-        user_id: user_ids[i]
+        user_id: user_ids[i % user_ids.size]
       )
     end
     assignments
+  end
+
+  # Returns the day AFTER the last assignment ends.
+  # If there is no last assignment, returns nil.
+  def self.next_rotation_start_date
+    last = order(:end_date).last
+    last.end_date + 1.day if last.present?
   end
 
   # returns the assignment which takes place on a particular date
