@@ -6,5 +6,6 @@
       No one is currently on call!
       - if @fallback_user.present?
         #{@fallback_user.last_name} is the fallback.
+        .fallback= image_tag 'the_fallback.jpg'
 
   On-call switches at: #{HOURS[@switchover_hour]}
