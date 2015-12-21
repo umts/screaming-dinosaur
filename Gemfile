@@ -35,6 +35,5 @@ group :development, :test do
   gem 'rspec-html-matchers'
   gem 'rspec-rails'
   gem 'simplecov'
-  gem 'spring'
   gem 'timecop'
 end
