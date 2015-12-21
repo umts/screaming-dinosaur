@@ -1,10 +1,12 @@
 language: ruby
 rvm: 2.2.3
-env: 'CODECLIMATE_REPO_TOKEN=029db8a4d83b74b2b01b09670c9a28a9c353175415b61186e87a1d70fe461931'
+env: 
+  - 'CODECLIMATE_REPO_TOKEN=029db8a4d83b74b2b01b09670c9a28a9c353175415b61186e87a1d70fe461931'
+  - 'RAILS_ENV=test'
 before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
-script: 'RAILS_ENV=test bundle exec rake db:create travis'
+script: 'bundle exec rake db:create travis'
 notifications:
   email:
     recipients:
