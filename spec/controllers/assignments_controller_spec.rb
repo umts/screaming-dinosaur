@@ -192,17 +192,26 @@ describe AssignmentsController do
       end
     end
     context 'fcIdNumber in request' do
-      before :each do
-        @user = create :user
-        request.env['fcIdNumber'] = @user.spire
+      context 'user exists' do
+        before :each do
+          @user = create :user
+          request.env['fcIdNumber'] = @user.spire
+        end
+        it 'assigns the correct current user' do
+          submit
+          expect(assigns.fetch :current_user).to eql @user
+        end
+        it 'renders the correct template' do
+          submit
+          expect(response).to render_template :index
+        end
       end
-      it 'assigns the correct current user' do
-        submit
-        expect(assigns.fetch :current_user).to eql @user
-      end
-      it 'renders the correct template' do
-        submit
-        expect(response).to render_template :index
+      context 'user does not exist' do
+        it 'redirects to unauthenticated sessions path' do
+          request.env['fcIdNumber'] = '00000000@umass.edu'
+          submit
+          expect(response).to redirect_to unauthenticated_session_path
+        end
       end
     end
   end

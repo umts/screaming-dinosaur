@@ -6,10 +6,12 @@ class ApplicationController < ActionController::Base
   def set_current_user
     if session.key? :user_id
       @current_user = User.find_by id: session[:user_id]
-    elsif request.env.key? 'fcIdNumber'
+    else
       @current_user = User.find_by spire: request.env['fcIdNumber']
-      session[:user_id] = @current_user.id
-    else redirect_to unauthenticated_session_path
+      if @current_user.present?
+        session[:user_id] = @current_user.id
+      else redirect_to unauthenticated_session_path
+      end
     end
   end
 end
