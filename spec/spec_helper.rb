@@ -7,6 +7,7 @@ SimpleCov.start 'rails'
 SimpleCov.start do
   add_filter '/config/'
   add_filter '/spec/'
+  refuse_coverage_drop
 end
 
 RSpec.configure do |config|
