@@ -6,7 +6,9 @@ env:
 before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
-script: 'bundle exec rake db:create travis'
+script: 
+  - bundle exec rake db:create 
+  - bundle exec rake travis
 notifications:
   email:
     recipients:
