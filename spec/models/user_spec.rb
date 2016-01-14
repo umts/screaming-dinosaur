@@ -30,7 +30,7 @@ describe User do
       expect(User.fallback).to eql fallback
     end
     it 'returns nil if no fallback user is present' do
-      expect(User.fallback).to eql nil
+      expect(User.fallback).to be nil
     end
   end
 end

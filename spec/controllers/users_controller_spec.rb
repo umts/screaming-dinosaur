@@ -99,12 +99,12 @@ describe UsersController do
     it 'populates no_fallback as true if there is no fallback user' do
       expect(User).to receive(:fallback).and_return nil
       submit
-      expect(assigns.fetch :no_fallback).to eql true
+      expect(assigns.fetch :no_fallback).to be true
     end
     it 'populates no_fallback as false if there is a fallback user' do
       expect(User).to receive(:fallback).and_return "anything that isn't nil"
       submit
-      expect(assigns.fetch :no_fallback).to eql false
+      expect(assigns.fetch :no_fallback).to be false
     end
     it 'renders the index template' do
       submit
