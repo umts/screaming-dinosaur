@@ -138,4 +138,31 @@ RSpec.describe Assignment do
       end
     end
   end
+
+  describe 'upcoming' do
+    let(:assignment_today) do
+      create :assignment,
+             start_date: Date.today,
+             end_date: 1.week.since.to_date
+    end
+    let(:assignment_tomorrow) do
+      create :assignment,
+             start_date: Date.tomorrow,
+             end_date: 1.week.since.to_date
+    end
+
+    let(:switchover_time) { Date.today + CONFIG.fetch(:switchover_hour).hours }
+    subject { described_class.upcoming }
+    context 'before 5pm' do
+      before(:each) { Timecop.freeze switchover_time - 1.minute }
+      it { is_expected.to include assignment_today }
+      it { is_expected.to include assignment_tomorrow }
+    end
+    context 'after 5pm' do
+      before(:each) { Timecop.freeze switchover_time + 1.minute }
+      it { is_expected.not_to include assignment_today }
+      it { is_expected.to include assignment_tomorrow }
+    end
+    after(:each) { Timecop.return }
+  end
 end
