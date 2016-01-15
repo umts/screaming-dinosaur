@@ -36,4 +36,5 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'simplecov'
   gem 'timecop'
+  gem 'umts-custom-matchers'
 end
