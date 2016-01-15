@@ -239,8 +239,11 @@ GEM
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    umts-custom-matchers (0.1.2)
-      rspec-rails
+    umts-custom-cops (0.1.0)
+      rspec (~> 3.0)
+      rubocop (= 0.35.1)
+    umts-custom-matchers (0.1.3)
+      rspec-rails (~> 3.0)
 
 PLATFORMS
   ruby
@@ -274,6 +277,7 @@ DEPENDENCIES
   snappconfig
   timecop
   uglifier
+  umts-custom-cops
   umts-custom-matchers
 
 BUNDLED WITH

@@ -17,7 +17,7 @@ describe AssignmentsController do
     context 'without errors' do
       it 'creates an assignment' do
         submit
-        expect(Assignment.count).to eql 1
+        expect(Assignment.count).to be 1
       end
       it 'redirects to the index with a date of the assignment start date' do
         submit
@@ -154,7 +154,7 @@ describe AssignmentsController do
       it 'includes the switchover hour as a variable' do
         expect(CONFIG).to receive(:[]).with(:switchover_hour).and_return 12
         submit
-        expect(assigns.fetch :switchover_hour).to eql 12
+        expect(assigns.fetch :switchover_hour).to be 12
       end
       it 'includes a variable of the fallback user' do
         fallback = create :user

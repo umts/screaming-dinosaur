@@ -44,7 +44,7 @@ RSpec.describe Assignment do
         end_date,
         starting_user_id
       )
-      expect(@assignments.size).to eql 4
+      expect(@assignments.size).to be 4
     end
     it 'creates the expected assignments (part 1)' do
       assignment = @assignments[0]
