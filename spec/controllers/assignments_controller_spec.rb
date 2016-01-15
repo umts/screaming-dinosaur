@@ -31,21 +31,11 @@ describe AssignmentsController do
         # Guaranteed to not be a user with this ID,
         # but will pass param validation in the controller.
         @attributes[:user_id] = User.pluck(:id).sort.last + 1
-        # Need an HTTP_REFERER for it to redirect back
-        @back = 'http://test.host/redirect'
-        request.env['HTTP_REFERER'] = @back
       end
-      it 'does not create an assignment' do
-        submit
-        expect(Assignment.count).to eql 0
-      end
-      it 'gives some errors in the flash' do
-        submit
+      it 'does not create assignment, gives errors, and redirects back' do
+        expect { submit }.to redirect_back
+        expect(Assignment.all).to be_empty
         expect(flash[:errors]).not_to be_empty
-      end
-      it 'redirects back' do
-        submit
-        expect(response).to redirect_to @back
       end
     end
   end
@@ -297,20 +287,11 @@ describe AssignmentsController do
         # Guaranteed to not be a user with this ID,
         # but will pass param validation in the controller.
         @changes[:user_id] = User.pluck(:id).sort.last + 1
-        # Need an HTTP_REFERER for it to redirect back
-        @back = 'http://test.host/redirect'
-        request.env['HTTP_REFERER'] = @back
       end
-      it 'does not update the assignment' do
-        expect { submit }.not_to change { @assignment.reload.user }
-      end
-      it 'includes errors in the flash' do
-        submit
+      it 'does not update, includes errors, and redirects back' do
+        expect { submit }.to redirect_back
         expect(flash[:errors]).not_to be_empty
-      end
-      it 'redirects back' do
-        submit
-        expect(response).to redirect_to @back
+        expect(@assignment.reload.user).not_to eql @user
       end
     end
   end
