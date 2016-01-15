@@ -1,6 +1,7 @@
 require 'codeclimate-test-reporter'
 require 'factory_girl_rails'
 require 'simplecov'
+require 'umts-custom-matchers'
 
 CodeClimate::TestReporter.start if ENV['CI']
 SimpleCov.start 'rails'
@@ -15,6 +16,7 @@ RSpec.configure do |config|
     FactoryGirl.reload
   end
   config.include FactoryGirl::Syntax::Methods
+  config.include UmtsCustomMatchers
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

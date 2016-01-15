@@ -37,4 +37,5 @@ group :development, :test do
   gem 'simplecov'
   gem 'timecop'
   gem 'umts-custom-cops'
+  gem 'umts-custom-matchers'
 end
