@@ -1,23 +1,2 @@
 require: umts-custom-cops
-
-AllCops:
-  RunRailsCops: true
-  Exclude:
-    - 'bin/**/*'
-    - 'config/**/*'
-    - 'db/**/*'
-    - 'script/**/*'
-    - 'vendor/**/*'
-
-Metrics/AbcSize:
-  Max: 20
-
-Metrics/MethodLength:
-  Max: 11
-
-Rails/Date:
-  Enabled: false
-
-Style/Documentation:
-  Enabled: false
-
+inherit_from: .rubocop-no-umts-cops.yml

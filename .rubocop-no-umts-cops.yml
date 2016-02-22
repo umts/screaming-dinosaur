@@ -1,0 +1,27 @@
+Rails:
+  Enabled: true
+
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'script/**/*'
+    - 'vendor/**/*'
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/MethodLength:
+  Max: 11
+
+Rails/Date:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+# This cop is offended by method calls
+# which I think are perfectly clear.
+Style/NestedParenthesizedCalls:
+  Enabled: false
