@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'coffee-rails'
 gem 'factory_girl_rails'
 gem 'haml'
-gem 'haml-lint'
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -38,4 +37,5 @@ group :development, :test do
   gem 'timecop'
   gem 'umts-custom-cops'
   gem 'umts-custom-matchers'
+  gem 'haml_lint'
 end
