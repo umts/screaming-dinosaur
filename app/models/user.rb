@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
                       message: 'must be "+1" followed by 10 digits' }
   validates :is_fallback,
             uniqueness: { message: 'may be true for only one user' },
-            if: -> { is_fallback }
+            if: :is_fallback?
 
   def full_name
     "#{first_name} #{last_name}"
