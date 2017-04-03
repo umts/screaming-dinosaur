@@ -5,9 +5,10 @@ class UsersController < ApplicationController
   def create
     user_params = params.require(:user).permit!
     user = User.new user_params
+    user.rotations << @rotation
     if user.save
       flash[:message] = 'User has been created.'
-      redirect_to users_path
+      redirect_to rotation_users_path(@rotation)
     else
       flash[:errors] = user.errors.full_messages
       redirect_to :back
