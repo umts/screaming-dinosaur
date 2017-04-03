@@ -62,7 +62,7 @@ class Assignment < ActiveRecord::Base
   private
 
   def overlaps_any?
-    overlapping_assignments = Assignment.where("
+    overlapping_assignments = Assignment.in(rotation).where("
       start_date <= ? AND end_date >= ? AND id != ?
     ", end_date, start_date, id)
     return if overlapping_assignments.blank?

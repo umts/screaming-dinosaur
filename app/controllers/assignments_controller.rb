@@ -68,7 +68,7 @@ class AssignmentsController < ApplicationController
                               .permit :start_date, :end_date, :user_id
     if @assignment.update assignment_params
       flash[:message] = 'Assignment has been updated.'
-      redirect_to assignments_path(date: @assignment.start_date)
+      redirect_to rotation_assignments_path(@rotation, date: @assignment.start_date)
     else
       flash[:errors] = @assignment.errors.full_messages
       redirect_to :back
