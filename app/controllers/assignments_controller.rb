@@ -1,5 +1,6 @@
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: [:destroy, :edit, :update]
+  before_action :find_rotation
 
   def create
     assignment_params = params.require(:assignment)
@@ -43,10 +44,12 @@ class AssignmentsController < ApplicationController
     start_date = @month_date.beginning_of_week(:sunday)
     end_date = @month_date.end_of_month.end_of_week(:sunday)
     @weeks = (start_date..end_date).each_slice(7)
-    @assignments = @current_user.assignments.upcoming.order :start_date
-    @current_assignment = Assignment.current
+    @assignments = @current_user.assignments.in(@rotation)
+                                            .upcoming
+                                            .order :start_date
+    @current_assignment = Assignment.current_for(@rotation)
     @switchover_hour = CONFIG[:switchover_hour]
-    @fallback_user = User.fallback
+    @fallback_user = @rotation.fallback_user
   end
 
   def new
@@ -76,5 +79,9 @@ class AssignmentsController < ApplicationController
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require :id)
+  end
+
+  def find_rotation
+    @rotation = Rotation.find(params.require :rotation_id)
   end
 end

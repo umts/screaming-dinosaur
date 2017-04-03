@@ -1,7 +1,14 @@
 %h1 Development login
 
 %h2 Login as:
-- @users.each do |user|
-  = form_tag '/sessions/dev_login' do
-    = hidden_field_tag :user_id, user.id
-    = submit_tag user.full_name
+%ul
+- @rotations.each do |rotation|
+  %li
+    = rotation.name
+    %ul
+      - rotation.users.each do |user|
+        %li
+          = form_tag '/sessions/dev_login' do
+            = hidden_field_tag :user_id, user.id
+            = hidden_field_tag :rotation_id, rotation.id
+            = submit_tag user.full_name

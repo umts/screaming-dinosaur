@@ -8,10 +8,10 @@ class Assignment < ActiveRecord::Base
 
   class << self
     # The current assignment - this method accounts for the 5pm switchover hour.
-    def current
+    def current_for(rotation)
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
-        on Date.yesterday
-      else on Date.today
+        rotation.assignments.on Date.yesterday
+      else rotation.assignments.on Date.today
       end
     end
 
@@ -29,6 +29,10 @@ class Assignment < ActiveRecord::Base
         )
       end
       assignments
+    end
+
+    def in(rotation)
+      where rotation: rotation
     end
 
     # Returns the day AFTER the last assignment ends.

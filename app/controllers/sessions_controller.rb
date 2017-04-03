@@ -12,10 +12,10 @@ class SessionsController < ApplicationController
 
   def dev_login # route not defined in production
     if request.get?
-      @users = User.all
+      @rotations = Rotation.includes(:users)
     elsif request.post?
       session[:user_id] = params[:user_id]
-      redirect_to assignments_path
+      redirect_to rotation_assignments_path(rotation_id: params[:rotation_id])
     end
   end
 

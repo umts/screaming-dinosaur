@@ -1,7 +1,7 @@
 !!!
 %html
   %head
-    %title Transportation IT On-Call
+    %title #{@rotation.name} On-Call
     = favicon_link_tag 'calendar-icon.png'
     = stylesheet_link_tag 'application.css', media: 'all'
     = javascript_include_tag 'application.js'
@@ -11,8 +11,9 @@
       = link_to 'Logout', destroy_session_path
       - case params[:controller]
       - when 'assignments'
-        = link_to 'Manage users', users_path
-        = link_to 'Generate rotation', rotation_generator_assignments_path
+        = link_to 'Manage users', rotation_users_path(@rotation)
+        = link_to 'Generate rotation',
+          rotation_generator_rotation_assignments_path(@rotation)
       - when 'users'
         = link_to 'Calendar', assignments_path
     #current_user_name= @current_user.full_name

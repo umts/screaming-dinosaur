@@ -1,14 +1,16 @@
 Rails.application.routes.draw do
   root 'assignments#index'
 
-  resources :assignments, except: :show do
-    collection do
-      post :generate_rotation
-      get  :rotation_generator
+  resources :rotations do
+    resources :assignments, except: :show do
+      collection do
+        post :generate_rotation
+        get  :rotation_generator
+      end
     end
-  end
 
-  resources :users, except: :show
+    resources :users, except: :show
+  end
 
   get 'twilio/call', to: 'twilio#call', as: :twilio_call
   get 'twilio/text', to: 'twilio#text', as: :twilio_text
