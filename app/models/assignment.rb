@@ -2,7 +2,7 @@ class Assignment < ActiveRecord::Base
   belongs_to :user
   belongs_to :rotation
 
-  validates :user, :start_date, :end_date,
+  validates :user, :start_date, :end_date, :rotation,
             presence: true
   validate :overlaps_any?
 

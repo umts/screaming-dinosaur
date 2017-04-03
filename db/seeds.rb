@@ -1,4 +1,6 @@
 require 'factory_girl_rails'
+# ROTATION
+rotation = FactoryGirl.create :rotation, name: 'Transit Operations'
 
 # USERS
 names = [
@@ -22,7 +24,8 @@ names = [
 
 names.each do |(first_name, last_name)|
   FactoryGirl.create :user, first_name: first_name, last_name: last_name,
-                            email: last_name + '@example.umass.edu'
+                            email: last_name + '@example.umass.edu',
+                            rotations: [rotation]
 end
 
 
@@ -30,5 +33,6 @@ end
 User.order(:last_name).each_with_index do |user, i|
   FactoryGirl.create :assignment, user: user,
     start_date: i.weeks.since.beginning_of_week(:friday),
-    end_date: i.weeks.since.end_of_week(:friday)
+    end_date: i.weeks.since.end_of_week(:friday),
+    rotation: rotation
 end
