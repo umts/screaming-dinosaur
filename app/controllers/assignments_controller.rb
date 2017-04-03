@@ -3,7 +3,8 @@ class AssignmentsController < ApplicationController
 
   def create
     assignment_params = params.require(:assignment)
-                              .permit :start_date, :end_date, :user_id
+                              .permit :start_date, :end_date,
+                                      :user_id, :rotation_id
     assignment = Assignment.new assignment_params
     if assignment.save
       flash[:message] = 'Assignment has been created.'

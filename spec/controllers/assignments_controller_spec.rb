@@ -3,11 +3,13 @@ require 'rails_helper'
 describe AssignmentsController do
   describe 'POST #create' do
     before :each do
+      rotation = create :rotation
       user = create :user
       @attributes = {
         start_date: Date.today,
         end_date: Date.tomorrow,
-        user_id: user.id
+        user_id: user.id,
+        rotation_id: rotation.id
       }
       when_current_user_is user
     end
