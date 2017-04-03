@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root 'assignments#index'
 
-  resources :rotations, only: %i(index) do
+  resources :rotations, only: %i(edit index update) do
     resources :assignments, except: :show do
       collection do
         post :generate_rotation

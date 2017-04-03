@@ -1,0 +1,8 @@
+%h1.title Edit rotation
+
+= form_for @rotation do |f|
+  = f.label :name
+  = f.text_field :name
+  = f.label :fallback_user_id
+  = f.select :fallback_user_id, @users.pluck(:last_name, :id)
+  = f.submit 'Save'

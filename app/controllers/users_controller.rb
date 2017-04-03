@@ -21,15 +21,9 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
-  def edit
-  end
-
   def index
     @users = @rotation.users
     @fallback = @rotation.fallback_user
-  end
-
-  def new
   end
 
   def update
