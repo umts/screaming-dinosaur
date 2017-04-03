@@ -1,0 +1,20 @@
+%h1.title Rotations
+
+%table#users
+  %thead
+    %tr
+      %th Name
+      %th Fallback
+      %th
+      %th
+  %tbody
+    - @rotations.each do |rotation|
+      %tr
+        %td= rotation.name
+        %td
+          - if rotation.fallback_user.present?
+            = rotation.fallback_user.last_name
+          - else
+            No fallback user!
+        %td Edit
+        %td Destroy
