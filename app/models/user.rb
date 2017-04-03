@@ -12,10 +12,6 @@ class User < ActiveRecord::Base
   validates :phone,
             format: { with: /\+1\d{10}/,
                       message: 'must be "+1" followed by 10 digits' }
-  validates :is_fallback,
-            uniqueness: { message: 'may be true for only one user',
-                          scope: :rotation },
-            if: :is_fallback?
 
   def full_name
     "#{first_name} #{last_name}"

@@ -40,9 +40,8 @@ names.each_pair do |rotation, rot_names|
       user.rotations << rotation
       user.save!
     else
-      FactoryGirl.create :user, first_name: first_name, last_name: last_name,
-        email: last_name.downcase + '@example.umass.edu',
-        rotations: [rotation]
+      FactoryGirl.create :user, first_name: first_name,
+        last_name: last_name, rotations: [rotation]
     end
   end
 end
