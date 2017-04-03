@@ -15,7 +15,7 @@
         = link_to 'Generate rotation',
           rotation_generator_rotation_assignments_path(@rotation)
       - when 'users'
-        = link_to 'Calendar', assignments_path
+        = link_to 'Calendar', rotation_assignments_path(@rotation)
     #current_user_name= @current_user.full_name
     #flash
       - if flash[:message].present?

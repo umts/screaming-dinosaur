@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :find_user, only: [:destroy, :edit, :update]
+  before_action :find_rotation
 
   def create
     user_params = params.require(:user).permit!
@@ -23,8 +24,8 @@ class UsersController < ApplicationController
   end
 
   def index
-    @users = User.all
-    @no_fallback = User.fallback.nil?
+    @users = @rotation.users
+    @fallback = @rotation.fallback_user
   end
 
   def new
@@ -34,7 +35,7 @@ class UsersController < ApplicationController
     user_params = params.require(:user).permit!
     if @user.update user_params
       flash[:message] = 'User has been updated.'
-      redirect_to users_path
+      redirect_to rotation_users_path(@rotation)
     else
       flash[:errors] = @user.errors.full_messages
       redirect_to :back
@@ -45,5 +46,9 @@ class UsersController < ApplicationController
 
   def find_user
     @user = User.find(params.require :id)
+  end
+
+  def find_rotation
+    @rotation = Rotation.find(params.require :rotation_id)
   end
 end
