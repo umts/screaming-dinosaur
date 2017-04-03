@@ -23,7 +23,7 @@ class AssignmentsController < ApplicationController
   end
 
   def edit
-    @users = User.order :last_name
+    @users = @rotation.users.order :last_name
   end
 
   def generate_rotation

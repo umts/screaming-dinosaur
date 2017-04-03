@@ -22,10 +22,10 @@
                   %span.right &#8592;
             - else
               .slightly-red= link_to 'None assigned',
-                new_rotation_assignment_url(rotation: @rotation, date: day)
+                new_rotation_assignment_url(@rotation, date: day)
   %span.left= link_to @month_date.last_month.strftime('%B %Y'),
-    rotation_assignments_path(rotation: @rotation, date: @month_date.last_month)
+    rotation_assignments_path(@rotation, date: @month_date.last_month)
   %span.right= link_to @month_date.next_month.strftime('%B %Y'),
-    rotation_assignments_path(rotation: @rotation, date: @month_date.next_month)
+    rotation_assignments_path(@rotation, date: @month_date.next_month)
 = render partial: 'current'
 = render partial: 'your_assignments' if @assignments.present?
