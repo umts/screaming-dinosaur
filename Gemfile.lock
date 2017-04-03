@@ -168,6 +168,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (2.1.0)
     rake (10.5.0)
+    rb-readline (0.5.4)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -267,6 +268,7 @@ DEPENDENCIES
   mysql
   pry-byebug
   rails (~> 4.2)
+  rb-readline
   rspec-html-matchers
   rspec-rails
   rubocop
@@ -279,4 +281,4 @@ DEPENDENCIES
   umts-custom-matchers
 
 BUNDLED WITH
-   1.13.1
+   1.13.7
