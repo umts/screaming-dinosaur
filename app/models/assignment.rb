@@ -1,5 +1,6 @@
 class Assignment < ActiveRecord::Base
   belongs_to :user
+  belongs_to :rotation
 
   validates :user, :start_date, :end_date,
             presence: true
