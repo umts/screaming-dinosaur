@@ -16,14 +16,29 @@ RSpec.describe Assignment do
     end
     context 'before switchover hour' do
       it "returns yesterday's assignment" do
-        Timecop.freeze(@switchover_time - 1.minute)
-        expect(call).to eql @yesterday
+        Timecop.freeze(@switchover_time - 1.minute) do
+          expect(call).to eql @yesterday
+        end
       end
     end
     context 'after switchover hour' do
       it "returns today's assignment" do
-        Timecop.freeze(@switchover_time + 1.minute)
-        expect(call).to eql @today
+        Timecop.freeze(@switchover_time + 1.minute) do
+          expect(call).to eql @today
+        end
+      end
+    end
+    context 'target assignments are only in the current rotation' do
+      it 'only looks at assignments in the current rotation' do
+        Timecop.freeze(@switchover_time + 1.minute) do
+          # This new assignment will also belong to a new rotation
+          new_assignment =  create :assignment,
+                                   start_date: Date.today,
+                                   end_date: Date.today
+          expect(@today.rotation.assignments.current).to eql @today
+          expect(new_assignment.rotation.assignments.current)
+            .to eql new_assignment
+        end
       end
     end
   end
