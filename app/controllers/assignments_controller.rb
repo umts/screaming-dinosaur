@@ -47,7 +47,7 @@ class AssignmentsController < ApplicationController
     @assignments = @current_user.assignments.in(@rotation)
                                             .upcoming
                                             .order :start_date
-    @current_assignment = Assignment.current_for(@rotation)
+    @current_assignment = @rotation.assignments.current
     @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @rotation.fallback_user
   end
