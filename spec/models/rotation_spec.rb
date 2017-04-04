@@ -51,4 +51,24 @@ describe Rotation do
       expect(assignment.end_date).to eql 26.days.since.to_date
     end
   end
+
+  describe 'on_call_user' do
+    let(:rotation) { create :rotation, fallback_user: fallback_user }
+    let(:fallback_user) { create :user }
+    let(:assignment) { create :assignment, rotation: rotation }
+    let(:result) { rotation.on_call_user }
+    context 'there is a current assignment' do
+      before :each do
+        expect(rotation.assignments).to receive(:current).and_return assignment
+      end
+      it 'returns the user of the current assignment' do
+        expect(result).to eql assignment.user
+      end
+    end
+    context 'no current assignment' do
+      it 'returns the fallback user' do
+        expect(result).to eql fallback_user
+      end
+    end
+  end
 end
