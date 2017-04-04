@@ -30,14 +30,23 @@ RSpec.describe Assignment do
 
 
   describe 'next_rotation_start_date' do
-    before :each do
-      create :assignment, end_date: 1.week.since.to_date
-      create :assignment, end_date: 2.weeks.since.to_date
-      create :assignment, end_date: 3.weeks.since.to_date
+    let(:result) { Assignment.next_rotation_start_date }
+    context 'with existing assignments' do
+      before :each do
+        create :assignment, end_date: 1.week.since.to_date
+        create :assignment, end_date: 2.weeks.since.to_date
+        create :assignment, end_date: 3.weeks.since.to_date
+      end
+      it 'returns the day after the last assignment ends' do
+        expect(result).to eql 22.days.since.to_date
+      end
     end
-    it 'returns the day after the last assignment ends' do
-      result = Assignment.next_rotation_start_date
-      expect(result).to eql 22.days.since.to_date
+    context 'with no existing assignments' do
+      it 'returns the upcoming Friday' do
+        Timecop.freeze Date.parse('Monday, May 8th, 2017') do
+          expect(result).to eql Date.parse('Friday, May 12th, 2017')
+        end
+      end
     end
   end
 
