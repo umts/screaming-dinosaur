@@ -81,7 +81,12 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.includes(:user).find(params.require :id)
   end
 
+  # If there's one specified, go to that.
+  # Otherwise, go to the first rotation of which the current user is a member.
+  # Finally, just go to the first rotation (if they're a member of none).
   def find_rotation
-    @rotation = Rotation.find(params.require :rotation_id)
+    @rotation = Rotation.find_by(id: params[:rotation_id])
+    @rotation ||= @current_user.rotations.first
+    @rotation ||= Rotation.first
   end
 end
