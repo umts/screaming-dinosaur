@@ -12,8 +12,12 @@
       = link_to 'Manage users', rotation_users_path(@rotation)
       = link_to 'Generate rotation',
         rotation_generator_rotation_assignments_path(@rotation)
-      - @current_user.rotations.each do |rotation|
-        = link_to rotation.name, rotation_assignments_path(rotation)
+      - rotations = @current_user.rotations
+      - if rotations.many?
+        - @current_user.rotations.each do |rotation|
+          = link_to rotation.name, rotation_assignments_path(rotation)
+      - else
+        = link_to 'Calendar', rotation_assignments_path(@rotation)
     #current_user_name= @current_user.full_name
     #flash
       - if flash[:message].present?
