@@ -19,4 +19,8 @@ class Rotation < ActiveRecord::Base
     assignments
   end
 
+  def on_call_user
+    assignments.current.try(:user) || fallback_user
+  end
+
 end

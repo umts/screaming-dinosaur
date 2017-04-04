@@ -43,10 +43,6 @@ class UsersController < ApplicationController
     @user = User.find(params.require :id)
   end
 
-  def find_rotation
-    @rotation = Rotation.find(params.require :rotation_id)
-  end
-
   def parse_rotation_ids(attrs)
     attrs[:rotations] = attrs[:rotations].map do |rotation_id|
       Rotation.find_by id: rotation_id

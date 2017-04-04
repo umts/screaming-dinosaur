@@ -8,10 +8,11 @@ class Assignment < ActiveRecord::Base
 
   class << self
     # The current assignment - this method accounts for the 5pm switchover hour.
-    def current_for(rotation)
+    # This should be called while scoped to a particular rotation.
+    def current
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
-        rotation.assignments.on Date.yesterday
-      else rotation.assignments.on Date.today
+        on Date.yesterday
+      else on Date.today
       end
     end
 

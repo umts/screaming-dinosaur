@@ -10,10 +10,11 @@ Rails.application.routes.draw do
     end
 
     resources :users, except: :show
+
+    get 'twilio/call', to: 'twilio#call', as: :twilio_call
+    get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
 
-  get 'twilio/call', to: 'twilio#call', as: :twilio_call
-  get 'twilio/text', to: 'twilio#text', as: :twilio_text
 
   unless Rails.env.production?
     get  'sessions/dev_login', to: 'sessions#dev_login', as: :dev_login
