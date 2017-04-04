@@ -28,7 +28,7 @@ class UsersController < ApplicationController
 
   def update
     user_params = params.require(:user).permit!
-    if @user.update user_params
+    if @user.update parse_rotation_ids(user_params)
       flash[:message] = 'User has been updated.'
       redirect_to rotation_users_path(@rotation)
     else
@@ -45,5 +45,12 @@ class UsersController < ApplicationController
 
   def find_rotation
     @rotation = Rotation.find(params.require :rotation_id)
+  end
+
+  def parse_rotation_ids(attrs)
+    attrs[:rotations] = attrs[:rotations].map do |rotation_id|
+      Rotation.find_by id: rotation_id
+    end.compact
+    attrs
   end
 end
