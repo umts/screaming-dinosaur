@@ -47,12 +47,11 @@ describe SessionsController do
     let :submit do
       get :dev_login
     end
-    it 'assigns a users variable' do
+    it 'assigns a rotations variable' do
+      rotation_1 = create :rotation
+      rotation_2 = create :rotation
       submit
-      user_1 = create :user
-      user_2 = create :user
-      user_3 = create :user
-      expect(assigns.fetch :users).to contain_exactly user_1, user_2, user_3
+      expect(assigns.fetch :rotations).to contain_exactly rotation_1, rotation_2
     end
     it 'renders the correct template' do
       submit
@@ -62,14 +61,19 @@ describe SessionsController do
 
   describe 'POST #dev_login' do
     before :each do
-      @user = create :user
+      @rotation = create :rotation
+      @user = create :user, rotations: [@rotation]
     end
     let :submit do
-      post :dev_login, user_id: @user.id
+      post :dev_login, user_id: @user.id, rotation_id: @rotation.id
     end
     it 'creates a session for the user specified' do
       submit
       expect(session[:user_id]).to eql @user.id.to_s
+    end
+    it 'redirects to the assignments path for the specified rotation' do
+      submit
+      expect(response).to redirect_to rotation_assignments_path(@rotation)
     end
   end
 
