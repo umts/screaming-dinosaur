@@ -1,5 +1,23 @@
 class RotationsController < ApplicationController
-  before_action :find_rotation, only: %i(edit update)
+  before_action :find_rotation, only: %i(destroy edit update)
+
+  def create
+    rotation_params = params.require(:rotation).permit(:name)
+    rotation = Rotation.new rotation_params
+    if rotation.save
+      flash[:message] = 'Rotation has been created.'
+      redirect_to rotations_path
+    else
+      flash[:errors] = rotation.errors.full_messages
+      redirect_to :back
+    end
+  end
+
+  def destroy
+    @rotation.destroy
+    flash[:message] = 'Rotation and any assignments have been deleted.'
+    redirect_to rotations_path
+  end
 
   def edit
     @users = @rotation.users
@@ -7,6 +25,9 @@ class RotationsController < ApplicationController
 
   def index
     @rotations = Rotation.all
+  end
+
+  def new
   end
 
   def update

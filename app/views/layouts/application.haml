@@ -9,9 +9,10 @@
   %body
     #links
       = link_to 'Logout', destroy_session_path
-      = link_to 'Manage users', rotation_users_path(@rotation)
-      = link_to 'Generate rotation',
-        rotation_generator_rotation_assignments_path(@rotation)
+      - if @rotation.present?
+        = link_to 'Manage users', rotation_users_path(@rotation)
+        = link_to 'Generate rotation',
+          rotation_generator_rotation_assignments_path(@rotation)
       - rotations = @current_user.rotations
       - if rotations.many?
         - @current_user.rotations.each do |rotation|

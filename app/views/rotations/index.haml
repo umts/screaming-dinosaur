@@ -17,4 +17,6 @@
           - else
             No fallback user!
         %td= link_to 'Edit', edit_rotation_url(rotation)
-        %td Destroy
+        %td= button_to 'Destroy', rotation_path(rotation), method: :delete
+
+= link_to 'New rotation', new_rotation_path
