@@ -83,9 +83,10 @@ RSpec.describe Assignment do
         expect(@assignment.errors.messages).to be_empty
       end
     end
-    context 'with an overlapping assignment' do
+    context 'with an overlapping assignment in the same rotation' do
       it 'adds errors' do
         create :assignment,
+               rotation: @assignment.rotation,
                start_date: Date.yesterday,
                end_date: Date.tomorrow
         call
