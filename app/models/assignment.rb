@@ -15,22 +15,6 @@ class Assignment < ActiveRecord::Base
       end
     end
 
-    # Generates a weekly rotation over a date range
-    # switching on the weekday of the start date
-    # starting with the user whose ID is in start_user_id
-    def generate_rotation(user_ids, start_date, end_date, start_user_id)
-      assignments = []
-      user_ids.rotate! user_ids.index(start_user_id)
-      (start_date..end_date).each_slice(7).with_index do |week, i|
-        assignments << create!(
-          start_date: week.first,
-          end_date: week.last,
-          user_id: user_ids[i % user_ids.size]
-        )
-      end
-      assignments
-    end
-
     def in(rotation)
       where rotation: rotation
     end
