@@ -9,6 +9,7 @@
   %body
     #links
       = link_to 'Logout', destroy_session_path
+      = link_to 'Manage rotations', rotations_path
       - if @rotation.present?
         = link_to 'Manage users', rotation_users_path(@rotation)
         = link_to 'Generate rotation',
