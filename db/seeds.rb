@@ -48,10 +48,12 @@ end
 
 
 # ASSIGNMENTS
-Rotation.all.each do |rotation|
-  rotation.users.order(:last_name).each_with_index do |user, i|
-    FactoryGirl.create :assignment, user: user, rotation: rotation,
-      start_date: i.weeks.since.beginning_of_week(:friday),
-      end_date: i.weeks.since.end_of_week(:friday)
+unless ENV['SKIP_ASSIGNMENTS']
+  Rotation.all.each do |rotation|
+    rotation.users.order(:last_name).each_with_index do |user, i|
+      FactoryGirl.create :assignment, user: user, rotation: rotation,
+        start_date: i.weeks.since.beginning_of_week(:friday),
+        end_date: i.weeks.since.end_of_week(:friday)
+    end
   end
 end

@@ -22,7 +22,7 @@ class Assignment < ActiveRecord::Base
       assignments = []
       user_ids.rotate! user_ids.index(start_user_id)
       (start_date..end_date).each_slice(7).with_index do |week, i|
-        assignments << create(
+        assignments << create!(
           start_date: week.first,
           end_date: week.last,
           user_id: user_ids[i % user_ids.size]
@@ -36,10 +36,13 @@ class Assignment < ActiveRecord::Base
     end
 
     # Returns the day AFTER the last assignment ends.
-    # If there is no last assignment, returns nil.
+    # If there is no last assignment, returns the upcoming Friday.
     def next_rotation_start_date
       last = order(:end_date).last
-      last.end_date + 1.day if last.present?
+      if last.present?
+        last.end_date + 1.day
+      else 1.week.since.beginning_of_week(:friday).to_date
+      end
     end
 
     # returns the assignment which takes place on a particular date
