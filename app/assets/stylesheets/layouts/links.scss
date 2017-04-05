@@ -1,0 +1,27 @@
+#links{
+  background: #881c1c;
+  color: white;
+  float: right;
+  font-size: 18px;
+  padding: 1em;
+  .group{
+    padding: 5px 0;
+    &.session{
+      #logout{
+        float: right;
+        margin-right: 2em;
+        text-align: right;
+      }
+    }
+    a{
+      color: #eee;
+      padding-right: 1em;
+      &.current{
+        background: #f25e5e;
+        border-radius: 6px;
+        color: white;
+        padding: 5px 10px;
+      }
+    }
+  }
+}

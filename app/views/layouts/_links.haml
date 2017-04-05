@@ -1,16 +1,15 @@
 #links
-  .session
-    = link_to 'Logout', destroy_session_path
-    #current_user_name= @current_user.full_name
-  - rotations = @current_user.rotations
-  .rotation-select
+  .group.session
+    #logout= link_to 'Logout', destroy_session_path
+    #current_user_name Logged in as #{@current_user.full_name}
+  .group.rotation-select
     - if rotations.one?
       = link_to 'Calendar', rotation_assignments_path(@rotation)
     - else
       - @current_user.rotations.each do |rotation|
         = link_to rotation.name, rotation_assignments_path(rotation),
           class: ('current' if rotation == @rotation)
-  .rotation-actions
+  .group.rotation-actions
     = link_to 'Manage rotations', rotations_path
     = link_to 'Manage users', rotation_users_path(@rotation)
     = link_to 'Generate rotation',
