@@ -7,23 +7,7 @@
     = javascript_include_tag 'application.js'
     = csrf_meta_tags
   %body
-    #links
-      .session
-        = link_to 'Logout', destroy_session_path
-        #current_user_name= @current_user.full_name
-      - rotations = @current_user.rotations
-      .rotation-select
-        - if rotations.one?
-          = link_to 'Calendar', rotation_assignments_path(@rotation)
-        - else
-          - @current_user.rotations.each do |rotation|
-            = link_to rotation.name, rotation_assignments_path(rotation),
-              class: ('current' if rotation == @rotation)
-      .rotation-actions
-        = link_to 'Manage rotations', rotations_path
-        = link_to 'Manage users', rotation_users_path(@rotation)
-        = link_to 'Generate rotation',
-          rotation_generator_rotation_assignments_path(@rotation)
+    = render partial: 'layouts/links'
     #flash
       - if flash[:message].present?
         #message= flash[:message]
