@@ -3,10 +3,11 @@
   color: white;
   float: right;
   font-size: 18px;
-  padding: 1em;
+  padding: 0.5em 1em;
   .group{
     padding: 5px 0;
     &.session{
+      padding-bottom: 20px;
       #logout{
         float: right;
         margin-right: 2em;
@@ -14,10 +15,10 @@
       }
     }
     a{
-      color: #eee;
+      color: #ddd;
       padding-right: 1em;
       &.current{
-        background: #f25e5e;
+        background: #d94545;
         border-radius: 6px;
         color: white;
         padding: 5px 10px;
