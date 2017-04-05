@@ -9,7 +9,7 @@ class AssignmentsController < ApplicationController
     assignment = Assignment.new assignment_params
     if assignment.save
       flash[:message] = 'Assignment has been created.'
-      redirect_to assignments_path(date: assignment.start_date)
+      redirect_to rotation_assignments_path(@rotation, date: assignment.start_date)
     else
       flash[:errors] = assignment.errors.full_messages
       redirect_to :back
@@ -19,7 +19,7 @@ class AssignmentsController < ApplicationController
   def destroy
     @assignment.destroy
     flash[:message] = 'Assignment has been deleted.'
-    redirect_to assignments_path
+    redirect_to rotation_assignments_path(@rotation)
   end
 
   def edit
@@ -55,7 +55,7 @@ class AssignmentsController < ApplicationController
   def new
     @start_date = Date.parse(params.require :date)
     @end_date = @start_date + 6.days
-    @users = User.order :last_name
+    @users = @rotation.users.order :last_name
   end
 
   def rotation_generator
