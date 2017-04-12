@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
   before_action :find_user, only: [:destroy, :edit, :update]
-  before_action :find_rotation
 
   def create
     user_params = params.require(:user).permit!
