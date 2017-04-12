@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
     flash[:message] = 'User has been deleted.'
-    redirect_to users_path
+    redirect_to rotation_users_path
   end
 
   def index
