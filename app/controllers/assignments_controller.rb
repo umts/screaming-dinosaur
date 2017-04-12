@@ -1,6 +1,5 @@
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: [:destroy, :edit, :update]
-  before_action :find_rotation
 
   def create
     assignment_params = params.require(:assignment)
