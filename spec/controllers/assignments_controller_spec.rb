@@ -1,20 +1,22 @@
 require 'rails_helper'
 
 describe AssignmentsController do
+  before :each do
+    @rotation = create :rotation
+  end
   describe 'POST #create' do
     before :each do
-      rotation = create :rotation
-      user = create :user
+      user = create :user, rotations: [@rotation]
       @attributes = {
         start_date: Date.today,
         end_date: Date.tomorrow,
         user_id: user.id,
-        rotation_id: rotation.id
+        rotation_id: @rotation.id
       }
       when_current_user_is user
     end
     let :submit do
-      post :create, assignment: @attributes
+      post :create, rotation_id: @rotation, assignment: @attributes
     end
     context 'without errors' do
       it 'creates an assignment' do
@@ -24,7 +26,7 @@ describe AssignmentsController do
       it 'redirects to the index with a date of the assignment start date' do
         submit
         expect(response).to redirect_to(
-          assignments_url(date: @attributes[:start_date])
+          rotation_assignments_url(date: @attributes[:start_date])
         )
       end
     end
@@ -48,7 +50,7 @@ describe AssignmentsController do
       when_current_user_is :whoever
     end
     let :submit do
-      delete :destroy, id: @assignment.id
+      delete :destroy, rotation_id: @assignment.rotation.id, id: @assignment.id
     end
     it 'finds the correct assignment' do
       submit
@@ -61,26 +63,27 @@ describe AssignmentsController do
     end
     it 'redirects to the index' do
       submit
-      expect(response).to redirect_to assignments_url
+      expect(response).to redirect_to rotation_assignments_url
     end
   end
 
   describe 'GET #edit' do
     before :each do
       @assignment = create :assignment
+      @rotation = create :rotation
       when_current_user_is :whoever
     end
     let :submit do
-      get :edit, id: @assignment.id
+      get :edit, rotation_id: @rotation.id, id: @assignment.id
     end
     it 'finds the correct assignment' do
       submit
       expect(assigns.fetch :assignment).to eql @assignment
     end
     it 'populates a users variable of all users' do
-      user_1 = create :user
-      user_2 = create :user
-      user_3 = create :user
+      user_1 = create :user, rotations: [@rotation] 
+      user_2 = create :user, rotations: [@rotation]
+      user_3 = create :user, rotations: [@rotation]
       submit
       expect(assigns.fetch :users).to include user_1, user_2, user_3
     end
@@ -92,25 +95,30 @@ describe AssignmentsController do
 
   describe 'POST #generate_rotation' do
     before :each do
+      @rotation = create :rotation
       @start_date = Date.today.strftime '%Y-%m-%d'
       @end_date = Date.tomorrow.strftime '%Y-%m-%d'
-      user_1 = create :user
-      user_2 = create :user
-      user_3 = create :user
+      user_1 = create :user, rotations: [@rotation]
+      user_2 = create :user, rotations: [@rotation]
+      user_3 = create :user, rotations: [@rotation]
       @user_ids = [user_1.id.to_s, user_2.id.to_s, user_3.id.to_s]
       @starting_user_id = @user_ids[1]
       when_current_user_is :whoever
     end
     let :submit do
       post :generate_rotation,
+           rotation_id: @rotation.id,
            start_date: @start_date,
            end_date: @end_date,
            user_ids: @user_ids,
            starting_user_id: @starting_user_id
     end
     it 'calls Assignment#generate rotation with the given arguments' do
-      expect(Assignment).to receive(:generate_rotation)
-        .with @user_ids, Date.today, Date.tomorrow, @starting_user_id
+      # remove all other instances of rotation so 'any instance' definitely
+      # refers to our @rotation instance
+      Rotation.where.not(id: @rotation.id).delete_all
+      expect_any_instance_of(Rotation).to receive(:generate_assignments)
+        .with(@user_ids, Date.today, Date.tomorrow, @starting_user_id)
       submit
     end
     it 'has a flash message' do
@@ -119,17 +127,17 @@ describe AssignmentsController do
     end
     it 'redirects to the calendar with the start date given' do
       submit
-      expect(response).to redirect_to assignments_path(date: Date.today)
+      expect(response).to redirect_to rotation_assignments_path(date: Date.today)
     end
   end
 
   describe 'GET #index' do
     let :submit do
-      get :index
+      get :index, rotation_id: @rotation.id
     end
     context 'user_id in session' do
       before :each do
-        @user = create :user
+        @user = create :user, rotations: [@rotation]
         when_current_user_is @user
       end
       it 'assigns the correct current user' do
@@ -138,9 +146,11 @@ describe AssignmentsController do
       end
       it 'populates an assignments variable of upcoming assignments' do
         old_assignment = create :assignment, user: @user,
+                                             rotation: @rotation,
                                              start_date: 1.month.ago.to_date,
                                              end_date: 3.weeks.ago.to_date
         new_assignment = create :assignment, user: @user,
+                                             rotation: @rotation,
                                              start_date: 1.month.since.to_date,
                                              end_date: 5.weeks.since.to_date
         submit
@@ -160,7 +170,7 @@ describe AssignmentsController do
       end
       it 'includes a variable of the fallback user' do
         fallback = create :user
-        expect(User).to receive(:fallback).and_return fallback
+        @rotation.update_attributes(fallback_user_id: fallback.id)
         submit
         expect(assigns.fetch :fallback_user).to eql fallback
       end
@@ -214,7 +224,7 @@ describe AssignmentsController do
       when_current_user_is :whoever
     end
     let :submit do
-      get :new, date: @date
+      get :new, rotation_id: @rotation.id, date: @date
     end
     it 'passes the date parameter through as a start_date variable' do
       submit
@@ -225,9 +235,9 @@ describe AssignmentsController do
       expect(assigns.fetch :end_date).to eql(@date + 6.days)
     end
     it 'populates a users variable containing all the users' do
-      user_1 = create :user
-      user_2 = create :user
-      user_3 = create :user
+      user_1 = create :user, rotations: [@rotation]
+      user_2 = create :user, rotations: [@rotation]
+      user_3 = create :user, rotations: [@rotation]
       submit
       expect(assigns.fetch :users).to include user_1, user_2, user_3
     end
@@ -242,7 +252,7 @@ describe AssignmentsController do
       when_current_user_is :whoever
     end
     let :submit do
-      get :rotation_generator
+      get :rotation_generator, rotation_id: @rotation.id
     end
     it 'sets the users instance variable' do
       expect(User).to receive(:order).with(:last_name)
@@ -265,12 +275,15 @@ describe AssignmentsController do
   describe 'POST #update' do
     before :each do
       @assignment = create :assignment
-      @user = create :user
+      @user = create :user, rotations: [@assignment.rotation]
       @changes = { user_id: @user.id }
       when_current_user_is :whoever
     end
     let :submit do
-      post :update, id: @assignment.id, assignment: @changes
+      post :update,
+        id: @assignment.id,
+        assignment: @changes,
+        rotation_id: @assignment.rotation.id
     end
     context 'without errors' do
       it 'updates the assignment' do
@@ -280,7 +293,7 @@ describe AssignmentsController do
       it 'redirects to the index with a date of the assignment start date' do
         submit
         expect(response).to redirect_to(
-          assignments_url(date: @assignment.start_date)
+          rotation_assignments_url(date: @assignment.start_date)
         )
       end
     end
