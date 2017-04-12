@@ -86,35 +86,31 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'overlaps_any? (private)' do
+  describe 'overlapping assignment validation' do
     before :each do
       @assignment = create :assignment,
                            start_date: Date.today,
                            end_date: 6.days.since.to_date
     end
-    let :call do
-      @assignment.send :overlaps_any?
-    end
-    context 'with no overlapping assignments' do
+    context 'creating assignments that do not overlap' do
       it 'does not add errors' do
-        create :assignment,
+        cool_assignment = create :assignment,
                start_date: 1.week.ago.to_date,
                end_date: Date.yesterday
-        create :assignment,
+        another_cool_assignment = create :assignment,
                start_date: 1.week.since.to_date,
                end_date: 2.weeks.since.to_date
-        call
-        expect(@assignment.errors.messages).to be_empty
+        expect(cool_assignment).to be_valid
+        expect(another_cool_assignment).to be_valid
       end
     end
     context 'with an overlapping assignment in the same rotation' do
       it 'adds errors' do
-        create :assignment,
+        not_cool_assignment = build :assignment,
                rotation: @assignment.rotation,
                start_date: Date.yesterday,
                end_date: Date.tomorrow
-        call
-        expect(@assignment.errors.messages).not_to be_empty
+        expect(not_cool_assignment).not_to be_valid
       end
     end
   end
