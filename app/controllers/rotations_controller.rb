@@ -1,5 +1,4 @@
 class RotationsController < ApplicationController
-  before_action :find_rotation, only: %i(destroy edit update)
 
   def create
     rotation_params = params.require(:rotation).permit(:name)
@@ -43,7 +42,7 @@ class RotationsController < ApplicationController
 
   private
 
-  def find_rotation
-    @rotation = Rotation.find(params.require :id)
-  end
+  #def find_rotation
+   # @rotation = Rotation.find(params.require :id)
+  #end
 end
