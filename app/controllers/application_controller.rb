@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   attr_accessor :current_user
-  before_action :set_current_user
+  before_action :set_current_user, :find_rotation
   protect_from_forgery with: :exception
 
   # We want to share this logic between controllers, but we don't want it to be
