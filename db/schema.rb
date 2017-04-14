@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151204222251) do
+ActiveRecord::Schema.define(version: 20170412230455) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -19,17 +19,29 @@ ActiveRecord::Schema.define(version: 20151204222251) do
     t.date     "end_date"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.integer  "roster_id",  limit: 4
+  end
+
+  create_table "rosters", force: :cascade do |t|
+    t.string   "name",             limit: 255
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.integer  "fallback_user_id", limit: 4
+  end
+
+  create_table "rosters_users", id: false, force: :cascade do |t|
+    t.integer "roster_id", limit: 4, null: false
+    t.integer "user_id",   limit: 4, null: false
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "first_name",  limit: 255
-    t.string   "last_name",   limit: 255
-    t.string   "spire",       limit: 255
-    t.string   "email",       limit: 255
-    t.string   "phone",       limit: 255
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
-    t.boolean  "is_fallback",             default: false
+    t.string   "first_name", limit: 255
+    t.string   "last_name",  limit: 255
+    t.string   "spire",      limit: 255
+    t.string   "email",      limit: 255
+    t.string   "phone",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
 end

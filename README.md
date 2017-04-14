@@ -15,3 +15,7 @@ Other candidates for the repo name included:
 + nervous-neutron
 
 Rails 4 app for management of Transportation IT on-call schedule and interaction with Twilio.
+
+## Development
+
+When seeding, skip creating assignments with `SKIP_ASSIGNMENTS=true rake db:reset` etc.

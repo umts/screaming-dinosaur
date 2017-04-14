@@ -1,4 +1,5 @@
 class TwilioController < ApplicationController
+  before_action :find_roster
   before_action :set_on_call_user
   skip_before_action :set_current_user
   layout false
@@ -19,10 +20,6 @@ class TwilioController < ApplicationController
   private
 
   def set_on_call_user
-    assignment = Assignment.current
-    @user = if assignment.present?
-              assignment.user
-            else User.fallback
-            end
+    @user = @roster.on_call_user
   end
 end

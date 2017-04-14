@@ -1,4 +1,4 @@
-%h1.title Transportation IT On-Call Calendar
+%h1.title #{@roster.name} On-Call
 
 %table#calendar
   %tr
@@ -8,13 +8,13 @@
     %tr
       - week.each do |day|
         %td
-          - assignment = Assignment.on(day)
+          - assignment = Assignment.in(@roster).on(day)
           %div{ class: ('lightgrey' if day.month != @month_date.month) }
             = day.strftime '%-m/%-d'
           .assignment
             - if assignment.present?
               = link_to assignment.user.last_name,
-                edit_assignment_url(assignment)
+                edit_roster_assignment_url(@roster, assignment)
               .arrows
                 - if day == assignment.start_date
                   %span.left &#8594;
@@ -22,10 +22,10 @@
                   %span.right &#8592;
             - else
               .slightly-red= link_to 'None assigned',
-                new_assignment_url(date: day)
+                new_roster_assignment_url(@roster, date: day)
   %span.left= link_to @month_date.last_month.strftime('%B %Y'),
-    assignments_path(date: @month_date.last_month)
+    roster_assignments_path(@roster, date: @month_date.last_month)
   %span.right= link_to @month_date.next_month.strftime('%B %Y'),
-    assignments_path(date: @month_date.next_month)
+    roster_assignments_path(@roster, date: @month_date.next_month)
 = render partial: 'current'
 = render partial: 'your_assignments' if @assignments.present?

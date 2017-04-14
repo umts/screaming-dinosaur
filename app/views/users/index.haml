@@ -12,14 +12,14 @@
     %tr
       %td
         = user.full_name
-        - if user.is_fallback?
+        - if user == @fallback
           (fallback)
       %td= user.spire
       %td= user.email
       %td= user.phone
-      %td= link_to 'Edit', edit_user_path(user)
-      %td= button_to 'Destroy', user_path(user), method: :delete
+      %td= link_to 'Edit', edit_roster_user_path(@roster, user)
+      %td= button_to 'Destroy', roster_user_path(@roster, user), method: :delete
   %tr
-    %td{ colspan: 6 }= link_to 'Add user', new_user_path
-- if @no_fallback
+    %td{ colspan: 6 }= link_to 'Add user', new_roster_user_path
+- if @fallback.nil?
   %h3.slightly-red No fallback user!

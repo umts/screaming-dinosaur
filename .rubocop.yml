@@ -1,2 +1,5 @@
 require: umts-custom-cops
 inherit_from: .rubocop-no-umts-cops.yml
+
+HasAndBelongsToMany:
+  Enabled: false

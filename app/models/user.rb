@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
-  has_many :assignments
+  has_many :assignments, dependent: :restrict_with_error
+  has_and_belongs_to_many :rosters
 
-  validates :first_name, :last_name, :spire, :email, :phone,
+  validates :first_name, :last_name, :spire, :email, :phone, :rosters,
             presence: true
   validates :spire, :email, :phone,
             uniqueness: true
@@ -11,9 +12,6 @@ class User < ActiveRecord::Base
   validates :phone,
             format: { with: /\+1\d{10}/,
                       message: 'must be "+1" followed by 10 digits' }
-  validates :is_fallback,
-            uniqueness: { message: 'may be true for only one user' },
-            if: :is_fallback?
 
   def full_name
     "#{first_name} #{last_name}"
@@ -21,9 +19,5 @@ class User < ActiveRecord::Base
 
   def proper_name
     "#{last_name}, #{first_name}"
-  end
-
-  def self.fallback
-    User.find_by is_fallback: true
   end
 end

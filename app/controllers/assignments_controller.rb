@@ -3,11 +3,12 @@ class AssignmentsController < ApplicationController
 
   def create
     assignment_params = params.require(:assignment)
-                              .permit :start_date, :end_date, :user_id
+                              .permit :start_date, :end_date,
+                                      :user_id, :roster_id
     assignment = Assignment.new assignment_params
     if assignment.save
       flash[:message] = 'Assignment has been created.'
-      redirect_to assignments_path(date: assignment.start_date)
+      redirect_to roster_assignments_path(@roster, date: assignment.start_date)
     else
       flash[:errors] = assignment.errors.full_messages
       redirect_to :back
@@ -17,11 +18,11 @@ class AssignmentsController < ApplicationController
   def destroy
     @assignment.destroy
     flash[:message] = 'Assignment has been deleted.'
-    redirect_to assignments_path
+    redirect_to roster_assignments_path(@roster)
   end
 
   def edit
-    @users = User.order :last_name
+    @users = @roster.users.order :last_name
   end
 
   def generate_rotation
@@ -29,10 +30,12 @@ class AssignmentsController < ApplicationController
     end_date = Date.parse(params.require :end_date)
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
-    Assignment.generate_rotation user_ids, start_date, end_date, start_user
+    @roster.generate_assignments user_ids, start_date, end_date, start_user
     flash[:message] = 'Rotation has been generated.'
-    redirect_to assignments_path date: start_date
+    redirect_to roster_assignments_path(@roster, date: start_date)
   end
+
+  # rubocop:disable Metrics/AbcSize, MethodLength
 
   def index
     @month_date = if params[:date].present?
@@ -42,16 +45,20 @@ class AssignmentsController < ApplicationController
     start_date = @month_date.beginning_of_week(:sunday)
     end_date = @month_date.end_of_month.end_of_week(:sunday)
     @weeks = (start_date..end_date).each_slice(7)
-    @assignments = @current_user.assignments.upcoming.order :start_date
-    @current_assignment = Assignment.current
+    @assignments = @current_user.assignments.in(@roster)
+                                .upcoming
+                                .order :start_date
+    @current_assignment = @roster.assignments.current
     @switchover_hour = CONFIG[:switchover_hour]
-    @fallback_user = User.fallback
+    @fallback_user = @roster.fallback_user
   end
+
+  # rubocop:enable Metrics/AbcSize, MethodLength
 
   def new
     @start_date = Date.parse(params.require :date)
     @end_date = @start_date + 6.days
-    @users = User.order :last_name
+    @users = @roster.users.order :last_name
   end
 
   def rotation_generator
@@ -64,7 +71,7 @@ class AssignmentsController < ApplicationController
                               .permit :start_date, :end_date, :user_id
     if @assignment.update assignment_params
       flash[:message] = 'Assignment has been updated.'
-      redirect_to assignments_path(date: @assignment.start_date)
+      redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
     else
       flash[:errors] = @assignment.errors.full_messages
       redirect_to :back

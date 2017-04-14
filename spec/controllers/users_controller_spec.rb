@@ -1,13 +1,16 @@
 require 'rails_helper'
 
 describe UsersController do
+  before :each do
+    @roster = create :roster
+  end
   describe 'POST #create' do
     before :each do
-      @attributes = attributes_for :user
+      @attributes = attributes_for(:user).except(:rosters)
       when_current_user_is :whoever
     end
     let :submit do
-      post :create, user: @attributes
+      post :create, user: @attributes, roster_id: @roster.id
     end
     context 'without errors' do
       it 'creates a user' do
@@ -17,7 +20,7 @@ describe UsersController do
       end
       it 'redirects to the index' do
         submit
-        expect(response).to redirect_to users_url
+        expect(response).to redirect_to roster_users_url
       end
     end
     context 'with errors' do
@@ -40,7 +43,7 @@ describe UsersController do
       when_current_user_is :whoever
     end
     let :submit do
-      delete :destroy, id: @user.id
+      delete :destroy, id: @user.id, roster_id: @roster.id
     end
     it 'finds the correct user' do
       submit
@@ -53,7 +56,7 @@ describe UsersController do
     end
     it 'redirects to the index' do
       submit
-      expect(response).to redirect_to users_url
+      expect(response).to redirect_to roster_users_url
     end
   end
 
@@ -63,7 +66,7 @@ describe UsersController do
       when_current_user_is :whoever
     end
     let :submit do
-      get :edit, id: @user.id
+      get :edit, id: @user.id, roster_id: @roster.id
     end
     it 'finds the correct user' do
       submit
@@ -78,24 +81,21 @@ describe UsersController do
   describe 'GET #index' do
     let :submit do
       when_current_user_is :whoever
-      get :index
+      get :index, roster_id: @roster.id
     end
     it 'populates a users variable of all users' do
-      user_1 = create :user
-      user_2 = create :user
-      user_3 = create :user
+      user_1 = roster_user @roster
+      user_2 = roster_user @roster
+      user_3 = roster_user @roster
       submit
       expect(assigns.fetch :users).to include user_1, user_2, user_3
     end
-    it 'populates no_fallback as true if there is no fallback user' do
-      expect(User).to receive(:fallback).and_return nil
+    it 'populates a fallback variable with the roster fallback user' do
+      user = roster_user @roster
+      Roster.where.not(id: @roster.id).delete_all
+      expect_any_instance_of(Roster).to receive(:fallback_user).and_return(user)
       submit
-      expect(assigns.fetch :no_fallback).to be true
-    end
-    it 'populates no_fallback as false if there is a fallback user' do
-      expect(User).to receive(:fallback).and_return "anything that isn't nil"
-      submit
-      expect(assigns.fetch :no_fallback).to be false
+      expect(assigns.fetch :fallback).to eql user
     end
     it 'renders the index template' do
       submit
@@ -106,7 +106,7 @@ describe UsersController do
   describe 'GET #new' do
     let :submit do
       when_current_user_is :whoever
-      get :new
+      get :new, roster_id: @roster.id
     end
     it 'renders the new template' do
       submit
@@ -116,21 +116,23 @@ describe UsersController do
 
   describe 'POST #update' do
     before :each do
-      @user = create :user
-      @changes = { phone: '+14135451451' }
+      @new_roster = create :roster
+      @user = roster_user @roster
+      @changes = { phone: '+14135451451', rosters: [@new_roster.id] }
       when_current_user_is :whoever
     end
     let :submit do
-      post :update, id: @user.id, user: @changes
+      post :update, id: @user.id, user: @changes, roster_id: @roster.id
     end
     context 'without errors' do
       it 'updates the user' do
         submit
         expect(@user.reload.phone).to eql @changes[:phone]
+        expect(@user.rosters.take).to eql @new_roster
       end
       it 'redirects to the index' do
         submit
-        expect(response).to redirect_to users_url
+        expect(response).to redirect_to roster_users_url
       end
     end
     context 'with errors' do

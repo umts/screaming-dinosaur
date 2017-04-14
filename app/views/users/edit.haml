@@ -1,6 +1,6 @@
 %h1.title Edit user
 
-= form_for @user do |f|
+= form_for @user, url: roster_user_url(@roster, @user) do |f|
   = f.label :first_name
   = f.text_field :first_name
   = f.label :last_name
@@ -11,6 +11,9 @@
   = f.text_field :email, size: 30
   = f.label :phone
   = f.text_field :phone
-  = f.label :is_fallback, 'Fallback?'
-  = f.check_box :is_fallback
+  = f.label :rosters
+  = f.select :rosters,
+    options_from_collection_for_select(Roster.all, :id, :name,
+                                       selected: @user.rosters.pluck(:id)),
+    {}, multiple: true
   = f.submit 'Save'

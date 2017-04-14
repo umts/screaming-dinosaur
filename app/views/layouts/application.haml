@@ -1,21 +1,14 @@
 !!!
 %html
   %head
-    %title Transportation IT On-Call
+    %title #{@roster.try :name} On-Call
     = favicon_link_tag 'calendar-icon.png'
     = stylesheet_link_tag 'application.css', media: 'all'
     = javascript_include_tag 'application.js'
     = csrf_meta_tags
   %body
-    #links
-      = link_to 'Logout', destroy_session_path
-      - case params[:controller]
-      - when 'assignments'
-        = link_to 'Manage users', users_path
-        = link_to 'Generate rotation', rotation_generator_assignments_path
-      - when 'users'
-        = link_to 'Calendar', assignments_path
-    #current_user_name= @current_user.full_name
+    = render partial: 'layouts/links',
+             locals: { rosters: @current_user.rosters }
     #flash
       - if flash[:message].present?
         #message= flash[:message]
