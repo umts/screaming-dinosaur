@@ -50,6 +50,7 @@ class Assignment < ActiveRecord::Base
 
   private
 
+  # rubocop:disable MethodLength
   def overlaps_any?
     if new_record?
       overlapping_assignments = roster.assignments.where("
@@ -64,6 +65,8 @@ class Assignment < ActiveRecord::Base
     errors.add :base,
                'Overlaps with another assignment'
   end
+
+  # rubocop:enable MethodLength
 
   def user_in_roster?
     unless roster.users.include? user
