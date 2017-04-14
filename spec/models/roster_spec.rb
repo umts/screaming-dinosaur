@@ -4,9 +4,9 @@ describe Roster do
   describe 'generate_assignments' do
     before :each do
       @roster = create :roster
-      @user_1 = create :user, rosters: [@roster]
-      @user_2 = create :user, rosters: [@roster]
-      @user_3 = create :user, rosters: [@roster]
+      @user_1 = roster_user @roster
+      @user_2 = roster_user @roster
+      @user_3 = roster_user @roster
       start_date = Date.today
       # A day short of four weeks, to test that the end date
       # is a day short as well

@@ -6,7 +6,7 @@ describe AssignmentsController do
   end
   describe 'POST #create' do
     before :each do
-      user = create :user, rosters: [@roster]
+      user = roster_user @roster
       @attributes = {
         start_date: Date.today,
         end_date: Date.tomorrow,
@@ -81,9 +81,9 @@ describe AssignmentsController do
       expect(assigns.fetch :assignment).to eql @assignment
     end
     it 'populates a users variable of all users' do
-      user_1 = create :user, rosters: [@roster] 
-      user_2 = create :user, rosters: [@roster]
-      user_3 = create :user, rosters: [@roster]
+      user_1 = roster_user @roster
+      user_2 = roster_user @roster
+      user_3 = roster_user @roster
       submit
       expect(assigns.fetch :users).to include user_1, user_2, user_3
     end
@@ -95,12 +95,11 @@ describe AssignmentsController do
 
   describe 'POST #generate_rotation' do
     before :each do
-      @roster = create :roster
       @start_date = Date.today.strftime '%Y-%m-%d'
       @end_date = Date.tomorrow.strftime '%Y-%m-%d'
-      user_1 = create :user, rosters: [@roster]
-      user_2 = create :user, rosters: [@roster]
-      user_3 = create :user, rosters: [@roster]
+      user_1 = roster_user @roster
+      user_2 = roster_user @roster
+      user_3 = roster_user @roster
       @user_ids = [user_1.id.to_s, user_2.id.to_s, user_3.id.to_s]
       @starting_user_id = @user_ids[1]
       when_current_user_is :whoever
@@ -137,7 +136,7 @@ describe AssignmentsController do
     end
     context 'user_id in session' do
       before :each do
-        @user = create :user, rosters: [@roster]
+        @user = roster_user @roster
         when_current_user_is @user
       end
       it 'assigns the correct current user' do
@@ -235,9 +234,9 @@ describe AssignmentsController do
       expect(assigns.fetch :end_date).to eql(@date + 6.days)
     end
     it 'populates a users variable containing all the users' do
-      user_1 = create :user, rosters: [@roster]
-      user_2 = create :user, rosters: [@roster]
-      user_3 = create :user, rosters: [@roster]
+      user_1 = roster_user @roster
+      user_2 = roster_user @roster
+      user_3 = roster_user @roster
       submit
       expect(assigns.fetch :users).to include user_1, user_2, user_3
     end
@@ -275,15 +274,15 @@ describe AssignmentsController do
   describe 'POST #update' do
     before :each do
       @assignment = create :assignment
-      @user = create :user, rosters: [@assignment.roster]
+      @user = roster_user @assignment.roster
       @changes = { user_id: @user.id }
       when_current_user_is :whoever
     end
     let :submit do
       post :update,
-        id: @assignment.id,
-        assignment: @changes,
-        roster_id: @assignment.roster.id
+           id: @assignment.id,
+           assignment: @changes,
+           roster_id: @assignment.roster.id
     end
     context 'without errors' do
       it 'updates the assignment' do

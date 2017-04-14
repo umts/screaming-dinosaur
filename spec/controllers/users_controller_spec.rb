@@ -84,14 +84,14 @@ describe UsersController do
       get :index, roster_id: @roster.id
     end
     it 'populates a users variable of all users' do
-      user_1 = create :user, rosters: [@roster]
-      user_2 = create :user, rosters: [@roster]
-      user_3 = create :user, rosters: [@roster]
+      user_1 = roster_user @roster
+      user_2 = roster_user @roster
+      user_3 = roster_user @roster
       submit
       expect(assigns.fetch :users).to include user_1, user_2, user_3
     end
     it 'populates a fallback variable with the roster fallback user' do
-      user = create :user, rosters: [@roster]
+      user = roster_user @roster
       Roster.where.not(id: @roster.id).delete_all
       expect_any_instance_of(Roster).to receive(:fallback_user).and_return(user)
       submit
@@ -117,7 +117,7 @@ describe UsersController do
   describe 'POST #update' do
     before :each do
       @new_roster = create :roster
-      @user = create :user, rosters: [@roster]
+      @user = roster_user @roster
       @changes = { phone: '+14135451451', rosters: [@new_roster.id] }
       when_current_user_is :whoever
     end

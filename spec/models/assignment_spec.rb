@@ -43,7 +43,6 @@ RSpec.describe Assignment do
     end
   end
 
-
   describe 'next_rotation_start_date' do
     let(:result) { Assignment.next_rotation_start_date }
     context 'with existing assignments' do
@@ -95,11 +94,11 @@ RSpec.describe Assignment do
     context 'creating assignments that do not overlap' do
       it 'does not add errors' do
         cool_assignment = create :assignment,
-               start_date: 1.week.ago.to_date,
-               end_date: Date.yesterday
+                                 start_date: 1.week.ago.to_date,
+                                 end_date: Date.yesterday
         another_cool_assignment = create :assignment,
-               start_date: 1.week.since.to_date,
-               end_date: 2.weeks.since.to_date
+                                         start_date: 1.week.since.to_date,
+                                         end_date: 2.weeks.since.to_date
         expect(cool_assignment).to be_valid
         expect(another_cool_assignment).to be_valid
       end
@@ -107,9 +106,9 @@ RSpec.describe Assignment do
     context 'with an overlapping assignment in the same roster' do
       it 'adds errors' do
         not_cool_assignment = build :assignment,
-               roster: @assignment.roster,
-               start_date: Date.yesterday,
-               end_date: Date.tomorrow
+                                    roster: @assignment.roster,
+                                    start_date: Date.yesterday,
+                                    end_date: Date.tomorrow
         expect(not_cool_assignment).not_to be_valid
       end
     end

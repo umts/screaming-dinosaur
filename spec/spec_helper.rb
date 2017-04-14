@@ -31,3 +31,7 @@ def when_current_user_is(user)
                         create :user
                       end.id
 end
+
+def roster_user(roster_instance)
+  create :user, rosters: [roster_instance]
+end

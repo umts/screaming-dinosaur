@@ -11,13 +11,11 @@ describe RostersController do
     end
     context 'without errors' do
       it 'creates a roster' do
-        expect{ submit }.to change{ Roster.count }.from(1).to(2)
+        expect { submit }.to change { Roster.count }.from(1).to(2)
       end
       it 'redirects to the index' do
         submit
-        expect(response).to redirect_to(
-          rosters_url
-        )
+        expect(response).to redirect_to rosters_url
       end
       it 'puts a message in the flash' do
         submit
@@ -33,7 +31,7 @@ describe RostersController do
       end
       it 'does not create roster, gives errors, and redirects back' do
         expect { submit }.to redirect_back
-        expect{ submit }.not_to change{ Roster.count }
+        expect { submit }.not_to change { Roster.count }
         expect(flash[:errors]).not_to be_empty
       end
     end
@@ -51,8 +49,7 @@ describe RostersController do
       expect(Roster.where(id: @roster.id)).to be_empty
     end
     it 'destroys the roster' do
-      expect_any_instance_of(Roster)
-        .to receive :destroy
+      expect_any_instance_of(Roster).to receive :destroy
       submit
     end
     it 'puts a message in the flash' do
@@ -77,9 +74,9 @@ describe RostersController do
       expect(assigns.fetch :roster).to eql @roster
     end
     it 'populates a users variable of all users of the roster' do
-      user_1 = create :user, rosters: [@roster] 
-      user_2 = create :user, rosters: [@roster]
-      user_3 = create :user, rosters: [@roster]
+      user_1 = roster_user @roster
+      user_2 = roster_user @roster
+      user_3 = roster_user @roster
       submit
       expect(assigns.fetch :users).to include user_1, user_2, user_3
     end
@@ -126,9 +123,7 @@ describe RostersController do
       end
       it 'redirects to the index' do
         submit
-        expect(response).to redirect_to(
-          rosters_url
-        )
+        expect(response).to redirect_to rosters_url
       end
     end
     context 'with errors' do

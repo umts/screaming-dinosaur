@@ -62,7 +62,7 @@ describe SessionsController do
   describe 'POST #dev_login' do
     before :each do
       @roster = create :roster
-      @user = create :user, rosters: [@roster]
+      @user = roster_user @roster
     end
     let :submit do
       post :dev_login, user_id: @user.id, roster_id: @roster.id
