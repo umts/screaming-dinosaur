@@ -1,5 +1,5 @@
 class TwilioController < ApplicationController
-  before_action :find_rotation
+  before_action :find_roster
   before_action :set_on_call_user
   skip_before_action :set_current_user
   layout false
@@ -20,6 +20,6 @@ class TwilioController < ApplicationController
   private
 
   def set_on_call_user
-    @user = @rotation.on_call_user
+    @user = @roster.on_call_user
   end
 end

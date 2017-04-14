@@ -2,13 +2,13 @@ require 'rails_helper'
 
 describe TwilioController do
   describe 'GET #call, XML' do
-    let(:rotation) { create :rotation }
+    let(:roster) { create :roster }
     let :submit do
-      get :call, rotation_id: rotation.id, format: :xml
+      get :call, roster_id: roster.id, format: :xml
     end
     before :each do
       @user = create :user
-      expect_any_instance_of(Rotation)
+      expect_any_instance_of(Roster)
         .to receive(:on_call_user)
         .and_return @user
     end
@@ -25,14 +25,14 @@ describe TwilioController do
   describe 'GET #text, XML' do
     before :each do
       @body = 'message body'
-      @rotation = create :rotation
+      @roster = create :roster
       @user = create :user
-      expect_any_instance_of(Rotation)
+      expect_any_instance_of(Roster)
         .to receive(:on_call_user)
         .and_return @user
     end
     let :submit do
-      get :text, format: :xml, Body: @body, rotation_id: @rotation.id
+      get :text, format: :xml, Body: @body, roster_id: @roster.id
     end
     it 'sets the current on call user to the user variable' do
       submit

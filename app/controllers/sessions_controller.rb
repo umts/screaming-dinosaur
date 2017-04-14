@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   layout false
-  skip_before_action :set_current_user
+  skip_before_action :set_current_user, :find_roster
 
   def destroy
     session.clear
@@ -12,10 +12,10 @@ class SessionsController < ApplicationController
 
   def dev_login # route not defined in production
     if request.get?
-      @rotations = Rotation.includes(:users)
+      @rosters = Roster.includes(:users)
     elsif request.post?
       session[:user_id] = params[:user_id]
-      redirect_to rotation_assignments_path(rotation_id: params[:rotation_id])
+      redirect_to roster_assignments_path(roster_id: params[:roster_id])
     end
   end
 

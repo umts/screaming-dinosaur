@@ -11,27 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170403200457) do
+ActiveRecord::Schema.define(version: 20170412230455) do
 
   create_table "assignments", force: :cascade do |t|
-    t.integer  "user_id",     limit: 4
+    t.integer  "user_id",    limit: 4
     t.date     "start_date"
     t.date     "end_date"
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-    t.integer  "rotation_id", limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.integer  "roster_id",  limit: 4
   end
 
-  create_table "rotations", force: :cascade do |t|
+  create_table "rosters", force: :cascade do |t|
     t.string   "name",             limit: 255
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.integer  "fallback_user_id", limit: 4
   end
 
-  create_table "rotations_users", id: false, force: :cascade do |t|
-    t.integer "rotation_id", limit: 4, null: false
-    t.integer "user_id",     limit: 4, null: false
+  create_table "rosters_users", id: false, force: :cascade do |t|
+    t.integer "roster_id", limit: 4, null: false
+    t.integer "user_id",   limit: 4, null: false
   end
 
   create_table "users", force: :cascade do |t|

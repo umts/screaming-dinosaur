@@ -17,9 +17,9 @@
       %td= user.spire
       %td= user.email
       %td= user.phone
-      %td= link_to 'Edit', edit_rotation_user_path(@rotation, user)
-      %td= button_to 'Destroy', rotation_user_path(@rotation, user), method: :delete
+      %td= link_to 'Edit', edit_roster_user_path(@roster, user)
+      %td= button_to 'Destroy', roster_user_path(@roster, user), method: :delete
   %tr
-    %td{ colspan: 6 }= link_to 'Add user', new_rotation_user_path
+    %td{ colspan: 6 }= link_to 'Add user', new_roster_user_path
 - if @fallback.nil?
   %h3.slightly-red No fallback user!

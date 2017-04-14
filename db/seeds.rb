@@ -1,8 +1,8 @@
 require 'factory_girl_rails'
 
 # ROTATIONS
-it = FactoryGirl.create :rotation, name: 'Transit IT'
-ops = FactoryGirl.create :rotation, name: 'Transit Operations'
+it = FactoryGirl.create :roster, name: 'Transit IT'
+ops = FactoryGirl.create :roster, name: 'Transit Operations'
 
 # USERS
 names = {
@@ -33,15 +33,15 @@ names = {
   ]
 }
 
-names.each_pair do |rotation, rot_names|
+names.each_pair do |roster, rot_names|
   rot_names.each do |first_name, last_name|
     user = User.find_by first_name: first_name, last_name: last_name
     if user.present?
-      user.rotations << rotation
+      user.rosters << roster
       user.save!
     else
       FactoryGirl.create :user, first_name: first_name,
-        last_name: last_name, rotations: [rotation]
+        last_name: last_name, rosters: [roster]
     end
   end
 end
@@ -49,9 +49,9 @@ end
 
 # ASSIGNMENTS
 unless ENV['SKIP_ASSIGNMENTS']
-  Rotation.all.each do |rotation|
-    rotation.users.order(:last_name).each_with_index do |user, i|
-      FactoryGirl.create :assignment, user: user, rotation: rotation,
+  Roster.all.each do |roster|
+    roster.users.order(:last_name).each_with_index do |user, i|
+      FactoryGirl.create :assignment, user: user, roster: roster,
         start_date: i.weeks.since.beginning_of_week(:friday),
         end_date: i.weeks.since.end_of_week(:friday)
     end

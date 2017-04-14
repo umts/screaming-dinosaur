@@ -1,19 +1,15 @@
 class ApplicationController < ActionController::Base
   attr_accessor :current_user
-  before_action :set_current_user, :find_rotation
+  before_action :set_current_user, :find_roster
   protect_from_forgery with: :exception
 
-  # We want to share this logic between controllers, but we don't want it to be
-  # run before all controller actions. So it lives here, but is selectively
-  # invoked by the controllers.
-  
   # If there's one specified, go to that.
-  # Otherwise, go to the first rotation of which the current user is a member.
-  # Finally, just go to the first rotation (if they're a member of none).
-  def find_rotation
-    @rotation = Rotation.find_by(id: params[:rotation_id])
-    @rotation ||= @current_user.rotations.first
-    @rotation ||= Rotation.first
+  # Otherwise, go to the first roster of which the current user is a member.
+  # Finally, just go to the first roster (if they're a member of none).
+  def find_roster
+    @roster = Roster.find_by(id: params[:roster_id])
+    @roster ||= @current_user.rosters.first
+    @roster ||= Roster.first
   end
 
   def set_current_user

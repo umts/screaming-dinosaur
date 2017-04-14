@@ -1,15 +1,15 @@
 class Assignment < ActiveRecord::Base
   belongs_to :user
-  belongs_to :rotation
+  belongs_to :roster
 
-  validates :user, :start_date, :end_date, :rotation,
+  validates :user, :start_date, :end_date, :roster,
             presence: true
   validate :overlaps_any?
-  validate :user_in_rotation?
+  validate :user_in_roster?
 
   class << self
     # The current assignment - this method accounts for the 5pm switchover hour.
-    # This should be called while scoped to a particular rotation.
+    # This should be called while scoped to a particular roster.
     def current
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
         on Date.yesterday
@@ -17,8 +17,8 @@ class Assignment < ActiveRecord::Base
       end
     end
 
-    def in(rotation)
-      where rotation: rotation
+    def in(roster)
+      where roster: roster
     end
 
     # Returns the day AFTER the last assignment ends.
@@ -52,11 +52,11 @@ class Assignment < ActiveRecord::Base
 
   def overlaps_any?
     if new_record?
-      overlapping_assignments = rotation.assignments.where("
+      overlapping_assignments = roster.assignments.where("
         start_date < ? AND end_date >= ?
       ", end_date, start_date)
     else
-      overlapping_assignments = rotation.assignments.where("
+      overlapping_assignments = roster.assignments.where("
         start_date < ? AND end_date >= ? AND id != ?
       ", end_date, start_date, id)
     end
@@ -65,9 +65,9 @@ class Assignment < ActiveRecord::Base
                'Overlaps with another assignment'
   end
 
-  def user_in_rotation?
-    unless rotation.users.include? user
-      errors.add :base, 'User is not in this rotation'
+  def user_in_roster?
+    unless roster.users.include? user
+      errors.add :base, 'User is not in this roster'
     end
   end
 end

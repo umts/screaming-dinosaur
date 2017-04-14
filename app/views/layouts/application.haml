@@ -1,14 +1,14 @@
 !!!
 %html
   %head
-    %title #{@rotation.try :name} On-Call
+    %title #{@roster.try :name} On-Call
     = favicon_link_tag 'calendar-icon.png'
     = stylesheet_link_tag 'application.css', media: 'all'
     = javascript_include_tag 'application.js'
     = csrf_meta_tags
   %body
     = render partial: 'layouts/links',
-             locals: { rotations: @current_user.rotations }
+             locals: { rosters: @current_user.rosters }
     #flash
       - if flash[:message].present?
         #message= flash[:message]

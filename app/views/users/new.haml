@@ -1,6 +1,6 @@
 %h1.title New user
 
-= form_for User.new, url: rotation_users_path(@rotation) do |f|
+= form_for User.new, url: roster_users_path(@roster) do |f|
   = f.label :first_name
   = f.text_field :first_name
   = f.label :last_name

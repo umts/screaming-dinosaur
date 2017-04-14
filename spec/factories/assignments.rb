@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :assignment do
-    rotation
-    user { FactoryGirl.create(:user, rotations: [rotation]) }
+    roster
+    user { FactoryGirl.create(:user, rosters: [roster]) }
     start_date Date.yesterday
     end_date Date.tomorrow
   end

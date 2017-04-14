@@ -28,15 +28,15 @@ RSpec.describe Assignment do
         end
       end
     end
-    context 'target assignments are only in the current rotation' do
-      it 'only looks at assignments in the current rotation' do
+    context 'target assignments are only in the current roster' do
+      it 'only looks at assignments in the current roster' do
         Timecop.freeze(@switchover_time + 1.minute) do
-          # This new assignment will also belong to a new rotation
+          # This new assignment will also belong to a new roster
           new_assignment =  create :assignment,
                                    start_date: Date.today,
                                    end_date: Date.today
-          expect(@today.rotation.assignments.current).to eql @today
-          expect(new_assignment.rotation.assignments.current)
+          expect(@today.roster.assignments.current).to eql @today
+          expect(new_assignment.roster.assignments.current)
             .to eql new_assignment
         end
       end
@@ -104,10 +104,10 @@ RSpec.describe Assignment do
         expect(another_cool_assignment).to be_valid
       end
     end
-    context 'with an overlapping assignment in the same rotation' do
+    context 'with an overlapping assignment in the same roster' do
       it 'adds errors' do
         not_cool_assignment = build :assignment,
-               rotation: @assignment.rotation,
+               roster: @assignment.roster,
                start_date: Date.yesterday,
                end_date: Date.tomorrow
         expect(not_cool_assignment).not_to be_valid

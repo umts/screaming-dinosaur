@@ -1,8 +1,8 @@
 class User < ActiveRecord::Base
   has_many :assignments, dependent: :restrict_with_error
-  has_and_belongs_to_many :rotations
+  has_and_belongs_to_many :rosters
 
-  validates :first_name, :last_name, :spire, :email, :phone, :rotations,
+  validates :first_name, :last_name, :spire, :email, :phone, :rosters,
             presence: true
   validates :spire, :email, :phone,
             uniqueness: true

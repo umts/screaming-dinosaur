@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :rotation do
+  factory :roster do
     sequence :name
   end
 end
