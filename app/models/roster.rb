@@ -22,5 +22,4 @@ class Roster < ActiveRecord::Base
   def on_call_user
     assignments.current.try(:user) || fallback_user
   end
-
 end

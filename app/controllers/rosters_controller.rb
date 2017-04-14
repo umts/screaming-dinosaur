@@ -5,7 +5,7 @@ class RostersController < ApplicationController
     roster_params = params.require(:roster).permit(:name)
     roster = Roster.new roster_params
     if roster.save
-      flash[:message] = 'roster has been created.'
+      flash[:message] = 'Roster has been created.'
       redirect_to rosters_path
     else
       flash[:errors] = roster.errors.full_messages
@@ -15,7 +15,7 @@ class RostersController < ApplicationController
 
   def destroy
     @roster.destroy
-    flash[:message] = 'roster and any assignments have been deleted.'
+    flash[:message] = 'Roster and any assignments have been deleted.'
     redirect_to rosters_path
   end
 
@@ -33,7 +33,7 @@ class RostersController < ApplicationController
   def update
     roster_params = params.require(:roster).permit!
     if @roster.update roster_params
-      flash[:message] = 'roster has been updated.'
+      flash[:message] = 'Roster has been updated.'
       redirect_to rosters_path
     else
       flash[:errors] = @roster.errors.full_messages
@@ -46,5 +46,4 @@ class RostersController < ApplicationController
   def find_roster
     @roster = Roster.find(params.require :id)
   end
-
 end

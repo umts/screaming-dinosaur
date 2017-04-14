@@ -44,8 +44,8 @@ class AssignmentsController < ApplicationController
     end_date = @month_date.end_of_month.end_of_week(:sunday)
     @weeks = (start_date..end_date).each_slice(7)
     @assignments = @current_user.assignments.in(@roster)
-                                            .upcoming
-                                            .order :start_date
+                                .upcoming
+                                .order :start_date
     @current_assignment = @roster.assignments.current
     @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @roster.fallback_user
