@@ -25,4 +25,8 @@ class User < ActiveRecord::Base
   def admin_in?(roster)
     memberships.find_by(roster: roster).admin?
   end
+
+  def admin?
+    memberships.any?(&:admin)
+  end
 end
