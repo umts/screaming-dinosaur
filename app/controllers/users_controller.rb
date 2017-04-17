@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :find_user, only: [:destroy, :edit, :update]
+  before_action :find_user, except: %i(create index new)
 
   def create
     user_params = params.require(:user).permit!
@@ -22,7 +22,19 @@ class UsersController < ApplicationController
 
   def index
     @users = @roster.users
+    @other_users = User.all - @users
     @fallback = @roster.fallback_user
+  end
+
+  def transfer
+    @user.rosters += [@roster]
+    if @user.save
+      flash[:message] = "Added #{@user.full_name} to roster."
+      redirect_to roster_users_path(@roster)
+    else
+      flash[:errors] = user.errors.full_messages
+      redirect_to :back
+    end
   end
 
   def update
