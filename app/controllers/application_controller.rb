@@ -1,16 +1,7 @@
 class ApplicationController < ActionController::Base
   attr_accessor :current_user
-  before_action :set_current_user, :find_roster
+  before_action :set_current_user, :set_roster
   protect_from_forgery with: :exception
-
-  # If there's one specified, go to that.
-  # Otherwise, go to the first roster of which the current user is a member.
-  # Finally, just go to the first roster (if they're a member of none).
-  def find_roster
-    @roster = Roster.find_by(id: params[:roster_id])
-    @roster ||= @current_user.rosters.first
-    @roster ||= Roster.first
-  end
 
   def set_current_user
     if session.key? :user_id
@@ -22,5 +13,14 @@ class ApplicationController < ActionController::Base
       else redirect_to unauthenticated_session_path
       end
     end
+  end
+
+  # If there's one specified, go to that.
+  # Otherwise, go to the first roster of which the current user is a member.
+  # Finally, just go to the first roster (if they're a member of none).
+  def set_roster
+    @roster = Roster.find_by(id: params[:roster_id])
+    @roster ||= @current_user.rosters.first
+    @roster ||= Roster.first
   end
 end
