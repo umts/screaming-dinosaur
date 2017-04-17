@@ -14,4 +14,22 @@ describe User do
         .to eql [user.last_name, user.first_name].join(', ')
     end
   end
+  describe 'admin_in?' do
+    let(:roster) { create :roster }
+    let(:user) { create :user }
+    context 'membership has admin true' do
+      it 'returns true' do
+        create :membership, roster: roster, user: user,
+          admin: true
+        expect(user).to be_admin_in(roster)
+      end
+    end
+    context 'membership has admin false' do
+      it 'returns false' do
+        create :membership, roster: roster, user: user,
+          admin: false
+        expect(user).not_to be_admin_in(roster)
+      end
+    end
+  end
 end

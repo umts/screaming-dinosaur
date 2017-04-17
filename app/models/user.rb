@@ -21,4 +21,8 @@ class User < ActiveRecord::Base
   def proper_name
     "#{last_name}, #{first_name}"
   end
+
+  def admin_in?(roster)
+    memberships.find_by(roster: roster).admin?
+  end
 end
