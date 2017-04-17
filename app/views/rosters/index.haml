@@ -16,7 +16,8 @@
             = roster.fallback_user.last_name
           - else
             No fallback user!
-        %td= link_to 'Edit', edit_roster_url(roster)
-        %td= button_to 'Destroy', roster_path(roster), method: :delete
+        - if @current_user.admin_in? roster
+          %td= link_to 'Edit', edit_roster_url(roster)
+          %td= button_to 'Destroy', roster_path(roster), method: :delete
 
 = link_to 'New roster', new_roster_path
