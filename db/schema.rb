@@ -35,7 +35,6 @@ ActiveRecord::Schema.define(version: 20170417171136) do
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
     t.integer  "fallback_user_id", limit: 4
-    t.text     "admins",           limit: 65535
   end
 
   create_table "users", force: :cascade do |t|
