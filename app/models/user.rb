@@ -27,6 +27,6 @@ class User < ActiveRecord::Base
   end
 
   def admin?
-    memberships.any?(&:admin)
+    memberships.any?(&:admin?)
   end
 end
