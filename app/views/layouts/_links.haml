@@ -9,8 +9,10 @@
       - @current_user.rosters.each do |roster|
         = link_to roster.name, roster_assignments_path(roster),
           class: ('current' if roster == @roster)
-  .group.roster-actions
-    = link_to 'Manage rosters', rosters_path
-    = link_to 'Manage users', roster_users_path(@roster)
-    = link_to 'Generate rotation',
-      rotation_generator_roster_assignments_path(@roster)
+  - if @current_user.admin?
+    .group.roster-actions
+      = link_to 'Manage rosters', rosters_path
+      - if @current_user.admin_in? @roster
+        = link_to 'Manage users', roster_users_path(@roster)
+        = link_to 'Generate rotation',
+          rotation_generator_roster_assignments_path(@roster)

@@ -46,6 +46,11 @@ names.each_pair do |roster, rot_names|
   end
 end
 
+# ADMINS
+ops.memberships.joins(:user).where(users: { last_name: %w(Barrington Noble) })
+                            .update_all admin: true
+it.memberships.joins(:user).where(users: { last_name: 'Sherson' })
+                           .update_all admin: true
 
 # ASSIGNMENTS
 unless ENV['SKIP_ASSIGNMENTS']
