@@ -35,12 +35,12 @@ describe User do
   describe 'admin?' do
     let(:membership) { create :membership }
     let(:admin_membership) { create :membership, admin: true }
-    context 'admin in any rotation' do
+    context 'admin in any roster' do
       it 'returns true' do
         expect(admin_membership.user).to be_admin
       end
     end
-    context 'admin in no rotations' do
+    context 'admin in no rosters' do
       it 'returns false' do
         expect(membership.user).not_to be_admin
       end
