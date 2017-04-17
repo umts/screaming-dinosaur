@@ -32,7 +32,7 @@ class UsersController < ApplicationController
       flash[:message] = "Added #{@user.full_name} to roster."
       redirect_to roster_users_path(@roster)
     else
-      flash[:errors] = user.errors.full_messages
+      flash[:errors] = @user.errors.full_messages
       redirect_to :back
     end
   end

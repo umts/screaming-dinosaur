@@ -114,6 +114,35 @@ describe UsersController do
     end
   end
 
+  describe 'POST #transfer' do
+    let(:user) { create :user }
+    let :submit do
+      when_current_user_is :whoever
+      post :transfer, id: user.id, roster_id: @roster.id
+    end
+    context 'user added succesfullly' do
+      it 'redirects to the index' do
+        submit
+        expect(response).to redirect_to roster_users_path(@roster)
+      end
+      it 'shows a nice message' do
+        submit
+        expect(flash[:message]).to be_present
+      end
+    end
+    context 'user somehow not added succesfully' do
+      before :each do
+        expect_any_instance_of(User)
+          .to receive(:save)
+          .and_return false
+      end
+      it 'redirects back and shows errors' do
+        expect { submit }.to redirect_back
+        expect(flash[:errors]).not_to be_nil
+      end
+    end
+  end
+
   describe 'POST #update' do
     before :each do
       @new_roster = create :roster
