@@ -19,7 +19,13 @@
       %td= user.phone
       %td= link_to 'Edit', edit_roster_user_path(@roster, user)
       %td= button_to 'Destroy', roster_user_path(@roster, user), method: :delete
-  %tr
-    %td{ colspan: 6 }= link_to 'Add user', new_roster_user_path
+= link_to 'Add new user', new_roster_user_path
+- if @other_users.present?
+  .form
+    Add existing user:
+    = form_tag transfer_roster_users_path do
+      = select_tag :id,
+        options_from_collection_for_select(@other_users, :id, :last_name)
+      = submit_tag 'Add'
 - if @fallback.nil?
   %h3.slightly-red No fallback user!

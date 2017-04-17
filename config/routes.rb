@@ -9,7 +9,11 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :users, except: :show
+    resources :users, except: :show do
+      collection do
+        post :transfer
+      end
+    end
 
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
