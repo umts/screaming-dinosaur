@@ -5,14 +5,14 @@ class ApplicationController < ActionController::Base
 
   def confirm_change(object, message = nil)
     change = object.versions.where(whodunnit: @current_user.id.to_s).last
+    flash[:change] = change.try(:id)
     # If we know what change occurred, use it to write the message.
     # If we don't, try and infer from the current controller action.
     # Otherwise, just go with 'updated'.
-    if change.present?
-      flash[:change] = change.id
-      event = change.event
-    else event = params[:action] || 'update'
-    end
+    event = if change.present?
+              change.event
+            else params[:action] || 'update'
+            end
     action_taken = case event
                    when 'update', 'create' then change.event + 'd'
                    when 'destroy' then 'deleted'
