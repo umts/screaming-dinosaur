@@ -20,7 +20,7 @@ RSpec.describe Assignment do
     describe 'effective_end_datetime' do
       it 'returns the day after the end date, at the switchover hour' do
         expect(assignment.effective_end_datetime)
-          .to eql Time.zone.local(2017, 4, 12, 14, 0)
+          .to eql Time.zone.local(2017, 4, 12, 14)
       end
     end
   end
