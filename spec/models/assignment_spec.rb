@@ -140,4 +140,18 @@ RSpec.describe Assignment do
     end
     after(:each) { Timecop.return }
   end
+
+  describe 'send_reminders!' do
+    let(:assignment_today) { create :assignment, start_date: Date.today }
+    let(:assignment_tomorrow) { create :assignment, start_date: Date.tomorrow }
+    it 'sends reminders about assignments starting tomorrow' do
+      expect(AssignmentsMailer)
+        .to receive(:upcoming_reminder)
+        .with(assignment_tomorrow, assignment_tomorrow.user)
+      expect(AssignmentsMailer)
+        .not_to receive(:upcoming_reminder)
+        .with(assignment_today, anything)
+      Assignment.send_reminders!
+    end
+  end
 end
