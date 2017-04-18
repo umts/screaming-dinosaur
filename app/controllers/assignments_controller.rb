@@ -8,7 +8,6 @@ class AssignmentsController < ApplicationController
     assignment = Assignment.new assignment_params
     if assignment.save
       confirm_change(assignment)
-      flash[:message] = 'Assignment has been created.'
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
     else
       flash[:errors] = assignment.errors.full_messages

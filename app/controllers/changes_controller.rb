@@ -10,7 +10,7 @@ class ChangesController < ApplicationController
       flash[:message] = 'Change has been reverted.'
     else
       version.item.destroy
-      flash[:message] = '#{version.item_type} has been destroyed.'
+      flash[:message] = "#{version.item_type} has been destroyed."
     end
     redirect_to :back
   end
