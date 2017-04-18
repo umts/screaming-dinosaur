@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AssignmentsMailer < ActionMailer::Base
   default from: 'transit-it@admin.umass.edu'
 
