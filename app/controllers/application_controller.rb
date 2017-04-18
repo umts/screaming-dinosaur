@@ -1,7 +1,24 @@
 class ApplicationController < ActionController::Base
   attr_accessor :current_user
-  before_action :set_current_user, :set_roster
+  before_action :set_current_user, :set_roster, :set_paper_trail_whodunnit
   protect_from_forgery with: :exception
+
+  def confirm_change(object, message = nil)
+    change = object.versions.done_by(@current_user).last
+    flash[:change] = change.try(:id)
+    # If we know what change occurred, use it to write the message.
+    # If we don't, try and infer from the current controller action.
+    # Otherwise, just go with 'updated'.
+    event = if change.present? then change.event
+            else params[:action] || 'update'
+            end
+    action_taken = case event
+                   when 'update', 'create' then event + 'd'
+                   when 'destroy' then 'deleted'
+                   end
+    message ||= "#{object.class.name} has been #{action_taken}."
+    flash[:message] = message
+  end
 
   def set_current_user
     if session.key? :user_id

@@ -20,14 +20,14 @@ describe User do
     context 'membership has admin true' do
       it 'returns true' do
         create :membership, roster: roster, user: user,
-          admin: true
+                            admin: true
         expect(user).to be_admin_in(roster)
       end
     end
     context 'membership has admin false' do
       it 'returns false' do
         create :membership, roster: roster, user: user,
-          admin: false
+                            admin: false
         expect(user).not_to be_admin_in(roster)
       end
     end
