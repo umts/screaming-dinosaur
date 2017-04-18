@@ -7,6 +7,7 @@ class AssignmentsController < ApplicationController
                                       :user_id, :roster_id
     assignment = Assignment.new assignment_params
     if assignment.save
+      confirm_change(assignment)
       flash[:message] = 'Assignment has been created.'
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
     else
@@ -17,7 +18,7 @@ class AssignmentsController < ApplicationController
 
   def destroy
     @assignment.destroy
-    flash[:message] = 'Assignment has been deleted.'
+    confirm_change(@assignment)
     redirect_to roster_assignments_path(@roster)
   end
 
@@ -31,6 +32,7 @@ class AssignmentsController < ApplicationController
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
     @roster.generate_assignments user_ids, start_date, end_date, start_user
+    # TODO: undo
     flash[:message] = 'Rotation has been generated.'
     redirect_to roster_assignments_path(@roster, date: start_date)
   end
@@ -70,7 +72,7 @@ class AssignmentsController < ApplicationController
     assignment_params = params.require(:assignment)
                               .permit :start_date, :end_date, :user_id
     if @assignment.update assignment_params
-      flash[:message] = 'Assignment has been updated.'
+      confirm_change(@assignment)
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
     else
       flash[:errors] = @assignment.errors.full_messages

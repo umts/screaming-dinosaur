@@ -1,7 +1,17 @@
 class ApplicationController < ActionController::Base
   attr_accessor :current_user
-  before_action :set_current_user, :set_roster
+  before_action :set_current_user, :set_roster, :set_paper_trail_whodunnit
   protect_from_forgery with: :exception
+
+  def confirm_change(object)
+    change = object.versions.where(whodunnit: @current_user.id.to_s).last
+    action_taken = case change.event
+                   when 'update', 'create' then change.event + 'd'
+                   when 'destroy' then 'deleted'
+                   end
+    flash[:message] = "#{object.class.name} has been #{action_taken}."
+    flash[:change] = change.id
+  end
 
   def set_current_user
     if session.key? :user_id
