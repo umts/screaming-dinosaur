@@ -1,4 +1,5 @@
 class Roster < ActiveRecord::Base
+  has_paper_trail
   has_many :assignments, dependent: :destroy
   has_many :memberships
   has_many :users, through: :memberships
