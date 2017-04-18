@@ -1,6 +1,30 @@
 require 'rails_helper'
 
 RSpec.describe Assignment do
+  describe 'effective time methods' do
+    let :assignment do
+      create :assignment, start_date: Date.new(2017, 4, 10),
+                          end_date: Date.new(2017, 4, 11)
+    end
+    before :each do
+      expect(CONFIG).to receive(:[]).with(:switchover_hour).and_return 14
+    end
+
+    describe 'effective_start_datetime' do
+      it 'returns the start date, at the switchover hour' do
+        expect(assignment.effective_start_datetime)
+          .to eql Time.zone.local(2017, 4, 10, 14)
+      end
+    end
+
+    describe 'effective_end_datetime' do
+      it 'returns the day after the end date, at the switchover hour' do
+        expect(assignment.effective_end_datetime)
+          .to eql Time.zone.local(2017, 4, 12, 14, 0)
+      end
+    end
+  end
+
   describe 'current' do
     before :each do
       @yesterday = create :assignment,

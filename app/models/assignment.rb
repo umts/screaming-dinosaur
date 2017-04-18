@@ -8,6 +8,15 @@ class Assignment < ActiveRecord::Base
   validate :overlaps_any?
   validate :user_in_roster?
 
+  def effective_start_datetime
+    start_date + CONFIG[:switchover_hour].hours
+  end
+
+  # Assignments effectively end at the switchover hour on the following day.
+  def effective_end_datetime
+    end_date + 1.day + CONFIG[:switchover_hour].hours
+  end
+
   class << self
     # The current assignment - this method accounts for the 5pm switchover hour.
     # This should be called while scoped to a particular roster.

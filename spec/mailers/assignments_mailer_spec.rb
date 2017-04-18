@@ -3,14 +3,17 @@ require 'rails_helper'
 describe AssignmentsMailer do
   describe 'upcoming_reminder' do
     let(:start_date) { Date.parse('2017-04-14') }
-    let(:end_date) { Date.parse('2017-04-21') }
+    let(:end_date) { Date.parse('2017-04-20') }
     let :assignment do
       create :assignment, start_date: start_date, end_date: end_date
     end
     let(:roster) { assignment.roster }
     let(:user) { assignment.user }
     before :each do
-      expect(CONFIG).to receive(:[]).with(:switchover_hour).and_return 12
+      expect(CONFIG).to receive(:[])
+        .with(:switchover_hour)
+        .at_least(:once)
+        .and_return 12
     end
     let :output do
       described_class.upcoming_reminder assignment, user
