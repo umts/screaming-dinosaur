@@ -51,6 +51,9 @@ class RostersController < ApplicationController
   end
 
   def validate_admin_in_roster
+    # ... and return is correct here
+    # rubocop:disable Style/AndOr
     head :unauthorized and return unless @current_user.admin_in? @roster
+    # rubocop:enable Style/AndOr
   end
 end
