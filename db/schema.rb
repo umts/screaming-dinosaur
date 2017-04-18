@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170417204650) do
+ActiveRecord::Schema.define(version: 20170417203431) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -48,11 +48,11 @@ ActiveRecord::Schema.define(version: 20170417204650) do
   end
 
   create_table "versions", force: :cascade do |t|
-    t.string   "item_type",      limit: 191,        null: false
-    t.integer  "item_id",        limit: 4,          null: false
-    t.string   "event",          limit: 255,        null: false
-    t.string   "whodunnit",      limit: 255
-    t.text     "object",         limit: 4294967295
+    t.string   "item_type",  limit: 191,        null: false
+    t.integer  "item_id",    limit: 4,          null: false
+    t.string   "event",      limit: 255,        null: false
+    t.string   "whodunnit",  limit: 255
+    t.text     "object",     limit: 4294967295
     t.datetime "created_at"
   end
 
