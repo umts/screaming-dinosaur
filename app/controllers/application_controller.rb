@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
             else params[:action] || 'update'
             end
     action_taken = case event
-                   when 'update', 'create' then change.event + 'd'
+                   when 'update', 'create' then event + 'd'
                    when 'destroy' then 'deleted'
                    end
     flash[:message] = "#{object.class.name} has been #{action_taken}."
