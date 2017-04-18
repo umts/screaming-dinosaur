@@ -1,14 +1,13 @@
 require 'rails_helper'
 require 'paper_trail/frameworks/rspec'
 
-
 describe ChangesController do
   describe 'GET #undo' do
     before :each do
       @change_user = create :user
       with_versioning do
         PaperTrail.whodunnit = @change_user.id.to_s
-        @created, @updated, @destroyed = 3.times.map { create :assignment }
+        @created, @updated, @destroyed = Array.new(3) { create :assignment }
         # CREATE
         @create_version = @created.versions.last
         # UPDATE
@@ -16,7 +15,7 @@ describe ChangesController do
         @updated.start_date -= 1.day
         @updated.save!
         @update_version = @updated.versions.last
-        # DESTROY 
+        # DESTROY
         @destroyed.destroy
         @destroy_version = @destroyed.versions.last
       end
@@ -28,7 +27,8 @@ describe ChangesController do
         let(:version) { @create_version }
         it 'destroys the object' do
           expect { submit }.to redirect_back
-          expect { @created.reload }.to raise_error(ActiveRecord::RecordNotFound)
+          expect { @created.reload }
+            .to raise_error(ActiveRecord::RecordNotFound)
           expect(flash[:message]).to eql 'Assignment has been deleted.'
         end
       end
@@ -48,7 +48,7 @@ describe ChangesController do
       end
     end
     context 'change not made by current user' do
-      before(:each){ when_current_user_is :whoever }
+      before(:each) { when_current_user_is :whoever }
       let(:version) { @update_version } # it doesn't matter
       it 'returns a 401' do
         submit
