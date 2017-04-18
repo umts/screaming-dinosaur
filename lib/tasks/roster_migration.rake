@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :migrations do
   task rosters: :environment do
     it = Roster.create! name: 'Transit IT'
