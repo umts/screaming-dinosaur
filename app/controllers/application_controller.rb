@@ -17,7 +17,8 @@ class ApplicationController < ActionController::Base
                    when 'update', 'create' then event + 'd'
                    when 'destroy' then 'deleted'
                    end
-    flash[:message] = "#{object.class.name} has been #{action_taken}."
+    message ||= "#{object.class.name} has been #{action_taken}."
+    flash[:message] = message
   end
 
   def set_current_user
