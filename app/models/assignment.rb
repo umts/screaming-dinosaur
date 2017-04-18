@@ -46,6 +46,12 @@ class Assignment < ActiveRecord::Base
       else where 'start_date > ?', Date.today
       end
     end
+
+    def send_reminders!
+      where(start_date: Date.tomorrow).find_each do |assignment|
+        AssignmentsMailer.upcoming_reminder assignment, assignment.user
+      end
+    end
   end
 
   private
