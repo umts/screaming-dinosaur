@@ -1,7 +1,9 @@
 #links
   .group.session
     #logout= link_to 'Logout', destroy_session_path
-    #current_user_name Logged in as #{@current_user.full_name}
+    #current_user
+      Logged in as #{@current_user.full_name}
+      = link_to 'Edit profile', edit_roster_user_path(@roster, @current_user)
   .group.roster-select
     - if rosters.one?
       = link_to 'Calendar', roster_assignments_path(@roster)
