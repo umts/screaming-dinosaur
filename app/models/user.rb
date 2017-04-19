@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   end
 
   def admin_in?(roster)
-    memberships.find_by(roster: roster).admin?
+    memberships.find_by(roster: roster).try(:admin?) || false
   end
 
   def admin?

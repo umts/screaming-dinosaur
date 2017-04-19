@@ -66,23 +66,22 @@ class Assignment < ActiveRecord::Base
 
   private
 
-  # rubocop:disable MethodLength
   def overlaps_any?
+    # rubocop:disable MethodLength
     if new_record?
       overlapping_assignments = roster.assignments.where("
-        start_date < ? AND end_date >= ?
+        start_date <= ? AND end_date >= ?
       ", end_date, start_date)
     else
       overlapping_assignments = roster.assignments.where("
-        start_date < ? AND end_date >= ? AND id != ?
+        start_date <= ? AND end_date >= ? AND id != ?
       ", end_date, start_date, id)
     end
     return if overlapping_assignments.blank?
     errors.add :base,
                'Overlaps with another assignment'
+    # rubocop:enable MethodLength
   end
-
-  # rubocop:enable MethodLength
 
   def user_in_roster?
     unless roster.users.include? user
