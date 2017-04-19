@@ -59,7 +59,7 @@ class Assignment < ActiveRecord::Base
 
     def send_reminders!
       where(start_date: Date.tomorrow).find_each do |assignment|
-        AssignmentsMailer.upcoming_reminder assignment, assignment.user
+        AssignmentsMailer.upcoming_reminder assignment
       end
     end
   end

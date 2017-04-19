@@ -171,10 +171,10 @@ RSpec.describe Assignment do
     it 'sends reminders about assignments starting tomorrow' do
       expect(AssignmentsMailer)
         .to receive(:upcoming_reminder)
-        .with(assignment_tomorrow, assignment_tomorrow.user)
+        .with assignment_tomorrow
       expect(AssignmentsMailer)
         .not_to receive(:upcoming_reminder)
-        .with(assignment_today, anything)
+        .with assignment_today
       Assignment.send_reminders!
     end
   end

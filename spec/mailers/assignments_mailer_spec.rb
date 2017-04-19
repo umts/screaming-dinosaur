@@ -16,7 +16,7 @@ describe AssignmentsMailer do
         .and_return 12
     end
     let :output do
-      described_class.upcoming_reminder assignment, user
+      described_class.upcoming_reminder assignment
     end
     it 'emails to the user' do
       expect(output.to).to eql Array(user.email)
