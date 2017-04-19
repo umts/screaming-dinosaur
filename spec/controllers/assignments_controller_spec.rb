@@ -4,42 +4,62 @@ describe AssignmentsController do
   before :each do
     @roster = create :roster
   end
+
   describe 'POST #create' do
     before :each do
-      user = roster_user @roster
+      @user = roster_user @roster
       @attributes = {
         start_date: Date.today,
         end_date: Date.tomorrow,
-        user_id: user.id,
+        user_id: @user.id,
         roster_id: @roster.id
       }
-      when_current_user_is user
     end
     let :submit do
       post :create, roster_id: @roster, assignment: @attributes
     end
-    context 'without errors' do
-      it 'creates an assignment' do
-        submit
-        expect(Assignment.count).to be 1
+    context 'admin in roster' do
+      before(:each) { when_current_user_is roster_admin(@roster) }
+      context 'without errors' do
+        it 'creates an assignment' do
+          submit
+          expect(Assignment.count).to be 1
+        end
+        it 'redirects to the index with a date of the assignment start date' do
+          submit
+          expect(response).to redirect_to(
+            roster_assignments_url(date: @attributes[:start_date])
+          )
+        end
       end
-      it 'redirects to the index with a date of the assignment start date' do
-        submit
-        expect(response).to redirect_to(
-          roster_assignments_url(date: @attributes[:start_date])
-        )
+      context 'with errors' do
+        before :each do
+          # Guaranteed to not be a user with this ID,
+          # but will pass param validation in the controller.
+          @attributes[:user_id] = User.pluck(:id).sort.last + 1
+        end
+        it 'does not create assignment, gives errors, and redirects back' do
+          expect { submit }.to redirect_back
+          expect(Assignment.all).to be_empty
+          expect(flash[:errors]).not_to be_empty
+        end
       end
     end
-    context 'with errors' do
-      before :each do
-        # Guaranteed to not be a user with this ID,
-        # but will pass param validation in the controller.
-        @attributes[:user_id] = User.pluck(:id).sort.last + 1
+    context 'not admin' do
+      before(:each) { when_current_user_is @user }
+      context 'creating assignment belonging to self' do
+        it 'creates the assignment' do
+          expect { submit }.to change(Assignment, :count).by 1
+        end
       end
-      it 'does not create assignment, gives errors, and redirects back' do
-        expect { submit }.to redirect_back
-        expect(Assignment.all).to be_empty
-        expect(flash[:errors]).not_to be_empty
+      context 'creating assignment not belonging to self' do
+        before(:each) { @attributes[:user_id] = @user.id + 1 }
+        it 'does not create the assignment and explains why' do
+          expect do
+            expect { submit }.to redirect_back
+          end.not_to change(Assignment, :count)
+          expect(flash[:errors]).not_to be_empty
+        end
       end
     end
   end
@@ -112,21 +132,38 @@ describe AssignmentsController do
            user_ids: @user_ids,
            starting_user_id: @starting_user_id
     end
-    it 'calls Assignment#generate rotation with the given arguments' do
-      # remove all other instances of roster so 'any instance' definitely
-      # refers to our @roster instance
-      Roster.where.not(id: @roster.id).delete_all
-      expect_any_instance_of(Roster).to receive(:generate_assignments)
-        .with(@user_ids, Date.today, Date.tomorrow, @starting_user_id)
-      submit
+    context 'admin in roster' do
+      before(:each) { when_current_user_is roster_admin(@roster) }
+      it 'calls Assignment#generate rotation with the given arguments' do
+        # remove all other instances of roster so 'any instance' definitely
+        # refers to our @roster instance
+        Roster.where.not(id: @roster.id).delete_all
+        expect_any_instance_of(Roster).to receive(:generate_assignments)
+          .with(@user_ids, Date.today, Date.tomorrow, @starting_user_id)
+        submit
+      end
+      it 'has a flash message' do
+        submit
+        expect(flash[:message]).not_to be_empty
+      end
+      it 'redirects to the calendar with the start date given' do
+        submit
+        expect(response).to redirect_to roster_assignments_path(date: Date.today)
+      end
     end
-    it 'has a flash message' do
-      submit
-      expect(flash[:message]).not_to be_empty
+    context 'admin, not in roster' do
+      before(:each) { when_current_user_is roster_admin }
+      it 'returns a 401' do
+        submit
+        expect(response).to have_http_status :unauthorized
+      end
     end
-    it 'redirects to the calendar with the start date given' do
-      submit
-      expect(response).to redirect_to roster_assignments_path(date: Date.today)
+    context 'not admin' do
+      before(:each) { when_current_user_is :whoever }
+      it 'returns a 401' do
+        submit
+        expect(response).to have_http_status :unauthorized
+      end
     end
   end
 
@@ -253,21 +290,38 @@ describe AssignmentsController do
     let :submit do
       get :rotation_generator, roster_id: @roster.id
     end
-    it 'sets the users instance variable' do
-      expect(User).to receive(:order).with(:last_name)
-        .and_return 'whatever'
-      submit
-      expect(assigns.fetch :users).to eql 'whatever'
+    context 'admin in roster' do
+      before(:each) { when_current_user_is roster_admin(@roster) }
+      it 'sets the users instance variable' do
+        expect(User).to receive(:order).with(:last_name)
+          .and_return 'whatever'
+        submit
+        expect(assigns.fetch :users).to eql 'whatever'
+      end
+      it 'sets the start date instance variable' do
+        expect(Assignment).to receive(:next_rotation_start_date)
+          .and_return 'whatever'
+        submit
+        expect(assigns.fetch :start_date).to eql 'whatever'
+      end
+      it 'renders the rotation_generator template' do
+        submit
+        expect(response).to render_template :rotation_generator
+      end
     end
-    it 'sets the start date instance variable' do
-      expect(Assignment).to receive(:next_rotation_start_date)
-        .and_return 'whatever'
-      submit
-      expect(assigns.fetch :start_date).to eql 'whatever'
+    context 'admin, not in roster' do
+      before(:each) { when_current_user_is roster_admin }
+      it 'returns a 401' do
+        submit
+        expect(response).to have_http_status :unauthorized
+      end
     end
-    it 'renders the rotation_generator template' do
-      submit
-      expect(response).to render_template :rotation_generator
+    context 'not admin' do
+      before(:each) { when_current_user_is :whoever }
+      it 'returns a 401' do
+        submit
+        expect(response).to have_http_status :unauthorized
+      end
     end
   end
 
@@ -276,7 +330,6 @@ describe AssignmentsController do
       @assignment = create :assignment
       @user = roster_user @assignment.roster
       @changes = { user_id: @user.id }
-      when_current_user_is :whoever
     end
     let :submit do
       post :update,
@@ -284,28 +337,48 @@ describe AssignmentsController do
            assignment: @changes,
            roster_id: @assignment.roster.id
     end
-    context 'without errors' do
-      it 'updates the assignment' do
-        submit
-        expect(@assignment.reload.user).to eql @user
+    context 'admin in roster' do
+      before(:each) { when_current_user_is roster_admin(@assignment.roster) }
+      context 'without errors' do
+        it 'updates the assignment' do
+          submit
+          expect(@assignment.reload.user).to eql @user
+        end
+        it 'redirects to the index with a date of the assignment start date' do
+          submit
+          expect(response).to redirect_to(
+            roster_assignments_url(date: @assignment.start_date)
+          )
+        end
       end
-      it 'redirects to the index with a date of the assignment start date' do
-        submit
-        expect(response).to redirect_to(
-          roster_assignments_url(date: @assignment.start_date)
-        )
+      context 'with errors' do
+        before :each do
+          # Guaranteed to not be a user with this ID,
+          # but will pass param validation in the controller.
+          @changes[:user_id] = User.pluck(:id).sort.last + 1
+        end
+        it 'does not update, includes errors, and redirects back' do
+          expect { submit }.to redirect_back
+          expect(flash[:errors]).not_to be_empty
+          expect(@assignment.reload.user).not_to eql @user
+        end
       end
     end
-    context 'with errors' do
-      before :each do
-        # Guaranteed to not be a user with this ID,
-        # but will pass param validation in the controller.
-        @changes[:user_id] = User.pluck(:id).sort.last + 1
+    context 'self' do
+      before(:each) { when_current_user_is @user }
+      context 'updated assignment will belong to self' do
+        it 'updates the assignment' do
+          submit
+          expect(@assignment.reload.user).to eql @user
+        end
       end
-      it 'does not update, includes errors, and redirects back' do
-        expect { submit }.to redirect_back
-        expect(flash[:errors]).not_to be_empty
-        expect(@assignment.reload.user).not_to eql @user
+      context 'updated assignment will not belong to self' do
+        before(:each) { @changes[:user_id] = @user.id + 1 }
+        it 'does not update the assignment and explains why' do
+          expect { submit }.to redirect_back
+          expect(@assignment.reload.user).not_to eql @user
+          expect(flash[:errors]).not_to be_empty
+        end
       end
     end
   end

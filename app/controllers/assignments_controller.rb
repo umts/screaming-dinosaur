@@ -11,7 +11,7 @@ class AssignmentsController < ApplicationController
       require_taking_ownership and return
     end
     if assignment.save
-      confirm_change(@assignment)
+      confirm_change(assignment)
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
     else report_errors(assignment)
     end
