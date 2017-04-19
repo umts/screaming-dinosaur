@@ -20,6 +20,11 @@ class ApplicationController < ActionController::Base
     flash[:message] = message
   end
 
+  def report_errors(object)
+    flash[:errors] = object.errors.full_messages
+    redirect_to :back
+  end
+
   def set_current_user
     if session.key? :user_id
       @current_user = User.find_by id: session[:user_id]

@@ -8,16 +8,16 @@ class UsersController < ApplicationController
     if user.save
       confirm_change(user)
       redirect_to roster_users_path(@roster)
-    else
-      flash[:errors] = user.errors.full_messages
-      redirect_to :back
+    else report_errors(user)
     end
   end
 
   def destroy
-    @user.destroy
-    confirm_change(@user)
-    redirect_to roster_users_path
+    if @user.destroy
+      confirm_change(@user)
+      redirect_to roster_users_path
+    else report_errors(@user)
+    end
   end
 
   def index
@@ -31,9 +31,7 @@ class UsersController < ApplicationController
     if @user.save
       confirm_change(@user, "Added #{@user.full_name} to roster.")
       redirect_to roster_users_path(@roster)
-    else
-      flash[:errors] = @user.errors.full_messages
-      redirect_to :back
+    else report_errors(@user)
     end
   end
 
@@ -42,9 +40,7 @@ class UsersController < ApplicationController
     if @user.update parse_roster_ids(user_params)
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
-    else
-      flash[:errors] = @user.errors.full_messages
-      redirect_to :back
+    else report_errors(@user)
     end
   end
 
