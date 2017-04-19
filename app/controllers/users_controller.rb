@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :find_user, except: %i(create index new)
   before_action :require_admin_or_self, only: %i(edit update)
-  before_action :require_admin, except: %i(edit update)
+  before_action :require_admin_in_roster, except: %i(edit update)
 
   def create
     user_params = params.require(:user).permit!
