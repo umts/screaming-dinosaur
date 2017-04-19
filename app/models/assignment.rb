@@ -8,6 +8,15 @@ class Assignment < ActiveRecord::Base
   validate :overlaps_any?
   validate :user_in_roster?
 
+  def effective_start_datetime
+    start_date + CONFIG[:switchover_hour].hours
+  end
+
+  # Assignments effectively end at the switchover hour on the following day.
+  def effective_end_datetime
+    end_date + 1.day + CONFIG[:switchover_hour].hours
+  end
+
   class << self
     # The current assignment - this method accounts for the 5pm switchover hour.
     # This should be called while scoped to a particular roster.
@@ -45,6 +54,12 @@ class Assignment < ActiveRecord::Base
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
         where 'start_date >= ?', Date.today
       else where 'start_date > ?', Date.today
+      end
+    end
+
+    def send_reminders!
+      where(start_date: Date.tomorrow).find_each do |assignment|
+        AssignmentsMailer.upcoming_reminder assignment
       end
     end
   end

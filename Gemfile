@@ -12,6 +12,7 @@ gem 'rails', '~> 4.2'
 gem 'sass-rails'
 gem 'snappconfig'
 gem 'uglifier'
+gem 'whenever', require: false
 
 group :production do
   gem 'exception_notification'
