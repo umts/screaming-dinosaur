@@ -1,5 +1,6 @@
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: [:destroy, :edit, :update]
+  before_action :require_admin_in_roster, only: %i(generate_rotation rotation_generator)
 
   def create
     assignment_params = params.require(:assignment)
@@ -7,7 +8,7 @@ class AssignmentsController < ApplicationController
                                       :user_id, :roster_id
     assignment = Assignment.new assignment_params
     if assignment.save
-      confirm_change(assignment)
+      confirm_change(@assignment)
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
     else report_errors(assignment)
     end
