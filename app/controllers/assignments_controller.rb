@@ -9,9 +9,7 @@ class AssignmentsController < ApplicationController
     if assignment.save
       confirm_change(assignment)
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
-    else
-      flash[:errors] = assignment.errors.full_messages
-      redirect_to :back
+    else report_errors(assignment)
     end
   end
 
@@ -73,9 +71,7 @@ class AssignmentsController < ApplicationController
     if @assignment.update assignment_params
       confirm_change(@assignment)
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
-    else
-      flash[:errors] = @assignment.errors.full_messages
-      redirect_to :back
+    else report_errors(@assignment)
     end
   end
 

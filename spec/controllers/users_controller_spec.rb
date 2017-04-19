@@ -39,7 +39,7 @@ describe UsersController do
 
   describe 'DELETE #destroy' do
     before :each do
-      @user = create :user
+      @user = roster_user(@roster)
       when_current_user_is :whoever
     end
     let :submit do
@@ -49,14 +49,24 @@ describe UsersController do
       submit
       expect(assigns.fetch :user).to eql @user
     end
-    it 'destroys the user' do
-      expect_any_instance_of(User)
-        .to receive :destroy
-      submit
+    context 'no existing assignments' do
+      it 'destroys the user' do
+        expect_any_instance_of(User)
+          .to receive(:destroy)
+          .and_return true
+        submit
+      end
+      it 'redirects to the index' do
+        submit
+        expect(response).to redirect_to roster_users_url
+      end
     end
-    it 'redirects to the index' do
-      submit
-      expect(response).to redirect_to roster_users_url
+    context 'with existing assignments' do
+      before(:each) { create :assignment, user: @user, roster: @roster }
+      it 'redirects back and shows errors' do
+        expect { submit }.to redirect_back
+        expect(flash[:errors]).not_to be_empty
+      end
     end
   end
 

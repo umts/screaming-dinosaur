@@ -10,9 +10,7 @@ class RostersController < ApplicationController
     if roster.save
       confirm_change(roster)
       redirect_to rosters_path
-    else
-      flash[:errors] = roster.errors.full_messages
-      redirect_to :back
+    else report_errors(roster)
     end
   end
 
@@ -38,9 +36,7 @@ class RostersController < ApplicationController
     if @roster.update roster_params
       confirm_change(@roster)
       redirect_to rosters_path
-    else
-      flash[:errors] = @roster.errors.full_messages
-      redirect_to :back
+    else report_errors(@roster)
     end
   end
 
