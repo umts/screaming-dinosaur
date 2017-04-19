@@ -46,5 +46,4 @@ class RostersController < ApplicationController
   def find_roster
     @roster = Roster.find(params.require :id)
   end
-
 end
