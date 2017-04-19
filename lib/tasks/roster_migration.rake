@@ -5,7 +5,7 @@ namespace :migrations do
     User.find_each do |user|
       user.rosters << it
     end
-    Assignment.update_all(roster: it)
+    Assignment.update_all(roster_id: it.id)
     # Teh sherson administrates
     User.find_by(last_name: 'Sherson').memberships.first.update admin: true
   end
