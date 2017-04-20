@@ -8,6 +8,9 @@ class RostersController < ApplicationController
   def create
     roster_params = params.require(:roster).permit(:name)
     roster = Roster.new roster_params
+    # Current user becomes admin in new roster
+    roster.users << @current_user
+    roster.memberships.first.update admin: true
     if roster.save
       confirm_change(roster)
       redirect_to rosters_path

@@ -6,7 +6,8 @@ describe RostersController do
       post :create, roster: { name: 'Operations' }
     end
     context 'admin' do
-      before(:each) { when_current_user_is roster_admin }
+      let(:admin) { roster_admin }
+      before(:each) { when_current_user_is admin }
       context 'without errors' do
         it 'creates a roster' do
           expect { submit }.to change { Roster.count }.by 1
@@ -18,6 +19,11 @@ describe RostersController do
         it 'puts a message in the flash' do
           submit
           expect(flash[:message]).not_to be_empty
+        end
+        it 'adds the current user to the roster as an admin' do
+          submit
+          expect(Roster.last.users).to include admin
+          expect(admin).to be_admin_in(Roster.last)
         end
       end
       context 'with errors' do
