@@ -261,7 +261,7 @@ describe UsersController do
     before :each do
       @new_roster = create :roster
       @user = roster_user @roster
-      @changes = { phone: '+14135451451', rosters: [@new_roster.id] }
+      @changes = { phone: '+14135451451', rosters: [@roster.id, @new_roster.id] }
     end
     let :submit do
       post :update, id: @user.id, user: @changes, roster_id: @roster.id
@@ -272,7 +272,7 @@ describe UsersController do
         it 'updates the user' do
           submit
           expect(@user.reload.phone).to eql @changes[:phone]
-          expect(@user.rosters.take).to eql @new_roster
+          expect(@user.rosters).to include @new_roster
         end
         it 'redirects to the index' do
           submit
@@ -303,7 +303,7 @@ describe UsersController do
         it 'updates the user' do
           submit
           expect(@user.reload.phone).to eql @changes[:phone]
-          expect(@user.rosters.take).to eql @new_roster
+          expect(@user.rosters).to include @new_roster
         end
         it 'redirects to the index' do
           submit
