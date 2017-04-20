@@ -278,6 +278,7 @@ describe UsersController do
           submit
           expect(response).to redirect_to roster_users_url
         end
+        it 'allows changing admin status in roster'
       end
       context 'with errors' do
         before :each do
@@ -304,6 +305,7 @@ describe UsersController do
           submit
           expect(response).to redirect_to roster_users_url
         end
+        it 'does not allow changing admin status in roster'
       end
       context 'with errors' do
         before :each do

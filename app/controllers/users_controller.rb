@@ -38,7 +38,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    user_params = params.require(:user).permit!
+    user_params = parse_membership(params.require(:user)).permit!
     if @user.update parse_roster_ids(user_params)
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
@@ -50,6 +50,14 @@ class UsersController < ApplicationController
 
   def find_user
     @user = User.find(params.require :id)
+  end
+
+  def parse_membership(user_params)
+    if @current_user.admin_in?(@roster) && user_params.key?(:membership)
+      membership = @user.membership_in @roster
+      membership.update user_params[:membership].permit(:admin)
+    end
+    user_params.except :membership
   end
 
   def parse_roster_ids(attrs)
