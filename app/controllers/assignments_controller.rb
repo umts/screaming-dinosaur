@@ -73,7 +73,7 @@ class AssignmentsController < ApplicationController
 
   def update
     ass_params = params.require(:assignment)
-                              .permit :start_date, :end_date, :user_id
+                       .permit :start_date, :end_date, :user_id
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
       require_taking_ownership and return
     end
