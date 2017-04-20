@@ -278,7 +278,11 @@ describe UsersController do
           submit
           expect(response).to redirect_to roster_users_url
         end
-        it 'allows changing admin status in roster'
+        it 'allows changing admin status in roster' do
+          @changes[:membership] = { admin: true }
+          submit
+          expect(@user).to be_admin_in @roster
+        end
       end
       context 'with errors' do
         before :each do
@@ -305,7 +309,11 @@ describe UsersController do
           submit
           expect(response).to redirect_to roster_users_url
         end
-        it 'does not allow changing admin status in roster'
+        it 'does not allow changing admin status in roster' do
+          @changes[:membership] = { admin: true }
+          submit
+          expect(@user).not_to be_admin_in @roster
+        end
       end
       context 'with errors' do
         before :each do
