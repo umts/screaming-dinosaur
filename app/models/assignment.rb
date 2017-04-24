@@ -25,7 +25,7 @@ class Assignment < ActiveRecord::Base
                       when :update  then :changed_assignment
                       when :destroy then :deleted_assignment
                       end
-      AssignmentsMailer.send mailer_method, user, changer
+      AssignmentsMailer.send mailer_method, self, changer
     end
   end
 
