@@ -1,6 +1,18 @@
 require 'rails_helper'
 
 describe AssignmentsMailer do
+  describe 'changed_assignment' do
+    # TODO
+  end
+
+  describe 'deleted_assignment' do
+    # TODO
+  end
+
+  describe 'new_assignment' do
+    # TODO
+  end
+
   describe 'upcoming_reminder' do
     let(:start_date) { Date.parse('2017-04-14') }
     let(:end_date) { Date.parse('2017-04-20') }
