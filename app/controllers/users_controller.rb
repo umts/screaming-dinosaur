@@ -39,7 +39,7 @@ class UsersController < ApplicationController
 
   def update
     user_params = params.require(:user).permit!
-    user_params = parse_membership(params.require :user)
+    user_params = parse_membership(user_params)
     user_params = parse_roster_ids(user_params)
     if @user.update user_params
       confirm_change(@user)
