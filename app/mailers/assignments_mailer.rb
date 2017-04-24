@@ -2,21 +2,21 @@
 class AssignmentsMailer < ActionMailer::Base
   default from: 'transit-it@admin.umass.edu'
 
-  def changed_assignment(assignment, changer)
+  def changed_assignment(assignment, recipient, changer)
     set_defaults(assignment, changer)
-    mail to: @user.email,
+    mail to: @recipient.email,
          subject: "Change to upcoming on-call (#{@roster.name})"
   end
 
-  def deleted_assignment(assignment, changer)
+  def deleted_assignment(assignment, recipient, changer)
     set_defaults(assignment, changer)
-    mail to: @user.email,
+    mail to: @recipient.email,
          subject: "Cancellation of upcoming on-call (#{@roster.name})"
   end
 
-  def new_assignment(assignment, changer)
+  def new_assignment(assignment, recipient, changer)
     set_defaults(assignment, changer)
-    mail to: @user.email,
+    mail to: @recipient.email,
          subject: "New upcoming on-call (#{@roster.name})"
   end
 
@@ -28,8 +28,8 @@ class AssignmentsMailer < ActionMailer::Base
 
   private
 
-  def set_defaults(assignment, changer = nil)
-    @assignment, @changer = assignment, changer
+  def set_defaults(assignment, recipient = nil, changer = nil)
+    @assignment, @recipient, @changer = assignment, recipient, changer
     @user = @assignment.user
     @roster = @assignment.roster
     @start_date = @assignment.effective_start_datetime

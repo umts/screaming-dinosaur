@@ -88,6 +88,65 @@ RSpec.describe Assignment do
     end
   end
 
+  describe 'notify' do
+    let(:roster) { create :roster }
+    let(:owner) { roster_user(roster) }
+    let(:assignment) { create :assignment, user: owner, roster: roster }
+    let(:submit) { assignment.notify recipient, conditions }
+    let(:recipient) { owner }
+    let(:conditions) { { of: change_type, by: changer } }
+    let(:change_type) { :update }
+    let(:changer) { create :user }
+    context 'changer is recipient' do
+      let(:changer) { recipient }
+      it 'does not send an email' do
+        expect(AssignmentsMailer).not_to receive :changed_assignment
+        submit
+      end
+    end
+    context 'changer is not recipient' do
+      context 'change type is create' do
+        let(:change_type) { :create }
+        it 'sends the new_assignment mail' do
+          expect(AssignmentsMailer).to receive(:new_assignment)
+            .with(assignment, recipient, changer)
+          submit
+        end
+      end
+      context 'change type is destroy' do
+        let(:change_type) { :destroy }
+        it 'sends the deleted_assignment mail' do
+          expect(AssignmentsMailer).to receive(:deleted_assignment)
+            .with(assignment, recipient, changer)
+          submit
+        end
+      end
+      context 'change type is update' do
+        it 'sends the changed_assignment mail' do
+          expect(AssignmentsMailer).to receive(:changed_assignment)
+            .with(assignment, recipient, changer)
+          submit
+        end
+      end
+    end
+    context 'recipient is the symbol owner' do
+      let(:recipient) { :owner }
+      it 'sends to the assignment owner' do
+        expect(AssignmentsMailer).to receive(:changed_assignment)
+          .with(assignment, owner, changer)
+        submit
+      end
+    end
+    context 'recipient other than owner' do
+      let(:recipient) { create :user }
+      it 'sends to the recipient, not the owner' do
+        expect(AssignmentsMailer).to receive(:changed_assignment)
+          .with(assignment, recipient, changer)
+        submit
+      end
+    end
+  end
+
   describe 'on' do
     before :each do
       @date = Date.today
