@@ -85,6 +85,9 @@ class AssignmentsController < ApplicationController
     previous_owner = @assignment.user
     if @assignment.update ass_params
       confirm_change(@assignment)
+      # If the user's being changed, we effectively inform of the change
+      # by telling the previous owner they're not responsible anymore,
+      # and telling the new owner that they're newly responsible now.
       if @assignment.user == previous_owner
         @assignment.notify :owner, of: :update, by: @current_user
       else
