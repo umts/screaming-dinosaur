@@ -28,4 +28,6 @@
         options_from_collection_for_select(@other_users, :id, :last_name)
       = submit_tag 'Add'
 - if @fallback.nil?
-  %h3.slightly-red No fallback user!
+  .slightly-red
+    %h3 No fallback user!
+    = link_to 'Select a fallback user...', edit_roster_path(@roster)

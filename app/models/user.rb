@@ -24,10 +24,14 @@ class User < ActiveRecord::Base
   end
 
   def admin_in?(roster)
-    memberships.find_by(roster: roster).try(:admin?) || false
+    membership_in(roster).try(:admin?) || false
   end
 
   def admin?
     memberships.any?(&:admin?)
+  end
+
+  def membership_in(roster)
+    memberships.find_by(roster: roster)
   end
 end

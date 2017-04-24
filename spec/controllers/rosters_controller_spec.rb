@@ -1,38 +1,53 @@
 require 'rails_helper'
 
 describe RostersController do
-  before :each do
-    user = create :user
-    when_current_user_is user
-  end
   describe 'POST #create' do
     let :submit do
       post :create, roster: { name: 'Operations' }
     end
-    context 'without errors' do
-      it 'creates a roster' do
-        expect { submit }.to change { Roster.count }.from(1).to(2)
+    context 'admin' do
+      let(:admin) { roster_admin }
+      before(:each) { when_current_user_is admin }
+      context 'without errors' do
+        it 'creates a roster' do
+          expect { submit }.to change { Roster.count }.by 1
+        end
+        it 'redirects to the index' do
+          submit
+          expect(response).to redirect_to rosters_url
+        end
+        it 'puts a message in the flash' do
+          submit
+          expect(flash[:message]).not_to be_empty
+        end
+        it 'adds the current user to the roster as an admin' do
+          submit
+          expect(Roster.last.users).to include admin
+          expect(admin).to be_admin_in(Roster.last)
+        end
       end
-      it 'redirects to the index' do
-        submit
-        expect(response).to redirect_to rosters_url
-      end
-      it 'puts a message in the flash' do
-        submit
-        expect(flash[:message]).not_to be_empty
+      context 'with errors' do
+        before :each do
+          @roster = create :roster, name: 'unique'
+        end
+        let :submit do
+          post :create, roster: { name: @roster.name }
+        end
+        it 'does not create roster, gives errors, and redirects back' do
+          expect { submit }.to redirect_back
+          expect { submit }.not_to change { Roster.count }
+          expect(flash[:errors]).not_to be_empty
+        end
       end
     end
-    context 'with errors' do
-      before :each do
-        @roster = create :roster, name: 'unique'
+    context 'not admin' do
+      before(:each) { when_current_user_is :whoever }
+      it 'renders a 401' do
+        submit
+        expect(response).to have_http_status :unauthorized
       end
-      let :submit do
-        post :create, roster: { name: @roster.name }
-      end
-      it 'does not create roster, gives errors, and redirects back' do
-        expect { submit }.to redirect_back
+      it 'does not create a roster' do
         expect { submit }.not_to change { Roster.count }
-        expect(flash[:errors]).not_to be_empty
       end
     end
   end
@@ -64,6 +79,7 @@ describe RostersController do
       end
     end
     context 'not admin in roster' do
+      before(:each) { when_current_user_is :whoever }
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
@@ -97,6 +113,7 @@ describe RostersController do
       end
     end
     context 'not admin in roster' do
+      before(:each) { when_current_user_is :whoever }
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
@@ -108,19 +125,40 @@ describe RostersController do
     let :submit do
       get :index
     end
-    it 'populates a rosters variable with all available rosters' do
-      submit
-      expect(assigns.fetch :rosters).to eq Roster.all
+    context 'admin' do
+      before(:each) { when_current_user_is roster_admin }
+      it 'populates a rosters variable with all available rosters' do
+        submit
+        expect(assigns.fetch :rosters).to eq Roster.all
+      end
+      it 'renders the correct template' do
+        submit
+        expect(response).to render_template :index
+      end
     end
-    it 'renders the correct template' do
-      submit
-      expect(response).to render_template :index
+    context 'not admin' do
+      before(:each) { when_current_user_is :whoever }
+      it 'returns a 401' do
+        submit
+        expect(response).to have_http_status :unauthorized
+      end
     end
   end
 
   describe 'GET #new' do
-    it 'renders the new template' do
-      expect(get :new).to render_template :new
+    let(:submit) { get :new }
+    context 'admin' do
+      before(:each) { when_current_user_is roster_admin }
+      it 'renders the new template' do
+        expect(submit).to render_template :new
+      end
+    end
+    context 'not admin' do
+      before(:each) { when_current_user_is :whoever }
+      it 'returns a 401' do
+        submit
+        expect(response).to have_http_status :unauthorized
+      end
     end
   end
 
@@ -159,6 +197,7 @@ describe RostersController do
       end
     end
     context 'not admin in roster' do
+      before(:each) { when_current_user_is :whoever }
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized

@@ -20,4 +20,8 @@
       {}, multiple: true
     = f.label :reminders_enabled, 'Receive email reminders of upcoming assignments?'
     = f.check_box :reminders_enabled
+    - if @current_user.admin_in? @roster
+      = f.fields_for @user.membership_in(@roster) do |g|
+        = g.label :admin, "Admin in #{@roster.name}?"
+        = g.check_box :admin
     = f.submit 'Save'

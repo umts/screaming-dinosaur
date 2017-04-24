@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
   before_action :find_user, except: %i(create index new)
+  before_action :require_admin_in_roster_or_self, only: %i(edit update)
+  before_action :require_admin_in_roster, except: %i(edit update)
 
   def create
     user_params = params.require(:user).permit!
@@ -37,7 +39,9 @@ class UsersController < ApplicationController
 
   def update
     user_params = params.require(:user).permit!
-    if @user.update parse_roster_ids(user_params)
+    user_params = parse_membership(user_params)
+    user_params = parse_roster_ids(user_params)
+    if @user.update user_params
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
     else report_errors(@user)
@@ -50,10 +54,24 @@ class UsersController < ApplicationController
     @user = User.find(params.require :id)
   end
 
+  def parse_membership(user_params)
+    if @current_user.admin_in?(@roster) && user_params.key?(:membership)
+      membership = @user.membership_in @roster
+      membership.update user_params[:membership].permit(:admin)
+    end
+    user_params.except :membership
+  end
+
   def parse_roster_ids(attrs)
     attrs[:rosters] = attrs[:rosters].map do |roster_id|
       Roster.find_by id: roster_id
     end.compact
     attrs
+  end
+
+  def require_admin_in_roster_or_self
+    unless @current_user == @user || @current_user.admin_in?(@roster)
+      head :unauthorized and return
+    end
   end
 end

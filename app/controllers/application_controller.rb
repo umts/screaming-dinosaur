@@ -25,6 +25,25 @@ class ApplicationController < ActionController::Base
     redirect_to :back
   end
 
+  # There are three levels of access:
+  # 1. Regular users
+  # 2. Admins in general (of any roster)
+  # 3. Admins of specifically the current roster
+
+  def require_admin
+    # ... and return is correct here
+    # rubocop:disable Style/AndOr
+    head :unauthorized and return unless @current_user.admin?
+    # rubocop:enable Style/AndOr
+  end
+
+  def require_admin_in_roster
+    # ... and return is correct here
+    # rubocop:disable Style/AndOr
+    head :unauthorized and return unless @current_user.admin_in? @roster
+    # rubocop:enable Style/AndOr
+  end
+
   def set_current_user
     if session.key? :user_id
       @current_user = User.find_by id: session[:user_id]

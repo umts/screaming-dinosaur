@@ -1,11 +1,16 @@
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: [:destroy, :edit, :update]
+  before_action :require_admin_in_roster, only: %i(generate_rotation
+                                                   rotation_generator)
 
   def create
-    assignment_params = params.require(:assignment)
-                              .permit :start_date, :end_date,
-                                      :user_id, :roster_id
-    assignment = Assignment.new assignment_params
+    ass_params = params.require(:assignment)
+                       .permit :start_date, :end_date,
+                               :user_id, :roster_id
+    assignment = Assignment.new ass_params
+    unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
+      require_taking_ownership and return
+    end
     if assignment.save
       confirm_change(assignment)
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
@@ -14,6 +19,7 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
+    # TODO: should anyone be able to destroy any assignment?
     @assignment.destroy
     confirm_change(@assignment)
     redirect_to roster_assignments_path(@roster)
@@ -66,9 +72,12 @@ class AssignmentsController < ApplicationController
   end
 
   def update
-    assignment_params = params.require(:assignment)
-                              .permit :start_date, :end_date, :user_id
-    if @assignment.update assignment_params
+    ass_params = params.require(:assignment)
+                       .permit :start_date, :end_date, :user_id
+    unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
+      require_taking_ownership and return
+    end
+    if @assignment.update ass_params
       confirm_change(@assignment)
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
     else report_errors(@assignment)
@@ -79,5 +88,18 @@ class AssignmentsController < ApplicationController
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require :id)
+  end
+
+  def require_taking_ownership
+    flash[:errors] = [<<-TEXT]
+      You may only edit or create assignments such that you become on call.
+      The intended new owner of this assignment must take it themselves.
+      Or, a roster administrator can perform this change for you.
+    TEXT
+    redirect_to :back
+  end
+
+  def taking_ownership?(assignment_params)
+    assignment_params.require(:user_id) == @current_user.id.to_s
   end
 end

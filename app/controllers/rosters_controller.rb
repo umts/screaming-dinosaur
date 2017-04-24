@@ -1,12 +1,16 @@
 class RostersController < ApplicationController
   # The default scaffold method, not the generic one
   # we wrote in ApplicationController.
-  before_action :find_roster, only: [:destroy, :edit, :update]
-  before_action :validate_admin_in_roster, only: %i(destroy edit update)
+  before_action :find_roster, only: %i(destroy edit update)
+  before_action :require_admin
+  before_action :require_admin_in_roster, only: %i(destroy edit update)
 
   def create
     roster_params = params.require(:roster).permit(:name)
     roster = Roster.new roster_params
+    # Current user becomes admin in new roster
+    roster.users << @current_user
+    roster.memberships.first.update admin: true
     if roster.save
       confirm_change(roster)
       redirect_to rosters_path
@@ -44,12 +48,5 @@ class RostersController < ApplicationController
 
   def find_roster
     @roster = Roster.find(params.require :id)
-  end
-
-  def validate_admin_in_roster
-    # ... and return is correct here
-    # rubocop:disable Style/AndOr
-    head :unauthorized and return unless @current_user.admin_in? @roster
-    # rubocop:enable Style/AndOr
   end
 end
