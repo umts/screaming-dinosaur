@@ -17,7 +17,8 @@ class Assignment < ActiveRecord::Base
     end_date + 1.day + CONFIG[:switchover_hour].hours
   end
 
-  def notify_owner(conditions)
+  def notify(recipient, conditions)
+    recipient = user if recipient == :owner
     change_type, changer = conditions.values_at :of, :by
     unless changer == user
       mailer_method = case change_type

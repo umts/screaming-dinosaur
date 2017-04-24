@@ -123,6 +123,8 @@ describe AssignmentsController do
       @user_ids = [user_1.id.to_s, user_2.id.to_s, user_3.id.to_s]
       @starting_user_id = @user_ids[1]
       when_current_user_is :whoever
+      # To test the mailer method called on the returned assignments
+      @assignments = [create(:assignment)]
     end
     let :submit do
       post :generate_rotation,
@@ -140,6 +142,7 @@ describe AssignmentsController do
         Roster.where.not(id: @roster.id).delete_all
         expect_any_instance_of(Roster).to receive(:generate_assignments)
           .with(@user_ids, Date.today, Date.tomorrow, @starting_user_id)
+          .and_return @assignments
         submit
       end
       it 'has a flash message' do

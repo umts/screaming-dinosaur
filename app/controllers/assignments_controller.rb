@@ -13,7 +13,7 @@ class AssignmentsController < ApplicationController
     end
     if assignment.save
       confirm_change(assignment)
-      assignment.notify_owner of: :create, by: @current_user
+      assignment.notify :owner, of: :create, by: @current_user
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
     else report_errors(assignment)
     end
@@ -21,7 +21,7 @@ class AssignmentsController < ApplicationController
 
   def destroy
     # TODO: should anyone be able to destroy any assignment?
-    assignment.notify_owner of: :destroy, by: @current_user
+    @assignment.notify :owner, of: :destroy, by: @current_user
     @assignment.destroy
     confirm_change(@assignment)
     redirect_to roster_assignments_path(@roster)
@@ -38,7 +38,7 @@ class AssignmentsController < ApplicationController
     start_user = params.require :starting_user_id
     @roster.generate_assignments(user_ids, start_date,
                                  end_date, start_user).each do |assignment|
-      assignment.notify_owner of: :create, by: @current_user
+      assignment.notify :owner, of: :create, by: @current_user
     end
     # TODO: undo
     flash[:message] = 'Rotation has been generated.'
@@ -82,12 +82,14 @@ class AssignmentsController < ApplicationController
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
       require_taking_ownership and return
     end
-    @previous_owner = @assignment.user
+    previous_owner = @assignment.user
     if @assignment.update ass_params
       confirm_change(@assignment)
-      if @assignment.user == @previous_owner
-        @assignment.notify_owner of: :update, by: @current_user
-      else @assignment.notify_owner of: :create, by: @current_user
+      if @assignment.user == previous_owner
+        @assignment.notify :owner, of: :update, by: @current_user
+      else
+        @assignment.notify :owner, of: :create, by: @current_user
+        @assignment.notify previous_owner, of: :create, by: @current_user
       end
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
     else report_errors(@assignment)
