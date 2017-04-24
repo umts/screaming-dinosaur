@@ -82,9 +82,13 @@ class AssignmentsController < ApplicationController
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
       require_taking_ownership and return
     end
+    @previous_owner = @assignment.user
     if @assignment.update ass_params
       confirm_change(@assignment)
-      @assignment.notify_owner of: :update, by: @current_user
+      if @assignment.user == @previous_owner
+        @assignment.notify_owner of: :update, by: @current_user
+      else @assignment.notify_owner of: :create, by: @current_user
+      end
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
     else report_errors(@assignment)
     end
