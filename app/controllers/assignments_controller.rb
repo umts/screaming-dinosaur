@@ -89,7 +89,7 @@ class AssignmentsController < ApplicationController
         @assignment.notify :owner, of: :update, by: @current_user
       else
         @assignment.notify :owner, of: :create, by: @current_user
-        @assignment.notify previous_owner, of: :create, by: @current_user
+        @assignment.notify previous_owner, of: :destroy, by: @current_user
       end
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
     else report_errors(@assignment)
