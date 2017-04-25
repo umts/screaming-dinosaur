@@ -1,2 +1,7 @@
 require: umts-custom-cops
 inherit_from: .rubocop-no-umts-cops.yml
+# Hold on there cowpoke! Don't write them rules here!
+# Write them in .rubocop-no-umts-cops.yml!
+# Otherwise any setting here will be respected by your local Rubocop,
+# but not by CodeClimate.
+# This is because CodeClimate is not capable of running our custom cops.
