@@ -63,7 +63,6 @@ class AssignmentsController < ApplicationController
     # rubocop:enable Metrics/AbcSize, MethodLength
   end
 
-
   def new
     @start_date = Date.parse(params.require :date)
     @end_date = @start_date + 6.days
