@@ -358,13 +358,24 @@ describe AssignmentsController do
           submit
           expect(@assignment.reload.user).to eql @user
         end
-        it "notifies the new owner of the new assignment \
-            and notifies the old owner of the deleted assignment" do
-          expect_any_instance_of(Assignment).to receive(:notify)
-            .with(:owner, { of: :create, by: @roster_admin })
-          expect_any_instance_of(Assignment).to receive(:notify)
-            .with(@assignment.user, { of: :destroy, by: @roster_admin })
-          submit
+        context 'owner is being changed' do
+          it "notifies the new owner of the new assignment \
+              and notifies the old owner of the deleted assignment" do
+            expect_any_instance_of(Assignment).to receive(:notify)
+              .with(:owner, { of: :create, by: @roster_admin })
+            expect_any_instance_of(Assignment).to receive(:notify)
+              .with(@assignment.user, { of: :destroy, by: @roster_admin })
+            submit
+          end
+
+        end
+        context 'owner is not being changed' do
+          before(:each) { @changes[:user_id] = @assignment.user_id }
+          it 'notifies the owner of the changed assignment' do
+            expect_any_instance_of(Assignment).to receive(:notify)
+              .with(:owner, { of: :update, by: @roster_admin })
+            submit
+          end
         end
         it 'redirects to the index with a date of the assignment start date' do
           submit
