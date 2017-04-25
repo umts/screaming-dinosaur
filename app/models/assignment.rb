@@ -19,7 +19,8 @@ class Assignment < ActiveRecord::Base
 
   def notify(receiver, of:, by:)
     receiver = user if receiver == :owner
-    mailer_method, changer = of, by
+    mailer_method = of
+    changer = by
     return unless receiver != changer && receiver.change_notifications_enabled?
     AssignmentsMailer.send mailer_method, self, receiver, changer
   end

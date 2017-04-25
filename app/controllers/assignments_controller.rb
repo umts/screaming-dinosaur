@@ -45,9 +45,8 @@ class AssignmentsController < ApplicationController
     redirect_to roster_assignments_path(@roster, date: start_date)
   end
 
-  # rubocop:disable Metrics/AbcSize, MethodLength
-
   def index
+    # rubocop:disable Metrics/AbcSize, MethodLength
     @month_date = if params[:date].present?
                     Date.parse params[:date]
                   else Date.today
@@ -61,9 +60,9 @@ class AssignmentsController < ApplicationController
     @current_assignment = @roster.assignments.current
     @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @roster.fallback_user
+    # rubocop:enable Metrics/AbcSize, MethodLength
   end
 
-  # rubocop:enable Metrics/AbcSize, MethodLength
 
   def new
     @start_date = Date.parse(params.require :date)
