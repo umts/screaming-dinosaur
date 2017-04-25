@@ -145,6 +145,13 @@ RSpec.describe Assignment do
         submit
       end
     end
+    context 'change notifications disabled' do
+      before(:each) { recipient.update change_notifications_enabled: false }
+      it 'does not send notifications' do
+        expect(AssignmentsMailer).not_to receive :changed_assignment
+        submit
+      end
+    end
   end
 
   describe 'on' do
