@@ -82,18 +82,10 @@ class AssignmentsController < ApplicationController
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
       require_taking_ownership and return
     end
-    previous_owner = @assignment.user
+    @previous_owner = @assignment.user
     if @assignment.update ass_params
       confirm_change(@assignment)
-      # If the user's being changed, we effectively inform of the change
-      # by telling the previous owner they're not responsible anymore,
-      # and telling the new owner that they're newly responsible now.
-      if @assignment.user == previous_owner
-        @assignment.notify :owner, of: :update, by: @current_user
-      else
-        @assignment.notify :owner, of: :create, by: @current_user
-        @assignment.notify previous_owner, of: :destroy, by: @current_user
-      end
+      notify_appropriate_users
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
     else report_errors(@assignment)
     end
@@ -103,6 +95,18 @@ class AssignmentsController < ApplicationController
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require :id)
+  end
+
+  # If the user's being changed, we effectively inform of the change
+  # by telling the previous owner they're not responsible anymore,
+  # and telling the new owner that they're newly responsible now.
+  def notify_appropriate_users
+    if @assignment.user == @previous_owner
+      @assignment.notify :owner, of: :update, by: @current_user
+    else
+      @assignment.notify :owner, of: :create, by: @current_user
+      @assignment.notify @previous_owner, of: :destroy, by: @current_user
+    end
   end
 
   def require_taking_ownership
