@@ -37,7 +37,7 @@ class RostersController < ApplicationController
   end
 
   def update
-    roster_params = params.require(:roster).permit!
+    roster_params = params.require(:roster).permit(:name, :fallback_user_id)
     if @roster.update roster_params
       confirm_change(@roster)
       redirect_to rosters_path

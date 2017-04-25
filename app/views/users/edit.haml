@@ -25,8 +25,9 @@
     = f.label :change_notifications_enabled, 'Receive notifications when your assignments are changed?'
     = f.check_box :change_notifications_enabled
     - if @current_user.admin_in? @roster
-      = f.fields_for @user.membership_in(@roster) do |g|
-        = g.label :admin, "Admin in #{@roster.name}?"
-        = g.check_box :admin
+      .input-group
+        = f.fields_for @user.membership_in(@roster) do |g|
+          = g.label :admin, "Admin in #{@roster.name}?"
+          = g.check_box :admin
   .input-group
     = f.submit 'Save'
