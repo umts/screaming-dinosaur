@@ -17,6 +17,19 @@ class Assignment < ActiveRecord::Base
     end_date + 1.day + CONFIG[:switchover_hour].hours
   end
 
+  def notify(recipient, conditions)
+    recipient = user if recipient == :owner
+    change_type, changer = conditions.values_at :of, :by
+    unless changer == recipient
+      mailer_method = case change_type
+                      when :create  then :new_assignment
+                      when :destroy then :deleted_assignment
+                      when :update  then :changed_assignment
+                      end
+      AssignmentsMailer.send mailer_method, self, recipient, changer
+    end
+  end
+
   class << self
     # The current assignment - this method accounts for the 5pm switchover hour.
     # This should be called while scoped to a particular roster.

@@ -13,6 +13,7 @@ class AssignmentsController < ApplicationController
     end
     if assignment.save
       confirm_change(assignment)
+      assignment.notify :owner, of: :create, by: @current_user
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
     else report_errors(assignment)
     end
@@ -20,6 +21,7 @@ class AssignmentsController < ApplicationController
 
   def destroy
     # TODO: should anyone be able to destroy any assignment?
+    @assignment.notify :owner, of: :destroy, by: @current_user
     @assignment.destroy
     confirm_change(@assignment)
     redirect_to roster_assignments_path(@roster)
@@ -34,7 +36,10 @@ class AssignmentsController < ApplicationController
     end_date = Date.parse(params.require :end_date)
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
-    @roster.generate_assignments user_ids, start_date, end_date, start_user
+    @roster.generate_assignments(user_ids, start_date,
+                                 end_date, start_user).each do |assignment|
+      assignment.notify :owner, of: :create, by: @current_user
+    end
     # TODO: undo
     flash[:message] = 'Rotation has been generated.'
     redirect_to roster_assignments_path(@roster, date: start_date)
@@ -77,8 +82,10 @@ class AssignmentsController < ApplicationController
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
       require_taking_ownership and return
     end
+    @previous_owner = @assignment.user
     if @assignment.update ass_params
       confirm_change(@assignment)
+      notify_appropriate_users
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
     else report_errors(@assignment)
     end
@@ -88,6 +95,18 @@ class AssignmentsController < ApplicationController
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require :id)
+  end
+
+  # If the user's being changed, we effectively inform of the change
+  # by telling the previous owner they're not responsible anymore,
+  # and telling the new owner that they're newly responsible now.
+  def notify_appropriate_users
+    if @assignment.user == @previous_owner
+      @assignment.notify :owner, of: :update, by: @current_user
+    else
+      @assignment.notify :owner, of: :create, by: @current_user
+      @assignment.notify @previous_owner, of: :destroy, by: @current_user
+    end
   end
 
   def require_taking_ownership

@@ -25,6 +25,10 @@ describe AssignmentsController do
           submit
           expect(Assignment.count).to be 1
         end
+        it 'sends an email to the new owner of the assignment' do
+          expect_any_instance_of(Assignment).to receive(:notify)
+          submit
+        end
         it 'redirects to the index with a date of the assignment start date' do
           submit
           expect(response).to redirect_to(
@@ -77,8 +81,11 @@ describe AssignmentsController do
       expect(assigns.fetch :assignment).to eql @assignment
     end
     it 'destroys the assignment' do
-      expect_any_instance_of(Assignment)
-        .to receive :destroy
+      expect_any_instance_of(Assignment).to receive :destroy
+      submit
+    end
+    it 'sends a notification to the owner of the assignment' do
+      expect_any_instance_of(Assignment).to receive :notify
       submit
     end
     it 'redirects to the index' do
@@ -123,6 +130,8 @@ describe AssignmentsController do
       @user_ids = [user_1.id.to_s, user_2.id.to_s, user_3.id.to_s]
       @starting_user_id = @user_ids[1]
       when_current_user_is :whoever
+      # To test the mailer method called on the returned assignments
+      @assignments = [create(:assignment)]
     end
     let :submit do
       post :generate_rotation,
@@ -140,6 +149,8 @@ describe AssignmentsController do
         Roster.where.not(id: @roster.id).delete_all
         expect_any_instance_of(Roster).to receive(:generate_assignments)
           .with(@user_ids, Date.today, Date.tomorrow, @starting_user_id)
+          .and_return @assignments
+        expect_any_instance_of(Assignment).to receive :notify
         submit
       end
       it 'has a flash message' do
@@ -338,11 +349,33 @@ describe AssignmentsController do
            roster_id: @assignment.roster.id
     end
     context 'admin in roster' do
-      before(:each) { when_current_user_is roster_admin(@assignment.roster) }
+      before :each do
+        @roster_admin = roster_admin @assignment.roster
+        when_current_user_is @roster_admin
+      end
       context 'without errors' do
         it 'updates the assignment' do
           submit
           expect(@assignment.reload.user).to eql @user
+        end
+        context 'owner is being changed' do
+          it "notifies the new owner of the new assignment \
+              and notifies the old owner of the deleted assignment" do
+            expect_any_instance_of(Assignment).to receive(:notify)
+              .with(:owner, { of: :create, by: @roster_admin })
+            expect_any_instance_of(Assignment).to receive(:notify)
+              .with(@assignment.user, { of: :destroy, by: @roster_admin })
+            submit
+          end
+
+        end
+        context 'owner is not being changed' do
+          before(:each) { @changes[:user_id] = @assignment.user_id }
+          it 'notifies the owner of the changed assignment' do
+            expect_any_instance_of(Assignment).to receive(:notify)
+              .with(:owner, { of: :update, by: @roster_admin })
+            submit
+          end
         end
         it 'redirects to the index with a date of the assignment start date' do
           submit
