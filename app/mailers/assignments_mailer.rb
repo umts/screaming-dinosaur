@@ -33,9 +33,8 @@ class AssignmentsMailer < ActionMailer::Base
     @user = @assignment.user
     @roster = @assignment.roster
     @start_date = @assignment.effective_start_datetime
-                            .strftime '%A, %B %e at %-l:%M %P'
+                             .strftime '%A, %B %e at %-l:%M %P'
     @end_date = @assignment.effective_end_datetime
-                          .strftime '%A, %B %e at %-l:%M %P'
-
+                           .strftime '%A, %B %e at %-l:%M %P'
   end
 end
