@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: [:destroy, :edit, :update]
   before_action :require_admin_in_roster, only: %i(generate_rotation
@@ -9,7 +10,10 @@ class AssignmentsController < ApplicationController
                                :user_id, :roster_id
     assignment = Assignment.new ass_params
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
+      # ... and return is correct here
+      # rubocop:disable Style/AndOr
       require_taking_ownership and return
+      # rubocop:enable Style/AndOr
     end
     if assignment.save
       confirm_change(assignment)
@@ -46,7 +50,6 @@ class AssignmentsController < ApplicationController
   end
 
   def index
-    # rubocop:disable Metrics/AbcSize, MethodLength
     @month_date = if params[:date].present?
                     Date.parse params[:date]
                   else Date.today
@@ -60,7 +63,6 @@ class AssignmentsController < ApplicationController
     @current_assignment = @roster.assignments.current
     @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @roster.fallback_user
-    # rubocop:enable Metrics/AbcSize, MethodLength
   end
 
   def new
@@ -78,7 +80,10 @@ class AssignmentsController < ApplicationController
     ass_params = params.require(:assignment)
                        .permit :start_date, :end_date, :user_id
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
+      # ... and return is correct here
+      # rubocop:disable Style/AndOr
       require_taking_ownership and return
+      # rubocop:enable Style/AndOr
     end
     @previous_owner = @assignment.user
     if @assignment.update ass_params

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ApplicationController < ActionController::Base
   attr_accessor :current_user
   before_action :set_current_user, :set_roster, :set_paper_trail_whodunnit
