@@ -95,7 +95,7 @@ RSpec.describe Assignment do
     let(:submit) { assignment.notify recipient, conditions }
     let(:recipient) { owner }
     let(:conditions) { { of: change_type, by: changer } }
-    let(:change_type) { :update }
+    let(:change_type) { :changed_assignment }
     let(:changer) { create :user }
     context 'changer is recipient' do
       let(:changer) { recipient }
@@ -106,7 +106,7 @@ RSpec.describe Assignment do
     end
     context 'changer is not recipient' do
       context 'change type is create' do
-        let(:change_type) { :create }
+        let(:change_type) { :new_assignment }
         it 'sends the new_assignment mail' do
           expect(AssignmentsMailer).to receive(:new_assignment)
             .with(assignment, recipient, changer)
@@ -114,7 +114,7 @@ RSpec.describe Assignment do
         end
       end
       context 'change type is destroy' do
-        let(:change_type) { :destroy }
+        let(:change_type) { :deleted_assignment }
         it 'sends the deleted_assignment mail' do
           expect(AssignmentsMailer).to receive(:deleted_assignment)
             .with(assignment, recipient, changer)

@@ -1,5 +1,8 @@
 require: umts-custom-cops
 inherit_from: .rubocop-no-umts-cops.yml
 
+AllCops:
+  TargetRubyVersion: 2.3
+
 HasAndBelongsToMany:
   Enabled: false

@@ -362,9 +362,9 @@ describe AssignmentsController do
           it "notifies the new owner of the new assignment \
               and notifies the old owner of the deleted assignment" do
             expect_any_instance_of(Assignment).to receive(:notify)
-              .with(:owner, { of: :create, by: @roster_admin })
+              .with(:owner, { of: :new_assignment, by: @roster_admin })
             expect_any_instance_of(Assignment).to receive(:notify)
-              .with(@assignment.user, { of: :destroy, by: @roster_admin })
+              .with(@assignment.user, { of: :deleted_assignment, by: @roster_admin })
             submit
           end
 
@@ -373,7 +373,7 @@ describe AssignmentsController do
           before(:each) { @changes[:user_id] = @assignment.user_id }
           it 'notifies the owner of the changed assignment' do
             expect_any_instance_of(Assignment).to receive(:notify)
-              .with(:owner, { of: :update, by: @roster_admin })
+              .with(:owner, { of: :changed_assignment, by: @roster_admin })
             submit
           end
         end

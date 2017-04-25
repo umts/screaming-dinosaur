@@ -17,16 +17,11 @@ class Assignment < ActiveRecord::Base
     end_date + 1.day + CONFIG[:switchover_hour].hours
   end
 
-  def notify(recipient, conditions)
-    recipient = user if recipient == :owner
-    change_type, changer = conditions.values_at :of, :by
-    return unless recipient != changer && recipient.change_notifications_enabled
-    mailer_method = case change_type
-                    when :create  then :new_assignment
-                    when :destroy then :deleted_assignment
-                    when :update  then :changed_assignment
-                    end
-    AssignmentsMailer.send mailer_method, self, recipient, changer
+  def notify(receiver, of:, by:)
+    receiver = user if receiver == :owner
+    mailer_method, changer = of, by
+    return unless receiver != changer && receiver.change_notifications_enabled?
+    AssignmentsMailer.send mailer_method, self, receiver, changer
   end
 
   class << self
