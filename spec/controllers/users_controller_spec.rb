@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 describe UsersController do
@@ -160,7 +161,8 @@ describe UsersController do
       it 'populates a fallback variable with the roster fallback user' do
         user = roster_user @roster
         Roster.where.not(id: @roster.id).delete_all
-        expect_any_instance_of(Roster).to receive(:fallback_user).and_return(user)
+        expect_any_instance_of(Roster).to receive(:fallback_user)
+          .and_return(user)
         submit
         expect(assigns.fetch :fallback).to eql user
       end
@@ -261,7 +263,8 @@ describe UsersController do
     before :each do
       @new_roster = create :roster
       @user = roster_user @roster
-      @changes = { phone: '+14135451451', rosters: [@roster.id, @new_roster.id] }
+      @changes = { phone: '+14135451451',
+                   rosters: [@roster.id, @new_roster.id] }
     end
     let :submit do
       post :update, id: @user.id, user: @changes, roster_id: @roster.id

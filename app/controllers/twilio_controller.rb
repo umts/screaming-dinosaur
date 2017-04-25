@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class TwilioController < ApplicationController
   before_action :set_on_call_user
   skip_before_action :set_current_user

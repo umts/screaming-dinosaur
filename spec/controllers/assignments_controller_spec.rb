@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 describe AssignmentsController do
@@ -159,7 +160,8 @@ describe AssignmentsController do
       end
       it 'redirects to the calendar with the start date given' do
         submit
-        expect(response).to redirect_to roster_assignments_path(date: Date.today)
+        expect(response)
+          .to redirect_to roster_assignments_path(date: Date.today)
       end
     end
     context 'admin, not in roster' do
@@ -362,18 +364,18 @@ describe AssignmentsController do
           it "notifies the new owner of the new assignment \
               and notifies the old owner of the deleted assignment" do
             expect_any_instance_of(Assignment).to receive(:notify)
-              .with(:owner, { of: :new_assignment, by: @roster_admin })
+              .with(:owner, of: :new_assignment, by: @roster_admin)
             expect_any_instance_of(Assignment).to receive(:notify)
-              .with(@assignment.user, { of: :deleted_assignment, by: @roster_admin })
+              .with(@assignment.user, of: :deleted_assignment,
+                                      by: @roster_admin)
             submit
           end
-
         end
         context 'owner is not being changed' do
           before(:each) { @changes[:user_id] = @assignment.user_id }
           it 'notifies the owner of the changed assignment' do
             expect_any_instance_of(Assignment).to receive(:notify)
-              .with(:owner, { of: :changed_assignment, by: @roster_admin })
+              .with(:owner, of: :changed_assignment, by: @roster_admin)
             submit
           end
         end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Assignment < ActiveRecord::Base
   has_paper_trail
   belongs_to :user
@@ -75,7 +76,6 @@ class Assignment < ActiveRecord::Base
   private
 
   def overlaps_any?
-    # rubocop:disable MethodLength
     if new_record?
       overlapping_assignments = roster.assignments.where("
         start_date <= ? AND end_date >= ?
@@ -88,7 +88,6 @@ class Assignment < ActiveRecord::Base
     return if overlapping_assignments.blank?
     errors.add :base,
                'Overlaps with another assignment'
-    # rubocop:enable MethodLength
   end
 
   def user_in_roster?

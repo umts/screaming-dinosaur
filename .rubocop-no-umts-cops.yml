@@ -2,6 +2,7 @@ Rails:
   Enabled: true
 
 AllCops:
+  TargetRubyVersion: 2.3
   Exclude:
     - 'bin/**/*'
     - 'config/**/*'
@@ -10,10 +11,13 @@ AllCops:
     - 'vendor/**/*'
 
 Metrics/AbcSize:
-  Max: 20
+  Max: 25
+
+Metrics/ClassLength:
+  Max: 150
 
 Metrics/MethodLength:
-  Max: 11
+  Max: 15
 
 Rails/Date:
   Enabled: false

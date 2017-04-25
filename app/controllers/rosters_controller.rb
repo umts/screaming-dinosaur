@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class RostersController < ApplicationController
   # The default scaffold method, not the generic one
   # we wrote in ApplicationController.
