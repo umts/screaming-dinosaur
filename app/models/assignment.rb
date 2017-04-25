@@ -91,8 +91,7 @@ class Assignment < ActiveRecord::Base
   end
 
   def user_in_roster?
-    unless roster.users.include? user
-      errors.add :base, 'User is not in this roster'
-    end
+    return if roster.users.include? user
+    errors.add :base, 'User is not in this roster'
   end
 end

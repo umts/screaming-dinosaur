@@ -74,11 +74,10 @@ class UsersController < ApplicationController
   end
 
   def require_admin_in_roster_or_self
-    unless @current_user == @user || @current_user.admin_in?(@roster)
-      # ... and return is correct here
-      # rubocop:disable Style/AndOr
-      head :unauthorized and return
-      # rubocop:enable Style/AndOr
-    end
+    return if @current_user == @user || @current_user.admin_in?(@roster)
+    # ... and return is correct here
+    # rubocop:disable Style/AndOr
+    head :unauthorized and return
+    # rubocop:enable Style/AndOr
   end
 end
