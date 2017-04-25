@@ -29,7 +29,9 @@ class AssignmentsMailer < ActionMailer::Base
   private
 
   def set_defaults(assignment, recipient = nil, changer = nil)
+    # rubocop:disable Style/ParallelAssignment
     @assignment, @recipient, @changer = assignment, recipient, changer
+    # rubocop:enable Style/ParallelAssignment
     @user = @assignment.user
     @roster = @assignment.roster
     @start_date = @assignment.effective_start_datetime
