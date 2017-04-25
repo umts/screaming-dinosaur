@@ -20,14 +20,13 @@ class Assignment < ActiveRecord::Base
   def notify(recipient, conditions)
     recipient = user if recipient == :owner
     change_type, changer = conditions.values_at :of, :by
-    if recipient != changer && recipient.change_notifications_enabled?
-      mailer_method = case change_type
-                      when :create  then :new_assignment
-                      when :destroy then :deleted_assignment
-                      when :update  then :changed_assignment
-                      end
-      AssignmentsMailer.send mailer_method, self, recipient, changer
-    end
+    return unless recipient != changer && recipient.change_notifications_enabled
+    mailer_method = case change_type
+                    when :create  then :new_assignment
+                    when :destroy then :deleted_assignment
+                    when :update  then :changed_assignment
+                    end
+    AssignmentsMailer.send mailer_method, self, recipient, changer
   end
 
   class << self
