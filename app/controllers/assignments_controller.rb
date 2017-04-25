@@ -13,7 +13,7 @@ class AssignmentsController < ApplicationController
     end
     if assignment.save
       confirm_change(assignment)
-      assignment.notify :owner, of: :create, by: @current_user
+      assignment.notify :owner, of: :new_assignment, by: @current_user
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
     else report_errors(assignment)
     end
@@ -21,7 +21,7 @@ class AssignmentsController < ApplicationController
 
   def destroy
     # TODO: should anyone be able to destroy any assignment?
-    @assignment.notify :owner, of: :destroy, by: @current_user
+    @assignment.notify :owner, of: :deleted_assignment, by: @current_user
     @assignment.destroy
     confirm_change(@assignment)
     redirect_to roster_assignments_path(@roster)
@@ -38,16 +38,15 @@ class AssignmentsController < ApplicationController
     start_user = params.require :starting_user_id
     @roster.generate_assignments(user_ids, start_date,
                                  end_date, start_user).each do |assignment|
-      assignment.notify :owner, of: :create, by: @current_user
+      assignment.notify :owner, of: :new_assignment, by: @current_user
     end
     # TODO: undo
     flash[:message] = 'Rotation has been generated.'
     redirect_to roster_assignments_path(@roster, date: start_date)
   end
 
-  # rubocop:disable Metrics/AbcSize, MethodLength
-
   def index
+    # rubocop:disable Metrics/AbcSize, MethodLength
     @month_date = if params[:date].present?
                     Date.parse params[:date]
                   else Date.today
@@ -61,9 +60,8 @@ class AssignmentsController < ApplicationController
     @current_assignment = @roster.assignments.current
     @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @roster.fallback_user
+    # rubocop:enable Metrics/AbcSize, MethodLength
   end
-
-  # rubocop:enable Metrics/AbcSize, MethodLength
 
   def new
     @start_date = Date.parse(params.require :date)
@@ -102,10 +100,11 @@ class AssignmentsController < ApplicationController
   # and telling the new owner that they're newly responsible now.
   def notify_appropriate_users
     if @assignment.user == @previous_owner
-      @assignment.notify :owner, of: :update, by: @current_user
+      @assignment.notify :owner, of: :changed_assignment, by: @current_user
     else
-      @assignment.notify :owner, of: :create, by: @current_user
-      @assignment.notify @previous_owner, of: :destroy, by: @current_user
+      @assignment.notify :owner, of: :new_assignment, by: @current_user
+      @assignment.notify @previous_owner, of: :deleted_assignment,
+                                          by: @current_user
     end
   end
 

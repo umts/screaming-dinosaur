@@ -305,9 +305,9 @@ describe UsersController do
           expect(@user.reload.phone).to eql @changes[:phone]
           expect(@user.rosters).to include @new_roster
         end
-        it 'redirects to the index' do
+        it 'redirects to the assignments page' do
           submit
-          expect(response).to redirect_to roster_users_url
+          expect(response).to redirect_to roster_assignments_url(@roster)
         end
         it 'does not allow changing admin status in roster' do
           @changes[:membership] = { admin: true }
