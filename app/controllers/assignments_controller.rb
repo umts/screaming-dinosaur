@@ -72,7 +72,7 @@ class AssignmentsController < ApplicationController
   end
 
   def rotation_generator
-    @users = User.order :last_name
+    @users = @roster.users.order :last_name
     @start_date = Assignment.next_rotation_start_date
   end
 

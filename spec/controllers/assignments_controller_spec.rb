@@ -306,10 +306,8 @@ describe AssignmentsController do
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
       it 'sets the users instance variable' do
-        expect(User).to receive(:order).with(:last_name)
-          .and_return 'whatever'
         submit
-        expect(assigns.fetch :users).to eql 'whatever'
+        expect(assigns.fetch :users).to include(*@roster.users)
       end
       it 'sets the start date instance variable' do
         expect(Assignment).to receive(:next_rotation_start_date)
