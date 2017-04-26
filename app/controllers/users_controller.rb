@@ -4,8 +4,13 @@ class UsersController < ApplicationController
   before_action :require_admin_in_roster_or_self, only: %i(edit update)
   before_action :require_admin_in_roster, except: %i(edit update)
 
+  WHITELISTED_ATTRIBUTES = [:first_name, :last_name, :spire, :email,
+                            :phone, :reminders_enabled,
+                            :change_notifications_enabled,
+                            rosters: [], membership: [:admin]].freeze
+
   def create
-    user_params = params.require(:user).permit!
+    user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
     user = User.new user_params
     user.rosters << @roster
     if user.save
@@ -39,10 +44,10 @@ class UsersController < ApplicationController
   end
 
   def update
-    user_params = params.require(:user).permit!
-    user_params = parse_membership(user_params)
-    user_params = parse_roster_ids(user_params)
-    if @user.update user_params
+    user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
+    membership_params = user_params[:membership]
+    user_params = parse_roster_ids(user_params.except :membership)
+    if @user.update(user_params) && update_membership(membership_params)
       confirm_change(@user)
       if @current_user.admin_in? @roster
         redirect_to roster_users_path(@roster)
@@ -58,12 +63,12 @@ class UsersController < ApplicationController
     @user = User.find(params.require :id)
   end
 
-  def parse_membership(user_params)
-    if @current_user.admin_in?(@roster) && user_params.key?(:membership)
+  def update_membership(membership_params)
+    if membership_params.present? && @current_user.admin_in?(@roster)
       membership = @user.membership_in @roster
-      membership.update user_params[:membership].permit(:admin)
+      membership.update membership_params
+    else true
     end
-    user_params.except :membership
   end
 
   def parse_roster_ids(attrs)
@@ -74,11 +79,10 @@ class UsersController < ApplicationController
   end
 
   def require_admin_in_roster_or_self
-    unless @current_user == @user || @current_user.admin_in?(@roster)
-      # ... and return is correct here
-      # rubocop:disable Style/AndOr
-      head :unauthorized and return
-      # rubocop:enable Style/AndOr
-    end
+    return if @current_user == @user || @current_user.admin_in?(@roster)
+    # ... and return is correct here
+    # rubocop:disable Style/AndOr
+    head :unauthorized and return
+    # rubocop:enable Style/AndOr
   end
 end

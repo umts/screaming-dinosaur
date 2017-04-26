@@ -24,7 +24,6 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
-    # TODO: should anyone be able to destroy any assignment?
     @assignment.notify :owner, of: :deleted_assignment, by: @current_user
     @assignment.destroy
     confirm_change(@assignment)
@@ -44,7 +43,6 @@ class AssignmentsController < ApplicationController
                                  end_date, start_user).each do |assignment|
       assignment.notify :owner, of: :new_assignment, by: @current_user
     end
-    # TODO: undo
     flash[:message] = 'Rotation has been generated.'
     redirect_to roster_assignments_path(@roster, date: start_date)
   end

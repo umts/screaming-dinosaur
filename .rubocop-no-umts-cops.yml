@@ -25,6 +25,9 @@ Rails/Date:
 Style/Documentation:
   Enabled: false
 
+Style/EmptyMethod:
+  Enabled: false
+
 # This cop is offended by method calls
 # which I think are perfectly clear.
 Style/NestedParenthesizedCalls:

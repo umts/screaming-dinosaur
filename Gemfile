@@ -7,7 +7,7 @@ gem 'haml'
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'mysql'
+gem 'mysql2'
 gem 'paper_trail'
 gem 'rails', '~> 4.2'
 gem 'sass-rails'
@@ -21,10 +21,10 @@ end
 
 group :development do
   gem 'capistrano', require: false
-  gem 'capistrano-pending', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-passenger', require: false
+  gem 'capistrano-pending', require: false
   gem 'rb-readline', require: false
 end
 
@@ -32,6 +32,7 @@ group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'codeclimate-test-reporter', '~> 1.0'
+  gem 'haml_lint'
   gem 'mocha'
   gem 'pry-byebug'
   gem 'rspec-html-matchers'
@@ -41,5 +42,4 @@ group :development, :test do
   gem 'timecop'
   gem 'umts-custom-cops'
   gem 'umts-custom-matchers'
-  gem 'haml_lint'
 end

@@ -1,14 +1,33 @@
 %h1.title New user
 
 = form_for User.new, url: roster_users_path(@roster) do |f|
-  = f.label :first_name
-  = f.text_field :first_name
-  = f.label :last_name
-  = f.text_field :last_name
-  = f.label :spire
-  = f.text_field :spire, size: 25, placeholder: '12345678@umass.edu'
-  = f.label :email
-  = f.text_field :email, size: 30
-  = f.label :phone
-  = f.text_field :phone, placeholder: '+14135450056'
-  = f.submit 'Save'
+  .input-group
+    = f.label :first_name
+    = f.text_field :first_name
+    = f.label :last_name
+    = f.text_field :last_name
+    = f.label :spire
+    = f.text_field :spire, size: 25, placeholder: '12345678@umass.edu'
+    = f.label :email
+    = f.text_field :email, size: 30
+    = f.label :phone
+    = f.text_field :phone, placeholder: '+14135450056'
+  .input-group
+    = f.label :rosters
+    = f.select :rosters,
+      options_from_collection_for_select(Roster.all, :id, :name,
+                                         selected: @roster.id),
+      {}, multiple: true
+  .input-group
+    = f.label :reminders_enabled, 'Receive email reminders of upcoming assignments?'
+    = f.check_box :reminders_enabled
+  .input-group
+    = f.label :change_notifications_enabled, 'Receive notifications when your assignments are changed?'
+    = f.check_box :change_notifications_enabled
+    - if @current_user.admin_in? @roster
+      .input-group
+        = f.fields_for :membership do |g|
+          = g.label :admin, "Admin in #{@roster.name}?"
+          = g.check_box :admin
+  .input-group
+    = f.submit 'Save'

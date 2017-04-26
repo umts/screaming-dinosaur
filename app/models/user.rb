@@ -10,10 +10,10 @@ class User < ActiveRecord::Base
   validates :spire, :email, :phone,
             uniqueness: true
   validates :spire,
-            format: { with: /\d{8}@umass.edu/,
+            format: { with: /\A\d{8}@umass.edu\z/,
                       message: 'must be 8 digits followed by @umass.edu' }
   validates :phone,
-            format: { with: /\+1\d{10}/,
+            format: { with: /\A\+1\d{10}\z/,
                       message: 'must be "+1" followed by 10 digits' }
 
   def full_name
