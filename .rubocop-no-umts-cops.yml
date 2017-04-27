@@ -10,8 +10,16 @@ AllCops:
     - 'script/**/*'
     - 'vendor/**/*'
 
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
 Metrics/AbcSize:
   Max: 25
+
+# Tests have long blocks. Not super much we can do about it.
+Metrics/BlockLength:
+  Exclude: 
+    - 'spec/**/*'
 
 Metrics/ClassLength:
   Max: 150
@@ -20,6 +28,9 @@ Metrics/MethodLength:
   Max: 15
 
 Rails/Date:
+  Enabled: false
+
+Rails/HttpPositionalArguments:
   Enabled: false
 
 Style/Documentation:

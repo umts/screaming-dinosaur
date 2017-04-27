@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 describe UsersController do
@@ -152,11 +153,11 @@ describe UsersController do
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
       it 'populates a users variable of all users' do
-        user_1 = roster_user @roster
-        user_2 = roster_user @roster
-        user_3 = roster_user @roster
+        user1 = roster_user @roster
+        user2 = roster_user @roster
+        user3 = roster_user @roster
         submit
-        expect(assigns.fetch :users).to include user_1, user_2, user_3
+        expect(assigns.fetch :users).to include user1, user2, user3
       end
       it 'populates a fallback variable with the roster fallback user' do
         user = roster_user @roster

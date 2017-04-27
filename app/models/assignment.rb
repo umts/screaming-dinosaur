@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Assignment < ActiveRecord::Base
   has_paper_trail
   belongs_to :user
