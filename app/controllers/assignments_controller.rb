@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 class AssignmentsController < ApplicationController
-  before_action :find_assignment, only: [:destroy, :edit, :update]
-  before_action :require_admin_in_roster, only: %i(generate_rotation
-                                                   rotation_generator)
+  before_action :find_assignment, only: %i[destroy edit update]
+  before_action :require_admin_in_roster, only: %i[generate_rotation
+                                                   rotation_generator]
 
   def create
     ass_params = params.require(:assignment)

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class User < ActiveRecord::Base
   has_paper_trail
   has_many :assignments, dependent: :restrict_with_error
