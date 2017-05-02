@@ -41,8 +41,11 @@ class AssignmentsController < ApplicationController
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
     unless user_ids.include? start_user
-      flash[:errors] = 'The starting user must be in the list of selected users.'
+      flash[:errors] = 'The starting user must be in the rotation.'
+      # ... and return is correct here
+      # rubocop:disable Style/AndOr
       redirect_to :back and return
+      # rubocop:enable Style/AndOr
     end
     @roster.generate_assignments(user_ids, start_date,
                                  end_date, start_user).each do |assignment|
