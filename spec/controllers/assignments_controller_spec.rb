@@ -167,7 +167,7 @@ describe AssignmentsController do
       context 'starting user not in selected users' do
         before(:each) { @starting_user_id = roster_user(@roster).id }
         it 'warns that the starting user is not in the selected users' do
-          submit
+          expect { submit }.to redirect_back
           expect(flash[:errors]).not_to be_empty
         end
       end
