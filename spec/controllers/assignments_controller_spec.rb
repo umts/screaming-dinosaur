@@ -164,6 +164,13 @@ describe AssignmentsController do
         expect(response)
           .to redirect_to roster_assignments_path(date: Date.today)
       end
+      context 'starting user not in selected users' do
+        before(:each) { @starting_user_id = roster_user(@roster).id }
+        it 'warns that the starting user is not in the selected users' do
+          expect { submit }.to redirect_back
+          expect(flash[:errors]).not_to be_empty
+        end
+      end
     end
     context 'admin, not in roster' do
       before(:each) { when_current_user_is roster_admin }
