@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class ChangesController < ApplicationController
   def undo
     version = PaperTrail::Version.find(params.require :id)

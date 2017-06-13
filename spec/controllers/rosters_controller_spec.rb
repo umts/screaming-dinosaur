@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 describe RostersController do
@@ -102,11 +103,11 @@ describe RostersController do
         expect(assigns.fetch :roster).to eql @roster
       end
       it 'populates a users variable of all users of the roster' do
-        user_1 = roster_user @roster
-        user_2 = roster_user @roster
-        user_3 = roster_user @roster
+        user1 = roster_user @roster
+        user2 = roster_user @roster
+        user3 = roster_user @roster
         submit
-        expect(assigns.fetch :users).to include user_1, user_2, user_3
+        expect(assigns.fetch :users).to include user1, user2, user3
       end
       it 'renders the edit template' do
         submit

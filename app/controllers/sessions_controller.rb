@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class SessionsController < ApplicationController
   layout false
   skip_before_action :set_current_user, :set_roster

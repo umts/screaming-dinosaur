@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 class RostersController < ApplicationController
   # The default scaffold method, not the generic one
   # we wrote in ApplicationController.
-  before_action :find_roster, only: %i(destroy edit update)
+  before_action :find_roster, only: %i[destroy edit update]
   before_action :require_admin
-  before_action :require_admin_in_roster, only: %i(destroy edit update)
+  before_action :require_admin_in_roster, only: %i[destroy edit update]
 
   def create
     roster_params = params.require(:roster).permit(:name)

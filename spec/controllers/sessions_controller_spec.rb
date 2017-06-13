@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 describe SessionsController do
@@ -49,10 +50,10 @@ describe SessionsController do
       get :dev_login
     end
     it 'assigns a rosters variable' do
-      roster_1 = create :roster
-      roster_2 = create :roster
+      roster1 = create :roster
+      roster2 = create :roster
       submit
-      expect(assigns.fetch :rosters).to contain_exactly roster_1, roster_2
+      expect(assigns.fetch :rosters).to contain_exactly roster1, roster2
     end
     it 'renders the correct template' do
       submit

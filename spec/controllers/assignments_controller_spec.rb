@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 describe AssignmentsController do
@@ -109,11 +110,11 @@ describe AssignmentsController do
       expect(assigns.fetch :assignment).to eql @assignment
     end
     it 'populates a users variable of all users' do
-      user_1 = roster_user @roster
-      user_2 = roster_user @roster
-      user_3 = roster_user @roster
+      user1 = roster_user @roster
+      user2 = roster_user @roster
+      user3 = roster_user @roster
       submit
-      expect(assigns.fetch :users).to include user_1, user_2, user_3
+      expect(assigns.fetch :users).to include user1, user2, user3
     end
     it 'renders the edit template' do
       submit
@@ -125,10 +126,10 @@ describe AssignmentsController do
     before :each do
       @start_date = Date.today.strftime '%Y-%m-%d'
       @end_date = Date.tomorrow.strftime '%Y-%m-%d'
-      user_1 = roster_user @roster
-      user_2 = roster_user @roster
-      user_3 = roster_user @roster
-      @user_ids = [user_1.id.to_s, user_2.id.to_s, user_3.id.to_s]
+      user1 = roster_user @roster
+      user2 = roster_user @roster
+      user3 = roster_user @roster
+      @user_ids = [user1.id.to_s, user2.id.to_s, user3.id.to_s]
       @starting_user_id = @user_ids[1]
       when_current_user_is :whoever
       # To test the mailer method called on the returned assignments
@@ -162,6 +163,13 @@ describe AssignmentsController do
         submit
         expect(response)
           .to redirect_to roster_assignments_path(date: Date.today)
+      end
+      context 'starting user not in selected users' do
+        before(:each) { @starting_user_id = roster_user(@roster).id }
+        it 'warns that the starting user is not in the selected users' do
+          expect { submit }.to redirect_back
+          expect(flash[:errors]).not_to be_empty
+        end
       end
     end
     context 'admin, not in roster' do
@@ -284,11 +292,11 @@ describe AssignmentsController do
       expect(assigns.fetch :end_date).to eql(@date + 6.days)
     end
     it 'populates a users variable containing all the users' do
-      user_1 = roster_user @roster
-      user_2 = roster_user @roster
-      user_3 = roster_user @roster
+      user1 = roster_user @roster
+      user2 = roster_user @roster
+      user3 = roster_user @roster
       submit
-      expect(assigns.fetch :users).to include user_1, user_2, user_3
+      expect(assigns.fetch :users).to include user1, user2, user3
     end
     it 'renders the new template' do
       submit

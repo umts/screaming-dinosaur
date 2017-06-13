@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 class AssignmentsController < ApplicationController
-  before_action :find_assignment, only: [:destroy, :edit, :update]
-  before_action :require_admin_in_roster, only: %i(generate_rotation
-                                                   rotation_generator)
+  before_action :find_assignment, only: %i[destroy edit update]
+  before_action :require_admin_in_roster, only: %i[generate_rotation
+                                                   rotation_generator]
 
   def create
     ass_params = params.require(:assignment)
@@ -39,6 +40,13 @@ class AssignmentsController < ApplicationController
     end_date = Date.parse(params.require :end_date)
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
+    unless user_ids.include? start_user
+      flash[:errors] = 'The starting user must be in the rotation.'
+      # ... and return is correct here
+      # rubocop:disable Style/AndOr
+      redirect_to :back and return
+      # rubocop:enable Style/AndOr
+    end
     @roster.generate_assignments(user_ids, start_date,
                                  end_date, start_user).each do |assignment|
       assignment.notify :owner, of: :new_assignment, by: @current_user
