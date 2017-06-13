@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Roster < ActiveRecord::Base
+class Roster < ApplicationRecord
   has_paper_trail
   has_many :assignments, dependent: :destroy
   has_many :memberships

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Membership < ActiveRecord::Base
+class Membership < ApplicationRecord
   has_paper_trail
   belongs_to :user
   belongs_to :roster
