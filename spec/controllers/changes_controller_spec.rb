@@ -22,7 +22,7 @@ describe ChangesController do
         @destroy_version = @destroyed.versions.last
       end
     end
-    let(:submit) { get :undo, id: version.id }
+    let(:submit) { get :undo, params: { id: version.id } }
     context 'change made by user' do
       before(:each) { when_current_user_is @change_user }
       context 'create version' do

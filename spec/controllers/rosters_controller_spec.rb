@@ -5,7 +5,7 @@ require 'rails_helper'
 describe RostersController do
   describe 'POST #create' do
     let :submit do
-      post :create, roster: { name: 'Operations' }
+      post :create, params: { roster: { name: 'Operations' } }
     end
     context 'admin' do
       let(:admin) { roster_admin }
@@ -33,7 +33,7 @@ describe RostersController do
           @roster = create :roster, name: 'unique'
         end
         let :submit do
-          post :create, roster: { name: @roster.name }
+          post :create, params: { roster: { name: @roster.name } }
         end
         it 'does not create roster, gives errors, and redirects back' do
           expect { submit }.to redirect_back
@@ -59,7 +59,7 @@ describe RostersController do
       @roster = create :roster
     end
     let :submit do
-      delete :destroy, id: @roster.id
+      delete :destroy, params: { id: @roster.id }
     end
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
@@ -94,7 +94,7 @@ describe RostersController do
       @roster = create :roster
     end
     let :submit do
-      get :edit, id: @roster.id
+      get :edit, params: { id: @roster.id }
     end
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
@@ -171,7 +171,7 @@ describe RostersController do
       @attributes = { name: 'unique', fallback_user_id: @user.id }
     end
     let :submit do
-      post :update, id: @roster.id, roster: @attributes
+      post :update, params: { id: @roster.id, roster: @attributes }
     end
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }

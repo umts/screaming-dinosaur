@@ -6,7 +6,7 @@ describe TwilioController do
   describe 'GET #call, XML' do
     let(:roster) { create :roster }
     let :submit do
-      get :call, roster_id: roster.id, format: :xml
+      get :call, params: { roster_id: roster.id, format: :xml }
     end
     before :each do
       @user = create :user
@@ -34,7 +34,7 @@ describe TwilioController do
         .and_return @user
     end
     let :submit do
-      get :text, format: :xml, Body: @body, roster_id: @roster.id
+      get :text, params: { format: :xml, Body: @body, roster_id: @roster.id }
     end
     it 'sets the current on call user to the user variable' do
       submit
