@@ -43,4 +43,5 @@ group :development, :test do
   gem 'timecop'
   gem 'umts-custom-cops'
   gem 'umts-custom-matchers'
+  gem 'rails-controller-testing'
 end
