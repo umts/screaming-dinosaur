@@ -138,11 +138,12 @@ describe AssignmentsController do
     let :submit do
       post :generate_rotation,
            params: {
-           roster_id: @roster.id,
-           start_date: @start_date,
-           end_date: @end_date,
-           user_ids: @user_ids,
-           starting_user_id: @starting_user_id }
+             roster_id: @roster.id,
+             start_date: @start_date,
+             end_date: @end_date,
+             user_ids: @user_ids,
+             starting_user_id: @starting_user_id
+           }
     end
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
@@ -352,11 +353,12 @@ describe AssignmentsController do
       @changes = { user_id: @user.id }
     end
     let :submit do
-      post :update, 
-          params: {
-           id: @assignment.id,
-           assignment: @changes,
-           roster_id: @assignment.roster.id }
+      post :update,
+           params: {
+             id: @assignment.id,
+             assignment: @changes,
+             roster_id: @assignment.roster.id
+           }
     end
     context 'admin in roster' do
       before :each do

@@ -6,7 +6,7 @@ class Roster < ApplicationRecord
   has_many :memberships
   has_many :users, through: :memberships
   belongs_to :fallback_user, class_name: 'User',
-             foreign_key: :fallback_user_id, optional: true
+                             foreign_key: :fallback_user_id, optional: true
 
   validates :name, presence: true, uniqueness: true
 

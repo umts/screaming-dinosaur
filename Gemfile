@@ -36,6 +36,7 @@ group :development, :test do
   gem 'haml_lint'
   gem 'mocha'
   gem 'pry-byebug'
+  gem 'rails-controller-testing'
   gem 'rspec-html-matchers'
   gem 'rspec-rails'
   gem 'rubocop'
@@ -43,5 +44,4 @@ group :development, :test do
   gem 'timecop'
   gem 'umts-custom-cops'
   gem 'umts-custom-matchers'
-  gem 'rails-controller-testing'
 end
