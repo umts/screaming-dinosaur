@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
 
   def report_errors(object)
     flash[:errors] = object.errors.full_messages
-    redirect_to :back
+    redirect_back fallback_location: 'public/404.html'
   end
 
   # There are three levels of access:
