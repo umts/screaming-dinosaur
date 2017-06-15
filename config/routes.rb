@@ -17,7 +17,11 @@ Rails.application.routes.draw do
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
-  
+
+  # Temporary, remove when IT twilio number is fixed:
+  get 'twilio/call', to: 'twilio#call', defaults: {roster_id: 1}
+  get 'twilio/text', to: 'twilio#text', defaults: {roster_id: 1}
+
   get 'changes/:id/undo', to: 'changes#undo', as: :undo_change
   
   unless Rails.env.production?
