@@ -20,7 +20,7 @@ class AssignmentsController < ApplicationController
       confirm_change(assignment)
       assignment.notify :owner, of: :new_assignment, by: @current_user
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
-    else report_errors(assignment, roster_assignments_path)
+    else report_errors(assignment, fallback_location: roster_assignments_path)
     end
   end
 
@@ -96,7 +96,7 @@ class AssignmentsController < ApplicationController
       confirm_change(@assignment)
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
-    else report_errors(@assignment, roster_assignments_path)
+    else report_errors(@assignment, fallback_location: roster_assignments_path)
     end
   end
 

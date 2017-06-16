@@ -16,7 +16,7 @@ class RostersController < ApplicationController
     if roster.save
       confirm_change(roster)
       redirect_to rosters_path
-    else report_errors(roster, rosters_path)
+    else report_errors(roster, fallback_location: rosters_path)
     end
   end
 
@@ -42,7 +42,7 @@ class RostersController < ApplicationController
     if @roster.update roster_params
       confirm_change(@roster)
       redirect_to rosters_path
-    else report_errors(@roster, rosters_path)
+    else report_errors(@roster, fallback_location: rosters_path)
     end
   end
 
