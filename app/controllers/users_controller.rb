@@ -17,7 +17,7 @@ class UsersController < ApplicationController
     if user.save
       confirm_change(user)
       redirect_to roster_users_path(@roster)
-    else report_errors(user)
+    else report_errors(user, roster_users_path)
     end
   end
 
@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     if @user.destroy
       confirm_change(@user)
       redirect_to roster_users_path
-    else report_errors(@user)
+    else report_errors(@user, roster_users_path)
     end
   end
 
@@ -40,7 +40,7 @@ class UsersController < ApplicationController
     if @user.save
       confirm_change(@user, "Added #{@user.full_name} to roster.")
       redirect_to roster_users_path(@roster)
-    else report_errors(@user)
+    else report_errors(@user, roster_users_path)
     end
   end
 
@@ -54,7 +54,7 @@ class UsersController < ApplicationController
         redirect_to roster_users_path(@roster)
       else redirect_to roster_assignments_path(@roster)
       end
-    else report_errors(@user)
+    else report_errors(@user, roster_assignments_path)
     end
   end
 
