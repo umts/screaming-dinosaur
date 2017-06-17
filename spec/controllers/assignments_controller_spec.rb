@@ -76,7 +76,8 @@ describe AssignmentsController do
       when_current_user_is :whoever
     end
     let :submit do
-      delete :destroy, params: { roster_id: @assignment.roster.id, id: @assignment.id }
+      delete :destroy,
+             params: { roster_id: @assignment.roster.id, id: @assignment.id }
     end
     it 'finds the correct assignment' do
       submit

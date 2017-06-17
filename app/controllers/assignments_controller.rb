@@ -44,7 +44,8 @@ class AssignmentsController < ApplicationController
       flash[:errors] = 'The starting user must be in the rotation.'
       # ... and return is correct here
       # rubocop:disable Style/AndOr
-      redirect_back(fallback_location: roster_assignments_path(@roster)) and return
+      redirect_back(fallback_location:
+                    roster_assignments_path(@roster)) and return
       # rubocop:enable Style/AndOr
     end
     @roster.generate_assignments(user_ids, start_date,

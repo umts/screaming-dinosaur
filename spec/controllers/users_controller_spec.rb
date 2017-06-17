@@ -268,7 +268,8 @@ describe UsersController do
                    rosters: [@roster.id, @new_roster.id] }
     end
     let :submit do
-      post :update, params: { id: @user.id, user: @changes, roster_id: @roster.id }
+      post :update,
+           params: { id: @user.id, user: @changes, roster_id: @roster.id }
     end
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
