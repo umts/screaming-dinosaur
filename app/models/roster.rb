@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-class Roster < ActiveRecord::Base
+class Roster < ApplicationRecord
   has_paper_trail
   has_many :assignments, dependent: :destroy
   has_many :memberships
   has_many :users, through: :memberships
-  belongs_to :fallback_user, class_name: 'User', foreign_key: :fallback_user_id
+  belongs_to :fallback_user, class_name: 'User',
+                             foreign_key: :fallback_user_id, optional: true
 
   validates :name, presence: true, uniqueness: true
 

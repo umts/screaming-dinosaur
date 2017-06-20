@@ -20,7 +20,7 @@ class AssignmentsController < ApplicationController
       confirm_change(assignment)
       assignment.notify :owner, of: :new_assignment, by: @current_user
       redirect_to roster_assignments_path(@roster, date: assignment.start_date)
-    else report_errors(assignment)
+    else report_errors(assignment, fallback_location: roster_assignments_path)
     end
   end
 
@@ -44,7 +44,8 @@ class AssignmentsController < ApplicationController
       flash[:errors] = 'The starting user must be in the rotation.'
       # ... and return is correct here
       # rubocop:disable Style/AndOr
-      redirect_to :back and return
+      redirect_back(fallback_location:
+                    roster_assignments_path(@roster)) and return
       # rubocop:enable Style/AndOr
     end
     @roster.generate_assignments(user_ids, start_date,
@@ -96,7 +97,7 @@ class AssignmentsController < ApplicationController
       confirm_change(@assignment)
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
-    else report_errors(@assignment)
+    else report_errors(@assignment, fallback_location: roster_assignments_path)
     end
   end
 
@@ -125,7 +126,7 @@ class AssignmentsController < ApplicationController
       The intended new owner of this assignment must take it themselves.
       Or, a roster administrator can perform this change for you.
     TEXT
-    redirect_to :back
+    redirect_back fallback_location: roster_assignments_path(@roster)
   end
 
   def taking_ownership?(assignment_params)

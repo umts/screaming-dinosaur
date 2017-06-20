@@ -18,7 +18,7 @@ describe AssignmentsController do
       }
     end
     let :submit do
-      post :create, roster_id: @roster, assignment: @attributes
+      post :create, params: { roster_id: @roster, assignment: @attributes }
     end
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
@@ -76,7 +76,8 @@ describe AssignmentsController do
       when_current_user_is :whoever
     end
     let :submit do
-      delete :destroy, roster_id: @assignment.roster.id, id: @assignment.id
+      delete :destroy,
+             params: { roster_id: @assignment.roster.id, id: @assignment.id }
     end
     it 'finds the correct assignment' do
       submit
@@ -103,7 +104,7 @@ describe AssignmentsController do
       when_current_user_is :whoever
     end
     let :submit do
-      get :edit, roster_id: @roster.id, id: @assignment.id
+      get :edit, params: { roster_id: @roster.id, id: @assignment.id }
     end
     it 'finds the correct assignment' do
       submit
@@ -137,11 +138,13 @@ describe AssignmentsController do
     end
     let :submit do
       post :generate_rotation,
-           roster_id: @roster.id,
-           start_date: @start_date,
-           end_date: @end_date,
-           user_ids: @user_ids,
-           starting_user_id: @starting_user_id
+           params: {
+             roster_id: @roster.id,
+             start_date: @start_date,
+             end_date: @end_date,
+             user_ids: @user_ids,
+             starting_user_id: @starting_user_id
+           }
     end
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
@@ -190,7 +193,7 @@ describe AssignmentsController do
 
   describe 'GET #index' do
     let :submit do
-      get :index, roster_id: @roster.id
+      get :index, params: { roster_id: @roster.id }
     end
     context 'user_id in session' do
       before :each do
@@ -238,7 +241,7 @@ describe AssignmentsController do
       context 'date given' do
         it 'sets the month date variable to the 1st day of that month' do
           date = 5.months.ago
-          get :index, date: date
+          get :index, params: { date: date }
           expect(assigns.fetch :month_date)
             .to eql date.beginning_of_month.to_date
         end
@@ -281,7 +284,7 @@ describe AssignmentsController do
       when_current_user_is :whoever
     end
     let :submit do
-      get :new, roster_id: @roster.id, date: @date
+      get :new, params: { roster_id: @roster.id, date: @date }
     end
     it 'passes the date parameter through as a start_date variable' do
       submit
@@ -309,7 +312,7 @@ describe AssignmentsController do
       when_current_user_is :whoever
     end
     let :submit do
-      get :rotation_generator, roster_id: @roster.id
+      get :rotation_generator, params: { roster_id: @roster.id }
     end
     context 'admin in roster' do
       before(:each) { when_current_user_is roster_admin(@roster) }
@@ -352,9 +355,11 @@ describe AssignmentsController do
     end
     let :submit do
       post :update,
-           id: @assignment.id,
-           assignment: @changes,
-           roster_id: @assignment.roster.id
+           params: {
+             id: @assignment.id,
+             assignment: @changes,
+             roster_id: @assignment.roster.id
+           }
     end
     context 'admin in roster' do
       before :each do

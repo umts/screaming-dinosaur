@@ -22,9 +22,9 @@ class ApplicationController < ActionController::Base
     flash[:message] = message
   end
 
-  def report_errors(object)
+  def report_errors(object, fallback_location:)
     flash[:errors] = object.errors.full_messages
-    redirect_to :back
+    redirect_back fallback_location: fallback_location
   end
 
   # There are three levels of access:

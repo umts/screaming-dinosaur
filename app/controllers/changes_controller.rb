@@ -15,6 +15,6 @@ class ChangesController < ApplicationController
       version.item.destroy
       flash[:message] = "#{version.item_type} has been deleted."
     end
-    redirect_to :back
+    redirect_back fallback_location: 'public/404.html'
   end
 end

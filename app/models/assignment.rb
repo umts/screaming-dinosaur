@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Assignment < ActiveRecord::Base
+class Assignment < ApplicationRecord
   has_paper_trail
   belongs_to :user
   belongs_to :roster

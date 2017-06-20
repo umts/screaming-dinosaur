@@ -67,7 +67,7 @@ describe SessionsController do
       @user = roster_user @roster
     end
     let :submit do
-      post :dev_login, user_id: @user.id, roster_id: @roster.id
+      post :dev_login, params: { user_id: @user.id, roster_id: @roster.id }
     end
     it 'creates a session for the user specified' do
       submit
