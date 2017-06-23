@@ -1,0 +1,25 @@
+%h1.title Setup Twilio for #{@roster.name}
+
+%ol#twilio-instructions
+  %li= link_to 'Add a phone number',
+    'https://www.twilio.com/console/phone-numbers/incoming'
+  %li
+    Under Voice and Fax:
+    %ol
+      %li
+        Set the call webhook to an HTTP GET request for
+        %tt= roster_twilio_call_url(@roster, format: :xml)
+      - if @roster.fallback_user.present?
+        %li
+          Set the failure handler to a TwiML Bin containing
+          %pre= @roster.fallback_call_twiml
+  %li
+    Under Messaging:
+    %ol
+      %li
+        Set the message webhook to an HTTP GET request for
+        %tt= roster_twilio_text_url(@roster, format: :xml)
+      - if @roster.fallback_user.present?
+        %li
+          Set the failure handler to a TwiML Bin containing
+          %pre= @roster.fallback_text_twiml

@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   root 'assignments#index'
   
   resources :rosters, except: %i(show) do
+    member do
+      get :setup
+    end
+
     resources :assignments, except: :show do
       collection do
         post :generate_rotation
