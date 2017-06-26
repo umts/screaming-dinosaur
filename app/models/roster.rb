@@ -11,6 +11,7 @@ class Roster < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
   def fallback_call_twiml
+    return if fallback_user.blank?
     <<~END
       <?xml version="1.0" encoding="UTF-8"?>
       <Response>
@@ -22,6 +23,7 @@ class Roster < ApplicationRecord
   end
 
   def fallback_text_twiml
+    return if fallback_user.blank?
     <<~END
       <?xml version="1.0" encoding="UTF-8"?>
       <Response>
