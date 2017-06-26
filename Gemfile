@@ -21,17 +21,18 @@ group :production do
 end
 
 group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-passenger', require: false
   gem 'capistrano-pending', require: false
   gem 'capistrano-rails', require: false
+  gem 'listen', '~> 3.0'
   gem 'rb-readline', require: false
 end
 
 group :development, :test do
-  gem 'better_errors'
-  gem 'binding_of_caller'
   gem 'codeclimate-test-reporter', '~> 1.0'
   gem 'haml_lint'
   gem 'mocha'
