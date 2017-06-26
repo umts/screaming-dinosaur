@@ -85,7 +85,7 @@ describe Roster do
         expect(document.root.name).to eql 'Response'
       end
 
-      it 'appologizes' do
+      it 'apologizes' do
         expect(document.xpath('/Response/Say').count).to be 1
         expect(document.at_xpath('/Response/Say').text)
           .to match(/application error/i)
