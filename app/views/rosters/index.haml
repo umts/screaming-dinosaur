@@ -7,6 +7,7 @@
       %th Fallback
       %th
       %th
+      %th
   %tbody
     - @rosters.each do |roster|
       %tr
@@ -18,6 +19,7 @@
             No fallback user!
         - if @current_user.admin_in? roster
           %td= link_to 'Edit', edit_roster_url(roster)
+          %td= link_to 'Setup Number', setup_roster_path(roster)
           %td= button_to 'Destroy', roster_path(roster), method: :delete
 
 = link_to 'New roster', new_roster_path
