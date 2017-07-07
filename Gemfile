@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'bootstrap-sass', '~> 3.3'
 gem 'coffee-rails'
 gem 'factory_girl_rails'
 gem 'haml'
