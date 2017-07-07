@@ -14,7 +14,7 @@ Other candidates for the repo name included:
 + digital-moose
 + nervous-neutron
 
-Rails 4 app for management of Transportation IT on-call schedule and interaction with Twilio.
+Rails 5 app for management of Transportation IT on-call schedule and interaction with Twilio.
 
 ## Development
 
