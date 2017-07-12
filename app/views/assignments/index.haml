@@ -1,7 +1,9 @@
 %h1.title #{@roster.name} On-Call
-%h2.title= @month_date.strftime '%-B %G'
+= render partial: 'current'
+= render partial: 'your_assignments' if @assignments.present?
 
-%table.calender
+%h2.title= @month_date.strftime '%-B %G'
+%table#calender
   %thead
     %tr
       - WEEKDAYS.each do |day|
@@ -11,17 +13,16 @@
     %tr.cal-row
       - week.each do |day|
         - assignment = Assignment.in(@roster).on(day)
-        %td.cal-cell{ class: ('weekend' if day == assignment.start_date || day == assignment.end_date) }
+        %td.cal-cell{ class: cal_day(assignment: assignment, day: day) }
           %div.date
             = day.strftime '%-d'
-            %ul
-              %li
-                %span
-                  - if assignment.present?
-                    = link_to assignment.user.last_name,
-                        edit_roster_assignment_url(@roster, assignment)
-                  - else
-                    .slightly-red= link_to 'None assigned',
-                        new_roster_assignment_url(@roster, date: day)
-= render partial: 'current'
-= render partial: 'your_assignments' if @assignments.present?
+            = if (day.strftime '%-d') == '1'
+              -day.strftime '%B'
+            %div.cal-event
+              %span
+                - if assignment.present?
+                  = link_to assignment.user.last_name,
+                      edit_roster_assignment_url(@roster, assignment)
+                - else
+                  .slightly-red= link_to 'None assigned',
+                      new_roster_assignment_url(@roster, date: day)
