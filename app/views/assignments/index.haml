@@ -26,3 +26,7 @@
                 - else
                   .slightly-red= link_to 'None assigned',
                       new_roster_assignment_url(@roster, date: day)
+  %span.left.change-month= link_to @month_date.last_month.strftime('%B'),
+    roster_assignments_path(@roster, date: @month_date.last_month)
+  %span.right.change-month= link_to @month_date.next_month.strftime('%B'),
+    roster_assignments_path(@roster, date: @month_date.next_month)

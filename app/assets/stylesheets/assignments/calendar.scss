@@ -38,42 +38,23 @@
 }
 
 .ass-week {
-  border-top: 4px solid #FED6D7;
-}
-
-.ass-week .date {
-  border: none;
+  background: #ECE9D4;
 }
 
 .current-day {
-  background: #FED6D7; /* For browsers that do not support gradients */
-  background: -webkit-linear-gradient(#FED6D7, transparent); /* For Safari */
-  background: -o-linear-gradient(#FED6D7, transparent); /* For Opera */
-  background: -moz-linear-gradient(#FED6D7, transparent); /* For Firefox */
-  background: linear-gradient(#FED6D7, transparent); /* Standard syntax */
-  border-top: 4px solid #800000;
-  background-size: 90%;
-  background-repeat: repeat-x;
+  box-shadow: inset 0px 0px 10px #71b2c9;
 }
 
 .ass-end {
-  background: #CCC; /* For browsers that do not support gradients */
-  background: -webkit-linear-gradient(right, #808080, transparent); /* For Safari */
-  background: -o-linear-gradient(left, #606060, transparent); /* For Opera */
-  background: -moz-linear-gradient(left, #606060, transparent); /* For Firefox */
-  background: linear-gradient(left, #606060, transparent); /* Standard syntax */
-  background-size: 8%;
-  background-repeat: repeat-y;
-  background-position: right;
+ border-right: 1px solid #71b2c9;
 }
 
 .ass-start {
-  background: #CCC; /* For browsers that do not support gradients */
-  background: -webkit-linear-gradient(left, #808080, transparent); /* For Safari */
-  background: -o-linear-gradient(right, #606060, transparent); /* For Opera */
-  background: -moz-linear-gradient(right, #606060, transparent); /* For Firefox */
-  background: linear-gradient(right, #606060, transparent); /* Standard syntax */
-  background-size: 8%;
-  background-repeat: repeat-y;
+  border-left: 1px solid #71b2c9;
+}
+
+.change-month {
+  padding-bottom: 2%;
+  font-size: large;
 }
 
