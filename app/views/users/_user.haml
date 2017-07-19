@@ -1,0 +1,52 @@
+= form_for obj, url: url do |f|
+  %div.container-fluid
+    %div.row
+      %div.col-lg-6
+        %div.form-group
+          %div.control-label
+            = f.label :first_name
+          %div
+            = f.text_field :first_name, class: 'form-control'
+        %div.form-group
+          %div.control-label
+            = f.label :last_name
+          %div
+            = f.text_field :last_name, class: 'form-control'
+        %div.form-group
+          %div.control-label
+            = f.label :spire
+          %div
+            = f.email_field :spire, size: 25, placeholder: '12345678@umass.edu', class: 'form-control'
+        %div.form-group
+          %div.control-label
+            = f.label :email
+          %div
+            = f.email_field :email, size: 30, class: 'form-control'
+        %div.form-group
+          %div.control-label
+            = f.label :phone
+          %div
+            = f.phone_field :phone, placeholder: '+14135450056', class: 'form-control'
+
+      %div.col-lg-6
+        %div.form-group
+          %div.control-label
+            = f.label :rosters
+          %div
+            = f.select :rosters,
+             options_from_collection_for_select(Roster.all, :id, :name,
+              selected: roster ), {}, multiple: true, class: 'form-control'
+        %div
+          = f.check_box :reminders_enabled
+          = f.label :reminders_enabled, 'Receive email reminders of upcoming assignments?'
+        %div
+          = f.check_box :change_notifications_enabled
+          = f.label :change_notifications_enabled, 'Receive notifications when your assignments are changed?'
+        - if @current_user.admin_in? @roster
+          %div
+            = f.fields_for field do |g|
+              %div
+                = g.check_box :admin
+                = g.label :admin, "Admin in #{@roster.name}?"
+    %div.form-group.center
+      = f.submit 'Save', class: 'btn btn-primary btn-lg'
