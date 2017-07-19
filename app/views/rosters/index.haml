@@ -1,6 +1,7 @@
 %h1.title Rosters
 
-%table#users
+%div.col-xs-3
+%table.table.auto-width
   %thead
     %tr
       %th Name
@@ -18,8 +19,8 @@
           - else
             No fallback user!
         - if @current_user.admin_in? roster
-          %td= link_to 'Edit', edit_roster_url(roster)
-          %td= link_to 'Setup Number', setup_roster_path(roster)
-          %td= button_to 'Destroy', roster_path(roster), method: :delete
-
-= link_to 'New roster', new_roster_path
+          %td= link_to 'Set Twilio Number', setup_roster_path(roster)
+          %td= link_to 'Edit', edit_roster_url(roster), class: 'btn btn-info'
+          %td= button_to 'Destroy', roster_path(roster), method: :delete, class: 'btn btn-danger'
+%div.center
+  = link_to 'New roster', new_roster_path, class: 'btn btn-primary'

@@ -6,17 +6,17 @@
     = link_to 'Select a fallback user', edit_roster_path(@roster)
 
 %div.container-fluid
-  %div.col-xs-7
-    = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary'
   %div.col-xs-2
+  %div.col-xs-5
+    = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary'
+  %div.col-xs-3
     -  if @other_users.present?
       .form
         Add existing user:
         = form_tag transfer_roster_users_path do
           = select_tag :id,
                 options_from_collection_for_select(@other_users, :id, :last_name)
-  %div.col-xs-1
-    = submit_tag 'Add', class: 'btn btn-primary btn-sm'
+          = submit_tag 'Add', class: 'btn btn-primary btn-sm'
 
 %table.table
   %thead

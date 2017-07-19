@@ -1,8 +1,15 @@
 %h1.title New roster
 
 = form_for Roster.new do |f|
-  = f.label :name
-  = f.text_field :name
-  = f.submit 'Save'
-  %br
-  To assign the fallback user, first create the roster, then add some users to it.
+  %div.container-fluid
+    %div.row
+      %div.col-xs-4
+      %div.col-xs-4
+        %div.form-group
+          = f.label :name, class: 'control-label'
+          = f.text_field :name, class: 'form-control'
+  %div.center
+    / TODO add functionality so this message isn't necessary
+    To assign the fallback user, first create the roster, then add some users to it.
+  %div.center
+    = f.submit 'Save', class: 'btn btn-primary'
