@@ -3,24 +3,24 @@
     %div.row
       %div.col-lg-6
         %div.form-group
-          = f.label :first_name, class: 'control-label'
+          = f.label :first_name
           = f.text_field :first_name, class: 'form-control'
         %div.form-group
-          = f.label :last_name, class: 'control-label'
+          = f.label :last_name
           = f.text_field :last_name, class: 'form-control'
         %div.form-group
-          = f.label :spire, class: 'control-label'
+          = f.label :spire
           = f.email_field :spire, size: 25, placeholder: '12345678@umass.edu', class: 'form-control'
         %div.form-group
-          = f.label :email, class: 'control-label'
+          = f.label :email
           = f.email_field :email, size: 30, class: 'form-control'
         %div.form-group
-          = f.label :phone, class: 'control-label'
+          = f.label :phone
           = f.phone_field :phone, placeholder: '+14135450056', class: 'form-control'
 
       %div.col-lg-6
         %div.form-group
-          = f.label :rosters, class: 'control-label'
+          = f.label :rosters
           = f.select :rosters,
            options_from_collection_for_select(Roster.all, :id, :name,
             selected: roster ), {}, multiple: true, class: 'form-control'
