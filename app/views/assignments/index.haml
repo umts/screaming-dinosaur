@@ -13,12 +13,12 @@
     %tr.cal-row
       - week.each do |day|
         - assignment = Assignment.in(@roster).on(day)
-        %td.cal-cell{ class: cal_day(assignment: assignment, day: day) }
+        %td.cal-cell{ class: cal_day(day: day) }
           %div.date
             = day.strftime '%-d'
             = if (day.strftime '%-d') == '1'
               -day.strftime '%B'
-            %div.cal-event
+            %div.cal-event{class: cal_ass(assignment: assignment, day: day)}
               %span
                 - if assignment.present?
                   = link_to assignment.user.last_name,

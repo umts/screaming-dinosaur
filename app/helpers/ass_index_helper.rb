@@ -2,24 +2,30 @@
 
 module AssIndexHelper
 
-  def cal_day(assignment:, day:)
-    whatDay = ''
-
-    if assignment.present?
-      if @current_user.admin?
-        if day == assignment.start_date
-          whatDay = 'ass-start'
-        elsif day == assignment.end_date
-          whatDay = 'ass-end'
-        end
-      end
-      if assignment.user == @current_user
-        whatDay += ' ass-week'
-      end
-    end
+  def cal_day(day:)
     if day == Date.current
-      whatDay += ' current-day'
+      'current-day'
     end
-    whatDay
   end
+
+  def cal_ass(assignment:, day:)
+    if assignment.present?
+      ass = 'ass'
+      if assignment.user == @current_user
+        ass = 'ass-user'
+      end
+
+      if day == assignment.start_date && day == assignment.end_date
+        ass += '-only'
+      elsif day == assignment.start_date
+        ass += '-start'
+      elsif day == assignment.end_date
+        ass += '-end'
+      else
+        ass
+      end
+    end
+    ass
+  end
+
 end
