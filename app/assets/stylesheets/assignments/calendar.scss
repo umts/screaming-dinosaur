@@ -25,8 +25,6 @@
   padding: 0.25em 0.75em 73% 0.25em;
   position: relative;
   border-top: 1px solid #DEDBDB;
-  margin-left: 0.25em;
-  margin-right: 0.25em;
 }
 
 .cal-event {
@@ -37,20 +35,34 @@
   position: absolute;
 }
 
-.ass-week {
-  background: #ECE9D4;
-}
-
 .current-day {
   box-shadow: inset 0px 0px 10px #71b2c9;
 }
 
-.ass-end {
- border-right: 1px solid #71b2c9;
+.assignment-end {
+  border-bottom-right-radius: 6px;
+  border-top-right-radius: 6px;
 }
 
-.ass-start {
-  border-left: 1px solid #71b2c9;
+.assignment-start {
+  border-bottom-left-radius: 6px;
+  border-top-left-radius: 6px;
+}
+
+.assignment-only {
+  border-radius: 6px;
+}
+
+.assignment {
+  background-color: #D9EDF7;
+}
+
+.assignment-user {
+  background-color: #ECE9D4;
+}
+
+.width {
+  width: 90%;
 }
 
 .change-month {

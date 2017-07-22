@@ -1,7 +1,7 @@
 %h1.title Users
 
 - if @fallback.nil?
-  %h3.center.slightly-red
+  %h3.center.vague-warning
     No fallback user!
     = link_to 'Select a fallback user', edit_roster_path(@roster)
 

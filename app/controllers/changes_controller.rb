@@ -6,8 +6,8 @@ class ChangesController < ApplicationController
     # ... and return is correct here
     # rubocop:disable Style/AndOr
     head :unauthorized and return unless version
-                                                .whodunnit
-                                                .to_i == @current_user.id
+                                         .whodunnit
+                                         .to_i == @current_user.id
     # rubocop:enable Style/AndOr
     # Reify only returns false when the thing didn't exist beforehand.
     if version.reify

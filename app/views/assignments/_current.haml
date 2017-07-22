@@ -1,8 +1,8 @@
 #current_assignment
   - if @current_assignment.present?
-    %h3.slightly-green Currently on call: #{@current_assignment.user.last_name}
+    %h3.vague-success Currently on call: #{@current_assignment.user.last_name}
   - else
-    %h3.slightly-red
+    %h3.vague-warning
       No one is currently on call!
       - if @fallback_user.present?
         #{@fallback_user.last_name} is the fallback.

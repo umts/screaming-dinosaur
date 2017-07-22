@@ -13,18 +13,18 @@
     %tr.cal-row
       - week.each do |day|
         - assignment = Assignment.in(@roster).on(day)
-        %td.cal-cell{ class: cal_day(assignment: assignment, day: day) }
+        %td.cal-cell{ class: cal_day(day: day) }
           %div.date
             = day.strftime '%-d'
             = if (day.strftime '%-d') == '1'
               -day.strftime '%B'
-            %div.cal-event
+            %div.cal-event{class: cal_assignment(assignment: assignment, day: day)}
               %span
                 - if assignment.present?
                   = link_to assignment.user.last_name,
                       edit_roster_assignment_url(@roster, assignment)
                 - else
-                  .slightly-red= link_to 'None assigned',
+                  .vague-warning= link_to 'None assigned',
                       new_roster_assignment_url(@roster, date: day)
   %span.left.change-month= link_to @month_date.last_month.strftime('%B'),
     roster_assignments_path(@roster, date: @month_date.last_month)

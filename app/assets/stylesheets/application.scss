@@ -15,6 +15,10 @@
  *= require_self
  */
 
+$navbar-default-bg: #881c1c;
+$navbar-default-link-color: #ddd;
+$navbar-default-link-hover-color: #666;
+$navbar-default-link-active-color: #ddd;
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
@@ -53,12 +57,12 @@ body{
   text-align: center;
 }
 
-.slightly-red{
+.vague-warning{
   background-color: lightpink;
   border-radius: 6px;
 }
 
-.slightly-green{
+.vague-success{
   background-color: lightgreen;
   border-radius: 6px;
 }
