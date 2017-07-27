@@ -5,17 +5,18 @@
     No fallback user!
     = link_to 'Select a fallback user', edit_roster_path(@roster)
 
-%div.container-fluid
-  %div.col-xs-2
-  %div.col-xs-5
+.container-fluid
+  .col-xs-2
+  .col-xs-5
     = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary'
-  %div.col-xs-3
+  .col-xs-3
     -  if @other_users.present?
       .form
         Add existing user:
         = form_tag transfer_roster_users_path do
           = select_tag :id,
-                options_from_collection_for_select(@other_users, :id, :last_name)
+                options_from_collection_for_select(@other_users,
+                 :id, :last_name)
           = submit_tag 'Add', class: 'btn btn-primary btn-sm'
 
 %table.table
@@ -37,5 +38,9 @@
         %td= user.spire
         %td= user.email
         %td= user.phone
-        %td= link_to 'Edit', edit_roster_user_path(@roster, user), class: 'btn btn-info'
-        %td= button_to 'Destroy', roster_user_path(@roster, user), method: :delete, class: 'btn btn-danger'
+        %td= link_to 'Edit',
+        edit_roster_user_path(@roster, user),
+         class: 'btn btn-info'
+        %td= button_to 'Destroy',
+        roster_user_path(@roster, user),
+         method: :delete, class: 'btn btn-danger'

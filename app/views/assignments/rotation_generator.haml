@@ -1,29 +1,30 @@
 %h1.title Generate rotation
 
 = form_tag generate_rotation_roster_assignments_path(@roster) do
-  %div.container-fluid
-    %div.row
-      %div.col-xs-2
-      %div.col-xs-4
-        %div.form-group
+  .container-fluid
+    .row
+      .col-xs-2
+      .col-xs-4
+        .form-group
           = label_tag :start_date
           = text_field_tag :start_date,
             @start_date,
             class: 'datepicker form-control'
-        %div.form-group
+        .form-group
           = label_tag :end_date
           = text_field_tag :end_date,
            @start_date + 3.months,
            class: 'datepicker form-control'
-        %div.form-group
+        .form-group
           = label_tag :starting_user_id, 'Starting with'
           = select_tag :starting_user_id,
-            options_from_collection_for_select(@users, :id, :last_name), class: 'form-control'
-      %div.col-xs-4
-        %div.form-group
+            options_from_collection_for_select(@users, :id, :last_name),
+             class: 'form-control'
+      .col-xs-4
+        .form-group
           = label_tag :user_ids, 'Users'
           = select_tag :user_ids,
            options_from_collection_for_select(@users, :id, :last_name,
             @users.pluck(:id)), multiple: true, size: 10, class: 'form-control'
-  %div.center
+  .center
     = submit_tag 'Generate rotation', class: 'btn btn-primary'

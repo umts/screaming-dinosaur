@@ -1,6 +1,6 @@
 %h1.title Rosters
 
-%div.col-xs-3
+.col-xs-3
 %table.table.auto-width
   %thead
     %tr
@@ -21,6 +21,7 @@
         - if @current_user.admin_in? roster
           %td= link_to 'Set Twilio Number', setup_roster_path(roster)
           %td= link_to 'Edit', edit_roster_url(roster), class: 'btn btn-info'
-          %td= button_to 'Destroy', roster_path(roster), method: :delete, class: 'btn btn-danger'
-%div.center
+          %td= button_to 'Destroy', roster_path(roster), method: :delete,
+            class: 'btn btn-danger'
+.center
   = link_to 'New roster', new_roster_path, class: 'btn btn-primary'

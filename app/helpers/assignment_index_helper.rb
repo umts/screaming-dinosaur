@@ -7,17 +7,17 @@ module AssignmentIndexHelper
 
   def cal_assignment(assignment:, day:)
     return if assignment.blank?
-    ass = 'assignment'
-    ass += '-user' if assignment.user == @current_user
+    assign = 'assignment'
+    assign += '-user' if assignment.user == @current_user
 
     if day == assignment.start_date && day == assignment.end_date
-      ass + ' assignment-only ' + ' width'
+      assign + ' assignment-only ' + ' width'
     elsif day == assignment.start_date
-      ass + ' assignment-start'
+      assign + ' assignment-start'
     elsif day == assignment.end_date
-      ass + ' assignment-end ' + ' width'
+      assign + ' assignment-end ' + ' width'
     else
-      ass
+      assign
     end
   end
 end
