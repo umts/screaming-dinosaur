@@ -4,7 +4,6 @@
       %button.navbar-toggle.collapsed{ type: 'button',
        data: { toggle: 'collapse', target: '#bs-example-navbar-collapse-1' },
         aria: { expanded: 'false' } }
-
     .collapse.navbar-collapse#bs-example-navbar-collapse-1
       %ul.nav.navbar-nav
         - @current_user.rosters.each do |roster|

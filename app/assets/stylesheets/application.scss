@@ -22,7 +22,7 @@ $navbar-default-link-active-color: #ddd;
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-body{
+body {
   display: flex;
   flex-direction: column;
   font-family: sans-serif;
@@ -30,39 +30,31 @@ body{
   min-height: 100vh;
 }
 
-.title{
-  text-align: center;
-}
-
-#content-wrapper{
+#content-wrapper {
   flex: 1;
 }
 
-#main-content{
+#main-content {
   background-color: #fafafa;
   margin: 0 auto;
   min-width: 50em;
   max-width: 70em;
 }
 
-.left{
-  float: left;
-}
-
-.right{
-  float: right;
-}
-
 .center {
   text-align: center;
 }
 
-.vague-warning{
-  background-color: lightpink;
+.title {
+  text-align: center;
+}
+
+.vague-success {
+  background-color: lightgreen;
   border-radius: 6px;
 }
 
-.vague-success{
-  background-color: lightgreen;
+.vague-warning {
+  background-color: lightpink;
   border-radius: 6px;
 }

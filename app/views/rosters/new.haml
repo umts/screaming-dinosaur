@@ -3,13 +3,11 @@
 = form_for Roster.new do |f|
   .container-fluid
     .row
-      .col-xs-4
-      .col-xs-4
+      .col-xs-4.col-xs-offset-4
         .form-group
           = f.label :name
           = f.text_field :name, class: 'form-control'
   .center
-    / TODO add functionality so this message isn't necessary
     To assign the fallback user, first create the roster,
     then add some users to it.
   .center

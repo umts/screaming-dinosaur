@@ -1,22 +1,20 @@
 %h1.title #{@roster.name} On-Call
 = render partial: 'current'
 = render partial: 'your_assignments' if @assignments.present?
-
 %h2.title= @month_date.strftime '%-B %G'
-%table#calender
+%table#calendar
   %thead
     %tr
       - WEEKDAYS.each do |day|
         %th.cal-head= day
-
   - @weeks.each do |week|
-    %tr.cal-row
+    %tr
       - week.each do |day|
         - assignment = Assignment.in(@roster).on(day)
         %td.cal-cell{ class: cal_day(day: day) }
           .date
             = day.strftime '%-d'
-            = if day.strftime('%-d') == '1'
+            = if day.day == 1
               - day.strftime '%B'
             .cal-event{ class: cal_assignment(assignment: assignment,
              day: day) }

@@ -2,11 +2,11 @@
 = form_for Assignment.new, url: roster_assignments_path(@roster) do |f|
   .container-fluid
     .row
-      .col-xs-3
-      .col-xs-2
+      .col-xs-2.col-xs-offset-3
         .form-group
           = f.label :user_id
-          = f.select :user_id, @users.pluck(:last_name, :id),
+          = f.select :user_id,
+           options_from_collection_for_select(@users, :id, :last_name),
            class: 'form-control'
       .col-xs-4
         .form-group

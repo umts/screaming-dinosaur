@@ -1,18 +1,31 @@
-#current-assignment{
+#assignments {
   text-align: center;
-  margin: 2em 1em;
-}
-
-#assignments{
-  text-align: center;
-  table#assignments-table{
+  table#assignments-table {
     margin: 0 auto;
-    td{
-      padding: 0.5em;
+    td {
+      padding: 1%;
     }
   }
 }
 
-.space {
+#current-assignment {
+  text-align: center;
+  margin: 4% 5%;
+}
+
+.change-month {
+  padding-bottom: 2%;
+  font-size: 1.3em;
+}
+
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.img-space {
   padding: 1%;
 }

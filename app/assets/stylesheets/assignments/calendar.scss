@@ -1,73 +1,66 @@
-#calender {
+#calendar {
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
   height: 100%;
   min-width: 800px;
   margin-bottom: 5%;
+
+  .assignment {
+    background-color: #d9edf7;
+  }
+
+  .assignment-end {
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+
+  .assignment-only {
+    border-radius: 6px;
+  }
+
+  .assignment-start {
+    border-bottom-left-radius: 6px;
+    border-top-left-radius: 6px;
+  }
+
+  .assignment-user {
+    background-color: #ece9d4;
+  }
+
+  .cal-cell {
+    width: 10%;
+
+    .cal-event {
+      text-align: center;
+      font-size: 1.2em;
+      width: 100%;
+      overflow: hidden;
+      position: absolute;
+    }
+
+    .date {
+      text-align: right;
+      display: block;
+      height: 0;
+      font-size: 0.8em;
+      padding: 2% 5% 73% 1%;
+      position: relative;
+      border-top: 1px solid #dedbdb;
+    }
+
+    .width {
+      width: 90%;
+    }
+  }
+
+  .cal-head {
+    text-align: right;
+    color: #999;
+    font-weight: normal;
+  }
+
+  .current-day {
+    box-shadow: inset 0px 0px 10px #71b2c9;
+  }
 }
-
-.cal-head {
-  text-align: right;
-  color: #999;
-  font-weight: normal;
-}
-
-.cal-cell {
-  width: 14%;
-}
-
-.date {
-  text-align: right;
-  display: block;
-  height: 0;
-  font-size: 0.8em;
-  padding: 0.25em 0.75em 73% 0.25em;
-  position: relative;
-  border-top: 1px solid #DEDBDB;
-}
-
-.cal-event {
-  text-align: center;
-  font-size: 1.2em;
-  width: 100%;
-  overflow: hidden;
-  position: absolute;
-}
-
-.current-day {
-  box-shadow: inset 0px 0px 10px #71b2c9;
-}
-
-.assignment-end {
-  border-bottom-right-radius: 6px;
-  border-top-right-radius: 6px;
-}
-
-.assignment-start {
-  border-bottom-left-radius: 6px;
-  border-top-left-radius: 6px;
-}
-
-.assignment-only {
-  border-radius: 6px;
-}
-
-.assignment {
-  background-color: #D9EDF7;
-}
-
-.assignment-user {
-  background-color: #ECE9D4;
-}
-
-.width {
-  width: 90%;
-}
-
-
-.change-month {
-  padding-bottom: 2%;
-  font-size: large;
-}
-

@@ -9,7 +9,6 @@
   %body
     = render partial: 'layouts/nav',
              locals: { rosters: @current_user.rosters }
-
     .row
       .col-xs-6.col-xs-offset-3
         - if flash[:message].present?
@@ -23,6 +22,5 @@
             %ul
               - flash[:errors].each do |error_message|
                 %li= error_message
-
     #content-wrapper
       #main-content= yield
