@@ -7,7 +7,7 @@ describe 'viewing the calendar' do
   let(:user) { create :user, rosters: [roster] }
   before :each do
     Timecop.freeze Date.new(2017, 8, 14)
-    set_current_user(user)
+    current_user(user)
   end
 
   after :each do
@@ -46,9 +46,9 @@ describe 'viewing the calendar' do
   end
 
   context 'end of assignment' do
-    it 'has a right radius and a smaller width than the cell' do
+    it 'has a right radius and a different width than the cell' do
       create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
-             user: user, roster: roster
+                          user: user, roster: roster
       visit roster_assignments_url(roster)
       expect(page).to have_selector('td .cal-event.assignment-end.width',
                                     count: 1)
@@ -65,7 +65,7 @@ describe 'viewing the calendar' do
     end
   end
 
-  context 'active page high lighted in the nav bar' do
+  context 'active page highlighted in the nav bar' do
     it 'applies active class to current tab in nav-bar' do
       visit roster_assignments_url(roster)
       expect(page).to have_selector('nav li.active', count: 1)

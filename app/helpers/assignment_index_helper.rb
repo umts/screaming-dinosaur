@@ -7,17 +7,25 @@ module AssignmentIndexHelper
 
   def cal_assignment(assignment:, day:)
     return if assignment.blank?
-    assign = 'assignment'
-    assign += '-user' if assignment.user == @current_user
+    [base_assignment_class(assignment),
+     width_assignment_class(assignment, day)].join(' ')
+  end
 
-    if day == assignment.start_date && day == assignment.end_date
-      assign + ' assignment-only ' + ' width'
-    elsif day == assignment.start_date
-      assign + ' assignment-start'
-    elsif day == assignment.end_date
-      assign + ' assignment-end ' + ' width'
-    else
-      assign
+  def base_assignment_class(assignment)
+    if assignment.user == @current_user
+      'assignment-user'
+    else 'assignment'
+    end
+  end
+
+  def width_assignment_class(assignment, date)
+    if date == assignment.start_date && date == assignment.end_date
+      'assignment-only width'
+    elsif date == assignment.start_date
+      'assignment-start'
+    elsif date == assignment.end_date
+      'assignment-end width'
+    else ''
     end
   end
 end
