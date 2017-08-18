@@ -46,6 +46,6 @@ def roster_admin(roster = nil)
 end
 
 # For feature testing
-def current_user(user)
+def set_current_user(user)
   page.set_rack_session user_id: user.id
 end

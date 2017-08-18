@@ -7,7 +7,7 @@ describe 'viewing the calendar' do
   let(:user) { create :user, rosters: [roster] }
   before :each do
     Timecop.freeze Date.new(2017, 8, 14)
-    current_user(user)
+    set_current_user(user)
   end
 
   after :each do
