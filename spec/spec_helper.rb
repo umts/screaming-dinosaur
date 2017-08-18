@@ -44,3 +44,8 @@ def roster_admin(roster = nil)
   else (create :membership, admin: true).user
   end
 end
+
+# For feature testing
+def set_current_user(user)
+  page.set_rack_session user_id: user.id
+end
