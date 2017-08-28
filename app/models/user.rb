@@ -36,4 +36,5 @@ class User < ApplicationRecord
   def membership_in(roster)
     memberships.find_by(roster: roster)
   end
+
 end
