@@ -306,7 +306,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass (~> 3.3)
-  capistrano
+  capistrano (= 3.8.1)
   capistrano-bundler
   capistrano-passenger
   capistrano-pending
