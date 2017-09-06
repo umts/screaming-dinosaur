@@ -1,8 +1,17 @@
 %h1.title Edit roster
 
 = form_for @roster do |f|
-  = f.label :name
-  = f.text_field :name
-  = f.label :fallback_user_id
-  = f.select :fallback_user_id, @users.pluck(:last_name, :id)
-  = f.submit 'Save'
+  .container-fluid
+    .row
+      .col-xs-4.col-xs-offset-3
+        .form-group
+          = f.label :name
+          = f.text_field :name, class: 'form-control'
+      .col-xs-2
+        .form-group
+          = f.label :fallback_user
+          .vert-center
+            = f.select :fallback_user_id,
+             options_from_collection_for_select(@users, :id, :last_name)
+  .center
+    = f.submit 'Save', class: 'btn btn-primary'

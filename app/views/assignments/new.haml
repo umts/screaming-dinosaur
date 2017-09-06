@@ -1,10 +1,22 @@
 %h1.title New assignment
 = form_for Assignment.new, url: roster_assignments_path(@roster) do |f|
-  = f.label :start_date
-  = f.text_field :start_date, value: @start_date, class: 'datepicker'
-  = f.label :end_date
-  = f.text_field :end_date, value: @end_date, class: 'datepicker'
-  = f.label :user_id
-  = f.select :user_id, @users.pluck(:last_name, :id)
-  = f.hidden_field :roster_id, value: @roster.id
-  = f.submit 'Create'
+  .container-fluid
+    .row
+      .col-xs-2.col-xs-offset-3
+        .form-group
+          = f.label :user_id
+          = f.select :user_id,
+           options_from_collection_for_select(@users, :id, :last_name),
+           class: 'form-control'
+      .col-xs-4
+        .form-group
+          = f.label :start_date
+          = f.text_field :start_date, value: @start_date,
+           class: 'datepicker form-control'
+        .form-group
+          = f.label :end_date
+          = f.text_field :end_date, value: @end_date,
+           class: 'datepicker form-control'
+      = f.hidden_field :roster_id, value: @roster.id
+    .center
+      = f.submit 'Create', class: 'btn btn-primary'

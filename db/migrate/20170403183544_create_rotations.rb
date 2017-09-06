@@ -1,4 +1,4 @@
-class CreateRotations < ActiveRecord::Migration
+class CreateRotations < ActiveRecord::Migration[5.1]
   def change
     create_table :rotations do |t|
       t.string :name

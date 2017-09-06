@@ -1,32 +1,31 @@
 %h1.title #{@roster.name} On-Call
+= render partial: 'current'
+= render partial: 'your_assignments' if @assignments.present?
 %h2.title= @month_date.strftime '%-B %G'
-
 %table#calendar
-  %tr
-    - WEEKDAYS.each do |day|
-      %th= day
+  %thead
+    %tr
+      - WEEKDAYS.each do |day|
+        %th.cal-head= day
   - @weeks.each do |week|
     %tr
       - week.each do |day|
-        %td
-          - assignment = Assignment.in(@roster).on(day)
-          %div{ class: ('lightgrey' if day.month != @month_date.month) }
-            = day.strftime '%-m/%-d'
-          .assignment
-            - if assignment.present?
-              = link_to assignment.user.last_name,
-                edit_roster_assignment_url(@roster, assignment)
-              .arrows
-                - if day == assignment.start_date
-                  %span.left &#8594;
-                - if day == assignment.end_date
-                  %span.right &#8592;
-            - else
-              .slightly-red= link_to 'None assigned',
-                new_roster_assignment_url(@roster, date: day)
-  %span.left= link_to @month_date.last_month.strftime('%B %Y'),
+        - assignment = Assignment.in(@roster).on(day)
+        %td.cal-cell{ class: cal_day(day: day) }
+          .date
+            = day.strftime '%-d'
+            = if day.day == 1
+              - day.strftime '%B'
+            .cal-event{ class: cal_assignment(assignment: assignment,
+             day: day) }
+              %span
+                - if assignment.present?
+                  = link_to assignment.user.last_name,
+                      edit_roster_assignment_url(@roster, assignment)
+                - else
+                  .vague-warning= link_to 'None assigned',
+                      new_roster_assignment_url(@roster, date: day)
+  %span.left.change-month= link_to @month_date.last_month.strftime('%B'),
     roster_assignments_path(@roster, date: @month_date.last_month)
-  %span.right= link_to @month_date.next_month.strftime('%B %Y'),
+  %span.right.change-month= link_to @month_date.next_month.strftime('%B'),
     roster_assignments_path(@roster, date: @month_date.next_month)
-= render partial: 'current'
-= render partial: 'your_assignments' if @assignments.present?

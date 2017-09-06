@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def confirm_change(object, message = nil)
-    change = object.versions.done_by(@current_user).last
+    change = object.versions.where(whodunnit: @current_user).last
     flash[:change] = change.try(:id)
     # If we know what change occurred, use it to write the message.
     # If we don't, try and infer from the current controller action.

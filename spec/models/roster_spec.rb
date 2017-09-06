@@ -61,7 +61,8 @@ describe Roster do
     let(:result) { roster.on_call_user }
     context 'there is a current assignment' do
       before :each do
-        expect(roster).to receive(:assignments).and_return double(current: assignment)
+        expect(roster).to receive(:assignments)
+          .and_return double(current: assignment)
       end
       it 'returns the user of the current assignment' do
         expect(result).to eql assignment.user

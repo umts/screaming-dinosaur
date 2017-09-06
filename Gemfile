@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'bootstrap-sass', '~> 3.3'
 gem 'coffee-rails'
 gem 'factory_girl_rails'
 gem 'haml'
@@ -33,10 +34,12 @@ group :development do
 end
 
 group :development, :test do
+  gem 'capybara'
   gem 'codeclimate-test-reporter', '~> 1.0'
   gem 'haml_lint'
   gem 'mocha'
   gem 'pry-byebug'
+  gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec-html-matchers'
   gem 'rspec-rails'

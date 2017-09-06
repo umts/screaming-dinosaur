@@ -1,45 +1,31 @@
-table#calendar{
-  width: 90%;
-  border-collapse: collapse;
-  margin: 0 auto;
-  text-align: left;
-  th{
-    text-align: center;
-  }
-  td{
-    height: 4em;
-    border: 1px solid black;
-    vertical-align: top;
-    .assignment{
-      padding: 1em;
-      text-align: center;
-    }
-  }
-}
-
-#current_assignment{
+#assignments {
   text-align: center;
-  margin: 2em 1em;
-}
-
-#assignments{
-  text-align: center;
-  table#assignments_table{
+  table#assignments-table {
     margin: 0 auto;
-    td{
-      padding: 0.5em;
+    td {
+      padding: 1%;
     }
   }
 }
 
-.slightly-red{
-  background-color: lightpink;
+#current-assignment {
+  text-align: center;
+  margin: 4% 5%;
 }
 
-.slightly-green{
-  background-color: lightgreen;
+.change-month {
+  padding-bottom: 2%;
+  font-size: 1.3em;
 }
 
-.lightgrey{
-  color: lightgray;
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.img-space {
+  padding: 1%;
 }

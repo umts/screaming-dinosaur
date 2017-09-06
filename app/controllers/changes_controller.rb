@@ -3,9 +3,10 @@
 class ChangesController < ApplicationController
   def undo
     version = PaperTrail::Version.find(params.require :id)
+    original_user = version.whodunnit.to_i == @current_user.id
     # ... and return is correct here
     # rubocop:disable Style/AndOr
-    head :unauthorized and return unless version.done_by? @current_user
+    head :unauthorized and return unless original_user
     # rubocop:enable Style/AndOr
     # Reify only returns false when the thing didn't exist beforehand.
     if version.reify

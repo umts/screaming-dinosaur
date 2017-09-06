@@ -15,7 +15,14 @@
  *= require_self
  */
 
-body{
+$navbar-default-bg: #881c1c;
+$navbar-default-link-color: #ddd;
+$navbar-default-link-hover-color: #666;
+$navbar-default-link-active-color: #ddd;
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+body {
   display: flex;
   flex-direction: column;
   font-family: sans-serif;
@@ -23,44 +30,31 @@ body{
   min-height: 100vh;
 }
 
-.title{
-  text-align: center;
-}
-
-#content_wrapper{
+#content-wrapper {
   flex: 1;
 }
 
-#main_content{
+#main-content {
   background-color: #fafafa;
   margin: 0 auto;
   min-width: 50em;
   max-width: 70em;
 }
 
-#flash{
-  font-style: italic;
-  margin: 1em auto;
+.center {
   text-align: center;
-  width: 80%;
 }
 
-#errors{
-  padding: 0.5em 0;
-  background-color: orange;
-  border: 3px solid red;
+.title {
+  text-align: center;
 }
 
-#message{
-  padding: 0.5em 0;
-  background-color: lightyellow;
-  border: 3px solid limegreen;
+.vague-success {
+  background-color: lightgreen;
+  border-radius: 6px;
 }
 
-.left{
-  float: left;
-}
-
-.right{
-  float: right;
+.vague-warning {
+  background-color: lightpink;
+  border-radius: 6px;
 }
