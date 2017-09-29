@@ -9,7 +9,7 @@ describe UsersController do
 
   describe 'POST #create' do
     before :each do
-      @attributes = attributes_for(:user).except(:rosters)
+      @attributes = attributes_for(:user)
       when_current_user_is :whoever
     end
     let :submit do
