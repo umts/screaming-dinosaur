@@ -12,12 +12,13 @@ class UsersController < ApplicationController
 
   def create
     user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
-    user = User.new user_params
-    user.rosters << @roster
-    if user.save
-      confirm_change(user)
+    membership_params = user_params[:membership]
+    user_params = parse_roster_ids(user_params.except(:membership))
+    @user = User.new(user_params)
+    if @user.save && update_membership(membership_params)
+      confirm_change(@user)
       redirect_to roster_users_path(@roster)
-    else report_errors(user, fallback_location: roster_users_path)
+    else report_errors(@user, fallback_location: roster_users_path)
     end
   end
 
