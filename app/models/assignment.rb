@@ -79,11 +79,15 @@ class Assignment < ApplicationRecord
   def overlaps_any?
     overlapping_assignments = if new_record?
                                 roster.assignments
-                                    .where("start_date <= ? AND end_date >= ?",
-                                           end_date, start_date)
+                                      .where('
+                                      start_date <= ? AND end_date >= ?',
+                                             end_date, start_date)
                               else
-                                roster.assignments.where("start_date <= ? AND end_date >= ? AND id != ?",
-                                           end_date, start_date, id)
+                                roster.assignments
+                                      .where('
+                                    start_date <= ? AND end_date >= ? AND id !=
+                                    ?',
+                                             end_date, start_date, id)
                               end
     return if overlapping_assignments.blank?
     errors.add :base,
