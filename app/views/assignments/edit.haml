@@ -6,7 +6,7 @@
         .form-group
           = f.label :user_id
           = f.collection_select :user_id, @users, :id, :last_name,
-                                {}, class: 'form_control'
+                                {}, class: 'form-control'
       .col-xs-4
         .form-group
           = f.label :start_date
