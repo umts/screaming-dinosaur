@@ -115,8 +115,8 @@ describe AssignmentsController do
           submit
           expect(session[:last_viewed_month]).to be nil
           expect(response).to redirect_to(
-                                  roster_assignments_url(date: month_date)
-                              )
+            roster_assignments_url(date: month_date)
+          )
         end
       end
       context 'the user did not come from the index page' do
@@ -124,8 +124,8 @@ describe AssignmentsController do
           session[:last_viewed_month] = nil
           submit
           expect(response).to redirect_to(
-                                  roster_assignments_url()
-                              )
+            roster_assignments_url
+          )
         end
       end
     end

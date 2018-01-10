@@ -20,8 +20,8 @@ describe 'edit an assignment' do
     visit new_roster_assignment_url(roster, date: start_date)
     click_button 'Create'
     expect(current_url)
-        .to eq roster_assignments_url(roster,
-                                                     date: date_today
-                                                               .beginning_of_month)
+      .to eq roster_assignments_url(roster,
+                                    date: date_today
+                                              .beginning_of_month)
   end
 end

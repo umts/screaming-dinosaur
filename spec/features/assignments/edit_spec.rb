@@ -22,8 +22,8 @@ describe 'edit an assignment' do
     visit edit_roster_assignment_url(roster, assignment)
     click_button 'Save'
     expect(current_url)
-        .to eq roster_assignments_url(roster,
-                                                     date: date_today
-                                                               .beginning_of_month)
+      .to eq roster_assignments_url(roster,
+                                    date: date_today
+                                              .beginning_of_month)
   end
 end
