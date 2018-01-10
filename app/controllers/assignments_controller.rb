@@ -29,7 +29,8 @@ class AssignmentsController < ApplicationController
     @assignment.notify :owner, of: :deleted_assignment, by: @current_user
     @assignment.destroy
     confirm_change(@assignment)
-    redirect_to roster_assignments_path(@roster)
+    viewed_date = session.delete(:last_viewed_month) || @month_date
+    redirect_to roster_assignments_path(@roster, date: viewed_date)
   end
 
   def edit
