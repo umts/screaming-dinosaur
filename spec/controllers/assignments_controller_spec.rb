@@ -31,11 +31,25 @@ describe AssignmentsController do
           expect_any_instance_of(Assignment).to receive(:notify)
           submit
         end
-        it 'redirects to the index with a date of the assignment start date' do
-          submit
-          expect(response).to redirect_to(
-            roster_assignments_url(date: @attributes[:start_date])
-          )
+        context 'it redirects to index as previously viewed' do
+          context 'the user came from the index page' do
+            it 'redirects to the index with a date of the last viewed month and destroys session var' do
+              month_date = Date.today.beginning_of_month.to_date
+              session[:last_viewed_month] = month_date
+              submit
+              expect(session[:last_viewed_month]).to eq nil
+              expect(response).to redirect_to(
+                                      roster_assignments_url(date: month_date))
+            end
+          end
+          context 'the user did not come from the index page' do
+            it 'redirects to the index with a date of the assignment start date' do
+              session[:last_viewed_month] = nil
+              submit
+              expect(response).to redirect_to(
+                                      roster_assignments_url(date: @attributes[:start_date]))
+            end
+          end
         end
       end
       context 'with errors' do

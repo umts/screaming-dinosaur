@@ -10,6 +10,7 @@ class AssignmentsController < ApplicationController
                        .permit :start_date, :end_date,
                                :user_id, :roster_id
     assignment = Assignment.new ass_params
+    viewed_date = session.delete(:last_viewed_month) || assignment.start_date
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
       # ... and return is correct here
       # rubocop:disable Style/AndOr
@@ -19,7 +20,7 @@ class AssignmentsController < ApplicationController
     if assignment.save
       confirm_change(assignment)
       assignment.notify :owner, of: :new_assignment, by: @current_user
-      redirect_to roster_assignments_path(@roster, date: assignment.start_date)
+      redirect_to roster_assignments_path(@roster, date: viewed_date)
     else report_errors(assignment, fallback_location: roster_assignments_path)
     end
   end
