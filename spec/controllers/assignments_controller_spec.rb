@@ -37,9 +37,10 @@ describe AssignmentsController do
               month_date = Date.today.beginning_of_month.to_date
               session[:last_viewed_month] = month_date
               submit
-              expect(session[:last_viewed_month]).to eq nil
+              expect(session[:last_viewed_month]).to be nil
               expect(response).to redirect_to(
-                                      roster_assignments_url(date: month_date))
+                roster_assignments_url(date: month_date)
+              )
             end
           end
           context 'the user did not come from the index page' do
@@ -47,7 +48,8 @@ describe AssignmentsController do
               session[:last_viewed_month] = nil
               submit
               expect(response).to redirect_to(
-                                      roster_assignments_url(date: @attributes[:start_date]))
+                roster_assignments_url(date: @attributes[:start_date])
+              )
             end
           end
         end
@@ -424,9 +426,10 @@ describe AssignmentsController do
               month_date = Date.today.beginning_of_month.to_date
               session[:last_viewed_month] = month_date
               submit
-              expect(session[:last_viewed_month]).to eq nil
+              expect(session[:last_viewed_month]).to be nil
               expect(response).to redirect_to(
-                                      roster_assignments_url(date: month_date))
+                roster_assignments_url(date: month_date)
+              )
             end
           end
           context 'the user did not come from the index page' do
@@ -434,7 +437,8 @@ describe AssignmentsController do
               session[:last_viewed_month] = nil
               submit
               expect(response).to redirect_to(
-                                      roster_assignments_url(date: @assignment.start_date))
+                roster_assignments_url(date: @assignment.start_date)
+              )
             end
           end
         end
