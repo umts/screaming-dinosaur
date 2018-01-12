@@ -13,15 +13,25 @@ describe 'edit an assignment' do
     Timecop.return
   end
 
-  it 'returns the user to the appropriate index page' do
-    date_today = Date.new(2017, 4, 4)
-    start_date = Date.new(2017, 3, 31)
-    visit roster_assignments_url(roster, date: date_today)
-    visit new_roster_assignment_url(roster, date: start_date)
-    click_button 'Create'
-    expect(current_url)
-      .to eq roster_assignments_url(roster,
-                                    date: date_today
-                                              .beginning_of_month)
+  context 'returns the user to the appropriate index page' do
+    before :each do
+      @date_today = Date.new(2017, 4, 4)
+      @start_date = Date.new(2017, 3, 31)
+      @month_date = @date_today.beginning_of_month
+    end
+    it 'redirects to the correct URL' do
+      visit roster_assignments_url(roster, date: @date_today)
+      visit new_roster_assignment_url(roster, date: @start_date)
+      click_button 'Create'
+      expect(current_url)
+        .to eq roster_assignments_url(roster,
+                                      date: @month_date)
+    end
+    it 'displays the correct month' do
+      visit roster_assignments_url(roster, date: @date_today)
+      visit new_roster_assignment_url(roster, date: @start_date)
+      click_button 'Create'
+      expect(page).to have_selector '.title', text: (@month_date.strftime '%-B %G')
+    end
   end
 end
