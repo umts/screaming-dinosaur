@@ -29,7 +29,8 @@ describe 'edit an assignment' do
       visit roster_assignments_url(roster, date: date_today)
       visit new_roster_assignment_url(roster, date: start_date)
       click_button 'Create'
-      expect(page).to have_selector '.title', text: month_date.strftime('%-B %G')
+      expect(page).to have_selector '.title',
+                                    text: month_date.strftime('%-B %G')
     end
   end
 end
