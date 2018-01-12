@@ -5,9 +5,8 @@
       .col-xs-2.col-xs-offset-3
         .form-group
           = f.label :user_id
-          = f.select :user_id,
-           options_from_collection_for_select(@users, :id, :last_name),
-           class: 'form-control'
+          = f.collection_select :user_id, @users, :id, :last_name,
+                                {}, class: 'form-control'
       .col-xs-4
         .form-group
           = f.label :start_date
