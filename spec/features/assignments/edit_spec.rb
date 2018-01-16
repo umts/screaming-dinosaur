@@ -52,24 +52,32 @@ describe 'edit an assignment' do
     end
     it 'displays the start date' do
       visit edit_roster_assignment_url(roster, assignment)
-      expect(find_field('assignment_start_date').value).to eq start_date.strftime('%Y-%m-%d')
+      expect(find_field('assignment_start_date').value)
+          .to eq start_date.strftime('%Y-%m-%d')
     end
     it 'displays the end date' do
       visit edit_roster_assignment_url(roster, assignment)
-      expect(find_field('assignment_end_date').value).to eq end_date.strftime('%Y-%m-%d')
+      expect(find_field('assignment_end_date').value)
+          .to eq end_date.strftime('%Y-%m-%d')
     end
   end
   it 'updates the assignment' do
-    new_user = create :user, rosters: [roster]
+    last_name = user.last_name
+    # Visit the index on the correct month to ensure the form
+    # submit returns us to the correct month
+    visit roster_assignments_url(roster, date: date_today)
     visit edit_roster_assignment_url(roster, assignment)
-    select(new_user.last_name, from: :assignment_user_id)
+    fill_in('assignment[end_date]', with: date_today)
     click_button 'Save'
-    # potential bug
-    expect(assignment.user).to eq new_user
+    # Since the assignment is now 5 days long
+    expect(page).to have_selector 'a',
+                                  text: last_name, count: 5
   end
   it 'destroys the assignment' do
+    last_name = user.last_name
     visit edit_roster_assignment_url(roster, assignment)
     click_button 'Delete assignment'
-    expect { assignment.reload }.to raise_error ActiveRecord::RecordNotFound
+    expect(page).not_to have_selector 'a',
+                                  text: last_name
   end
 end
