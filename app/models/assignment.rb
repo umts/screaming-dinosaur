@@ -77,6 +77,7 @@ class Assignment < ApplicationRecord
   private
 
   def overlaps_any?
+    # A non-new record always overlaps itself, so we exclude it from our query.
     if new_record?
       overlapping_assignments = roster.assignments.where("
         start_date <= ? AND end_date >= ?
