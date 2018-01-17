@@ -7,16 +7,16 @@ describe 'edit an assignment' do
   let(:user) { create :user, rosters: [roster] }
   let(:assignment) do
     create :assignment,
-      user: user,
-      roster: roster,
-      start_date: start_date,
-      end_date: end_date
+           user: user,
+           roster: roster,
+           start_date: start_date,
+           end_date: end_date
   end
   let(:date_today) { Date.new(2017, 4, 4) }
   let(:start_date) { Date.new(2017, 3, 31) }
   let(:end_date) { Date.new(2017, 4, 6) }
   before :each do
-    Timecop.freeze Date.new(2018, 1, 10)
+    Timecop.freeze Date.new(2017, 3, 31)
     set_current_user(user)
   end
   after :each do
@@ -53,12 +53,12 @@ describe 'edit an assignment' do
     it 'displays the start date' do
       visit edit_roster_assignment_url(roster, assignment)
       expect(find_field('assignment_start_date').value)
-          .to eq start_date.strftime('%Y-%m-%d')
+        .to eq start_date.strftime('%Y-%m-%d')
     end
     it 'displays the end date' do
       visit edit_roster_assignment_url(roster, assignment)
       expect(find_field('assignment_end_date').value)
-          .to eq end_date.strftime('%Y-%m-%d')
+        .to eq end_date.strftime('%Y-%m-%d')
     end
   end
   it 'updates the assignment' do
@@ -78,6 +78,32 @@ describe 'edit an assignment' do
     visit edit_roster_assignment_url(roster, assignment)
     click_button 'Delete assignment'
     expect(page).not_to have_selector 'a',
-                                  text: last_name
+                                      text: last_name
+  end
+  context 'only correct users can edit assignment owner' do
+    before :each do
+      @new_user = create :user, rosters: [roster]
+      @last_name = @new_user.last_name
+    end
+    it 'user is not an admin' do
+      visit edit_roster_assignment_url(roster, assignment)
+      select(@last_name, from: :assignment_user_id)
+      click_button 'Save'
+      within('div.alert.alert-danger') do
+        expect(page).to have_selector 'li', text: 'You may only edit'
+      end
+    end
+    it 'user is an admin' do
+      membership = user.membership_in(roster)
+      membership.admin = true
+      membership.save
+      visit roster_assignments_url(roster, date: date_today)
+      visit edit_roster_assignment_url(roster, assignment)
+      select(@last_name, from: :assignment_user_id)
+      click_button 'Save'
+      # Since the assignment is 7 days long
+      expect(page).to have_selector 'a',
+                                    text: @last_name, count: 7
+    end
   end
 end
