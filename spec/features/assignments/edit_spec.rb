@@ -52,12 +52,12 @@ describe 'edit an assignment' do
     end
     it 'displays the start date' do
       visit edit_roster_assignment_url(roster, assignment)
-      expect(find_field('assignment_start_date').value)
+      expect(find_field('Start date').value)
         .to eq start_date.strftime('%Y-%m-%d')
     end
     it 'displays the end date' do
       visit edit_roster_assignment_url(roster, assignment)
-      expect(find_field('assignment_end_date').value)
+      expect(find_field('End date').value)
         .to eq end_date.strftime('%Y-%m-%d')
     end
   end
@@ -68,17 +68,19 @@ describe 'edit an assignment' do
       # submit returns us to the correct month
       visit roster_assignments_url(roster, date: date_today)
       visit edit_roster_assignment_url(roster, assignment)
-      fill_in('assignment[end_date]', with: date_today)
+      fill_in('End date', with: date_today)
       click_button 'Save'
       # Since the assignment is now 5 days long
-      expect(page).to have_selector 'a',
-                                    text: last_name, count: 5
+      expect(page).to have_link last_name,
+                                href: 'http://www.example.com/rosters/'\
+                                  "#{roster.id}/assignments/#{assignment.id}"\
+                                  '/edit',
+                                count: 5
     end
     it 'destroys the assignment' do
       visit edit_roster_assignment_url(roster, assignment)
       click_button 'Delete assignment'
-      expect(page).not_to have_selector 'a',
-                                        text: last_name
+      expect(page).not_to have_link last_name
     end
   end
   context 'only correct users can edit assignment' do
@@ -88,23 +90,24 @@ describe 'edit an assignment' do
     end
     it 'stops users from changing assignments they do not own' do
       visit edit_roster_assignment_url(roster, assignment)
-      select(@last_name, from: :assignment_user_id)
+      select(@last_name, from: 'User')
       click_button 'Save'
       within('div.alert.alert-danger') do
         expect(page).to have_selector 'li', text: 'You may only edit'
       end
     end
     it 'allows admin users to edit all assignments' do
-      membership = user.membership_in(roster)
-      membership.admin = true
-      membership.save
+      user.membership_in(roster).update admin: true
       visit roster_assignments_url(roster, date: date_today)
       visit edit_roster_assignment_url(roster, assignment)
-      select(@last_name, from: :assignment_user_id)
+      select(@last_name, from: 'User')
       click_button 'Save'
       # Since the assignment is 7 days long
-      expect(page).to have_selector 'a',
-                                    text: @last_name, count: 7
+      expect(page).to have_link @last_name,
+                                href: 'http://www.example.com/rosters/'\
+                                  "#{roster.id}/assignments/#{assignment.id}"\
+                                  '/edit',
+                                count: 7
     end
   end
 end
