@@ -61,31 +61,32 @@ describe 'edit an assignment' do
         .to eq end_date.strftime('%Y-%m-%d')
     end
   end
-  it 'updates the assignment' do
-    last_name = user.last_name
-    # Visit the index on the correct month to ensure the form
-    # submit returns us to the correct month
-    visit roster_assignments_url(roster, date: date_today)
-    visit edit_roster_assignment_url(roster, assignment)
-    fill_in('assignment[end_date]', with: date_today)
-    click_button 'Save'
-    # Since the assignment is now 5 days long
-    expect(page).to have_selector 'a',
-                                  text: last_name, count: 5
+  context 'changing the assignment' do
+    let(:last_name) { user.last_name }
+    it 'updates the assignment' do
+      # Visit the index on the correct month to ensure the form
+      # submit returns us to the correct month
+      visit roster_assignments_url(roster, date: date_today)
+      visit edit_roster_assignment_url(roster, assignment)
+      fill_in('assignment[end_date]', with: date_today)
+      click_button 'Save'
+      # Since the assignment is now 5 days long
+      expect(page).to have_selector 'a',
+                                    text: last_name, count: 5
+    end
+    it 'destroys the assignment' do
+      visit edit_roster_assignment_url(roster, assignment)
+      click_button 'Delete assignment'
+      expect(page).not_to have_selector 'a',
+                                        text: last_name
+    end
   end
-  it 'destroys the assignment' do
-    last_name = user.last_name
-    visit edit_roster_assignment_url(roster, assignment)
-    click_button 'Delete assignment'
-    expect(page).not_to have_selector 'a',
-                                      text: last_name
-  end
-  context 'only correct users can edit assignment owner' do
+  context 'only correct users can edit assignment' do
     before :each do
       @new_user = create :user, rosters: [roster]
       @last_name = @new_user.last_name
     end
-    it 'user is not an admin' do
+    it 'stops users from changing assignments they do not own' do
       visit edit_roster_assignment_url(roster, assignment)
       select(@last_name, from: :assignment_user_id)
       click_button 'Save'
@@ -93,7 +94,7 @@ describe 'edit an assignment' do
         expect(page).to have_selector 'li', text: 'You may only edit'
       end
     end
-    it 'user is an admin' do
+    it 'allows admin users to edit all assignments' do
       membership = user.membership_in(roster)
       membership.admin = true
       membership.save
