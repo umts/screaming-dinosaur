@@ -10,6 +10,7 @@ class AssignmentsController < ApplicationController
                        .permit :start_date, :end_date,
                                :user_id, :roster_id
     assignment = Assignment.new ass_params
+    viewed_date = session.delete(:last_viewed_month) || assignment.start_date
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
       # ... and return is correct here
       # rubocop:disable Style/AndOr
@@ -19,7 +20,7 @@ class AssignmentsController < ApplicationController
     if assignment.save
       confirm_change(assignment)
       assignment.notify :owner, of: :new_assignment, by: @current_user
-      redirect_to roster_assignments_path(@roster, date: assignment.start_date)
+      redirect_to roster_assignments_path(@roster, date: viewed_date)
     else report_errors(assignment, fallback_location: roster_assignments_path)
     end
   end
@@ -28,7 +29,8 @@ class AssignmentsController < ApplicationController
     @assignment.notify :owner, of: :deleted_assignment, by: @current_user
     @assignment.destroy
     confirm_change(@assignment)
-    redirect_to roster_assignments_path(@roster)
+    viewed_date = session.delete(:last_viewed_month) || @month_date
+    redirect_to roster_assignments_path(@roster, date: viewed_date)
   end
 
   def edit
@@ -70,6 +72,7 @@ class AssignmentsController < ApplicationController
     @current_assignment = @roster.assignments.current
     @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @roster.fallback_user
+    session[:last_viewed_month] = @month_date
   end
 
   def new
@@ -86,6 +89,7 @@ class AssignmentsController < ApplicationController
   def update
     ass_params = params.require(:assignment)
                        .permit :start_date, :end_date, :user_id
+    viewed_date = session.delete(:last_viewed_month) || @assignment.start_date
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
       # ... and return is correct here
       # rubocop:disable Style/AndOr
@@ -96,7 +100,7 @@ class AssignmentsController < ApplicationController
     if @assignment.update ass_params
       confirm_change(@assignment)
       notify_appropriate_users
-      redirect_to roster_assignments_path(@roster, date: @assignment.start_date)
+      redirect_to roster_assignments_path(@roster, date: viewed_date)
     else report_errors(@assignment, fallback_location: roster_assignments_path)
     end
   end

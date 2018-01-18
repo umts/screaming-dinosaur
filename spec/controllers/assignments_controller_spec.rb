@@ -31,11 +31,27 @@ describe AssignmentsController do
           expect_any_instance_of(Assignment).to receive(:notify)
           submit
         end
-        it 'redirects to the index with a date of the assignment start date' do
-          submit
-          expect(response).to redirect_to(
-            roster_assignments_url(date: @attributes[:start_date])
-          )
+        context 'it redirects to index as previously viewed' do
+          context 'the user came from the index page' do
+            it 'redirects to the index with a date of the last viewed month and destroys session var' do
+              month_date = 1.month.ago.beginning_of_month.to_date
+              session[:last_viewed_month] = month_date
+              submit
+              expect(session[:last_viewed_month]).to be nil
+              expect(response).to redirect_to(
+                roster_assignments_url(date: month_date)
+              )
+            end
+          end
+          context 'the user did not come from the index page' do
+            it 'redirects to the index with a date of the assignment start date' do
+              session[:last_viewed_month] = nil
+              submit
+              expect(response).to redirect_to(
+                roster_assignments_url(date: @attributes[:start_date])
+              )
+            end
+          end
         end
       end
       context 'with errors' do
@@ -91,9 +107,27 @@ describe AssignmentsController do
       expect_any_instance_of(Assignment).to receive :notify
       submit
     end
-    it 'redirects to the index' do
-      submit
-      expect(response).to redirect_to roster_assignments_url
+    context 'it redirects to index as previously viewed' do
+      context 'the user came from the index page' do
+        it 'redirects to the index with a date of the last viewed month and destroys session var' do
+          month_date = 1.month.ago.beginning_of_month.to_date
+          session[:last_viewed_month] = month_date
+          submit
+          expect(session[:last_viewed_month]).to be nil
+          expect(response).to redirect_to(
+            roster_assignments_url(date: month_date)
+          )
+        end
+      end
+      context 'the user did not come from the index page' do
+        it 'redirects to the index with a date of the assignment start date' do
+          session[:last_viewed_month] = nil
+          submit
+          expect(response).to redirect_to(
+            roster_assignments_url
+          )
+        end
+      end
     end
   end
 
@@ -252,6 +286,20 @@ describe AssignmentsController do
           expect(assigns.fetch :month_date).to eql Date.today.beginning_of_month
         end
       end
+      context 'session variable unassigned' do
+        it 'it sets the last viewed month session variable to month date' do
+          submit
+          expect(session[:last_viewed_month]).to eq assigns.fetch :month_date
+        end
+      end
+      context 'session variable assigned' do
+        it 'it sets the last viewed month session variable to month date' do
+          old_date = 5.months.ago
+          session[:last_viewed_month] = old_date.beginning_of_month.to_date
+          submit
+          expect(session[:last_viewed_month]).to eq assigns.fetch :month_date
+        end
+      end
     end
     context 'fcIdNumber in request' do
       context 'user exists' do
@@ -390,11 +438,27 @@ describe AssignmentsController do
             submit
           end
         end
-        it 'redirects to the index with a date of the assignment start date' do
-          submit
-          expect(response).to redirect_to(
-            roster_assignments_url(date: @assignment.start_date)
-          )
+        context 'it redirects to index as previously viewed' do
+          context 'the user came from the index page' do
+            it 'redirects to the index with a date of the last viewed month and destroys session var' do
+              month_date = 1.month.ago.beginning_of_month.to_date
+              session[:last_viewed_month] = month_date
+              submit
+              expect(session[:last_viewed_month]).to be nil
+              expect(response).to redirect_to(
+                roster_assignments_url(date: month_date)
+              )
+            end
+          end
+          context 'the user did not come from the index page' do
+            it 'redirects to the index with a date of the assignment start date' do
+              session[:last_viewed_month] = nil
+              submit
+              expect(response).to redirect_to(
+                roster_assignments_url(date: @assignment.start_date)
+              )
+            end
+          end
         end
       end
       context 'with errors' do
