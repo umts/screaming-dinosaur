@@ -72,9 +72,8 @@ describe 'edit an assignment' do
       click_button 'Save'
       # Since the assignment is now 5 days long
       expect(page).to have_link last_name,
-                                href: edit_roster_assignment_url(roster.id,
-                                                                 assignment
-                                                                     .id),
+                                href: edit_roster_assignment_url(roster,
+                                                                 assignment),
                                 count: 5
     end
     it 'destroys the assignment' do
@@ -104,9 +103,8 @@ describe 'edit an assignment' do
       click_button 'Save'
       # Since the assignment is 7 days long
       expect(page).to have_link @last_name,
-                                href: edit_roster_assignment_url(roster.id,
-                                                                 assignment
-                                                                     .id),
+                                href: edit_roster_assignment_url(roster,
+                                                                 assignment),
                                 count: 7
     end
   end
