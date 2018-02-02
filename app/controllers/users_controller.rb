@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   before_action :require_admin_in_roster, except: %i[edit update]
 
   WHITELISTED_ATTRIBUTES = [:first_name, :last_name, :spire, :email,
-                            :phone, :reminders_enabled,
+                            :phone, :active, :reminders_enabled,
                             :change_notifications_enabled,
                             rosters: [], membership: [:admin]].freeze
 
@@ -74,9 +74,11 @@ class UsersController < ApplicationController
   end
 
   def parse_roster_ids(attrs)
-    attrs[:rosters] = attrs[:rosters].map do |roster_id|
-      Roster.find_by id: roster_id
-    end.compact
+    if attrs[:rosters].present?
+      attrs[:rosters] = attrs[:rosters].map do |roster_id|
+        Roster.find_by id: roster_id
+      end.compact
+    end
     attrs
   end
 
