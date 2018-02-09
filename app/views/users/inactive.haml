@@ -1,0 +1,30 @@
+%h1.title Inactive Users
+%table.table
+  %thead
+    %tr
+      %th Name
+      %th SPIRE
+      %th Email
+      %th Phone
+      %th
+      %th
+  %tbody
+    - @inactive.each do |user|
+      %tr
+        %td
+          = user.full_name
+          - if user == @fallback
+            (fallback)
+        %td= user.spire
+        %td= user.email
+        %td= user.phone
+        %td= link_to 'Edit',
+        edit_roster_user_path(@roster, user),
+         class: 'btn btn-info'
+        %td
+          =form_for user, url: roster_user_url(@roster, user) do |f|
+            = f.hidden_field :active, value: true
+            = f.submit 'Activate', class: 'btn btn-primary'
+        %td= button_to 'Destroy',
+        roster_user_path(@roster, user),
+         method: :delete, class: 'btn btn-danger'

@@ -16,6 +16,10 @@ class User < ApplicationRecord
   validates :phone,
             format: { with: /\A\+1\d{10}\z/,
                       message: 'must be "+1" followed by 10 digits' }
+  before_save -> { self.assignments.destroy_all }, if: :being_deactivated?
+
+  scope :active, -> { where active: true }
+  scope :inactive, -> { where active: false }
 
   def full_name
     "#{first_name} #{last_name}"
@@ -35,5 +39,9 @@ class User < ApplicationRecord
 
   def membership_in(roster)
     memberships.find_by(roster: roster)
+  end
+
+  def being_deactivated?
+    self.active_changed? && !self.active?
   end
 end

@@ -5,9 +5,11 @@
     No fallback user!
     = link_to 'Select a fallback user', edit_roster_path(@roster)
 .container-fluid
-  .col-xs-5.col-xs-offset-2
+  .col-xs-2.col-xs-offset-1
     = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary'
   .col-xs-3
+    = link_to 'Inactive users', inactive_roster_users_path, class: 'btn btn-primary'
+  .col-xs-3.col-xs-offset-2
     -  if @other_users.present?
       .form
         Add existing user:
@@ -26,23 +28,22 @@
       %th
       %th
   %tbody
-    - @users.each do |user|
-      - if user.active?
-        %tr
-          %td
-            = user.full_name
-            - if user == @fallback
-              (fallback)
-          %td= user.spire
-          %td= user.email
-          %td= user.phone
-          %td= link_to 'Edit',
-          edit_roster_user_path(@roster, user),
-           class: 'btn btn-info'
-          %td
-            =form_for user, url: roster_user_url(@roster, user) do |f|
-              = f.hidden_field :active, value: false
-              = f.submit 'Deactivate', class: 'btn btn-primary'
-          %td= button_to 'Destroy',
-          roster_user_path(@roster, user),
-           method: :delete, class: 'btn btn-danger'
+    - @active.each do |user|
+      %tr
+        %td
+          = user.full_name
+          - if user == @fallback
+            (fallback)
+        %td= user.spire
+        %td= user.email
+        %td= user.phone
+        %td= link_to 'Edit',
+        edit_roster_user_path(@roster, user),
+         class: 'btn btn-info'
+        %td
+          =form_for user, url: roster_user_url(@roster, user) do |f|
+            = f.hidden_field :active, value: false
+            = f.submit 'Deactivate', class: 'btn btn-primary'
+        %td= button_to 'Destroy',
+        roster_user_path(@roster, user),
+         method: :delete, class: 'btn btn-danger'

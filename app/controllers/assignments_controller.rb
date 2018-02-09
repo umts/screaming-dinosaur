@@ -27,14 +27,14 @@ class AssignmentsController < ApplicationController
 
   def destroy
     @assignment.notify :owner, of: :deleted_assignment, by: @current_user
-    @assignment.destroy
+    @assignment.future.destroy
     confirm_change(@assignment)
     viewed_date = session.delete(:last_viewed_month) || @month_date
     redirect_to roster_assignments_path(@roster, date: viewed_date)
   end
 
   def edit
-    @users = @roster.users.order :last_name
+    @users = @roster.users.active.order :last_name
   end
 
   def generate_rotation
@@ -78,11 +78,11 @@ class AssignmentsController < ApplicationController
   def new
     @start_date = Date.parse(params.require :date)
     @end_date = @start_date + 6.days
-    @users = @roster.users.order :last_name
+    @users = @roster.users.active.order :last_name
   end
 
   def rotation_generator
-    @users = @roster.users.order :last_name
+    @users = @roster.users.active.order :last_name
     @start_date = Assignment.next_rotation_start_date
   end
 
