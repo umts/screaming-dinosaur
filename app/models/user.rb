@@ -16,7 +16,7 @@ class User < ApplicationRecord
   validates :phone,
             format: { with: /\A\+1\d{10}\z/,
                       message: 'must be "+1" followed by 10 digits' }
-  before_save -> { self.assignments.destroy_all }, if: :being_deactivated?
+  before_save -> { self.assignments.future.destroy_all }, if: :being_deactivated?
 
   scope :active, -> { where active: true }
   scope :inactive, -> { where active: false }
