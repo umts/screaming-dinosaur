@@ -5,7 +5,6 @@ class UsersController < ApplicationController
   before_action :require_admin_in_roster_or_self, only: %i[edit update]
   before_action :require_admin_in_roster, except: %i[edit update]
 
-
   WHITELISTED_ATTRIBUTES = [:first_name, :last_name, :spire, :email,
                             :phone, :active, :reminders_enabled,
                             :change_notifications_enabled,
