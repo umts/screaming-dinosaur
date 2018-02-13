@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,53 +10,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170425165219) do
+ActiveRecord::Schema.define(version: 20180130213001) do
 
-  create_table "assignments", force: :cascade do |t|
-    t.integer  "user_id",    limit: 4
-    t.date     "start_date"
-    t.date     "end_date"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.integer  "roster_id",  limit: 4
+  create_table "assignments", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "user_id"
+    t.date "start_date"
+    t.date "end_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "roster_id"
   end
 
-  create_table "memberships", force: :cascade do |t|
-    t.integer  "roster_id",  limit: 4
-    t.integer  "user_id",    limit: 4
-    t.boolean  "admin",                default: false
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+  create_table "memberships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer "roster_id"
+    t.integer "user_id"
+    t.boolean "admin", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  create_table "rosters", force: :cascade do |t|
-    t.string   "name",             limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.integer  "fallback_user_id", limit: 4
+  create_table "rosters", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "fallback_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string   "first_name",                   limit: 255
-    t.string   "last_name",                    limit: 255
-    t.string   "spire",                        limit: 255
-    t.string   "email",                        limit: 255
-    t.string   "phone",                        limit: 255
-    t.datetime "created_at",                                              null: false
-    t.datetime "updated_at",                                              null: false
-    t.boolean  "reminders_enabled",                        default: true
-    t.boolean  "change_notifications_enabled",             default: true
+  create_table "users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "spire"
+    t.string "email"
+    t.string "phone"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "reminders_enabled", default: true
+    t.boolean "change_notifications_enabled", default: true
+    t.boolean "active", default: true
   end
 
-  create_table "versions", force: :cascade do |t|
-    t.string   "item_type",  limit: 191,        null: false
-    t.integer  "item_id",    limit: 4,          null: false
-    t.string   "event",      limit: 255,        null: false
-    t.string   "whodunnit",  limit: 255
-    t.text     "object",     limit: 4294967295
+  create_table "versions", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string "item_type", limit: 191, null: false
+    t.integer "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object", limit: 4294967295
     t.datetime "created_at"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
-
-  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
 end

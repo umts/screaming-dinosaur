@@ -43,7 +43,8 @@
         %td
           =form_for user, url: roster_user_url(@roster, user) do |f|
             = f.hidden_field :active, value: false
-            = f.submit 'Deactivate', class: 'btn btn-primary'
+            = f.submit 'Deactivate', class: 'btn btn-primary',
+             data: { confirm: 'Deactivating user will delete all upcoming assignments.' }
         %td= button_to 'Destroy',
         roster_user_path(@roster, user),
          method: :delete, class: 'btn btn-danger'
