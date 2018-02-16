@@ -57,7 +57,7 @@ class UsersController < ApplicationController
     if @user.update(user_params) && update_membership(membership_params)
       confirm_change(@user)
       if @current_user.admin_in? @roster
-        redirect_back fallback_location: roster_users_path(@roster)
+        redirect_to roster_users_path(@roster)
       else redirect_to roster_assignments_path(@roster)
       end
     else report_errors(@user, fallback_location: roster_assignments_path)
