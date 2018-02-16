@@ -8,7 +8,11 @@
   .col-xs-2.col-xs-offset-1
     = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary'
   .col-xs-3
-    = link_to 'Inactive users', inactive_roster_users_path, class: 'btn btn-primary'
+    - if @active
+      = link_to 'Inactive users', roster_users_path(active: false), class: 'btn btn-primary'
+    - else
+      = link_to 'Active users', roster_users_path, class: 'btn btn-primary'
+
   .col-xs-3.col-xs-offset-2
     -  if @other_users.present?
       .form
@@ -28,7 +32,7 @@
       %th
       %th
   %tbody
-    - @active.each do |user|
+    - @users.each do |user|
       %tr
         %td
           = user.full_name
@@ -42,9 +46,13 @@
          class: 'btn btn-info'
         %td
           =form_for user, url: roster_user_url(@roster, user) do |f|
-            = f.hidden_field :active, value: false
-            = f.submit 'Deactivate', class: 'btn btn-primary',
-             data: { confirm: 'Deactivating user will delete all upcoming assignments.' }
+            - if user.active?
+              = f.hidden_field :active, value: false
+              = f.submit 'Deactivate', class: 'btn btn-primary',
+               data: { confirm: 'Deactivating user will delete all upcoming assignments.' }
+            - else
+              = f.hidden_field :active, value: true
+              = f.submit 'Activate', class: 'btn btn-primary'
         %td= button_to 'Destroy',
         roster_user_path(@roster, user),
          method: :delete, class: 'btn btn-danger'

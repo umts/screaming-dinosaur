@@ -31,16 +31,14 @@ class UsersController < ApplicationController
   end
 
   def index
-    @users = @roster.users
-    @other_users = User.all - @users
     @fallback = @roster.fallback_user
-    @active = User.active.order :last_name
-  end
-
-  def inactive
-    @users = @roster.users
-    @fallback = @roster.fallback_user
-    @inactive = User.inactive.order :last_name
+    @active = if params[:active]
+                false
+              else
+                true
+              end
+    @users = User.where active: @active
+    @other_users = User.all - @roster.users
   end
 
   def transfer
