@@ -48,4 +48,6 @@ group :development, :test do
   gem 'timecop'
   gem 'umts-custom-cops'
   gem 'umts-custom-matchers'
+  gem 'chromedriver-helper'
+  gem 'selenium-webdriver'
 end
