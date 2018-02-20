@@ -35,6 +35,7 @@ end
 
 group :development, :test do
   gem 'capybara'
+  gem 'chromedriver-helper'
   gem 'codeclimate-test-reporter', '~> 1.0'
   gem 'haml_lint'
   gem 'mocha'
@@ -44,10 +45,9 @@ group :development, :test do
   gem 'rspec-html-matchers'
   gem 'rspec-rails'
   gem 'rubocop'
+  gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'timecop'
   gem 'umts-custom-cops'
   gem 'umts-custom-matchers'
-  gem 'chromedriver-helper'
-  gem 'selenium-webdriver'
 end
