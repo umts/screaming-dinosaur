@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 ENV['RAILS_ENV'] ||= 'test'
-require 'factory_girl_rails'
 require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'capybara/rails'
 require 'rack_session_access/capybara'
-
 ActiveRecord::Migration.maintain_test_schema!
 Rails.application.routes.default_url_options[:host] = 'localhost:3000'
 
@@ -18,6 +16,9 @@ end
 Capybara.configure do |config|
   config.default_max_wait_time = 10 # seconds
   config.default_driver = :selenium
+  config.app_host = 'http://localhost:3000'
+  config.server_host = 'localhost'
+  config.server_port = 3001
 end
 
 RSpec.configure do |config|

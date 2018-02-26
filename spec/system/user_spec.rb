@@ -4,11 +4,12 @@ require 'rails_helper'
 
 describe User do
   let(:user) { create :user }
-  let(:admin) { create :user, admin: true }
+  let(:membership) { create :membership, admin: true}
+  let(:admin) { create :user, memberships: [membership] }
 
   context 'viewing the index' do
     it 'directs you to the appropriate page' do
-      # when_current_user_is(:admin)
+      set_current_user(admin)
       visit root_url
       click_button 'Manage Users'
       expect(page.current_url).to end_with users_path
