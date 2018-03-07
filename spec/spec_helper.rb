@@ -56,5 +56,5 @@ end
 
 # For feature testing
 def set_current_user(user)
-  Capybara.current_session.set_rack_session user_id: user.id
+  page.set_rack_session user_id: user.id
 end

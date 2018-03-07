@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
-describe User do
-  let(:user) { create :user }
+describe 'user pages' do
   let(:membership) { create :membership, admin: true}
   let(:admin) { create :user, memberships: [membership] }
 
