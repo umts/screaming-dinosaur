@@ -16,6 +16,7 @@ gem 'sass-rails'
 gem 'snappconfig'
 gem 'uglifier'
 gem 'whenever', require: false
+gem 'puma', '~> 3.7'
 
 group :production do
   gem 'exception_notification'
