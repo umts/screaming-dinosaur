@@ -16,7 +16,6 @@ gem 'sass-rails'
 gem 'snappconfig'
 gem 'uglifier'
 gem 'whenever', require: false
-gem 'puma', '~> 3.7'
 
 group :production do
   gem 'exception_notification'
@@ -47,6 +46,7 @@ end
 group :test do
   gem 'capybara'
   gem 'chromedriver-helper'
+  gem 'puma', '~> 3.7'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec-rails'
