@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe 'user pages' do
-  let(:membership) { create :membership, admin: true}
+  let(:membership) { create :membership, admin: true }
   let!(:admin) { create :user, first_name: 'tester', memberships: [membership] }
 
   context 'viewing the index' do

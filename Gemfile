@@ -39,8 +39,8 @@ group :development, :test do
   gem 'mocha'
   gem 'pry-byebug'
   gem 'rubocop'
-  gem 'umts-custom-cops'
   gem 'timecop'
+  gem 'umts-custom-cops'
 end
 
 group :test do
@@ -49,9 +49,9 @@ group :test do
   gem 'puma', '~> 3.7'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
+  gem 'rspec-html-matchers'
   gem 'rspec-rails'
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'umts-custom-matchers'
-  gem 'rspec-html-matchers'
 end
