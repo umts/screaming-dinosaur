@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
+ENV['RAILS_ENV'] ||= 'test'
+require 'spec_helper'
+require File.expand_path('../../config/environment', __FILE__)
+require 'rspec/rails'
+require 'rack_session_access/capybara'
 require 'factory_girl_rails'
 require 'simplecov'
 require 'umts-custom-matchers'
+
+ActiveRecord::Migration.maintain_test_schema!
 
 SimpleCov.start 'rails'
 SimpleCov.start do
@@ -12,6 +19,8 @@ SimpleCov.start do
 end
 
 RSpec.configure do |config|
+  config.infer_spec_type_from_file_location!
+  config.use_transactional_fixtures = true
   config.before :all do
     FactoryGirl.reload
   end
@@ -47,5 +56,5 @@ end
 
 # For feature testing
 def set_current_user(user)
-  Capybara.current_session.set_rack_session user_id: user.id
+  page.set_rack_session user_id: user.id
 end
