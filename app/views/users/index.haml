@@ -6,12 +6,15 @@
     = link_to 'Select a fallback user', edit_roster_path(@roster)
 .container-fluid
   .col-xs-2.col-xs-offset-1
-    = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary'
+    = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary',
+     value: 'Add new user'
   .col-xs-3
     - if @active
-      = link_to 'Inactive users', roster_users_path(active: false), class: 'btn btn-primary'
+      = link_to 'Inactive users', roster_users_path(active: false), class: 'btn btn-primary',
+       value: 'Inactive users'
     - else
-      = link_to 'Active users', roster_users_path, class: 'btn btn-primary'
+      = link_to 'Active users', roster_users_path, class: 'btn btn-primary',
+       value: 'Active users'
 
   .col-xs-3.col-xs-offset-2
     -  if @other_users.present?

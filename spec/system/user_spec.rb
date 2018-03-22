@@ -3,16 +3,9 @@
 require 'spec_helper'
 
 describe 'user pages' do
-  let(:membership) { create :membership, admin: true }
-  let(:admin) { create :user, memberships: [membership] }
-
+  let(:roster) { create :roster }
+  let(:admin_membership) { create :membership, roster: roster, admin: true }
+  let(:admin) { create :user, memberships: [admin_membership] }
   context 'viewing the index' do
-    it 'directs you to the appropriate page' do
-      set_current_user(admin)
-      visit root_url
-      click_link 'Manage users'
-      expect(current_url).to end_with roster_users_path(membership.roster)
-      expect(page).to have_selector 'h1', text: 'Users'
-    end
   end
 end
