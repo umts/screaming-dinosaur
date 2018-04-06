@@ -4,6 +4,7 @@ class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
   before_action :require_admin_in_roster, only: %i[generate_rotation
                                                    rotation_generator]
+  skip_before_action :set_current_user, :set_roster, only: :feed
 
   def create
     ass_params = params.require(:assignment)
@@ -73,6 +74,7 @@ class AssignmentsController < ApplicationController
     @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @roster.fallback_user
     session[:last_viewed_month] = @month_date
+    respond_to :html, :ics
   end
 
   def new
@@ -102,6 +104,18 @@ class AssignmentsController < ApplicationController
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster, date: viewed_date)
     else report_errors(@assignment, fallback_location: roster_assignments_path)
+    end
+  end
+
+  def feed
+    user = (@current_user || User.find_by(calendar_access_token: params[:token]))
+    if params[:format] == 'ics' && user
+      binding.pry
+      roster = Roster.find_by(name: params[:roster])
+      @assignments = roster.assignments
+      render action: 'index', layout: false
+    else
+      render file: 'public/401.html', layout: false, status: 401
     end
   end
 

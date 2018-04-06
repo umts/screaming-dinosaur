@@ -16,6 +16,8 @@ class User < ApplicationRecord
   validates :phone,
             format: { with: /\A\+1\d{10}\z/,
                       message: 'must be "+1" followed by 10 digits' }
+  before_save :generate_calendar_access_token,
+              unless: -> { calendar_access_token.present? }
 
   def full_name
     "#{first_name} #{last_name}"
@@ -35,5 +37,13 @@ class User < ApplicationRecord
 
   def membership_in(roster)
     memberships.find_by(roster: roster)
+  end
+
+  def generate_calendar_access_token
+    loop do
+      self.calendar_access_token = SecureRandom.hex
+      break unless self.class
+                       .exists?(calendar_access_token: calendar_access_token)
+    end
   end
 end
