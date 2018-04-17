@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
-  before_action :find_user, except: %i[create index new inactive]
+  before_action :find_user, except: %i[create index new]
   before_action :require_admin_in_roster_or_self, only: %i[edit update]
   before_action :require_admin_in_roster, except: %i[edit update]
 
