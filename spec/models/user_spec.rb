@@ -52,7 +52,7 @@ describe User do
       user = future_assignment.user
       user.active = false
       user.save
-      expect(user.assignments).to eq []
+      expect(user.assignments).to be_empty
     end
   end
 end
