@@ -31,9 +31,10 @@
     roster_assignments_path(@roster, date: @month_date.next_month)
 .form-inline.center
   %span.glyphicon.glyphicon-info-sign{data:{toggle: 'tooltip', placement: 'bottom'},
-   title: 'Use this address to subscribe to this calendar in another application (i.e. Google Calendar). Click the button to copy the address.'}
+   title: 'Use this address to subscribe to this calendar in another application (i.e. Google Calendar).'}
   = text_field_tag :access_token,
    "https://umts-oncall.admin.umass.edu/feed/#{@roster.name}/#{@current_user.calendar_access_token}.ics",
    readonly: true, class: 'form-control copy-text'
-  .btn.btn-default.copy-text-btn
+  .btn.btn-default.copy-text-btn.copied{data:{toggle: 'tooltip', placement: 'bottom'},
+   title: 'Click to copy link'}
     %span.glyphicon.glyphicon-copy

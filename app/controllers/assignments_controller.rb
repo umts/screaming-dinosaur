@@ -108,8 +108,7 @@ class AssignmentsController < ApplicationController
   end
 
   def feed
-    user = (User.find_by(calendar_access_token:
-                                              params[:token]))
+    user = User.find_by(calendar_access_token: params[:token])
     if params[:format] == 'ics' && user
       roster = Roster.find_by(name: params[:roster])
       @assignments = roster.assignments
