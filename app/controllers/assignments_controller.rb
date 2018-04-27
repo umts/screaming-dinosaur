@@ -34,7 +34,7 @@ class AssignmentsController < ApplicationController
   end
 
   def edit
-    @users = @roster.users.order :last_name
+    @users = @roster.users.active.order :last_name
   end
 
   def generate_rotation
@@ -78,11 +78,11 @@ class AssignmentsController < ApplicationController
   def new
     @start_date = Date.parse(params.require :date)
     @end_date = @start_date + 6.days
-    @users = @roster.users.order :last_name
+    @users = @roster.users.active.order :last_name
   end
 
   def rotation_generator
-    @users = @roster.users.order :last_name
+    @users = @roster.users.active.order :last_name
     @start_date = Assignment.next_rotation_start_date
   end
 

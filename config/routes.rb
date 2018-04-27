@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     resources :users, except: :show do
       collection do
         post :transfer
+        get :inactive
       end
     end
     get 'twilio/call', to: 'twilio#call', as: :twilio_call

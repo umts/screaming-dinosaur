@@ -5,9 +5,18 @@
     No fallback user!
     = link_to 'Select a fallback user', edit_roster_path(@roster)
 .container-fluid
-  .col-xs-5.col-xs-offset-2
-    = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary'
+  .col-xs-2.col-xs-offset-1
+    = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary',
+     value: 'Add new user'
   .col-xs-3
+    - if @active
+      = link_to 'Inactive users', roster_users_path(active: false), class: 'btn btn-primary',
+       value: 'Inactive users'
+    - else
+      = link_to 'Active users', roster_users_path, class: 'btn btn-primary',
+       value: 'Active users'
+
+  .col-xs-3.col-xs-offset-2
     -  if @other_users.present?
       .form
         Add existing user:
@@ -38,6 +47,15 @@
         %td= link_to 'Edit',
         edit_roster_user_path(@roster, user),
          class: 'btn btn-info'
+        %td
+          =form_for user, url: roster_user_url(@roster, user) do |f|
+            - if user.active?
+              = f.hidden_field :active, value: false
+              = f.submit 'Deactivate', class: 'btn btn-primary',
+               data: { confirm: 'Deactivating user will delete all upcoming assignments.' }
+            - else
+              = f.hidden_field :active, value: true
+              = f.submit 'Activate', class: 'btn btn-primary'
         %td= button_to 'Destroy',
         roster_user_path(@roster, user),
          method: :delete, class: 'btn btn-danger'
