@@ -12,8 +12,8 @@ $(document).ready(function() {
         } catch (err) {
             console.log('Unable to copy');
         }
-        if(successful === true) {
-            $('.copied').attr('title', 'Copied successfully!')
+        if(successful) {
+            $('.copy-tooltip').attr('title', 'Copied successfully!')
                 .tooltip('fixTitle')
                 .tooltip('show');
             console.log('Tooltip title updated')
