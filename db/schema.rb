@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20180330224537) do
     t.boolean "reminders_enabled", default: true
     t.boolean "change_notifications_enabled", default: true
     t.string "calendar_access_token"
+    t.boolean "active", default: true
   end
 
   create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|

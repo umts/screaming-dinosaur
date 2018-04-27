@@ -3,22 +3,20 @@
 require 'spec_helper'
 
 describe User do
+  let(:user) { create :user }
   describe 'full_name' do
     it 'returns first name followed by last name' do
-      user = create :user
       expect(user.full_name).to eql [user.first_name, user.last_name].join(' ')
     end
   end
   describe 'proper name' do
     it 'returns first name followed by last name' do
-      user = create :user
       expect(user.proper_name)
         .to eql [user.last_name, user.first_name].join(', ')
     end
   end
   describe 'admin_in?' do
     let(:roster) { create :roster }
-    let(:user) { create :user }
     context 'membership has admin true' do
       it 'returns true' do
         create :membership, roster: roster, user: user,
@@ -46,6 +44,15 @@ describe User do
       it 'returns false' do
         expect(membership.user).not_to be_admin
       end
+    end
+  end
+  describe 'being deactivated' do
+    let(:future_assignment) { create :assignment, start_date: Date.tomorrow }
+    it 'destroys future assignments for users' do
+      user = future_assignment.user
+      user.active = false
+      user.save
+      expect(user.assignments).to be_empty
     end
   end
 end

@@ -18,6 +18,10 @@ class User < ApplicationRecord
                       message: 'must be "+1" followed by 10 digits' }
   before_save :generate_calendar_access_token,
               unless: -> { calendar_access_token.present? }
+  before_save -> { assignments.future.destroy_all }, if: :being_deactivated?
+
+  scope :active, -> { where active: true }
+  scope :inactive, -> { where active: false }
 
   def full_name
     "#{first_name} #{last_name}"
@@ -45,5 +49,9 @@ class User < ApplicationRecord
       break unless self.class
                        .exists?(calendar_access_token: calendar_access_token)
     end
+  end
+
+  def being_deactivated?
+    active_changed? && !active?
   end
 end

@@ -10,6 +10,8 @@ class Assignment < ApplicationRecord
   validate :overlaps_any?
   validate :user_in_roster?
 
+  scope :future, -> { where 'start_date > ?', Date.today }
+
   def effective_start_datetime
     start_date + CONFIG[:switchover_hour].hours
   end
