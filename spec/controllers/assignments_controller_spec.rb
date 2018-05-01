@@ -492,4 +492,28 @@ describe AssignmentsController do
       end
     end
   end
+  describe 'GET #feed' do
+    let(:roster) { create :roster }
+    let(:user) { create :user, rosters: [roster] }
+    context 'user has a valid access token' do
+      let :submit do
+        get :feed, params: { format: 'ics', token: user.calendar_access_token,
+                             roster: roster.name  }
+      end
+      it 'gets ics template when visiting link' do
+        submit
+        expect(response).to render_template('assignments/index')
+      end
+    end
+    context 'user does not have a valid access token' do
+      let :submit do
+        get :feed, params: { format: 'ics', token: SecureRandom.hex,
+                             roster: roster.name  }
+      end
+      it 'returns a 401' do
+        submit
+        expect(response).to have_http_status :unauthorized
+      end
+    end
+  end
 end
