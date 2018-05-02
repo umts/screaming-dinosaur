@@ -505,14 +505,25 @@ describe AssignmentsController do
         expect(response).to render_template('assignments/index')
       end
     end
-    context 'user does not have a valid access token' do
+    context 'user does not belong to roster' do
       let :submit do
-        get :feed, params: { format: 'ics', token: SecureRandom.hex,
-                             roster: roster.name  }
+        new_roster = create :roster
+        get :feed, params: { format: 'ics', token: user.calendar_access_token,
+                             roster: new_roster.name }
       end
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
+      end
+    end
+    context 'not a valid access token' do
+      let :submit do
+        get :feed, params: { format: 'ics', token: SecureRandom.hex,
+                             roster: roster.name  }
+      end
+      it 'returns a 404' do
+        submit
+        expect(response).to have_http_status :missing
       end
     end
   end

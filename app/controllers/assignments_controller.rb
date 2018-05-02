@@ -109,12 +109,16 @@ class AssignmentsController < ApplicationController
 
   def feed
     user = User.find_by(calendar_access_token: params[:token])
-    if params[:format] == 'ics' && user
-      roster = Roster.find_by(name: params[:roster])
-      @assignments = roster.assignments
-      render action: 'index', layout: false
+    roster = Roster.find_by(name: params[:roster])
+    if user
+      if params[:format] == 'ics' && user.rosters.include?(roster)
+        @assignments = roster.assignments
+        render action: 'index', layout: false
+      else
+        render file: 'public/401.html', layout: false, status: 401
+      end
     else
-      render file: 'public/401.html', layout: false, status: 401
+      render file: 'public/404.html', layout: false, status: 404
     end
   end
 
