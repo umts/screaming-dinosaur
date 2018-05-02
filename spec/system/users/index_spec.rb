@@ -14,7 +14,8 @@ describe 'user pages' do
       @dialog = page.driver.browser.switch_to.alert
     end
     it 'warns current user before deactivation with a pop up' do
-      expect(@dialog.text).to eq 'Deactivating user will delete all upcoming assignments.'
+      expect(@dialog.text).to eq 'Deactivating user will delete all upcoming' \
+        ' assignments.'
     end
     it 'deactivates a user' do
       @dialog.accept

@@ -42,7 +42,8 @@ describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
         visit roster_assignments_url(roster)
-        expect(page).to have_selector('td .cal-event.assignment-start', count: 1)
+        expect(page).to have_selector('td .cal-event.assignment-start',
+                                      count: 1)
       end
     end
 
@@ -83,22 +84,23 @@ describe 'viewing the index' do
       new_user = create :user, rosters: [roster]
       assignment1 = create :assignment, roster: roster, user: user
       assignment2 = create :assignment, roster: roster, user: new_user,
-             start_date: 1.week.ago, end_date: 2.days.ago
+                                        start_date: 1.week.ago,
+                                        end_date: 2.days.ago
       submit
-      expect(page.html).to include("SUMMARY:#{user.
-          last_name}\nDESCRIPTION:#{user.first_name} #{user.
-          last_name} is on call for #{roster.name}.",
-                           "DTSTART;VALUE=DATE:#{assignment1.
-                               start_date.
-                               to_s(:number)}\nDTEND;VALUE=DATE:#{(assignment1.
-                               end_date + 1.day).to_s(:number)}")
-      expect(page.html).to include("SUMMARY:#{new_user.
-          last_name}\nDESCRIPTION:#{new_user.first_name} #{new_user.
-          last_name} is on call for #{roster.name}.",
-                                   "DTSTART;VALUE=DATE:#{assignment2.
-                                       start_date.
-                                       to_s(:number)}\nDTEND;VALUE=DATE:#{(assignment2.
-                                       end_date + 1.day).to_s(:number)}")
+      expect(page.html).to include("SUMMARY:#{user.last_name}\nDESCRIPTION:"\
+        "#{user.first_name} #{user.last_name} is on call for #{roster.name}.",
+                                   "DTSTART;VALUE=DATE:#{assignment1
+                                       .start_date
+                                       .to_s(:number)}"\
+                                          "\nDTEND;VALUE=DATE:#{(assignment1
+                                            .end_date + 1.day).to_s(:number)}")
+      expect(page.html).to include('SUMMARY:'\
+        "#{new_user.last_name}\nDESCRIPTION:#{new_user.first_name} #{new_user
+                                  .last_name} is on call for #{roster.name}.",
+                                   'DTSTART;VALUE=DATE:'\
+                                    "#{assignment2.start_date.to_s(:number)}"\
+                                     "\nDTEND;VALUE=DATE:#{(assignment2
+                                            .end_date + 1.day).to_s(:number)}")
     end
   end
 end

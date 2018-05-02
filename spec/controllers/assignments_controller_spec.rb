@@ -498,7 +498,7 @@ describe AssignmentsController do
     context 'user has a valid access token' do
       let :submit do
         get :feed, params: { format: 'ics', token: user.calendar_access_token,
-                             roster: roster.name  }
+                             roster: roster.name }
       end
       it 'gets ics template when visiting link' do
         submit
@@ -519,7 +519,7 @@ describe AssignmentsController do
     context 'not a valid access token' do
       let :submit do
         get :feed, params: { format: 'ics', token: SecureRandom.hex,
-                             roster: roster.name  }
+                             roster: roster.name }
       end
       it 'returns a 404' do
         submit

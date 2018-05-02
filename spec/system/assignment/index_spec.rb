@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'user pages', js:true do
+describe 'user pages' do
   let(:membership) { create :membership, admin: true }
   let(:admin) { create :user, memberships: [membership] }
 
@@ -13,7 +13,8 @@ describe 'user pages', js:true do
     end
     it 'displays copy url info' do
       find('.glyphicon-info-sign').click.hover
-      expect(page).to have_selector '.tooltip', text: 'Use this address to subscribe'
+      expect(page).to have_selector '.tooltip',
+                                    text: 'Use this address to subscribe'
     end
     it 'displays click to copy tooltip' do
       find('.copy-text-btn').hover
