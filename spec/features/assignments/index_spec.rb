@@ -87,20 +87,27 @@ describe 'viewing the index' do
                                         start_date: 1.week.ago,
                                         end_date: 2.days.ago
       submit
-      expect(page.html).to include("SUMMARY:#{user.last_name}\nDESCRIPTION:"\
-        "#{user.first_name} #{user.last_name} is on call for #{roster.name}.",
-                                   "DTSTART;VALUE=DATE:#{assignment1
-                                       .start_date
-                                       .to_s(:number)}"\
-                                          "\nDTEND;VALUE=DATE:#{(assignment1
-                                            .end_date + 1.day).to_s(:number)}")
-      expect(page.html).to include('SUMMARY:'\
-        "#{new_user.last_name}\nDESCRIPTION:#{new_user.first_name} #{new_user
-                                  .last_name} is on call for #{roster.name}.",
-                                   'DTSTART;VALUE=DATE:'\
-                                    "#{assignment2.start_date.to_s(:number)}"\
-                                     "\nDTEND;VALUE=DATE:#{(assignment2
-                                            .end_date + 1.day).to_s(:number)}")
+      expect(page.html).to include(summary(user) + description(user, roster),
+                                   assignment_dates(assignment1))
+      expect(page.html).to include(summary(new_user) +
+                                       description(new_user, roster),
+                                   assignment_dates(assignment2))
     end
   end
+end
+
+def summary(user)
+  "SUMMARY:#{user.last_name}\n"
+end
+
+def description(user, roster)
+  "DESCRIPTION:#{user
+                   .first_name} #{user
+                                      .last_name} is on call for #{roster
+                                                                       .name}."
+end
+
+def assignment_dates(assignment)
+  "DTSTART;VALUE=DATE:#{assignment.start_date.to_s(:number)}\n"\
+  "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_s(:number)}"
 end
