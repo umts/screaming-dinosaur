@@ -1,8 +1,6 @@
-require 'factory_girl_rails'
-
 # ROTATIONS
-it = FactoryGirl.create :roster, name: 'Transit IT'
-ops = FactoryGirl.create :roster, name: 'Transit Operations'
+it = FactoryBot.create :roster, name: 'Transit IT'
+ops = FactoryBot.create :roster, name: 'Transit Operations'
 
 # USERS
 names = {
@@ -40,7 +38,7 @@ names.each_pair do |roster, rot_names|
       user.rosters << roster
       user.save!
     else
-      FactoryGirl.create :user, first_name: first_name,
+      FactoryBot.create :user, first_name: first_name,
         last_name: last_name, rosters: [roster]
     end
   end
@@ -56,7 +54,7 @@ it.memberships.joins(:user).where(users: { last_name: 'Sherson' })
 unless ENV['SKIP_ASSIGNMENTS']
   Roster.all.each do |roster|
     roster.users.order(:last_name).each_with_index do |user, i|
-      FactoryGirl.create :assignment, user: user, roster: roster,
+      FactoryBot.create :assignment, user: user, roster: roster,
         start_date: i.weeks.since.beginning_of_week(:friday),
         end_date: i.weeks.since.end_of_week(:friday)
     end

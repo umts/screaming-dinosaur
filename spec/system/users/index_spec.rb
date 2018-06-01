@@ -7,7 +7,7 @@ describe 'user pages' do
   let(:admin) { admin_membership.user }
   context 'deactivating a user' do
     before :each do
-      set_current_user(admin)
+      when_current_user_is admin
       visit root_path
       click_link 'Manage users'
       click_button 'Deactivate'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :assignment do
     roster
     user { create(:user, rosters: [roster]) }
