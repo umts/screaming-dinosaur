@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'bootstrap-sass', '~> 3.3'
 gem 'coffee-rails'
-gem 'factory_girl_rails'
+gem 'factory_bot_rails'
 gem 'haml'
 gem 'haml-rails'
 gem 'jquery-rails'
