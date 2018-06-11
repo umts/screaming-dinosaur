@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180130213001) do
+ActiveRecord::Schema.define(version: 20180330224537) do
 
   create_table "assignments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "user_id"
@@ -46,10 +46,11 @@ ActiveRecord::Schema.define(version: 20180130213001) do
     t.datetime "updated_at", null: false
     t.boolean "reminders_enabled", default: true
     t.boolean "change_notifications_enabled", default: true
+    t.string "calendar_access_token"
     t.boolean "active", default: true
   end
 
-  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string "item_type", limit: 191, null: false
     t.integer "item_id", null: false
     t.string "event", null: false
