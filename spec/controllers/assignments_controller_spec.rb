@@ -523,7 +523,7 @@ describe AssignmentsController do
       end
       it 'returns a 404' do
         submit
-        expect(response).to have_http_status :missing
+        expect(response).to have_http_status :not_found
       end
     end
   end
