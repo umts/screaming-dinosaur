@@ -8,7 +8,7 @@ describe ChangesController do
     before :each do
       @change_user = create :user
       with_versioning do
-        PaperTrail.whodunnit = @change_user.id.to_s
+        PaperTrail.request.whodunnit = @change_user.id.to_s
         @created, @updated, @destroyed = Array.new(3) { create :assignment }
         # CREATE
         @create_version = @created.versions.last
