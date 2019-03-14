@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+script/bootstrap
+
+[ -f config/database.yml ] || cp config/database.yml.example config/database.yml
+[ -f config/application.yml ] || cp config/application.yml.example config/application.yml
+
+echo "==> Setting up DB..."
+bin/rake db:reset
+
+echo "==> App is now ready to go!"

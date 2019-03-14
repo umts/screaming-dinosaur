@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+script/update
+
+test -z "$RACK_ENV" &&
+  RACK_ENV='development'
+
+bin/rails server

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+script/bootstrap
+
+echo "==> Updating DB..."
+bin/rake db:migrate

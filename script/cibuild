@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "Tests started at..."
+date "+%H:%M:%S"
+
+# setup environment
+RAILS_ROOT="$(cd "$(dirname "$0")"/.. && pwd)"
+export RAILS_ROOT
+export RAILS_ENV="test"
+export RACK_ROOT="$RAILS_ROOT"
+export RACK_ENV="$RAILS_ENV"
+
+export PATH="$RACK_ROOT/bin:$PATH"
+
+# run tests.
+script/test
