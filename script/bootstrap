@@ -9,10 +9,6 @@ if [ "$(uname -s)" = "Darwin" ]; then
     echo "==> Installing Homebrew dependencies..."
     brew bundle
   }
-fi
-
-if [ "$(uname -s)" = "Darwin" ] && [ -z "$(rbenv version-name 2>/dev/null)" ]; then
-  echo "==> Installing Ruby..."
   brew bootstrap-rbenv-ruby
 fi
 
