@@ -12,7 +12,7 @@ gem 'jquery-ui-rails'
 gem 'mysql2'
 gem 'paper_trail', '~> 9.2'
 gem 'rails', '~> 5.1'
-gem 'sass-rails'
+gem 'sassc-rails'
 gem 'snappconfig'
 gem 'uglifier'
 gem 'whenever', require: false
@@ -45,7 +45,7 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'chromedriver-helper'
+  gem 'webdrivers'
   gem 'puma', '~> 3.7'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
