@@ -45,7 +45,6 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'webdrivers'
   gem 'puma', '~> 3.7'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
@@ -54,4 +53,5 @@ group :test do
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'umts-custom-matchers'
+  gem 'webdrivers'
 end
