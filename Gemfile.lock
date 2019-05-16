@@ -300,6 +300,7 @@ GEM
     sshkit (1.18.2)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    strscan (1.0.0)
     sysexits (1.2.0)
     temple (0.8.1)
     thor (0.20.3)
@@ -368,12 +369,16 @@ DEPENDENCIES
   selenium-webdriver
   simplecov
   snappconfig
+  strscan
   timecop
   uglifier
   umts-custom-cops
   umts-custom-matchers
   webdrivers
   whenever
+
+RUBY VERSION
+   ruby 2.6.1p33
 
 BUNDLED WITH
    2.0.1

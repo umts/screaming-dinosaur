@@ -7,6 +7,7 @@ module AssignmentIndexHelper
 
   def cal_assignment(assignment:, day:)
     return if assignment.blank?
+
     [base_assignment_class(assignment),
      width_assignment_class(assignment, day)].join(' ')
   end

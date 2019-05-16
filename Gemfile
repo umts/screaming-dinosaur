@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
+ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
 
 gem 'bootstrap-sass', '~> 3.3'
 gem 'coffee-rails'
@@ -14,6 +15,7 @@ gem 'paper_trail', '~> 9.2'
 gem 'rails', '~> 5.1'
 gem 'sassc-rails'
 gem 'snappconfig'
+gem 'strscan'
 gem 'uglifier'
 gem 'whenever', require: false
 

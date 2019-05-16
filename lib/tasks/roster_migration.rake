@@ -12,3 +12,4 @@ namespace :migrations do
     User.find_by(last_name: 'Sherson').memberships.first.update admin: true
   end
 end
+# rubocop:enable Rails/SkipsModelValidations

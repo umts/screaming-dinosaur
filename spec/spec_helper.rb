@@ -7,7 +7,7 @@ SimpleCov.start 'rails' do
 end
 
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'rack_session_access/capybara'
 
@@ -41,9 +41,9 @@ def when_current_user_is(user)
                  else
                    raise ArgumentError
                  end
-  if defined? page #Capybara
+  if defined? page # Capybara
     page.set_rack_session user_id: current_user.id
-  else #Request specs
+  else # Request specs
     session[:user_id] = current_user.id
   end
 end
