@@ -2,7 +2,7 @@ Rails:
   Enabled: true
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.6
   Exclude:
     - 'bin/**/*'
     - 'config/**/*'
@@ -11,7 +11,8 @@ AllCops:
     - 'vendor/**/*'
 
 Lint/AmbiguousBlockAssociation:
-  Enabled: false
+  Exclude:
+    - 'spec/**/*'
 
 Metrics/AbcSize:
   Max: 25
@@ -27,20 +28,20 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Max: 15
 
+# Date.today seems to retun the right result, and is OK as long as
+# you don't _compare_ it to time-zone aware values.
 Rails/Date:
   Enabled: false
 
-# This cop only applies to Rails 5.
-Rails/HttpPositionalArguments:
+# I kinda agree with this cop, but most of these are default CRUD
+# routes. I think the developer will know where `:edit` came from
+# even if it's not defined in the controller.
+Rails/LexicallyScopedActionFilter:
   Enabled: false
 
 Style/Documentation:
   Enabled: false
 
-Style/EmptyMethod:
-  Enabled: false
-
-# This cop is offended by method calls
-# which I think are perfectly clear.
+# This cop is offended by method calls that I think are perfectly clear.
 Style/NestedParenthesizedCalls:
   Enabled: false

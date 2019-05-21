@@ -12,7 +12,8 @@ class SessionsController < ApplicationController
     end
   end
 
-  def dev_login # route not defined in production
+  # route not defined in production
+  def dev_login
     if request.get?
       @rosters = Roster.includes(:users)
     elsif request.post?
@@ -22,6 +23,5 @@ class SessionsController < ApplicationController
   end
 
   # Only shows if no user in database AND no SPIRE provided from Shibboleth
-  def unauthenticated
-  end
+  def unauthenticated; end
 end

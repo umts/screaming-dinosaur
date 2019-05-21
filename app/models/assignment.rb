@@ -21,13 +21,17 @@ class Assignment < ApplicationRecord
     end_date + 1.day + CONFIG[:switchover_hour].hours
   end
 
+  # Turns out there _are_ 2-letter English words
+  # rubocop:disable Naming/UncommunicativeMethodParamName
   def notify(receiver, of:, by:)
     receiver = user if receiver == :owner
     mailer_method = of
     changer = by
     return unless receiver != changer && receiver.change_notifications_enabled?
+
     AssignmentsMailer.send mailer_method, self, receiver, changer
   end
+  # rubocop:enable Naming/UncommunicativeMethodParamName
 
   class << self
     # The current assignment - this method accounts for the 5pm switchover hour.
@@ -80,22 +84,24 @@ class Assignment < ApplicationRecord
 
   def overlaps_any?
     # A non-new record always overlaps itself, so we exclude it from our query.
-    if new_record?
-      overlapping_assignments = roster.assignments.where("
-        start_date <= ? AND end_date >= ?
-      ", end_date, start_date)
-    else
-      overlapping_assignments = roster.assignments.where("
-        start_date <= ? AND end_date >= ? AND id != ?
-      ", end_date, start_date, id)
-    end
+    overlapping_assignments = if new_record?
+                                roster.assignments.where("
+                                  start_date <= ? AND end_date >= ?
+                                ", end_date, start_date)
+                              else
+                                roster.assignments.where("
+                                  start_date <= ? AND end_date >= ? AND id != ?
+                                ", end_date, start_date, id)
+                              end
     return if overlapping_assignments.blank?
+
     errors.add :base,
                'Overlaps with another assignment'
   end
 
   def user_in_roster?
     return if roster.users.include? user
+
     errors.add :base, 'User is not in this roster'
   end
 end

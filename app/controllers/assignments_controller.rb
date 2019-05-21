@@ -111,12 +111,12 @@ class AssignmentsController < ApplicationController
     user = User.find_by(calendar_access_token: params[:token])
     roster = Roster.find_by(name: params[:roster])
     if user.nil?
-      render file: 'public/404.html', layout: false, status: 404
+      render file: 'public/404.html', layout: false, status: :not_found
     elsif params[:format] == 'ics' && user.rosters.include?(roster)
       @assignments = roster.assignments
       render action: 'index', layout: false
     else
-      render file: 'public/401.html', layout: false, status: 401
+      render file: 'public/401.html', layout: false, status: :unauthorized
     end
   end
 
