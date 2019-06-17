@@ -33,7 +33,8 @@ describe AssignmentsController do
         end
         context 'it redirects to index as previously viewed' do
           context 'the user came from the index page' do
-            it 'redirects to the index with a date of the last viewed month and destroys session var' do
+            it 'redirects to the index with a date of the last viewed month' \
+               'and destroys session var' do
               month_date = 1.month.ago.beginning_of_month.to_date
               session[:last_viewed_month] = month_date
               submit
@@ -44,7 +45,7 @@ describe AssignmentsController do
             end
           end
           context 'the user did not come from the index page' do
-            it 'redirects to the index with a date of the assignment start date' do
+            it 'redirects to the index with a date of the assignment start' do
               session[:last_viewed_month] = nil
               submit
               expect(response).to redirect_to(
@@ -58,7 +59,7 @@ describe AssignmentsController do
         before :each do
           # Guaranteed to not be a user with this ID,
           # but will pass param validation in the controller.
-          @attributes[:user_id] = User.pluck(:id).sort.last + 1
+          @attributes[:user_id] = User.pluck(:id).max + 1
         end
         it 'does not create assignment, gives errors, and redirects back' do
           expect { submit }.to redirect_back
@@ -109,7 +110,8 @@ describe AssignmentsController do
     end
     context 'it redirects to index as previously viewed' do
       context 'the user came from the index page' do
-        it 'redirects to the index with a date of the last viewed month and destroys session var' do
+        it 'redirects to the index with a date of the last viewed month' \
+           'and destroys session var' do
           month_date = 1.month.ago.beginning_of_month.to_date
           session[:last_viewed_month] = month_date
           submit
@@ -264,7 +266,7 @@ describe AssignmentsController do
       end
       it 'includes a variable of the fallback user' do
         fallback = create :user
-        @roster.update_attributes(fallback_user_id: fallback.id)
+        @roster.update(fallback_user_id: fallback.id)
         submit
         expect(assigns.fetch :fallback_user).to eql fallback
       end
@@ -440,7 +442,8 @@ describe AssignmentsController do
         end
         context 'it redirects to index as previously viewed' do
           context 'the user came from the index page' do
-            it 'redirects to the index with a date of the last viewed month and destroys session var' do
+            it 'redirects to the index with a date of the last viewed month' \
+               'and destroys session var' do
               month_date = 1.month.ago.beginning_of_month.to_date
               session[:last_viewed_month] = month_date
               submit
@@ -451,7 +454,7 @@ describe AssignmentsController do
             end
           end
           context 'the user did not come from the index page' do
-            it 'redirects to the index with a date of the assignment start date' do
+            it 'redirects to the index with a date of the assignment start' do
               session[:last_viewed_month] = nil
               submit
               expect(response).to redirect_to(
@@ -465,7 +468,7 @@ describe AssignmentsController do
         before :each do
           # Guaranteed to not be a user with this ID,
           # but will pass param validation in the controller.
-          @changes[:user_id] = User.pluck(:id).sort.last + 1
+          @changes[:user_id] = User.pluck(:id).max + 1
         end
         it 'does not update, includes errors, and redirects back' do
           expect { submit }.to redirect_back

@@ -61,9 +61,11 @@ class ApplicationController < ActionController::Base
   # If there's one specified, go to that.
   # Otherwise, go to the first roster of which the current user is a member.
   # Finally, just go to the first roster (if they're a member of none).
+  # rubocop:disable Naming/MemoizedInstanceVariableName
   def set_roster
     @roster = Roster.find_by(id: params[:roster_id])
     @roster ||= @current_user.rosters.first
     @roster ||= Roster.first
   end
+  # rubocop:enable Naming/MemoizedInstanceVariableName
 end

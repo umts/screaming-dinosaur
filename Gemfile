@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
+ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
 
 gem 'bootstrap-sass', '~> 3.3'
 gem 'coffee-rails'
@@ -12,8 +13,9 @@ gem 'jquery-ui-rails'
 gem 'mysql2'
 gem 'paper_trail', '~> 9.2'
 gem 'rails', '~> 5.1'
-gem 'sass-rails'
+gem 'sassc-rails'
 gem 'snappconfig'
+gem 'strscan'
 gem 'uglifier'
 gem 'whenever', require: false
 
@@ -46,7 +48,6 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'chromedriver-helper'
   gem 'puma', '~> 3.7'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
@@ -55,4 +56,5 @@ group :test do
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'umts-custom-matchers'
+  gem 'webdrivers'
 end
