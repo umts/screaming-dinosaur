@@ -4,7 +4,8 @@ source 'https://rubygems.org'
 ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
 
 gem 'bootstrap-sass', '~> 3.3'
-gem 'coffee-rails'
+# constrain coffee-rails until rails 6
+gem 'coffee-rails', '<= 4.2.2'
 gem 'factory_bot_rails'
 gem 'haml'
 gem 'haml-rails'
