@@ -2,7 +2,6 @@ language: ruby
 sudo: required
 services:
   - xvfb
-  - mariadb
 addons:
   chrome: stable
 env:
@@ -14,6 +13,7 @@ before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
   - "export DISPLAY=:99.0"
+  - service mysql start
 script:
   - bundle exec rake db:create
   - bundle exec rspec
