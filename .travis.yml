@@ -2,6 +2,7 @@ language: ruby
 sudo: required
 services:
   - xvfb
+  - mariadb
 addons:
   chrome: stable
 env:
