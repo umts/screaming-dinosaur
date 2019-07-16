@@ -1,5 +1,7 @@
 language: ruby
 sudo: required
+services:
+  - xvfb
 addons:
   chrome: stable
 env:
@@ -11,8 +13,6 @@ before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
   - "export DISPLAY=:99.0"
-  - xvfb
-  - sleep 3 # give Xvfb time to start
 script:
   - bundle exec rake db:create
   - bundle exec rspec
