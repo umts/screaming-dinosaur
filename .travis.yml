@@ -1,5 +1,8 @@
 language: ruby
 sudo: required
+services:
+  - mysql
+  - xvfb
 addons:
   chrome: stable
 env:
