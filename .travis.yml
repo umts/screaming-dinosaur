@@ -1,10 +1,7 @@
 language: ruby
 sudo: required
-services:
-  - xvfb
 addons:
   chrome: stable
-dist: xenial
 env:
   - 'CODECLIMATE_REPO_TOKEN=029db8a4d83b74b2b01b09670c9a28a9c353175415b61186e87a1d70fe461931 RAILS_ENV=test'
 before_install:
