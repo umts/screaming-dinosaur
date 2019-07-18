@@ -4,6 +4,7 @@ services:
   - xvfb
 addons:
   chrome: stable
+dist: xenial
 env:
   - 'CODECLIMATE_REPO_TOKEN=029db8a4d83b74b2b01b09670c9a28a9c353175415b61186e87a1d70fe461931 RAILS_ENV=test'
 before_install:
@@ -13,7 +14,6 @@ before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
   - "export DISPLAY=:99.0"
-  - service mysql start
 script:
   - bundle exec rake db:create
   - bundle exec rspec
