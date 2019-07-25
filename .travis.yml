@@ -2,7 +2,6 @@ language: ruby
 sudo: required
 services:
   - mysql
-  - xvfb
 addons:
   chrome: stable
 env:
@@ -13,7 +12,6 @@ before_install:
 before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.example config/database.yml
-  - "export DISPLAY=:99.0"
 script:
   - bundle exec rake db:create
   - bundle exec rspec
