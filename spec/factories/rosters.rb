@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :roster do
-    sequence :name
+    sequence(:name) { |n| "Name #{n}" }
   end
 end

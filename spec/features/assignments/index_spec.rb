@@ -78,7 +78,8 @@ describe 'viewing the index' do
 
   describe 'viewing the ics formatted index' do
     let :submit do
-      visit "feed/#{roster.name}/#{user.calendar_access_token}.ics"
+      name = roster.name.parameterize
+      visit "feed/#{name}/#{user.calendar_access_token}.ics"
     end
     it 'ics file contains correctly formatted data' do
       new_user = create :user, rosters: [roster]

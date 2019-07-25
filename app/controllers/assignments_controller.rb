@@ -109,7 +109,8 @@ class AssignmentsController < ApplicationController
 
   def feed
     user = User.find_by(calendar_access_token: params[:token])
-    roster = Roster.where('lower(name) = ?', params[:roster].downcase).first
+    roster = params[:roster].titleize.downcase
+    roster = Roster.where('lower(name) = ?', roster).first
     if user.nil?
       render file: 'public/404.html', layout: false, status: :not_found
     elsif params[:format] == 'ics' && user.rosters.include?(roster)
