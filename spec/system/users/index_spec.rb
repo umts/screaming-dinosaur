@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'user pages' do
   let(:admin_membership) { create :membership, admin: true }
   let(:admin) { admin_membership.user }
-  context 'deactivating a user' do
+  context 'deactivating a user', js: true do
     before :each do
       when_current_user_is admin
       visit root_path

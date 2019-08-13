@@ -6,7 +6,7 @@ describe 'user pages' do
   let(:membership) { create :membership, admin: true }
   let(:admin) { create :user, memberships: [membership] }
 
-  context 'copying ics url' do
+  context 'copying ics url', js: true do
     before :each do
       set_current_user(admin)
       visit root_url
