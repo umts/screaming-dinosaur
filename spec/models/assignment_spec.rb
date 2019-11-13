@@ -30,12 +30,12 @@ RSpec.describe Assignment do
   describe 'current' do
     before :each do
       @yesterday = create :assignment,
-                          start_date: Date.yesterday,
-                          end_date: Date.yesterday
+                          start_date: Date.new(2019,11,12),
+                          end_date: Date.new(2019,11,12)
       @today = create :assignment,
-                      start_date: Date.today,
-                      end_date: Date.today
-      @switchover_time = Date.today + CONFIG.fetch(:switchover_hour).hours
+                      start_date: Date.new(2019,11,13),
+                      end_date: Date.new(2019,11,13)
+      @switchover_time = Date.new(2019,11,13) + CONFIG.fetch(:switchover_hour).hours
     end
     let :call do
       Assignment.current
@@ -158,16 +158,16 @@ RSpec.describe Assignment do
 
   describe 'on' do
     before :each do
-      @date = Date.today
+      @date = Date.new(2019,11,13)
       create :assignment,
-             start_date: 1.week.ago.to_date,
-             end_date: Date.yesterday
+             start_date: 1.week.before(@date).to_date,
+             end_date: 1.day.before(@date).to_date
       @correct_assignment = create :assignment,
-                                   start_date: Date.today,
-                                   end_date: 6.days.since.to_date
+                                   start_date: @date,
+                                   end_date: 6.days.since(@date).to_date
       create :assignment,
-             start_date: 1.week.since.to_date,
-             end_date: 13.days.since.to_date
+             start_date: 1.week.since(@date).to_date,
+             end_date: 13.days.since(@date).to_date
     end
     let :call do
       Assignment.on @date
