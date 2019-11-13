@@ -221,16 +221,21 @@ RSpec.describe Assignment do
     let(:switchover_time) { Date.today + CONFIG.fetch(:switchover_hour).hours }
     subject { described_class.upcoming }
     context 'before 5pm' do
-      before(:each) { Timecop.freeze switchover_time - 1.minute }
+      around :each do |example|
+        Timecop.freeze(switchover_time - 1.minute) { example.run }
+      end
+
       it { is_expected.to include assignment_today }
       it { is_expected.to include assignment_tomorrow }
     end
     context 'after 5pm' do
-      before(:each) { Timecop.freeze switchover_time + 1.minute }
+      around :each do |example|
+        Timecop.freeze(switchover_time + 1.minute) { example.run }
+      end
+
       it { is_expected.not_to include assignment_today }
       it { is_expected.to include assignment_tomorrow }
     end
-    after(:each) { Timecop.return }
   end
 
   describe 'send_reminders!' do

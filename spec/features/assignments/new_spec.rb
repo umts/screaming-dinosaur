@@ -5,12 +5,12 @@ require 'spec_helper'
 describe 'edit an assignment' do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster] }
-  before :each do
-    Timecop.freeze Date.new(2018, 1, 10)
-    set_current_user(user)
-  end
-  after :each do
-    Timecop.return
+
+  around :each do |example|
+    Timecop.freeze Date.new(2018, 1, 10) do
+      set_current_user(user)
+      example.run
+    end
   end
 
   context 'returns the user to the appropriate index page' do
