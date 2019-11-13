@@ -48,4 +48,15 @@ Rails.application.configure do
   # RackSessionAccess gives us access to the rack session
   # during feature tests
   config.middleware.use RackSessionAccess::Middleware
+
+  config.after_initialize do
+    if ENV['TIMETRAVEL']
+      begin
+        time = Time.parse ENV['TIMETRAVEL']
+      rescue ArgumentError
+        time = Time.at ENV['TIMETRAVEL'].to_i
+      end
+      Timecop.travel(time)
+    end
+  end
 end
