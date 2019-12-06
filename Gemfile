@@ -48,7 +48,7 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'puma', '~> 3.7'
+  gem 'puma', '~> 3.12'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec-html-matchers'
