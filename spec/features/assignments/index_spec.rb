@@ -6,13 +6,11 @@ describe 'viewing the index' do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster] }
   describe 'viewing the calendar' do
-    before :each do
-      Timecop.freeze Date.new(2017, 8, 14)
-      set_current_user(user)
-    end
-
-    after :each do
-      Timecop.return
+    around :each do |example|
+      Timecop.freeze Date.new(2017, 8, 14) do
+        set_current_user(user)
+        example.run
+      end
     end
 
     it 'highlights today' do

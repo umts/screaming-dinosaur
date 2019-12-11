@@ -15,12 +15,12 @@ describe 'edit an assignment' do
   let(:date_today) { Date.new(2017, 4, 4) }
   let(:start_date) { Date.new(2017, 3, 31) }
   let(:end_date) { Date.new(2017, 4, 6) }
-  before :each do
-    Timecop.freeze Date.new(2017, 3, 31)
-    set_current_user(user)
-  end
-  after :each do
-    Timecop.return
+
+  around :each do |example|
+    Timecop.freeze Date.new(2017, 3, 31) do
+      set_current_user(user)
+      example.run
+    end
   end
 
   context 'returns the user to the appropriate index page' do
