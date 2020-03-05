@@ -164,7 +164,7 @@ GEM
       net-ssh (>= 2.6.5, < 6.0.0)
     net-ssh (5.2.0)
     nio4r (2.5.2)
-    nokogiri (1.10.7)
+    nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     paper_trail (9.2.0)
       activerecord (>= 4.2, < 5.3)
@@ -183,7 +183,7 @@ GEM
       pry (~> 0.10)
     psych (3.1.0)
     public_suffix (4.0.2)
-    puma (3.12.2)
+    puma (3.12.4)
     rack (2.0.8)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -371,4 +371,4 @@ RUBY VERSION
    ruby 2.6.5p114
 
 BUNDLED WITH
-   2.1.1
+   2.1.2
