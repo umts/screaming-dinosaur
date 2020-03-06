@@ -37,23 +37,22 @@ group :development do
 end
 
 group :development, :test do
-  gem 'codeclimate-test-reporter', '~> 1.0'
   gem 'haml_lint'
-  gem 'mocha'
   gem 'pry-byebug'
+  gem 'puma', '~> 3.12'
   gem 'rubocop'
-  gem 'timecop'
   gem 'umts-custom-cops'
 end
 
 group :test do
   gem 'capybara'
-  gem 'puma', '~> 3.12'
+  gem 'codeclimate-test-reporter', '~> 1.0'
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec-html-matchers'
   gem 'rspec-rails'
   gem 'simplecov'
+  gem 'timecop'
   gem 'umts-custom-matchers'
   gem 'webdrivers'
 end
