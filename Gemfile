@@ -16,7 +16,6 @@ gem 'paper_trail', '~> 9.2'
 gem 'rails', '~> 5.1'
 gem 'sassc-rails'
 gem 'snappconfig'
-gem 'strscan'
 gem 'uglifier'
 gem 'whenever', require: false
 
