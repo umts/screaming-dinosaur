@@ -18,4 +18,13 @@ Rails 5 app for management of Transportation IT on-call schedule and interaction
 
 ## Development
 
-When seeding, skip creating assignments with `SKIP_ASSIGNMENTS=true rake db:reset` etc.
+### Setup
+1. `bundle`
+2. `yarn`
+3. Create your application.yml: `cp config/application.yml.example config/application.yml`
+4. Create your database.yml: `cp config/database.yml.example config/database.yml`
+5. Create the databases: `rails db:create`
+6. Setup databases: `rails db:schema:load`
+7. Seed development data: `rails db:seed`
+
+When seeding, you can skip creating assignments with `SKIP_ASSIGNMENTS=true rake db:reset` etc.
