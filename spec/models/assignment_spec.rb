@@ -113,6 +113,7 @@ RSpec.describe Assignment do
         it 'sends the new_assignment mail' do
           expect(AssignmentsMailer).to receive(:new_assignment)
             .with(assignment, recipient, changer)
+            .and_call_original
           submit
         end
       end
@@ -121,6 +122,7 @@ RSpec.describe Assignment do
         it 'sends the deleted_assignment mail' do
           expect(AssignmentsMailer).to receive(:deleted_assignment)
             .with(assignment, recipient, changer)
+            .and_call_original
           submit
         end
       end
@@ -128,6 +130,7 @@ RSpec.describe Assignment do
         it 'sends the changed_assignment mail' do
           expect(AssignmentsMailer).to receive(:changed_assignment)
             .with(assignment, recipient, changer)
+            .and_call_original
           submit
         end
       end
@@ -137,6 +140,7 @@ RSpec.describe Assignment do
       it 'sends to the assignment owner' do
         expect(AssignmentsMailer).to receive(:changed_assignment)
           .with(assignment, owner, changer)
+          .and_call_original
         submit
       end
     end
@@ -145,6 +149,7 @@ RSpec.describe Assignment do
       it 'sends to the recipient, not the owner' do
         expect(AssignmentsMailer).to receive(:changed_assignment)
           .with(assignment, recipient, changer)
+          .and_call_original
         submit
       end
     end
@@ -245,7 +250,8 @@ RSpec.describe Assignment do
     it 'sends reminders about assignments starting tomorrow' do
       expect(AssignmentsMailer)
         .to receive(:upcoming_reminder)
-        .with assignment_tomorrow
+        .with(assignment_tomorrow)
+        .and_call_original
       expect(AssignmentsMailer)
         .not_to receive(:upcoming_reminder)
         .with assignment_today
