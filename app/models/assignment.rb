@@ -29,7 +29,8 @@ class Assignment < ApplicationRecord
     changer = by
     return unless receiver != changer && receiver.change_notifications_enabled?
 
-    AssignmentsMailer.send mailer_method, self, receiver, changer
+    mail = AssignmentsMailer.send mailer_method, self, receiver, changer
+    mail.deliver_now
   end
   # rubocop:enable Naming/UncommunicativeMethodParamName
 
@@ -75,7 +76,7 @@ class Assignment < ApplicationRecord
 
     def send_reminders!
       where(start_date: Date.tomorrow).find_each do |assignment|
-        AssignmentsMailer.upcoming_reminder assignment
+        AssignmentsMailer.upcoming_reminder(assignment).deliver_now
       end
     end
   end
