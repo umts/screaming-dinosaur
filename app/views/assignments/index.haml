@@ -29,12 +29,13 @@
     roster_assignments_path(@roster, date: @month_date.last_month)
   %span.right.change-month= link_to @month_date.next_month.strftime('%B'),
     roster_assignments_path(@roster, date: @month_date.next_month)
-.form-inline.center
-  %span.glyphicon.glyphicon-info-sign{data:{toggle: 'tooltip', placement: 'bottom'},
-   title: 'Use this address to subscribe to this calendar in another application (i.e. Google Calendar).'}
+.form-inline.center.pad-bottom
+  %span.glyphicon.glyphicon-info-sign{ data: { toggle: 'tooltip', placement: 'top' },
+   title: 'Use this address to subscribe to this calendar in another application (i.e. Google Calendar).' }
   = text_field_tag :access_token,
-   "https://umts-oncall.admin.umass.edu/feed/#{@roster.name.parameterize}/#{@current_user.calendar_access_token}.ics",
+   "https://umts-oncall.admin.umass.edu/feed/#{ @roster.name.parameterize }/#{ @current_user.calendar_access_token }.ics",
    readonly: true, class: 'form-control copy-text'
-  .btn.btn-default.copy-text-btn.copy-tooltip{data:{toggle: 'tooltip', placement: 'bottom'},
-   title: 'Click to copy link'}
+  .btn.btn-default.copy-text-btn.copy-tooltip{ data: { toggle: 'tooltip', placement: 'top' },
+   title: 'Click to copy link' }
     %span.glyphicon.glyphicon-copy
+

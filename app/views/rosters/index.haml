@@ -1,6 +1,6 @@
 %h1.title Rosters
 
-%table.table.auto-width.col-xs-offset-3
+%table.table.auto-width.col-xs-offset-1
   %thead
     %tr
       %th Name
@@ -22,5 +22,6 @@
           %td= link_to 'Edit', edit_roster_url(roster), class: 'btn btn-info'
           %td= button_to 'Destroy', roster_path(roster), method: :delete,
             class: 'btn btn-danger'
-.center
+.center.pad-bottom
   = link_to 'New roster', new_roster_path, class: 'btn btn-primary'
+
