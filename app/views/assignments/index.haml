@@ -29,7 +29,7 @@
     roster_assignments_path(@roster, date: @month_date.last_month)
   %span.right.change-month= link_to @month_date.next_month.strftime('%B'),
     roster_assignments_path(@roster, date: @month_date.next_month)
-.form-inline.center.pad-bottom
+.form-inline.text-center.pad-bottom
   %span.glyphicon.glyphicon-info-sign{ data: { toggle: 'tooltip', placement: 'top' },
    title: 'Use this address to subscribe to this calendar in another application (i.e. Google Calendar).' }
   = text_field_tag :access_token,

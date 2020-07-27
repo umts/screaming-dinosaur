@@ -25,5 +25,5 @@
           = select_tag :user_ids,
            options_from_collection_for_select(@users, :id, :last_name,
             @users.pluck(:id)), multiple: true, size: 10, class: 'form-control'
-  .center.pad-bottom
+  .text-center.pad-bottom
     = submit_tag 'Generate rotation', class: 'btn btn-primary'
