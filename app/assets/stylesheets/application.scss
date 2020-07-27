@@ -22,13 +22,6 @@ $navbar-default-link-active-color: #ddd;
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-}
-
 #content-wrapper {
   display: flex;
   flex-direction: column;
@@ -38,15 +31,10 @@ body, html {
 #main-content {
   background-color: #fafafa;
   min-width: 70em;
-  font-family: sans-serif;
-}
-
-.center {
-  text-align: center;
 }
 
 .pad-bottom {
-  padding-bottom: 1%;
+  padding-bottom: 1vh;
 }
 
 .title {
