@@ -1,24 +1,17 @@
 # config valid only for current version of Capistrano
-lock '3.8.1'
+lock '~> 3.14.1'
 
 set :application, 'screaming_dinosaur'
-
 set :repo_url, 'https://github.com/umts/screaming-dinosaur.git'
 set :branch, :master
-
-set :keep_releases, 5
-
 set :deploy_to, "/srv/#{fetch :application}"
 
 set :log_level, :info
 
 set :whenever_command, [:sudo, :bundle, :exec, :whenever]
 
-set :linked_files, fetch(:linked_files, []).push(
+append :linked_files,
   'config/database.yml',
   'config/application.yml'
-)
 
-set :linked_dirs, fetch(:linked_dirs, []).push(
-  'log'
-)
+append :linked_dirs, '.bundle', 'log'
