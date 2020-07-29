@@ -22,27 +22,19 @@ $navbar-default-link-active-color: #ddd;
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-body {
+#content-wrapper {
   display: flex;
   flex-direction: column;
-  font-family: sans-serif;
-  margin: 0;
-  min-height: 100vh;
-}
-
-#content-wrapper {
-  flex: 1;
+  align-items: center;
 }
 
 #main-content {
   background-color: #fafafa;
-  margin: 0 auto;
-  min-width: 50em;
-  max-width: 70em;
+  min-width: 70em;
 }
 
-.center {
-  text-align: center;
+.pad-bottom {
+  padding-bottom: 1vh;
 }
 
 .title {
@@ -58,3 +50,4 @@ body {
   background-color: lightpink;
   border-radius: 6px;
 }
+
