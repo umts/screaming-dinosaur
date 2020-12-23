@@ -3,7 +3,6 @@
 class ApplicationController < ActionController::Base
   attr_accessor :current_user
   before_action :set_current_user, :set_roster, :set_paper_trail_whodunnit
-  protect_from_forgery with: :exception
 
   def confirm_change(object, message = nil)
     change = object.versions.where(whodunnit: @current_user).last
