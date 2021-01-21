@@ -1,25 +1,18 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any styles
- * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
- * file per style scope.
- *
- *= require jquery-ui
- *= require_tree .
- *= require_self
- */
+$theme-colors: (
+  "primary": #881c1c,
+  "secondary": #63666a,
+  "success": #76881d,
+  "danger": #a8431e,
+  "warning": #c69214,
+  "info": #71b2c9,
+  "light": #eeeeee,
+  "dark": #333333
+);
 
 $navbar-default-bg: #881c1c;
 $navbar-default-link-color: #ddd;
 $navbar-default-link-hover-color: #666;
 $navbar-default-link-active-color: #ddd;
-@import "bootstrap-sprockets";
 @import "bootstrap";
 
 #content-wrapper {
@@ -50,4 +43,3 @@ $navbar-default-link-active-color: #ddd;
   background-color: lightpink;
   border-radius: 6px;
 }
-
