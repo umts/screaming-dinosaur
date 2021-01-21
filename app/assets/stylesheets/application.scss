@@ -9,34 +9,12 @@ $theme-colors: (
   "dark": #333333
 );
 
-$navbar-default-bg: #881c1c;
-$navbar-default-link-color: #ddd;
-$navbar-default-link-hover-color: #666;
-$navbar-default-link-active-color: #ddd;
 @import "bootstrap";
-
-#content-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#main-content {
-  background-color: #fafafa;
-  min-width: 70em;
-}
+@import "assignments/calendar";
+@import "assignments/index";
 
 .pad-bottom {
   padding-bottom: 1vh;
-}
-
-.title {
-  text-align: center;
-}
-
-.vague-success {
-  background-color: lightgreen;
-  border-radius: 6px;
 }
 
 .vague-warning {
