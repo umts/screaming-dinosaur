@@ -347,7 +347,7 @@ DEPENDENCIES
   pry-byebug
   puma (~> 3.12)
   rack_session_access
-  rails (~> 5.1)
+  rails (~> 5.2)
   rails-controller-testing
   rb-readline
   rspec-html-matchers
