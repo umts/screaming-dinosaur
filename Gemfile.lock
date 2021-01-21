@@ -166,11 +166,9 @@ GEM
     nokogiri (1.11.0)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    paper_trail (9.2.0)
-      activerecord (>= 4.2, < 5.3)
-      paper_trail-association_tracking (< 2)
+    paper_trail (11.1.0)
+      activerecord (>= 5.2)
       request_store (~> 1.1)
-    paper_trail-association_tracking (1.1.1)
     parallel (1.19.1)
     parser (2.7.0.1)
       ast (~> 2.4.0)
@@ -345,7 +343,7 @@ DEPENDENCIES
   jquery-ui-rails
   listen (~> 3.0)
   mysql2
-  paper_trail (~> 9.2)
+  paper_trail (~> 11.1)
   pry-byebug
   puma (~> 3.12)
   rack_session_access
