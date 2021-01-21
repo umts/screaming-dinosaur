@@ -1,0 +1,37 @@
+.container
+  .row
+  %h2.col.text-center= @month_date.strftime '%-B %G'
+  .row.my-2
+    .col
+      = link_to @month_date.last_month.strftime('%B'),
+        roster_assignments_path(@roster, date: @month_date.last_month),
+        class: 'btn btn-outline-secondary'
+    .col.text-right
+      = link_to @month_date.next_month.strftime('%B'),
+        roster_assignments_path(@roster, date: @month_date.next_month),
+        class: 'btn btn-outline-secondary'
+
+  .row
+    %table#calendar
+      %thead
+        %tr
+          - WEEKDAYS.each do |day|
+            %th.cal-head= day
+      - @weeks.each do |week|
+        %tr
+          - week.each do |day|
+            - assignment = Assignment.in(@roster).on(day)
+            %td.cal-cell{ class: cal_day(day: day) }
+              .date
+                = day.strftime '%-d'
+                = if day.day == 1
+                  - day.strftime '%B'
+                .cal-event{ class: cal_assignment(assignment: assignment,
+                 day: day) }
+                  %span
+                    - if assignment.present?
+                      = link_to assignment.user.last_name,
+                          edit_roster_assignment_url(@roster, assignment)
+                    - else
+                      .vague-warning= link_to 'None assigned',
+                          new_roster_assignment_url(@roster, date: day)

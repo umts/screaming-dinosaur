@@ -1,34 +1,9 @@
-%h1.title #{@roster.name} On-Call
+%h1.text-center #{@roster.name} On-Call
+
 = render partial: 'current'
 = render partial: 'your_assignments' if @assignments.present?
-%h2.title= @month_date.strftime '%-B %G'
-%table#calendar
-  %thead
-    %tr
-      - WEEKDAYS.each do |day|
-        %th.cal-head= day
-  - @weeks.each do |week|
-    %tr
-      - week.each do |day|
-        - assignment = Assignment.in(@roster).on(day)
-        %td.cal-cell{ class: cal_day(day: day) }
-          .date
-            = day.strftime '%-d'
-            = if day.day == 1
-              - day.strftime '%B'
-            .cal-event{ class: cal_assignment(assignment: assignment,
-             day: day) }
-              %span
-                - if assignment.present?
-                  = link_to assignment.user.last_name,
-                      edit_roster_assignment_url(@roster, assignment)
-                - else
-                  .vague-warning= link_to 'None assigned',
-                      new_roster_assignment_url(@roster, date: day)
-  %span.left.change-month= link_to @month_date.last_month.strftime('%B'),
-    roster_assignments_path(@roster, date: @month_date.last_month)
-  %span.right.change-month= link_to @month_date.next_month.strftime('%B'),
-    roster_assignments_path(@roster, date: @month_date.next_month)
+= render partial: 'calendar'
+
 .form-inline.text-center.pad-bottom
   %span.glyphicon.glyphicon-info-sign{ data: { toggle: 'tooltip', placement: 'top' },
    title: 'Use this address to subscribe to this calendar in another application (i.e. Google Calendar).' }
