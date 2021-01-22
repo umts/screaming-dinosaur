@@ -35,6 +35,10 @@ class Assignment < ApplicationRecord
   # rubocop:enable Naming/UncommunicativeMethodParamName
 
   class << self
+    def between(start_date, end_date)
+      where("start_date <= ? AND end_date >= ?", end_date, start_date)
+    end
+
     # The current assignment - this method accounts for the 5pm switchover hour.
     # This should be called while scoped to a particular roster.
     def current
@@ -60,9 +64,7 @@ class Assignment < ApplicationRecord
 
     # returns the assignment which takes place on a particular date
     def on(date)
-      find_by("
-        start_date <= ? AND end_date >=?
-      ", date, date)
+      beween(date, date).first
     end
 
     # If it's before 5pm, return assignments that start today or after.
