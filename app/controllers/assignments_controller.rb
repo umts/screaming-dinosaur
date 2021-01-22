@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'assignments_ics'
+
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
   before_action :require_admin_in_roster, only: %i[generate_rotation
@@ -74,7 +76,10 @@ class AssignmentsController < ApplicationController
     @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @roster.fallback_user
     session[:last_viewed_month] = @month_date
-    respond_to :html, :ics
+    respond_to do |format|
+      format.html
+      format.ics { render_ics_feed }
+    end
   end
 
   def new
@@ -110,12 +115,11 @@ class AssignmentsController < ApplicationController
   def feed
     user = User.find_by(calendar_access_token: params[:token])
     roster = params[:roster].titleize.downcase
-    roster = Roster.where('lower(name) = ?', roster).first
+    @roster = Roster.where('lower(name) = ?', roster).first
     if user.nil?
       render file: 'public/404.html', layout: false, status: :not_found
-    elsif params[:format] == 'ics' && user.rosters.include?(roster)
-      @assignments = roster.assignments
-      render action: 'index', layout: false
+    elsif params[:format] == 'ics' && user.rosters.include?(@roster)
+      render_ics_feed
     else
       render file: 'public/401.html', layout: false, status: :unauthorized
     end
@@ -138,6 +142,11 @@ class AssignmentsController < ApplicationController
       @assignment.notify @previous_owner, of: :deleted_assignment,
                                           by: @current_user
     end
+  end
+
+  def render_ics_feed
+    ics = AssignmentsIcs.new(@roster.assignments)
+    render plain: ics.output, content_type: 'text/calendar'
   end
 
   def require_taking_ownership
