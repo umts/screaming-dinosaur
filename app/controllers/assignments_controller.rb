@@ -60,6 +60,7 @@ class AssignmentsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
+        @current_assignment = @roster.assignments.current
         @assignments = @current_user.assignments.in(@roster)
                                     .upcoming
                                     .order :start_date

@@ -24,24 +24,11 @@ describe 'edit an assignment' do
   end
 
   context 'returns the user to the appropriate index page' do
-    let(:month_date) do
-      date_today.beginning_of_month
-    end
     it 'redirects to the correct URL' do
       assignment.start_date = start_date
-      visit roster_assignments_url(roster, date: date_today)
       visit edit_roster_assignment_url(roster, assignment)
       click_button 'Save'
-      expect(current_url)
-        .to eq roster_assignments_url(roster,
-                                      date: month_date)
-    end
-    it 'displays the correct month' do
-      visit roster_assignments_url(roster, date: date_today)
-      visit edit_roster_assignment_url(roster, assignment)
-      click_button 'Save'
-      expect(page).to have_selector '.title',
-                                    text: month_date.strftime('%-B %G')
+      expect(current_path).to eq roster_assignments_path(roster)
     end
   end
   context 'Viewing the page' do
@@ -64,17 +51,10 @@ describe 'edit an assignment' do
   context 'changing the assignment' do
     let(:last_name) { user.last_name }
     it 'updates the assignment' do
-      # Visit the index on the correct month to ensure the form
-      # submit returns us to the correct month
-      visit roster_assignments_url(roster, date: date_today)
-      visit edit_roster_assignment_url(roster, assignment)
+      visit edit_roster_assignment_path(roster, assignment)
       fill_in('End date', with: date_today)
       click_button 'Save'
-      # Since the assignment is now 5 days long
-      expect(page).to have_link last_name,
-                                href: edit_roster_assignment_url(roster,
-                                                                 assignment),
-                                count: 5
+      expect(assignment.reload.end_date - assignment.reload.start_date).to eq(4)
     end
     it 'destroys the assignment' do
       visit edit_roster_assignment_url(roster, assignment)
@@ -97,15 +77,10 @@ describe 'edit an assignment' do
     end
     it 'allows admin users to edit all assignments' do
       user.membership_in(roster).update admin: true
-      visit roster_assignments_url(roster, date: date_today)
       visit edit_roster_assignment_url(roster, assignment)
       select(@last_name, from: 'User')
       click_button 'Save'
-      # Since the assignment is 7 days long
-      expect(page).to have_link @last_name,
-                                href: edit_roster_assignment_url(roster,
-                                                                 assignment),
-                                count: 7
+      expect(assignment.reload.user).to eq @new_user
     end
   end
 end

@@ -13,10 +13,6 @@ describe 'viewing the index' do
       end
     end
 
-    it 'highlights today' do
-      visit roster_assignments_url(roster)
-      expect(page).to have_selector('td.cal-cell.current-day', text: '14')
-    end
     context 'assignment belongs to user' do
       it 'appears highlighted for your assignment' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,

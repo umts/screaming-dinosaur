@@ -64,7 +64,7 @@ class Assignment < ApplicationRecord
 
     # returns the assignment which takes place on a particular date
     def on(date)
-      beween(date, date).first
+      between(date, date).first
     end
 
     # If it's before 5pm, return assignments that start today or after.
