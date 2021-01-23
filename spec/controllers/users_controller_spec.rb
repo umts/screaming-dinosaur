@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe UsersController do
+RSpec.describe UsersController do
   before :each do
     @roster = create :roster
   end

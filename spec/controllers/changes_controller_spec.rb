@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'paper_trail/frameworks/rspec'
 
-describe ChangesController do
+RSpec.describe ChangesController do
   describe 'GET #undo' do
     before :each do
       @change_user = create :user

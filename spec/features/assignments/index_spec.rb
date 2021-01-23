@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'viewing the index' do
+RSpec.describe 'viewing the index' do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster] }
   describe 'viewing the calendar' do

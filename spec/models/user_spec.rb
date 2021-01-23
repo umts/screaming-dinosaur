@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe User do
+RSpec.describe User do
   let(:user) { create :user }
   describe 'full_name' do
     it 'returns first name followed by last name' do

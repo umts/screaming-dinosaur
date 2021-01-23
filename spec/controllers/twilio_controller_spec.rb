@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe TwilioController do
+RSpec.describe TwilioController do
   describe 'GET #call, XML' do
     let(:roster) { create :roster }
     let :submit do

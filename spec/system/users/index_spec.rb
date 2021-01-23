@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'user pages' do
+RSpec.describe 'user pages' do
   let(:admin_membership) { create :membership, admin: true }
   let(:admin) { admin_membership.user }
   context 'deactivating a user', js: true do

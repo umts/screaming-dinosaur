@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe AssignmentsController do
+RSpec.describe AssignmentsController do
   before :each do
     @roster = create :roster
   end
