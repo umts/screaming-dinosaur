@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe RostersController do
   describe 'POST #create' do
     let :submit do

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe TwilioController do
   describe 'GET #call, XML' do
     let(:roster) { create :roster }

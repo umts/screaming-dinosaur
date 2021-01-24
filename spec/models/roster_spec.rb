@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Roster do
   describe 'generate_assignments' do
     before :each do

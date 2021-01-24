@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe SessionsController do
   describe 'DELETE #destroy' do
     before :each do

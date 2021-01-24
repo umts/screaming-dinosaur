@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe 'edit an assignment' do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster] }

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe 'user pages' do
   let(:membership) { create :membership, admin: true }
   let(:admin) { create :user, memberships: [membership] }
