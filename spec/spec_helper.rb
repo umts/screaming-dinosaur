@@ -49,32 +49,6 @@ RSpec.configure do |config|
   config.before :each, type: :system, js: true do
     driven_by :selenium, using: :headless_chrome
   end
-end
 
-def when_current_user_is(user)
-  current_user = case user
-                 when User
-                   user
-                 when :whoever
-                   create :user
-                 else
-                   raise ArgumentError
-                 end
-  if defined? page # Capybara
-    page.set_rack_session user_id: current_user.id
-  else # Request specs
-    session[:user_id] = current_user.id
-  end
-end
-alias set_current_user when_current_user_is
-
-def roster_user(roster)
-  create :user, rosters: [roster]
-end
-
-def roster_admin(roster = nil)
-  if roster.present?
-    create(:membership, roster: roster, admin: true).user
-  else (create :membership, admin: true).user
-  end
+  Dir['./spec/support/**/*.rb'].each { |f| require f }
 end
