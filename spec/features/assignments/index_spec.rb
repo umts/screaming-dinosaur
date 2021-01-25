@@ -98,7 +98,8 @@ describe 'viewing the index' do
     end
 
     def description(user, roster)
-      "DESCRIPTION:#{user.first_name} #{user.last_name} is on call for #{roster.name}."
+      "DESCRIPTION:#{user.first_name} #{user.last_name} " \
+      "is on call for #{roster.name}."
     end
 
     def assignment_dates(assignment)
@@ -125,4 +126,3 @@ describe 'viewing the index' do
     include_examples 'ics assignments feed'
   end
 end
-

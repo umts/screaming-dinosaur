@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AssignmentsIcs
   def initialize(assignments)
     @assignments = assignments
