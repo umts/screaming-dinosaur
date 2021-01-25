@@ -62,22 +62,16 @@ class AssignmentsController < ApplicationController
   end
 
   def index
-    @month_date = if params[:date].present?
-                    Date.parse params[:date]
-                  else Date.today
-                  end.beginning_of_month
-    start_date = @month_date.beginning_of_week(:sunday)
-    end_date = @month_date.end_of_month.end_of_week(:sunday)
-    @weeks = (start_date..end_date).each_slice(7)
-    @assignments = @current_user.assignments.in(@roster)
-                                .upcoming
-                                .order :start_date
-    @current_assignment = @roster.assignments.current
-    @switchover_hour = CONFIG[:switchover_hour]
-    @fallback_user = @roster.fallback_user
-    session[:last_viewed_month] = @month_date
     respond_to do |format|
-      format.html
+      format.html do
+        setup_calendar_view
+        @assignments = @current_user.assignments.in(@roster)
+                                    .upcoming
+                                    .order :start_date
+        @current_assignment = @roster.assignments.current
+        @switchover_hour = CONFIG[:switchover_hour]
+        @fallback_user = @roster.fallback_user
+      end
       format.ics { render_ics_feed }
     end
   end
@@ -156,6 +150,17 @@ class AssignmentsController < ApplicationController
       Or, a roster administrator can perform this change for you.
     TEXT
     redirect_back fallback_location: roster_assignments_path(@roster)
+  end
+
+  def setup_calendar_view
+    @month_date = if params[:date].present?
+                    Date.parse params[:date]
+                  else Date.today
+                  end.beginning_of_month
+    session[:last_viewed_month] = @month_date
+    start_date = @month_date.beginning_of_week(:sunday)
+    end_date = @month_date.end_of_month.end_of_week(:sunday)
+    @weeks = (start_date..end_date).each_slice(7)
   end
 
   def taking_ownership?(assignment_params)
