@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-describe AssignmentsMailer do
+RSpec.describe AssignmentsMailer do
   describe 'changed_assignment' do
     let(:start_date) { Date.parse '2017-04-21' }
     let(:end_date) { Date.parse '2017-04-27' }

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-describe RostersController do
+RSpec.describe RostersController do
   describe 'POST #create' do
     let :submit do
       post :create, params: { roster: { name: 'Operations' } }
