@@ -503,9 +503,13 @@ describe AssignmentsController do
         get :feed, params: { format: 'ics', token: user.calendar_access_token,
                              roster: roster.name }
       end
-      it 'gets ics template when visiting link' do
+      it 'allows the request' do
         submit
-        expect(response).to render_template('assignments/index')
+        expect(response).to have_http_status :ok
+      end
+      it 'is a calendar file' do
+        submit
+        expect(response.media_type).to eq('text/calendar')
       end
     end
     context 'user does not belong to roster' do
