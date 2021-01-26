@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'assignments_ics'
+
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
   before_action :require_admin_in_roster, only: %i[generate_rotation
@@ -60,21 +62,18 @@ class AssignmentsController < ApplicationController
   end
 
   def index
-    @month_date = if params[:date].present?
-                    Date.parse params[:date]
-                  else Date.today
-                  end.beginning_of_month
-    start_date = @month_date.beginning_of_week(:sunday)
-    end_date = @month_date.end_of_month.end_of_week(:sunday)
-    @weeks = (start_date..end_date).each_slice(7)
-    @assignments = @current_user.assignments.in(@roster)
-                                .upcoming
-                                .order :start_date
-    @current_assignment = @roster.assignments.current
-    @switchover_hour = CONFIG[:switchover_hour]
-    @fallback_user = @roster.fallback_user
-    session[:last_viewed_month] = @month_date
-    respond_to :html, :ics
+    respond_to do |format|
+      format.html do
+        setup_calendar_view
+        @assignments = @current_user.assignments.in(@roster)
+                                    .upcoming
+                                    .order :start_date
+        @current_assignment = @roster.assignments.current
+        @switchover_hour = CONFIG[:switchover_hour]
+        @fallback_user = @roster.fallback_user
+      end
+      format.ics { render_ics_feed }
+    end
   end
 
   def new
@@ -110,12 +109,11 @@ class AssignmentsController < ApplicationController
   def feed
     user = User.find_by(calendar_access_token: params[:token])
     roster = params[:roster].titleize.downcase
-    roster = Roster.where('lower(name) = ?', roster).first
+    @roster = Roster.where('lower(name) = ?', roster).first
     if user.nil?
       render file: 'public/404.html', layout: false, status: :not_found
-    elsif params[:format] == 'ics' && user.rosters.include?(roster)
-      @assignments = roster.assignments
-      render action: 'index', layout: false
+    elsif params[:format] == 'ics' && user.rosters.include?(@roster)
+      render_ics_feed
     else
       render file: 'public/401.html', layout: false, status: :unauthorized
     end
@@ -140,6 +138,11 @@ class AssignmentsController < ApplicationController
     end
   end
 
+  def render_ics_feed
+    ics = AssignmentsIcs.new(@roster.assignments)
+    render plain: ics.output, content_type: 'text/calendar'
+  end
+
   def require_taking_ownership
     flash[:errors] = [<<-TEXT]
       You may only edit or create assignments such that you become on call.
@@ -147,6 +150,17 @@ class AssignmentsController < ApplicationController
       Or, a roster administrator can perform this change for you.
     TEXT
     redirect_back fallback_location: roster_assignments_path(@roster)
+  end
+
+  def setup_calendar_view
+    @month_date = if params[:date].present?
+                    Date.parse params[:date]
+                  else Date.today
+                  end.beginning_of_month
+    session[:last_viewed_month] = @month_date
+    start_date = @month_date.beginning_of_week(:sunday)
+    end_date = @month_date.end_of_month.end_of_week(:sunday)
+    @weeks = (start_date..end_date).each_slice(7)
   end
 
   def taking_ownership?(assignment_params)
