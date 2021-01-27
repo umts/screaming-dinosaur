@@ -28,63 +28,28 @@ end
 RSpec.describe 'viewing the index' do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster] }
-  describe 'viewing the calendar' do
-    around :each do |example|
-      Timecop.freeze Date.new(2017, 8, 14) do
-        set_current_user(user)
-        example.run
-      end
-    end
-
+  describe 'viewing the calendar', js: true do
     it 'highlights today' do
+      set_current_user(user)
       visit roster_assignments_url(roster)
-      expect(page).to have_selector('td.cal-cell.current-day', text: '14')
+      expect(page).to have_selector('td.fc-day-today', text: Time.zone.today.day)
     end
     context 'assignment belongs to user' do
       it 'appears highlighted for your assignment' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
+        set_current_user(user)
         visit roster_assignments_url(roster)
-        expect(page).to have_selector('td .cal-event.assignment-user', count: 7)
+        expect(page).to have_selector('.assignment-event-owned')
       end
     end
-
     context 'assignment does not belong to user' do
       it 'appears highlighted differently for other assignments' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
+        set_current_user(user)
         visit roster_assignments_url(roster)
-        expect(page).to have_selector('td .cal-event.assignment', count: 7)
-      end
-    end
-
-    context 'start of assignment' do
-      it 'has a left radius' do
-        create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
-                            user: user, roster: roster
-        visit roster_assignments_url(roster)
-        expect(page).to have_selector('td .cal-event.assignment-start',
-                                      count: 1)
-      end
-    end
-
-    context 'end of assignment' do
-      it 'has a right radius and a different width than the cell' do
-        create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
-                            user: user, roster: roster
-        visit roster_assignments_url(roster)
-        expect(page).to have_selector('td .cal-event.assignment-end.width',
-                                      count: 1)
-      end
-    end
-
-    context 'start and end of assignment on same day' do
-      it 'has a radius around the day and a smaller width than the cell' do
-        create :assignment, start_date: Date.today, end_date: Date.today,
-                            user: user, roster: roster
-        visit roster_assignments_url(roster)
-        expect(page).to have_selector('td .cal-event.assignment-only.width',
-                                      count: 1)
+        expect(page).to have_selector('.assignment-event:not(.assignment-event-owned)')
       end
     end
   end
