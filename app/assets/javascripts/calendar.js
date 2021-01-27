@@ -1,20 +1,24 @@
-var calendar
 $(document).ready(function() {
   var calendar_container = document.getElementById('calendar');
   if (!calendar_container) { return }
 
-  calendar = new FullCalendar.Calendar(calendar_container, {
+  var calendar = new FullCalendar.Calendar(calendar_container, {
     'events': 'assignments.json',
     'startParam': 'start_date',
     'endParam': 'end_date',
-    'dateClick': function(info) {
-      var eventOnDay = calendar.getEvents().find(function(event) {
-        return event.start <= info.date && info.date < event.end;
-      })
-      if (eventOnDay === undefined) {
-        console.log('Create New Assignment');
+    'dayCellClassNames': 'day-empty',
+    'eventDidMount': function(info) {
+      var date = info.event.start;
+      while (date < info.event.end) {
+        var dateString = date.toISOString().split('T')[0];
+        $('td[data-date=' + dateString + ']').removeClass('day-empty');
+        date.setDate(date.getDate() + 1);
       }
     }
   });
   calendar.render();
+
+  $('#calendar').on('click', 'td.day-empty', function() {
+    window.location = 'assignments/new?date=' + $(this).data('date');
+  });
 });
