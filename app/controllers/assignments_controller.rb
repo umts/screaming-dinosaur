@@ -62,7 +62,6 @@ class AssignmentsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        setup_calendar_view
         @assignments = @current_user.assignments.in(@roster)
                                     .upcoming
                                     .order :start_date
@@ -153,17 +152,6 @@ class AssignmentsController < ApplicationController
       Or, a roster administrator can perform this change for you.
     TEXT
     redirect_back fallback_location: roster_assignments_path(@roster)
-  end
-
-  def setup_calendar_view
-    @month_date = if params[:date].present?
-                    Date.parse params[:date]
-                  else Date.today
-                  end.beginning_of_month
-    session[:last_viewed_month] = @month_date
-    start_date = @month_date.beginning_of_week(:sunday)
-    end_date = @month_date.end_of_month.end_of_week(:sunday)
-    @weeks = (start_date..end_date).each_slice(7)
   end
 
   def taking_ownership?(assignment_params)
