@@ -1,8 +1,9 @@
+var calendar;
 $(document).ready(function() {
   var calendar_container = document.getElementById('calendar');
   if (!calendar_container) { return }
 
-  var calendar = new FullCalendar.Calendar(calendar_container, {
+  calendar = new FullCalendar.Calendar(calendar_container, {
     'events': 'assignments.json',
     'startParam': 'start_date',
     'endParam': 'end_date',

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe 'user pages' do
-  let(:membership) { create :membership, admin: true }
-  let(:admin) { create :user, memberships: [membership] }
+RSpec.describe 'viewing the index' do
+  let(:roster) { create :roster }
+  let(:user) { roster_user(roster) }
 
-  context 'copying ics url', js: true do
+  context 'interacting with the ICS feed URL', js: true do
     before :each do
-      set_current_user(admin)
+      set_current_user(user)
       visit root_url
     end
     it 'displays copy url info' do
@@ -23,94 +23,44 @@ RSpec.describe 'user pages' do
       expect(page).to have_selector '.tooltip', text: 'Copied successfully!'
     end
   end
-end
 
-RSpec.describe 'viewing the index' do
-  let(:roster) { create :roster }
-  let(:user) { create :user, rosters: [roster] }
-  describe 'viewing the calendar', js: true do
-    it 'highlights today' do
+  describe 'interacting with the calendar', js: true do
+    before(:each) do
       set_current_user(user)
+    end
+
+    it 'highlights today' do
       visit roster_assignments_url(roster)
       expect(page).to have_selector('td.fc-day-today', text: Time.zone.today.day)
     end
+
     context 'assignment belongs to user' do
       it 'appears highlighted for your assignment' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
-        set_current_user(user)
         visit roster_assignments_url(roster)
         expect(page).to have_selector('.assignment-event-owned')
       end
     end
+
     context 'assignment does not belong to user' do
       it 'appears highlighted differently for other assignments' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
-        set_current_user(user)
         visit roster_assignments_url(roster)
         expect(page).to have_selector('.assignment-event:not(.assignment-event-owned)')
       end
     end
-  end
 
-  context 'active page highlighted in the nav bar' do
-    it 'applies active class to current tab in nav-bar' do
-      set_current_user(user)
-      visit roster_assignments_url(roster)
-      expect(page).to have_selector('nav li.active', count: 1)
+    context 'clicking on an empty day' do
+      it 'sends you to create a new assignment' do
+        visit roster_assignments_url(roster)
+        execute_script 'calendar.gotoDate("2021-02-01")'
+        find('td.fc-day', text: '14').click
+        expect(page).to have_current_path(
+          new_roster_assignment_path(roster_id: roster.id, date: '2021-02-14')
+        )
+      end
     end
-  end
-
-  shared_examples 'ics assignments feed' do
-    let(:lines) { page.html.split("\r\n") }
-
-    it 'contains correctly formatted data' do
-      new_user = create :user, rosters: [roster]
-      assignment1 = create :assignment, roster: roster, user: user
-      assignment2 = create :assignment, roster: roster, user: new_user,
-                                        start_date: 1.week.ago,
-                                        end_date: 2.days.ago
-      submit
-
-      expect(lines).to include(summary(user))
-      expect(lines).to include(description(user, roster))
-      expect(lines).to include(*assignment_dates(assignment1))
-      expect(lines).to include(summary(new_user))
-      expect(lines).to include(description(new_user, roster))
-      expect(lines).to include(*assignment_dates(assignment2))
-    end
-
-    def summary(user)
-      "SUMMARY:#{user.last_name}"
-    end
-
-    def description(user, roster)
-      "DESCRIPTION:#{user.first_name} #{user.last_name} " \
-      "is on call for #{roster.name}."
-    end
-
-    def assignment_dates(assignment)
-      ["DTSTART;VALUE=DATE:#{assignment.start_date.to_s(:number)}",
-       "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_s(:number)}"]
-    end
-  end
-
-  describe 'viewing the ics formatted index' do
-    let :submit do
-      set_current_user(user)
-      visit roster_assignments_path(roster, format: 'ics')
-    end
-
-    include_examples 'ics assignments feed'
-  end
-
-  describe 'viewing the ics feed' do
-    let :submit do
-      name = roster.name.parameterize
-      visit "feed/#{name}/#{user.calendar_access_token}.ics"
-    end
-
-    include_examples 'ics assignments feed'
   end
 end
