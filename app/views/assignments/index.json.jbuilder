@@ -6,8 +6,8 @@ json.array! @assignments do |assignment|
   json.start assignment.start_date.to_s(:iso8601)
   json.end 1.day.after(assignment.end_date).to_s(:iso8601)
 
-  color = (assignment.user == @current_user ? '#ece9d4' : '#d9edf7')
-  json.borderColor color
-  json.backgroundColor color
-  json.textColor '#337ab7'
+  classes = %w[assignment-event].tap do |c|
+    c << 'assignment-event-owned' if assignment.user == @current_user
+  end
+  json.classNames classes
 end

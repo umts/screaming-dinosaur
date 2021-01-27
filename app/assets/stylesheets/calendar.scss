@@ -1,0 +1,15 @@
+#calendar {
+  .assignment-event {
+    background-color: #d9edf7;
+    border-color: #d9edf7;
+
+    .fc-event-main {
+      color: #337ab7;
+    }
+
+    &.assignment-event-owned {
+      background-color: #ece9d4;
+      border-color: #ece9d4;
+    }
+  }
+}
