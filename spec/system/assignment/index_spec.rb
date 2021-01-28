@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-describe 'user pages' do
+RSpec.describe 'user pages' do
   let(:membership) { create :membership, admin: true }
   let(:admin) { create :user, memberships: [membership] }
 
@@ -27,7 +25,7 @@ describe 'user pages' do
   end
 end
 
-describe 'viewing the index' do
+RSpec.describe 'viewing the index' do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster] }
   describe 'viewing the calendar' do

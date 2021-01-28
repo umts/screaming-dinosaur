@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 RSpec.describe Assignment do
   describe 'effective time methods' do
     let :assignment do
