@@ -31,7 +31,8 @@ RSpec.describe 'viewing the index' do
 
     it 'highlights today' do
       visit roster_assignments_url(roster)
-      expect(page).to have_selector('td.fc-day-today', text: Time.zone.today.day)
+      today = Time.zone.today.day
+      expect(page).to have_selector('td.fc-day-today', text: today)
     end
 
     context 'assignment belongs to user' do
@@ -48,7 +49,9 @@ RSpec.describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
         visit roster_assignments_url(roster)
-        expect(page).to have_selector('.assignment-event:not(.assignment-event-owned)')
+        expect(page).to have_selector(
+          '.assignment-event:not(.assignment-event-owned)'
+        )
       end
     end
 

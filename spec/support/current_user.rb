@@ -11,6 +11,7 @@ def when_current_user_is(user)
 end
 alias set_current_user when_current_user_is
 
+# rubocop:disable Naming/AccessorMethodName
 def set_user(user)
   case self.class.metadata[:type]
   when :controller
@@ -24,4 +25,4 @@ def set_user(user)
     assign :current_user, user
   end
 end
-
+# rubocop:enable Naming/AccessorMethodName

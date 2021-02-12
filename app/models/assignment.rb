@@ -36,7 +36,7 @@ class Assignment < ApplicationRecord
 
   class << self
     def between(start_date, end_date)
-      where("start_date <= ? AND end_date >= ?", end_date, start_date)
+      where('start_date <= ? AND end_date >= ?', end_date, start_date)
     end
 
     # The current assignment - this method accounts for the 5pm switchover hour.

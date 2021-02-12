@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 json.array! @assignments do |assignment|
   json.id "assignment-#{assignment.id}"
   json.title assignment.user.last_name

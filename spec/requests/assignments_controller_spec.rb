@@ -7,10 +7,10 @@ RSpec.describe AssignmentsController do
     let(:assignment) { create :assignment, roster: roster }
     let!(:own_assignment) do
       create :assignment,
-        roster: roster,
-        user: user,
-        start_date: 1.day.after(assignment.end_date),
-        end_date: 2.days.after(assignment.end_date)
+             roster: roster,
+             user: user,
+             start_date: 1.day.after(assignment.end_date),
+             end_date: 2.days.after(assignment.end_date)
     end
     let(:json) { JSON.parse(response.body) }
     before(:each) do

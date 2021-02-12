@@ -61,21 +61,9 @@ class AssignmentsController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html do
-        @assignments = @current_user.assignments.in(@roster)
-                                    .upcoming
-                                    .order :start_date
-        @current_assignment = @roster.assignments.current
-        @switchover_hour = CONFIG[:switchover_hour]
-        @fallback_user = @roster.fallback_user
-      end
+      format.html { index_html }
       format.ics { render_ics_feed }
-      format.json do
-        start_date = Date.parse(params[:start_date])
-        end_date = Date.parse(params[:end_date])
-        @assignments = @roster.assignments.between(start_date, end_date)
-        render layout: false
-      end
+      format.json { index_json }
     end
   end
 
@@ -125,6 +113,22 @@ class AssignmentsController < ApplicationController
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require :id)
+  end
+
+  def index_html
+    @assignments = @current_user.assignments.in(@roster)
+                                .upcoming
+                                .order :start_date
+    @current_assignment = @roster.assignments.current
+    @switchover_hour = CONFIG[:switchover_hour]
+    @fallback_user = @roster.fallback_user
+  end
+
+  def index_json
+    start_date = Date.parse(params[:start_date])
+    end_date = Date.parse(params[:end_date])
+    @assignments = @roster.assignments.between(start_date, end_date)
+    render layout: false
   end
 
   # If the user's being changed, we effectively inform of the change
