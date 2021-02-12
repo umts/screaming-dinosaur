@@ -62,5 +62,19 @@ RSpec.describe 'viewing the index' do
         )
       end
     end
+
+    context 'switching months' do
+      it 'stores the last viewed month' do
+        visit roster_assignments_url(roster)
+        3.times { click_on 'next' }
+
+        # Go anywhere else, come back
+        visit edit_roster_user_url(roster, user)
+        visit roster_assignments_url(roster)
+
+        three_months_from_now = (Time.zone.now + 3.months).strftime('%B %Y')
+        expect(page).to have_text(three_months_from_now)
+      end
+    end
   end
 end
