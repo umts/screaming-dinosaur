@@ -4,6 +4,7 @@ $(document).ready(function() {
   if (!calendar_container) { return }
 
   calendar = new FullCalendar.Calendar(calendar_container, {
+    'initialDate': sessionStorage.getItem('lastDate') || null,
     'events': 'assignments.json',
     'startParam': 'start_date',
     'endParam': 'end_date',
@@ -15,8 +16,13 @@ $(document).ready(function() {
         $('td[data-date=' + dateString + ']').removeClass('day-empty');
         date.setDate(date.getDate() + 1);
       }
+    },
+    'datesSet': function(info) {
+      var currentStart = info.view.currentStart.toISOString();
+      sessionStorage.setItem('lastDate', currentStart);
     }
   });
+
   calendar.render();
 
   $('#calendar').on('click', 'td.day-empty', function() {
