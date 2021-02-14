@@ -13,7 +13,7 @@ class User < ApplicationRecord
   validates :first_name, :last_name, :spire, :email, :phone, :rosters,
             presence: true
   validates :spire, :email, :phone,
-            uniqueness: true
+            uniqueness: {case_sensitive: false}
   validates :spire,
             format: { with: /\A\d{8}@umass.edu\z/,
                       message: 'must be 8 digits followed by @umass.edu' }
