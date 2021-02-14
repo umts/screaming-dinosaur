@@ -15,4 +15,5 @@
 //= require jquery-ui
 //= require popper
 //= require bootstrap
+//= require fullcalendar
 //= require_tree .

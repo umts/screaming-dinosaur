@@ -2,7 +2,8 @@
 
 = render partial: 'current'
 = render partial: 'your_assignments' if @assignments.present?
-= render partial: 'calendar'
+
+#calendar
 
 .form-inline.text-center.pad-bottom
   %span.glyphicon.glyphicon-info-sign{ data: { toggle: 'tooltip', placement: 'top' },
