@@ -7,7 +7,7 @@ RSpec.describe 'user pages' do
   context 'copying ics url', js: true do
     before :each do
       set_current_user(admin)
-      visit root_url
+      visit root_path
     end
     it 'displays copy url info' do
       find('.glyphicon-info-sign').click.hover
@@ -37,14 +37,14 @@ RSpec.describe 'viewing the index' do
     end
 
     it 'highlights today' do
-      visit roster_assignments_url(roster)
+      visit roster_assignments_path(roster)
       expect(page).to have_selector('td.cal-cell.current-day', text: '14')
     end
     context 'assignment belongs to user' do
       it 'appears highlighted for your assignment' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
-        visit roster_assignments_url(roster)
+        visit roster_assignments_path(roster)
         expect(page).to have_selector('td .cal-event.assignment-user', count: 7)
       end
     end
@@ -53,7 +53,7 @@ RSpec.describe 'viewing the index' do
       it 'appears highlighted differently for other assignments' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
-        visit roster_assignments_url(roster)
+        visit roster_assignments_path(roster)
         expect(page).to have_selector('td .cal-event.assignment', count: 7)
       end
     end
@@ -62,7 +62,7 @@ RSpec.describe 'viewing the index' do
       it 'has a left radius' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
-        visit roster_assignments_url(roster)
+        visit roster_assignments_path(roster)
         expect(page).to have_selector('td .cal-event.assignment-start',
                                       count: 1)
       end
@@ -72,7 +72,7 @@ RSpec.describe 'viewing the index' do
       it 'has a right radius and a different width than the cell' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
-        visit roster_assignments_url(roster)
+        visit roster_assignments_path(roster)
         expect(page).to have_selector('td .cal-event.assignment-end.width',
                                       count: 1)
       end
@@ -82,7 +82,7 @@ RSpec.describe 'viewing the index' do
       it 'has a radius around the day and a smaller width than the cell' do
         create :assignment, start_date: Date.today, end_date: Date.today,
                             user: user, roster: roster
-        visit roster_assignments_url(roster)
+        visit roster_assignments_path(roster)
         expect(page).to have_selector('td .cal-event.assignment-only.width',
                                       count: 1)
       end
@@ -92,7 +92,7 @@ RSpec.describe 'viewing the index' do
   context 'active page highlighted in the nav bar' do
     it 'applies active class to current tab in nav-bar' do
       set_current_user(user)
-      visit roster_assignments_url(roster)
+      visit roster_assignments_path(roster)
       expect(page).to have_selector('nav li.active', count: 1)
     end
   end

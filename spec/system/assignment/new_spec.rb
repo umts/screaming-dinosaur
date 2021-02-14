@@ -16,16 +16,16 @@ RSpec.describe 'edit an assignment' do
     let(:start_date) { Date.new(2017, 3, 31) }
     let(:month_date) { date_today.beginning_of_month }
     it 'redirects to the correct URL' do
-      visit roster_assignments_url(roster, date: date_today)
-      visit new_roster_assignment_url(roster, date: start_date)
+      visit roster_assignments_path(roster, date: date_today)
+      visit new_roster_assignment_path(roster, date: start_date)
       click_button 'Create'
-      expect(current_url)
-        .to eq roster_assignments_url(roster,
-                                      date: month_date)
+      expect(page).to have_current_path(
+        roster_assignments_path(roster, date: month_date)
+      )
     end
     it 'displays the correct month' do
-      visit roster_assignments_url(roster, date: date_today)
-      visit new_roster_assignment_url(roster, date: start_date)
+      visit roster_assignments_path(roster, date: date_today)
+      visit new_roster_assignment_path(roster, date: start_date)
       click_button 'Create'
       expect(page).to have_selector '.title',
                                     text: month_date.strftime('%-B %G')
