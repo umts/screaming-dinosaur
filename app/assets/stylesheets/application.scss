@@ -10,8 +10,8 @@ $theme-colors: (
 );
 
 @import "bootstrap";
+@import "assignments";
 @import "assignments/calendar";
-@import "assignments/index";
 
 .pad-bottom {
   padding-bottom: 1vh;
