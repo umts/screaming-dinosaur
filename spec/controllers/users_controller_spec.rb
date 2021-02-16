@@ -23,7 +23,7 @@ RSpec.describe UsersController do
         end
         it 'redirects to the index' do
           submit
-          expect(response).to redirect_to roster_users_url
+          expect(response).to redirect_to roster_users_path
         end
       end
       context 'with errors' do
@@ -78,7 +78,7 @@ RSpec.describe UsersController do
         end
         it 'redirects to the index' do
           submit
-          expect(response).to redirect_to roster_users_url
+          expect(response).to redirect_to roster_users_path
         end
       end
       context 'with existing assignments' do
@@ -279,7 +279,7 @@ RSpec.describe UsersController do
         end
         it 'redirects to the index' do
           submit
-          expect(response).to redirect_to roster_users_url
+          expect(response).to redirect_to roster_users_path
         end
         it 'allows changing admin status in roster' do
           @changes[:membership] = { admin: true }
@@ -310,7 +310,7 @@ RSpec.describe UsersController do
         end
         it 'redirects to the assignments page' do
           submit
-          expect(response).to redirect_to roster_assignments_url(@roster)
+          expect(response).to redirect_to roster_assignments_path(@roster)
         end
         it 'does not allow changing admin status in roster' do
           @changes[:membership] = { admin: true }
