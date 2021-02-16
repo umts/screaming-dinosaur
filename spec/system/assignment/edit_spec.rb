@@ -27,16 +27,16 @@ RSpec.describe 'edit an assignment' do
     end
     it 'redirects to the correct URL' do
       assignment.start_date = start_date
-      visit roster_assignments_url(roster, date: date_today)
-      visit edit_roster_assignment_url(roster, assignment)
+      visit roster_assignments_path(roster, date: date_today)
+      visit edit_roster_assignment_path(roster, assignment)
       click_button 'Save'
-      expect(current_url)
-        .to eq roster_assignments_url(roster,
-                                      date: month_date)
+      expect(page).to have_current_path(
+        roster_assignments_path(roster, date: month_date)
+      )
     end
     it 'displays the correct month' do
-      visit roster_assignments_url(roster, date: date_today)
-      visit edit_roster_assignment_url(roster, assignment)
+      visit roster_assignments_path(roster, date: date_today)
+      visit edit_roster_assignment_path(roster, assignment)
       click_button 'Save'
       expect(page).to have_selector '.title',
                                     text: month_date.strftime('%-B %G')
@@ -45,16 +45,16 @@ RSpec.describe 'edit an assignment' do
   context 'Viewing the page' do
     it 'displays the correct owner' do
       last_name = assignment.user.last_name
-      visit edit_roster_assignment_url(roster, assignment)
+      visit edit_roster_assignment_path(roster, assignment)
       expect(page).to have_selector :select, text: last_name
     end
     it 'displays the start date' do
-      visit edit_roster_assignment_url(roster, assignment)
+      visit edit_roster_assignment_path(roster, assignment)
       expect(find_field('Start date').value)
         .to eq start_date.strftime('%Y-%m-%d')
     end
     it 'displays the end date' do
-      visit edit_roster_assignment_url(roster, assignment)
+      visit edit_roster_assignment_path(roster, assignment)
       expect(find_field('End date').value)
         .to eq end_date.strftime('%Y-%m-%d')
     end
@@ -64,18 +64,18 @@ RSpec.describe 'edit an assignment' do
     it 'updates the assignment' do
       # Visit the index on the correct month to ensure the form
       # submit returns us to the correct month
-      visit roster_assignments_url(roster, date: date_today)
-      visit edit_roster_assignment_url(roster, assignment)
+      visit roster_assignments_path(roster, date: date_today)
+      visit edit_roster_assignment_path(roster, assignment)
       fill_in('End date', with: date_today)
       click_button 'Save'
       # Since the assignment is now 5 days long
       expect(page).to have_link last_name,
-                                href: edit_roster_assignment_url(roster,
-                                                                 assignment),
+                                href: edit_roster_assignment_path(roster,
+                                                                  assignment),
                                 count: 5
     end
     it 'destroys the assignment' do
-      visit edit_roster_assignment_url(roster, assignment)
+      visit edit_roster_assignment_path(roster, assignment)
       click_button 'Delete assignment'
       expect(page).not_to have_link last_name
     end
@@ -86,7 +86,7 @@ RSpec.describe 'edit an assignment' do
       @last_name = @new_user.last_name
     end
     it 'stops users from changing assignments they do not own' do
-      visit edit_roster_assignment_url(roster, assignment)
+      visit edit_roster_assignment_path(roster, assignment)
       select(@last_name, from: 'User')
       click_button 'Save'
       within('div.alert.alert-danger') do
@@ -95,14 +95,14 @@ RSpec.describe 'edit an assignment' do
     end
     it 'allows admin users to edit all assignments' do
       user.membership_in(roster).update admin: true
-      visit roster_assignments_url(roster, date: date_today)
-      visit edit_roster_assignment_url(roster, assignment)
+      visit roster_assignments_path(roster, date: date_today)
+      visit edit_roster_assignment_path(roster, assignment)
       select(@last_name, from: 'User')
       click_button 'Save'
       # Since the assignment is 7 days long
       expect(page).to have_link @last_name,
-                                href: edit_roster_assignment_url(roster,
-                                                                 assignment),
+                                href: edit_roster_assignment_path(roster,
+                                                                  assignment),
                                 count: 7
     end
   end
