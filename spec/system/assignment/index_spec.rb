@@ -31,6 +31,7 @@ RSpec.describe 'viewing the index' do
 
     it 'highlights today' do
       visit roster_assignments_path(roster)
+      today = Time.zone.today.day
       expect(page).to have_selector('td.fc-day-today', text: today)
     end
 
