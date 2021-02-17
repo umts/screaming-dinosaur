@@ -58,7 +58,6 @@ RSpec.describe 'edit an assignment' do
     it 'destroys the assignment' do
       visit edit_roster_assignment_path(roster, assignment)
       click_button 'Delete assignment'
-      expect { assignment.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect(Assignment.find_by(id: assignment)).to be_blank
     end
   end
