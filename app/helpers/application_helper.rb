@@ -6,6 +6,6 @@ module ApplicationHelper
   end
 
   def switchover_time(hour)
-    Time.new.change(hour: hour).strftime('%I:%M %p')
+    Time.current.change(hour: hour).strftime('%-I:%M %P')
   end
 end
