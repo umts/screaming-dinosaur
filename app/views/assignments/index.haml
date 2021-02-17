@@ -5,7 +5,7 @@
 %table#calendar
   %thead
     %tr
-      - WEEKDAYS.each do |day|
+      - Date::DAYNAMES.each do |day|
         %th.cal-head= day
   - @weeks.each do |week|
     %tr
