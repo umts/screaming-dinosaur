@@ -56,13 +56,17 @@ RSpec.describe 'viewing the index' do
     end
 
     context 'clicking on an empty day' do
+      let(:date) { Time.zone.today.change(day: 14) }
+      let(:new_path) do
+        new_roster_assignment_path roster_id: roster.id,
+                                   date: date.to_s(:db)
+      end
+
       it 'sends you to create a new assignment' do
         visit roster_assignments_path(roster)
-        execute_script 'calendar.gotoDate("2021-02-01")'
+
         find('td.fc-day', text: '14').click
-        expect(page).to have_current_path(
-          new_roster_assignment_path(roster_id: roster.id, date: '2021-02-14')
-        )
+        expect(page).to have_current_path(new_path)
       end
     end
 
