@@ -67,7 +67,7 @@ RSpec.describe UsersController do
       before(:each) { when_current_user_is roster_admin(@roster) }
       it 'finds the correct user' do
         submit
-        expect(assigns.fetch :user).to eql @user
+        expect(assigns.fetch(:user)).to eql @user
       end
       context 'no existing assignments' do
         it 'destroys the user' do
@@ -117,7 +117,7 @@ RSpec.describe UsersController do
       before(:each) { when_current_user_is roster_admin(@roster) }
       it 'finds the correct user' do
         submit
-        expect(assigns.fetch :user).to eql @user
+        expect(assigns.fetch(:user)).to eql @user
       end
       it 'renders the edit template' do
         submit
@@ -128,7 +128,7 @@ RSpec.describe UsersController do
       before(:each) { when_current_user_is @user }
       it 'finds the correct user' do
         submit
-        expect(assigns.fetch :user).to eql @user
+        expect(assigns.fetch(:user)).to eql @user
       end
       it 'renders the edit template' do
         submit
@@ -155,7 +155,7 @@ RSpec.describe UsersController do
         user2 = roster_user @roster
         user3 = roster_user @roster
         submit
-        expect(assigns.fetch :users).to include user1, user2, user3
+        expect(assigns.fetch(:users)).to include user1, user2, user3
       end
       it 'populates a fallback variable with the roster fallback user' do
         user = roster_user @roster
@@ -163,7 +163,7 @@ RSpec.describe UsersController do
         expect_any_instance_of(Roster).to receive(:fallback_user)
           .and_return(user)
         submit
-        expect(assigns.fetch :fallback).to eql user
+        expect(assigns.fetch(:fallback)).to eql user
       end
       it 'renders the index template' do
         submit

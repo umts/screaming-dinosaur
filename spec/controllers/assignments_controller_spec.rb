@@ -96,7 +96,7 @@ RSpec.describe AssignmentsController do
     end
     it 'finds the correct assignment' do
       submit
-      expect(assigns.fetch :assignment).to eql @assignment
+      expect(assigns.fetch(:assignment)).to eql @assignment
     end
     it 'destroys the assignment' do
       expect_any_instance_of(Assignment).to receive :destroy
@@ -142,14 +142,14 @@ RSpec.describe AssignmentsController do
     end
     it 'finds the correct assignment' do
       submit
-      expect(assigns.fetch :assignment).to eql @assignment
+      expect(assigns.fetch(:assignment)).to eql @assignment
     end
     it 'populates a users variable of all users' do
       user1 = roster_user @roster
       user2 = roster_user @roster
       user3 = roster_user @roster
       submit
-      expect(assigns.fetch :users).to include user1, user2, user3
+      expect(assigns.fetch(:users)).to include user1, user2, user3
     end
     it 'renders the edit template' do
       submit
@@ -236,7 +236,7 @@ RSpec.describe AssignmentsController do
       end
       it 'assigns the correct current user' do
         submit
-        expect(assigns.fetch :current_user).to eql @user
+        expect(assigns.fetch(:current_user)).to eql @user
       end
       it 'populates an assignments variable of upcoming assignments' do
         old_assignment = create :assignment, user: @user,
@@ -248,25 +248,25 @@ RSpec.describe AssignmentsController do
                                              start_date: 1.month.since.to_date,
                                              end_date: 5.weeks.since.to_date
         submit
-        expect(assigns.fetch :assignments).to include new_assignment
-        expect(assigns.fetch :assignments).not_to include old_assignment
+        expect(assigns.fetch(:assignments)).to include new_assignment
+        expect(assigns.fetch(:assignments)).not_to include old_assignment
       end
       it 'populates a current_assignment variable of Assignment.current' do
         assignment = create :assignment
         expect(Assignment).to receive(:current).and_return assignment
         submit
-        expect(assigns.fetch :current_assignment).to eql assignment
+        expect(assigns.fetch(:current_assignment)).to eql assignment
       end
       it 'includes the switchover hour as a variable' do
         expect(CONFIG).to receive(:[]).with(:switchover_hour).and_return 12
         submit
-        expect(assigns.fetch :switchover_hour).to be 12
+        expect(assigns.fetch(:switchover_hour)).to be 12
       end
       it 'includes a variable of the fallback user' do
         fallback = create :user
         @roster.update(fallback_user_id: fallback.id)
         submit
-        expect(assigns.fetch :fallback_user).to eql fallback
+        expect(assigns.fetch(:fallback_user)).to eql fallback
       end
       it 'renders the correct template' do
         submit
@@ -276,14 +276,14 @@ RSpec.describe AssignmentsController do
         it 'sets the month date variable to the 1st day of that month' do
           date = 5.months.ago
           get :index, params: { date: date }
-          expect(assigns.fetch :month_date)
+          expect(assigns.fetch(:month_date))
             .to eql date.beginning_of_month.to_date
         end
       end
       context 'no date given' do
         it 'sets the month date variable to the 1st day of current month' do
           submit
-          expect(assigns.fetch :month_date)
+          expect(assigns.fetch(:month_date))
             .to eql Time.zone.today.beginning_of_month
         end
       end
@@ -310,7 +310,7 @@ RSpec.describe AssignmentsController do
         end
         it 'assigns the correct current user' do
           submit
-          expect(assigns.fetch :current_user).to eql @user
+          expect(assigns.fetch(:current_user)).to eql @user
         end
         it 'renders the correct template' do
           submit
@@ -337,18 +337,18 @@ RSpec.describe AssignmentsController do
     end
     it 'passes the date parameter through as a start_date variable' do
       submit
-      expect(assigns.fetch :start_date).to eql @date
+      expect(assigns.fetch(:start_date)).to eql @date
     end
     it 'populates an end_date instance variable 6 days after start_date' do
       submit
-      expect(assigns.fetch :end_date).to eql(@date + 6.days)
+      expect(assigns.fetch(:end_date)).to eql(@date + 6.days)
     end
     it 'populates a users variable containing all the users' do
       user1 = roster_user @roster
       user2 = roster_user @roster
       user3 = roster_user @roster
       submit
-      expect(assigns.fetch :users).to include user1, user2, user3
+      expect(assigns.fetch(:users)).to include user1, user2, user3
     end
     it 'renders the new template' do
       submit
@@ -367,13 +367,13 @@ RSpec.describe AssignmentsController do
       before(:each) { when_current_user_is roster_admin(@roster) }
       it 'sets the users instance variable' do
         submit
-        expect(assigns.fetch :users).to include(*@roster.users)
+        expect(assigns.fetch(:users)).to include(*@roster.users)
       end
       it 'sets the start date instance variable' do
         expect(Assignment).to receive(:next_rotation_start_date)
           .and_return 'whatever'
         submit
-        expect(assigns.fetch :start_date).to eql 'whatever'
+        expect(assigns.fetch(:start_date)).to eql 'whatever'
       end
       it 'renders the rotation_generator template' do
         submit

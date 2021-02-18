@@ -41,8 +41,8 @@ class AssignmentsController < ApplicationController
   end
 
   def generate_rotation
-    start_date = Date.parse(params.require :start_date)
-    end_date = Date.parse(params.require :end_date)
+    start_date = Date.parse params.require(:start_date)
+    end_date = Date.parse params.require(:end_date)
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
     unless user_ids.include? start_user
@@ -77,7 +77,7 @@ class AssignmentsController < ApplicationController
   end
 
   def new
-    @start_date = Date.parse(params.require :date)
+    @start_date = Date.parse params.require(:date)
     @end_date = @start_date + 6.days
     @users = @roster.users.active.order :last_name
   end
@@ -122,7 +122,7 @@ class AssignmentsController < ApplicationController
   private
 
   def find_assignment
-    @assignment = Assignment.includes(:user).find(params.require :id)
+    @assignment = Assignment.includes(:user).find(params.require(:id))
   end
 
   # If the user's being changed, we effectively inform of the change

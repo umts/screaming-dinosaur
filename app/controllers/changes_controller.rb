@@ -2,7 +2,7 @@
 
 class ChangesController < ApplicationController
   def undo
-    version = PaperTrail::Version.find(params.require :id)
+    version = PaperTrail::Version.find params.require(:id)
     original_user = version.whodunnit.to_i == @current_user.id
     # ... and return is correct here
     # rubocop:disable Style/AndOr

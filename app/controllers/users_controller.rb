@@ -57,7 +57,7 @@ class UsersController < ApplicationController
   def update
     user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
     membership_params = user_params[:membership]
-    user_params = parse_roster_ids(user_params.except :membership)
+    user_params = parse_roster_ids(user_params.except(:membership))
     if @user.update(user_params) && update_membership(membership_params)
       confirm_change(@user)
       if @current_user.admin_in? @roster
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
   private
 
   def find_user
-    @user = User.find(params.require :id)
+    @user = User.find params.require(:id)
   end
 
   def update_membership(membership_params)

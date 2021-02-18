@@ -48,6 +48,6 @@ class RostersController < ApplicationController
   private
 
   def find_roster
-    @roster = Roster.find(params.require :id)
+    @roster = Roster.find params.require(:id)
   end
 end
