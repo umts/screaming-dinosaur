@@ -14,9 +14,11 @@ class ApplicationController < ActionController::Base
     event = if change.present? then change.event
             else params[:action] || 'update'
             end
-    action_taken = { 'update' => 'updated',
-                     'create' => 'created',
-                     'destroy' => 'deleted' }.fetch(event)
+    action_taken = case event
+                   when 'destroy' then 'deleted'
+                   else
+                     event.sub(/e?$/, 'ed')
+                   end
     message ||= "#{object.class.name} has been #{action_taken}."
     flash[:message] = message
   end
