@@ -34,6 +34,8 @@ class RostersController < ApplicationController
     @rosters = Roster.all
   end
 
+  def setup; end
+
   def update
     roster_params = params.require(:roster).permit(:name, :fallback_user_id)
     if @roster.update roster_params

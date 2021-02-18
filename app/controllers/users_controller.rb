@@ -30,6 +30,8 @@ class UsersController < ApplicationController
     end
   end
 
+  def edit; end
+
   def index
     @fallback = @roster.fallback_user
     @active = if params[:active]
@@ -40,6 +42,8 @@ class UsersController < ApplicationController
     @users = User.where active: @active
     @other_users = User.all - @roster.users
   end
+
+  def new; end
 
   def transfer
     @user.rosters += [@roster]
