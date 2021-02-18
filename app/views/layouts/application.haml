@@ -9,18 +9,19 @@
   %body
     = render partial: 'layouts/nav',
              locals: { rosters: @current_user.rosters }
-    .row
-      .col-xs-6.col-xs-offset-3
-        - if flash[:message].present?
-          .alert.alert-success
-            = flash[:message]
-            - if flash[:change].present?
-              (#{link_to 'undo', undo_change_path(flash[:change])})
-        - if flash[:errors].present?
-          .alert.alert-danger
-            The following errors occurred:
-            %ul
-              - flash[:errors].each do |error_message|
-                %li= error_message
+    .container-fluid
+      .row
+        .col-xs-6.col-xs-offset-3
+          - if flash[:message].present?
+            .alert.alert-success
+              = flash[:message]
+              - if flash[:change].present?
+                (#{link_to 'undo', undo_change_path(flash[:change])})
+          - if flash[:errors].present?
+            .alert.alert-danger
+              The following errors occurred:
+              %ul
+                - flash[:errors].each do |error_message|
+                  %li= error_message
     #content-wrapper
       #main-content= yield
