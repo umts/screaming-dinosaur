@@ -34,12 +34,10 @@ class ApplicationController < ActionController::Base
   # 3. Admins of specifically the current roster
 
   def require_admin
-    # ... and return is correct here
     head :unauthorized and return unless @current_user.admin?
   end
 
   def require_admin_in_roster
-    # ... and return is correct here
     head :unauthorized and return unless @current_user.admin_in? @roster
   end
 

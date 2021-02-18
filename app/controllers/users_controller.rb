@@ -94,7 +94,6 @@ class UsersController < ApplicationController
   def require_admin_in_roster_or_self
     return if @current_user == @user || @current_user.admin_in?(@roster)
 
-    # ... and return is correct here
     head :unauthorized and return
   end
 end

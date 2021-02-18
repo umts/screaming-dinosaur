@@ -15,7 +15,6 @@ class AssignmentsController < ApplicationController
     assignment = Assignment.new ass_params
     viewed_date = session.delete(:last_viewed_month) || assignment.start_date
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
-      # ... and return is correct here
       require_taking_ownership and return
     end
 
@@ -46,7 +45,6 @@ class AssignmentsController < ApplicationController
     start_user = params.require :starting_user_id
     unless user_ids.include? start_user
       flash[:errors] = 'The starting user must be in the rotation.'
-      # ... and return is correct here
       redirect_back(fallback_location:
                     roster_assignments_path(@roster)) and return
     end
@@ -89,7 +87,6 @@ class AssignmentsController < ApplicationController
                        .permit :start_date, :end_date, :user_id
     viewed_date = session.delete(:last_viewed_month) || @assignment.start_date
     unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
-      # ... and return is correct here
       require_taking_ownership and return
     end
 
