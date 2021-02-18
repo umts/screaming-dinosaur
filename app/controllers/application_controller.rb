@@ -2,6 +2,7 @@
 
 class ApplicationController < ActionController::Base
   attr_accessor :current_user
+
   before_action :set_current_user, :set_roster, :set_paper_trail_whodunnit
 
   def confirm_change(object, message = nil)
@@ -13,10 +14,9 @@ class ApplicationController < ActionController::Base
     event = if change.present? then change.event
             else params[:action] || 'update'
             end
-    action_taken = case event
-                   when 'update', 'create' then event + 'd'
-                   when 'destroy' then 'deleted'
-                   end
+    action_taken = { 'update' => 'updated',
+                     'create' => 'created',
+                     'destroy' => 'deleted' }.fetch(event)
     message ||= "#{object.class.name} has been #{action_taken}."
     flash[:message] = message
   end
@@ -33,16 +33,12 @@ class ApplicationController < ActionController::Base
 
   def require_admin
     # ... and return is correct here
-    # rubocop:disable Style/AndOr
     head :unauthorized and return unless @current_user.admin?
-    # rubocop:enable Style/AndOr
   end
 
   def require_admin_in_roster
     # ... and return is correct here
-    # rubocop:disable Style/AndOr
     head :unauthorized and return unless @current_user.admin_in? @roster
-    # rubocop:enable Style/AndOr
   end
 
   def set_current_user

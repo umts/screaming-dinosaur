@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   WHITELISTED_ATTRIBUTES = [:first_name, :last_name, :spire, :email,
                             :phone, :active, :reminders_enabled,
                             :change_notifications_enabled,
-                            rosters: [], membership: [:admin]].freeze
+                            { rosters: [], membership: [:admin] }].freeze
 
   def create
     user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
@@ -95,8 +95,6 @@ class UsersController < ApplicationController
     return if @current_user == @user || @current_user.admin_in?(@roster)
 
     # ... and return is correct here
-    # rubocop:disable Style/AndOr
     head :unauthorized and return
-    # rubocop:enable Style/AndOr
   end
 end

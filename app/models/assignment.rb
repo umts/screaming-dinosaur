@@ -21,8 +21,6 @@ class Assignment < ApplicationRecord
     end_date + 1.day + CONFIG[:switchover_hour].hours
   end
 
-  # Turns out there _are_ 2-letter English words
-  # rubocop:disable Naming/UncommunicativeMethodParamName
   def notify(receiver, of:, by:)
     receiver = user if receiver == :owner
     mailer_method = of
@@ -32,7 +30,6 @@ class Assignment < ApplicationRecord
     mail = AssignmentsMailer.send mailer_method, self, receiver, changer
     mail.deliver_now
   end
-  # rubocop:enable Naming/UncommunicativeMethodParamName
 
   class << self
     # The current assignment - this method accounts for the 5pm switchover hour.
