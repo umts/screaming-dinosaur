@@ -14,9 +14,7 @@ class AssignmentsController < ApplicationController
                                :user_id, :roster_id
     assignment = Assignment.new ass_params
     viewed_date = session.delete(:last_viewed_month) || assignment.start_date
-    unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
-      require_taking_ownership and return
-    end
+    require_taking_ownership or return
 
     if assignment.save
       confirm_change(assignment)
@@ -86,9 +84,7 @@ class AssignmentsController < ApplicationController
     ass_params = params.require(:assignment)
                        .permit :start_date, :end_date, :user_id
     viewed_date = session.delete(:last_viewed_month) || @assignment.start_date
-    unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
-      require_taking_ownership and return
-    end
+    require_taking_ownership or return
 
     @previous_owner = @assignment.user
     if @assignment.update ass_params
@@ -137,12 +133,15 @@ class AssignmentsController < ApplicationController
   end
 
   def require_taking_ownership
+    return true if @current_user.admin_in?(@roster) || taking_ownership?
+
     flash[:errors] = [<<-TEXT]
       You may only edit or create assignments such that you become on call.
       The intended new owner of this assignment must take it themselves.
       Or, a roster administrator can perform this change for you.
     TEXT
     redirect_back fallback_location: roster_assignments_path(@roster)
+    false
   end
 
   def setup_calendar_view
@@ -156,7 +155,8 @@ class AssignmentsController < ApplicationController
     @weeks = (start_date..end_date).each_slice(7)
   end
 
-  def taking_ownership?(assignment_params)
-    assignment_params.require(:user_id) == @current_user.id.to_s
+  def taking_ownership?
+    new_user_id = params.require(:assignment).require(:user_id)
+    new_user_id == @current_user.id.to_s
   end
 end
