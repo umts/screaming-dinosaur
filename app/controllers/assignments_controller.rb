@@ -155,7 +155,7 @@ class AssignmentsController < ApplicationController
   def setup_calendar_view
     @month_date = if params[:date].present?
                     Date.parse params[:date]
-                  else Date.today
+                  else Time.zone.today
                   end.beginning_of_month
     session[:last_viewed_month] = @month_date
     start_date = @month_date.beginning_of_week(:sunday)

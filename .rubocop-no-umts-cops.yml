@@ -28,11 +28,6 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Max: 15
 
-# Date.today seems to retun the right result, and is OK as long as
-# you don't _compare_ it to time-zone aware values.
-Rails/Date:
-  Enabled: false
-
 # I kinda agree with this cop, but most of these are default CRUD
 # routes. I think the developer will know where `:edit` came from
 # even if it's not defined in the controller.

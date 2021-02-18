@@ -9,7 +9,7 @@ RSpec.describe AssignmentsController do
     before :each do
       @user = roster_user @roster
       @attributes = {
-        start_date: Date.today,
+        start_date: Time.zone.today,
         end_date: Date.tomorrow,
         user_id: @user.id,
         roster_id: @roster.id
@@ -159,7 +159,7 @@ RSpec.describe AssignmentsController do
 
   describe 'POST #generate_rotation' do
     before :each do
-      @start_date = Date.today.strftime '%Y-%m-%d'
+      @start_date = Time.zone.today.strftime '%Y-%m-%d'
       @end_date = Date.tomorrow.strftime '%Y-%m-%d'
       user1 = roster_user @roster
       user2 = roster_user @roster
@@ -187,7 +187,7 @@ RSpec.describe AssignmentsController do
         # refers to our @roster instance
         Roster.where.not(id: @roster.id).delete_all
         expect_any_instance_of(Roster).to receive(:generate_assignments)
-          .with(@user_ids, Date.today, Date.tomorrow, @starting_user_id)
+          .with(@user_ids, Time.zone.today, Date.tomorrow, @starting_user_id)
           .and_return @assignments
         expect_any_instance_of(Assignment).to receive :notify
         submit
@@ -199,7 +199,7 @@ RSpec.describe AssignmentsController do
       it 'redirects to the calendar with the start date given' do
         submit
         expect(response)
-          .to redirect_to roster_assignments_path(date: Date.today)
+          .to redirect_to roster_assignments_path(date: Time.zone.today)
       end
       context 'starting user not in selected users' do
         before(:each) { @starting_user_id = roster_user(@roster).id }
@@ -283,7 +283,8 @@ RSpec.describe AssignmentsController do
       context 'no date given' do
         it 'sets the month date variable to the 1st day of current month' do
           submit
-          expect(assigns.fetch :month_date).to eql Date.today.beginning_of_month
+          expect(assigns.fetch :month_date)
+            .to eql Time.zone.today.beginning_of_month
         end
       end
       context 'session variable unassigned' do
@@ -328,7 +329,7 @@ RSpec.describe AssignmentsController do
 
   describe 'GET #new' do
     before :each do
-      @date = Date.today
+      @date = Time.zone.today
       when_current_user_is :whoever
     end
     let :submit do

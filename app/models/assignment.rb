@@ -10,7 +10,7 @@ class Assignment < ApplicationRecord
   validate :overlaps_any?
   validate :user_in_roster?
 
-  scope :future, -> { where 'start_date > ?', Date.today }
+  scope :future, -> { where 'start_date > ?', Time.zone.today }
 
   def effective_start_datetime
     start_date + CONFIG[:switchover_hour].hours
@@ -40,7 +40,7 @@ class Assignment < ApplicationRecord
     def current
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
         on Date.yesterday
-      else on Date.today
+      else on Time.zone.today
       end
     end
 
@@ -69,8 +69,8 @@ class Assignment < ApplicationRecord
     # It it's after 5pm, return assignments that start tomorrow or after.
     def upcoming
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
-        where 'start_date >= ?', Date.today
-      else where 'start_date > ?', Date.today
+        where 'start_date >= ?', Time.zone.today
+      else where 'start_date > ?', Time.zone.today
       end
     end
 

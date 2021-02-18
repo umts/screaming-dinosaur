@@ -58,8 +58,8 @@ RSpec.describe Assignment do
         Timecop.freeze(@switchover_time + 1.minute) do
           # This new assignment will also belong to a new roster
           new_assignment =  create :assignment,
-                                   start_date: Date.today,
-                                   end_date: Date.today
+                                   start_date: Time.zone.today,
+                                   end_date: Time.zone.today
           expect(@today.roster.assignments.current).to eql @today
           expect(new_assignment.roster.assignments.current)
             .to eql new_assignment
@@ -184,7 +184,7 @@ RSpec.describe Assignment do
   describe 'overlapping assignment validation' do
     before :each do
       @assignment = create :assignment,
-                           start_date: Date.today,
+                           start_date: Time.zone.today,
                            end_date: 6.days.since.to_date
     end
     context 'creating assignments that do not overlap' do
@@ -211,19 +211,21 @@ RSpec.describe Assignment do
   end
 
   describe 'upcoming' do
-    let(:assignment_today) do
+    subject { described_class.upcoming }
+    let :assignment_today do
       create :assignment,
-             start_date: Date.today,
+             start_date: Time.zone.today,
              end_date: 1.week.since.to_date
     end
-    let(:assignment_tomorrow) do
+    let :assignment_tomorrow do
       create :assignment,
              start_date: Date.tomorrow,
              end_date: 1.week.since.to_date
     end
+    let :switchover_time do
+      Time.zone.now.change(hour: CONFIG.fetch(:switchover_hour))
+    end
 
-    let(:switchover_time) { Date.today + CONFIG.fetch(:switchover_hour).hours }
-    subject { described_class.upcoming }
     context 'before 5pm' do
       around :each do |example|
         Timecop.freeze(switchover_time - 1.minute) { example.run }
@@ -243,7 +245,7 @@ RSpec.describe Assignment do
   end
 
   describe 'send_reminders!' do
-    let(:assignment_today) { create :assignment, start_date: Date.today }
+    let(:assignment_today) { create :assignment, start_date: Time.zone.today }
     let(:assignment_tomorrow) { create :assignment, start_date: Date.tomorrow }
     it 'sends reminders about assignments starting tomorrow' do
       expect(AssignmentsMailer)

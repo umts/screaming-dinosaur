@@ -80,7 +80,8 @@ RSpec.describe 'viewing the index' do
 
     context 'start and end of assignment on same day' do
       it 'has a radius around the day and a smaller width than the cell' do
-        create :assignment, start_date: Date.today, end_date: Date.today,
+        create :assignment, start_date: Time.zone.today,
+                            end_date: Time.zone.today,
                             user: user, roster: roster
         visit roster_assignments_path(roster)
         expect(page).to have_selector('td .cal-event.assignment-only.width',
