@@ -8,4 +8,8 @@ module ApplicationHelper
        link_to text, path, class: 'nav-link'
     end
   end
+
+  def switchover_time(hour)
+    Time.current.change(hour: hour).strftime('%-I:%M %P')
+  end
 end

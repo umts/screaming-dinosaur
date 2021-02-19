@@ -8,4 +8,4 @@
       - if @fallback_user.present?
         .card-body #{@fallback_user.last_name} is the fallback.
   .card
-    .card-body On-call switches at: #{HOURS[@switchover_hour]}
+    .card-body On-call switches at: #{switchover_time(@switchover_hour)}
