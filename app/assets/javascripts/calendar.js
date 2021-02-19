@@ -3,6 +3,7 @@ $(document).ready(function() {
   if (!calendar_container) { return }
 
   var calendar = new FullCalendar.Calendar(calendar_container, {
+    'themeSystem': 'bootstrap',
     'initialDate': sessionStorage.getItem('lastDate') || null,
     'events': 'assignments.json',
     'startParam': 'start_date',

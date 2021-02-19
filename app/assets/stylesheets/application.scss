@@ -10,6 +10,7 @@ $theme-colors: (
 );
 
 @import "bootstrap";
+@import "fullcalendar/main";
 @import "font-awesome-custom";
 @import "assignments";
 @import "assignments/calendar";
