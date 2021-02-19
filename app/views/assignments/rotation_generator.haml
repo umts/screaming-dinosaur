@@ -1,9 +1,9 @@
 %h1.title Generate rotation
 
-= form_tag generate_rotation_roster_assignments_path(@roster) do
-  .container-fluid
+.container-fluid
+  = form_tag generate_rotation_roster_assignments_path(@roster) do
     .row
-      .col-xs-4.col-xs-offset-2
+      .col-4.offset-2
         .form-group
           = label_tag :start_date
           = text_field_tag :start_date,
@@ -18,12 +18,12 @@
           = label_tag :starting_user_id, 'Starting with'
           = select_tag :starting_user_id,
             options_from_collection_for_select(@users, :id, :last_name),
-             class: 'form-control'
-      .col-xs-4
+             class: 'form-control custom-select'
+      .col-4
         .form-group
           = label_tag :user_ids, 'Users'
           = select_tag :user_ids,
            options_from_collection_for_select(@users, :id, :last_name,
             @users.pluck(:id)), multiple: true, size: 10, class: 'form-control'
-  .text-center.pad-bottom
+  .text-center
     = submit_tag 'Generate rotation', class: 'btn btn-primary'
