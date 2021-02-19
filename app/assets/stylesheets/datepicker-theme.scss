@@ -1,0 +1,41 @@
+div.datepicker-calendar.umts-sd {
+  background-color: theme-color('light');
+
+  div.enabled {
+    &.datepicker-month-fast-prev,
+    &.datepicker-month-fast-next,
+    &.datepicker-month-prev,
+    &.datepicker-month-next,
+    &.datepicker-month {
+      &:hover, &:focus {
+        background-color: theme-color('primary');
+        border-color: theme-color('primary');
+        color: theme-color('light');
+      }
+    }
+  }
+
+  table.datepicker-grid {
+    &:focus {
+      outline: 1px dotted theme-color('secondary');
+    }
+
+    td {
+      border: none;
+
+      &.empty {
+        color: $text-muted;
+      }
+
+      &.selectable:hover {
+        background-color: theme-color('secondary');
+        border-radius: $border-radius;
+      }
+
+      &.curDay, &.curMonth, &.curYear {
+        background-color: theme-color('info');
+        border-radius: $border-radius;
+      }
+    }
+  }
+}
