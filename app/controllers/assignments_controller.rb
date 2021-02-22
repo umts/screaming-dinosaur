@@ -13,13 +13,12 @@ class AssignmentsController < ApplicationController
                        .permit :start_date, :end_date,
                                :user_id, :roster_id
     assignment = Assignment.new ass_params
-    viewed_date = session.delete(:last_viewed_month) || assignment.start_date
     require_taking_ownership or return
 
     if assignment.save
       confirm_change(assignment)
       assignment.notify :owner, of: :new_assignment, by: @current_user
-      redirect_to roster_assignments_path(@roster, date: viewed_date)
+      redirect_to roster_assignments_path(@roster)
     else report_errors(assignment, fallback_location: roster_assignments_path)
     end
   end
@@ -28,8 +27,7 @@ class AssignmentsController < ApplicationController
     @assignment.notify :owner, of: :deleted_assignment, by: @current_user
     @assignment.destroy
     confirm_change(@assignment)
-    viewed_date = session.delete(:last_viewed_month) || @month_date
-    redirect_to roster_assignments_path(@roster, date: viewed_date)
+    redirect_to roster_assignments_path(@roster)
   end
 
   def edit
@@ -56,16 +54,9 @@ class AssignmentsController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html do
-        setup_calendar_view
-        @assignments = @current_user.assignments.in(@roster)
-                                    .upcoming
-                                    .order :start_date
-        @current_assignment = @roster.assignments.current
-        @switchover_hour = CONFIG[:switchover_hour]
-        @fallback_user = @roster.fallback_user
-      end
+      format.html { index_html }
       format.ics { render_ics_feed }
+      format.json { index_json }
     end
   end
 
@@ -83,14 +74,13 @@ class AssignmentsController < ApplicationController
   def update
     ass_params = params.require(:assignment)
                        .permit :start_date, :end_date, :user_id
-    viewed_date = session.delete(:last_viewed_month) || @assignment.start_date
     require_taking_ownership or return
 
     @previous_owner = @assignment.user
     if @assignment.update ass_params
       confirm_change(@assignment)
       notify_appropriate_users
-      redirect_to roster_assignments_path(@roster, date: viewed_date)
+      redirect_to roster_assignments_path(@roster)
     else report_errors(@assignment, fallback_location: roster_assignments_path)
     end
   end
@@ -112,6 +102,22 @@ class AssignmentsController < ApplicationController
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require(:id))
+  end
+
+  def index_html
+    @assignments = @current_user.assignments.in(@roster)
+                                .upcoming
+                                .order :start_date
+    @current_assignment = @roster.assignments.current
+    @switchover_hour = CONFIG[:switchover_hour]
+    @fallback_user = @roster.fallback_user
+  end
+
+  def index_json
+    start_date = Date.parse(params[:start_date])
+    end_date = Date.parse(params[:end_date])
+    @assignments = @roster.assignments.between(start_date, end_date)
+    render layout: false
   end
 
   # If the user's being changed, we effectively inform of the change
@@ -142,17 +148,6 @@ class AssignmentsController < ApplicationController
     TEXT
     redirect_back fallback_location: roster_assignments_path(@roster)
     false
-  end
-
-  def setup_calendar_view
-    @month_date = if params[:date].present?
-                    Date.parse params[:date]
-                  else Time.zone.today
-                  end.beginning_of_month
-    session[:last_viewed_month] = @month_date
-    start_date = @month_date.beginning_of_week(:sunday)
-    end_date = @month_date.end_of_month.end_of_week(:sunday)
-    @weeks = (start_date..end_date).each_slice(7)
   end
 
   def taking_ownership?

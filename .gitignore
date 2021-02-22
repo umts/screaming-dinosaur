@@ -10,6 +10,8 @@
 
 spec/examples.txt
 
+/node_modules
+
 ## Environment normalisation:
 /.bundle
 /vendor/bundle

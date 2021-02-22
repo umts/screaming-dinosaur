@@ -15,6 +15,7 @@ require 'umts_custom_matchers'
 ActiveRecord::Migration.maintain_test_schema!
 Timecop.safe_mode = true
 Capybara.server = :puma, { Silent: true }
+Capybara.enable_aria_label = true
 
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
