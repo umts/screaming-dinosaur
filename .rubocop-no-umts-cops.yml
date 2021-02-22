@@ -1,5 +1,4 @@
-Rails:
-  Enabled: true
+require: rubocop-rails
 
 AllCops:
   TargetRubyVersion: 2.6
@@ -9,6 +8,7 @@ AllCops:
     - 'db/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+  NewCops: enable
 
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -17,7 +17,6 @@ Lint/AmbiguousBlockAssociation:
 Metrics/AbcSize:
   Max: 25
 
-# Tests have long blocks. Not super much we can do about it.
 Metrics/BlockLength:
   Exclude: 
     - 'spec/**/*'
@@ -28,20 +27,5 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Max: 15
 
-# Date.today seems to retun the right result, and is OK as long as
-# you don't _compare_ it to time-zone aware values.
-Rails/Date:
-  Enabled: false
-
-# I kinda agree with this cop, but most of these are default CRUD
-# routes. I think the developer will know where `:edit` came from
-# even if it's not defined in the controller.
-Rails/LexicallyScopedActionFilter:
-  Enabled: false
-
 Style/Documentation:
-  Enabled: false
-
-# This cop is offended by method calls that I think are perfectly clear.
-Style/NestedParenthesizedCalls:
   Enabled: false

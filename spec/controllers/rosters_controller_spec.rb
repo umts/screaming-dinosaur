@@ -98,14 +98,14 @@ RSpec.describe RostersController do
       before(:each) { when_current_user_is roster_admin(@roster) }
       it 'finds the correct roster' do
         submit
-        expect(assigns.fetch :roster).to eql @roster
+        expect(assigns.fetch(:roster)).to eql @roster
       end
       it 'populates a users variable of all users of the roster' do
         user1 = roster_user @roster
         user2 = roster_user @roster
         user3 = roster_user @roster
         submit
-        expect(assigns.fetch :users).to include user1, user2, user3
+        expect(assigns.fetch(:users)).to include user1, user2, user3
       end
       it 'renders the edit template' do
         submit
@@ -129,7 +129,7 @@ RSpec.describe RostersController do
       before(:each) { when_current_user_is roster_admin }
       it 'populates a rosters variable with all available rosters' do
         submit
-        expect(assigns.fetch :rosters).to eq Roster.all
+        expect(assigns.fetch(:rosters)).to eq Roster.all
       end
       it 'renders the correct template' do
         submit

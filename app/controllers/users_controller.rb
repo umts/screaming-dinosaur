@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   WHITELISTED_ATTRIBUTES = [:first_name, :last_name, :spire, :email,
                             :phone, :active, :reminders_enabled,
                             :change_notifications_enabled,
-                            rosters: [], membership: [:admin]].freeze
+                            { rosters: [], membership: [:admin] }].freeze
 
   def create
     user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
@@ -29,6 +29,8 @@ class UsersController < ApplicationController
     else report_errors(@user, fallback_location: roster_users_path)
     end
   end
+
+  def edit; end
 
   def index
     @fallback = @roster.fallback_user
@@ -57,7 +59,7 @@ class UsersController < ApplicationController
   def update
     user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
     membership_params = user_params[:membership]
-    user_params = parse_roster_ids(user_params.except :membership)
+    user_params = parse_roster_ids(user_params.except(:membership))
     if @user.update(user_params) && update_membership(membership_params)
       confirm_change(@user)
       if @current_user.admin_in? @roster
@@ -71,7 +73,7 @@ class UsersController < ApplicationController
   private
 
   def find_user
-    @user = User.find(params.require :id)
+    @user = User.find params.require(:id)
   end
 
   def update_membership(membership_params)
@@ -94,9 +96,6 @@ class UsersController < ApplicationController
   def require_admin_in_roster_or_self
     return if @current_user == @user || @current_user.admin_in?(@roster)
 
-    # ... and return is correct here
-    # rubocop:disable Style/AndOr
     head :unauthorized and return
-    # rubocop:enable Style/AndOr
   end
 end

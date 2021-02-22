@@ -53,5 +53,5 @@ RSpec.configure do |config|
     driven_by :selenium, using: :headless_chrome
   end
 
-  Dir['./spec/support/**/*.rb'].each { |f| require f }
+  Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 end

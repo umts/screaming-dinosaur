@@ -38,7 +38,8 @@ group :development, :test do
   gem 'haml_lint'
   gem 'pry-byebug'
   gem 'puma', '~> 3.12'
-  gem 'rubocop'
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
   gem 'umts-custom-cops'
 end
 

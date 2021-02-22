@@ -14,7 +14,7 @@ RSpec.describe TwilioController do
     end
     it 'sets the current on call user to the user variable' do
       submit
-      expect(assigns.fetch :user).to eql @user
+      expect(assigns.fetch(:user)).to eql @user
     end
     it 'renders the call template' do
       submit
@@ -36,11 +36,11 @@ RSpec.describe TwilioController do
     end
     it 'sets the current on call user to the user variable' do
       submit
-      expect(assigns.fetch :user).to eql @user
+      expect(assigns.fetch(:user)).to eql @user
     end
     it 'passes the Body parameter through as a body instance variable' do
       submit
-      expect(assigns.fetch :body).to eql @body
+      expect(assigns.fetch(:body)).to eql @body
     end
     it 'renders the text template' do
       submit

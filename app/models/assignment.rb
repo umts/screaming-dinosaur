@@ -10,7 +10,7 @@ class Assignment < ApplicationRecord
   validate :overlaps_any?
   validate :user_in_roster?
 
-  scope :future, -> { where 'start_date > ?', Date.today }
+  scope :future, -> { where 'start_date > ?', Time.zone.today }
 
   def effective_start_datetime
     start_date + CONFIG[:switchover_hour].hours
@@ -21,8 +21,6 @@ class Assignment < ApplicationRecord
     end_date + 1.day + CONFIG[:switchover_hour].hours
   end
 
-  # Turns out there _are_ 2-letter English words
-  # rubocop:disable Naming/UncommunicativeMethodParamName
   def notify(receiver, of:, by:)
     receiver = user if receiver == :owner
     mailer_method = of
@@ -32,7 +30,6 @@ class Assignment < ApplicationRecord
     mail = AssignmentsMailer.send mailer_method, self, receiver, changer
     mail.deliver_now
   end
-  # rubocop:enable Naming/UncommunicativeMethodParamName
 
   class << self
     def between(start_date, end_date)
@@ -44,7 +41,7 @@ class Assignment < ApplicationRecord
     def current
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
         on Date.yesterday
-      else on Date.today
+      else on Time.zone.today
       end
     end
 
@@ -71,8 +68,8 @@ class Assignment < ApplicationRecord
     # It it's after 5pm, return assignments that start tomorrow or after.
     def upcoming
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
-        where 'start_date >= ?', Date.today
-      else where 'start_date > ?', Date.today
+        where 'start_date >= ?', Time.zone.today
+      else where 'start_date > ?', Time.zone.today
       end
     end
 

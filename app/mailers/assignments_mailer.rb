@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-class AssignmentsMailer < ActionMailer::Base
-  default from: 'transit-it@admin.umass.edu'
-
+class AssignmentsMailer < ApplicationMailer
   def changed_assignment(assignment, recipient, changer)
     set_defaults(assignment, recipient, changer)
     mail to: @recipient.email,
