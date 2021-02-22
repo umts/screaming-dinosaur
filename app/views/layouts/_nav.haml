@@ -4,20 +4,21 @@
       %button.navbar-toggler{ type: 'button',
       data: { toggle: 'collapse', target: '#navCollapse' },
       aria: { expanded: 'false', label: 'Toggle Navigation' } }
-        %span x
+        %span.fas.fa-bars
     .collapse.navbar-collapse#navCollapse
       %ul.navbar-nav.mr-auto
-        - @current_user.rosters.each do |roster|
+        - rosters.each do |roster|
           = nav_link_item roster.name, roster_assignments_path(roster)
-        - if @current_user.admin?
+        - if @current_user&.admin?
           = nav_link_item 'Manage Rosters', rosters_path
-          - if @current_user.admin_in? @roster
+          - if @current_user&.admin_in? @roster
             = nav_link_item 'Manage Users', roster_users_path(@roster)
             = nav_link_item 'Generate Rotation',
               rotation_generator_roster_assignments_path(@roster)
       %ul.navbar-nav
-        %li.nav-item.navbar-text.mx-2
-          Logged in as #{@current_user.full_name}
-        = nav_link_item 'Edit Profile',
-          edit_roster_user_path(@roster, @current_user)
+        - if @current_user.present?
+          %li.nav-item.navbar-text.mx-2
+            Logged in as #{@current_user.full_name}
+          = nav_link_item 'Edit Profile',
+            edit_roster_user_path(@roster, @current_user)
         = nav_link_item 'Logout', destroy_session_path
