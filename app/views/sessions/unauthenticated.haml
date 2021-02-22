@@ -1,7 +1,9 @@
-%h1 Login failure
-You have successfully logged into the UMass system, but you are not
-authorized to access this particular application. If you believe
-you are receiving this message in error, please contact
-transit-it@admin.umass.edu.
-%br
-= link_to 'Logout', destroy_session_path
+%h1.title Login failure
+%p
+  You have successfully logged into the UMass system, but you are not
+  authorized to access this particular application. If you believe
+  you are receiving this message in error, please contact
+  = succeed '.' do
+    = mail_to 'transit-it@admin.umass.edu'
+%p
+  = link_to 'Logout', destroy_session_path
