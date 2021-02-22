@@ -4,8 +4,12 @@ class RostersController < ApplicationController
   # The default scaffold method, not the generic one
   # we wrote in ApplicationController.
   before_action :find_roster, only: %i[destroy edit setup update]
-  before_action :require_admin
+  before_action :require_admin, except: %i[assignments]
   before_action :require_admin_in_roster, only: %i[destroy edit setup update]
+
+  def assignments
+    redirect_to roster_assignments_path(@roster)
+  end
 
   def create
     roster_params = params.require(:roster).permit(:name)

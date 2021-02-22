@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe 'user pages' do
-  let(:membership) { create :membership, admin: true }
-  let(:admin) { create :user, memberships: [membership] }
+RSpec.describe 'viewing the index' do
+  let(:roster) { create :roster }
+  let(:user) { roster_user(roster) }
 
-  context 'copying ics url', js: true do
+  context 'interacting with the ICS feed URL', js: true do
     before :each do
-      set_current_user(admin)
+      set_current_user(user)
       visit root_path
     end
     it 'displays copy url info' do
@@ -23,29 +23,24 @@ RSpec.describe 'user pages' do
       expect(page).to have_selector '.tooltip', text: 'Copied successfully!'
     end
   end
-end
 
-RSpec.describe 'viewing the index' do
-  let(:roster) { create :roster }
-  let(:user) { create :user, rosters: [roster] }
-  describe 'viewing the calendar' do
-    around :each do |example|
-      Timecop.freeze Date.new(2017, 8, 14) do
-        set_current_user(user)
-        example.run
-      end
+  describe 'interacting with the calendar', js: true do
+    before(:each) do
+      set_current_user(user)
     end
 
     it 'highlights today' do
       visit roster_assignments_path(roster)
-      expect(page).to have_selector('td.cal-cell.current-day', text: '14')
+      today = Time.zone.today.day
+      expect(page).to have_selector('td.fc-day-today', text: today)
     end
+
     context 'assignment belongs to user' do
       it 'appears highlighted for your assignment' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
         visit roster_assignments_path(roster)
-        expect(page).to have_selector('td .cal-event.assignment-user', count: 7)
+        expect(page).to have_selector('.assignment-event-owned')
       end
     end
 
@@ -54,98 +49,39 @@ RSpec.describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
         visit roster_assignments_path(roster)
-        expect(page).to have_selector('td .cal-event.assignment', count: 7)
+        expect(page).to have_selector(
+          '.assignment-event:not(.assignment-event-owned)'
+        )
       end
     end
 
-    context 'start of assignment' do
-      it 'has a left radius' do
-        create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
-                            user: user, roster: roster
+    context 'clicking on an empty day' do
+      let(:date) { Time.zone.today.change(day: 14) }
+      let(:new_path) do
+        new_roster_assignment_path roster_id: roster.id,
+                                   date: date.to_s(:db)
+      end
+
+      it 'sends you to create a new assignment' do
         visit roster_assignments_path(roster)
-        expect(page).to have_selector('td .cal-event.assignment-start',
-                                      count: 1)
+
+        find('td.fc-day', text: '14').click
+        expect(page).to have_current_path(new_path)
       end
     end
 
-    context 'end of assignment' do
-      it 'has a right radius and a different width than the cell' do
-        create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
-                            user: user, roster: roster
+    context 'switching months' do
+      it 'stores the last viewed month' do
         visit roster_assignments_path(roster)
-        expect(page).to have_selector('td .cal-event.assignment-end.width',
-                                      count: 1)
-      end
-    end
+        3.times { click_on 'next' }
 
-    context 'start and end of assignment on same day' do
-      it 'has a radius around the day and a smaller width than the cell' do
-        create :assignment, start_date: Date.today, end_date: Date.today,
-                            user: user, roster: roster
+        # Go anywhere else, come back
+        visit edit_roster_user_path(roster, user)
         visit roster_assignments_path(roster)
-        expect(page).to have_selector('td .cal-event.assignment-only.width',
-                                      count: 1)
+
+        three_months_from_now = (Time.zone.now + 3.months).strftime('%B %Y')
+        expect(page).to have_text(three_months_from_now)
       end
     end
-  end
-
-  context 'active page highlighted in the nav bar' do
-    it 'applies active class to current tab in nav-bar' do
-      set_current_user(user)
-      visit roster_assignments_path(roster)
-      expect(page).to have_selector('nav li.active', count: 1)
-    end
-  end
-
-  shared_examples 'ics assignments feed' do
-    let(:lines) { page.html.split("\r\n") }
-
-    it 'contains correctly formatted data' do
-      new_user = create :user, rosters: [roster]
-      assignment1 = create :assignment, roster: roster, user: user
-      assignment2 = create :assignment, roster: roster, user: new_user,
-                                        start_date: 1.week.ago,
-                                        end_date: 2.days.ago
-      submit
-
-      expect(lines).to include(summary(user))
-      expect(lines).to include(description(user, roster))
-      expect(lines).to include(*assignment_dates(assignment1))
-      expect(lines).to include(summary(new_user))
-      expect(lines).to include(description(new_user, roster))
-      expect(lines).to include(*assignment_dates(assignment2))
-    end
-
-    def summary(user)
-      "SUMMARY:#{user.last_name}"
-    end
-
-    def description(user, roster)
-      "DESCRIPTION:#{user.first_name} #{user.last_name} " \
-      "is on call for #{roster.name}."
-    end
-
-    def assignment_dates(assignment)
-      ["DTSTART;VALUE=DATE:#{assignment.start_date.to_s(:number)}",
-       "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_s(:number)}"]
-    end
-  end
-
-  describe 'viewing the ics formatted index' do
-    let :submit do
-      set_current_user(user)
-      visit roster_assignments_path(roster, format: 'ics')
-    end
-
-    include_examples 'ics assignments feed'
-  end
-
-  describe 'viewing the ics feed' do
-    let :submit do
-      name = roster.name.parameterize
-      visit "feed/#{name}/#{user.calendar_access_token}.ics"
-    end
-
-    include_examples 'ics assignments feed'
   end
 end

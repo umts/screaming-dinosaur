@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
-  root 'assignments#index'
-  
+  root 'rosters#assignments'
+
   resources :rosters, except: %i(show) do
     member do
       get :setup
+    end
+    collection do
+      get :assignments
     end
 
     resources :assignments, except: :show do
