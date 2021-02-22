@@ -44,7 +44,7 @@ RSpec.describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
         visit roster_assignments_path(roster)
-        expect(find_all('.fc-event').map{|e| e['style']})
+        expect(find_all('.fc-event').map { |e| e['style'] })
           .to all(match(bg_variable('info')))
       end
     end
@@ -54,7 +54,7 @@ RSpec.describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
         visit roster_assignments_path(roster)
-        expect(find_all('.fc-event').map{|e| e['style']})
+        expect(find_all('.fc-event').map { |e| e['style'] })
           .to all(match(bg_variable('secondary')))
       end
     end
