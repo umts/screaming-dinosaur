@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
 
-gem 'bootstrap', '~> 4.2.1'
+gem 'bootstrap', '~> 4.2'
 gem 'factory_bot_rails'
 gem 'haml'
 gem 'haml-rails'
