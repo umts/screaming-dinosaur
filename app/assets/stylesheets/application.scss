@@ -17,12 +17,3 @@ $theme-colors: (
 @import "datepicker-theme";
 @import "assignments";
 @import "assignments/calendar";
-
-.pad-bottom {
-  padding-bottom: 1vh;
-}
-
-.vague-warning {
-  background-color: lightpink;
-  border-radius: 6px;
-}

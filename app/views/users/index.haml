@@ -1,30 +1,29 @@
-%h1.title Users
+%h1.title Users in #{@roster.name}
 
 - if @fallback.nil?
-  %h3.text-center.vague-warning
-    No fallback user!
-    = link_to 'Select a fallback user', edit_roster_path(@roster)
-.container-fluid
-  .col-2.col-offset-1
-    = link_to 'Add new user', new_roster_user_path, class: 'btn btn-primary',
-     value: 'Add new user'
-  .col-3
-    - if @active
-      = link_to 'Inactive users', roster_users_path(active: false), class: 'btn btn-primary',
-       value: 'Inactive users'
-    - else
-      = link_to 'Active users', roster_users_path, class: 'btn btn-primary',
-       value: 'Active users'
+  .card.bg-warning
+    .card-body
+      %h5.card-title No fallback user!
+      = link_to 'Select a fallback user', edit_roster_path(@roster)
 
-  .col-3.col-offset-2
-    -  if @other_users.present?
-      .form
-        Add existing user:
-        = form_tag transfer_roster_users_path do
-          = select_tag :id,
-                options_from_collection_for_select(@other_users,
-                 :id, :last_name)
-          = submit_tag 'Add', class: 'btn btn-primary btn-sm'
+.container-fluid.my-4
+  .row
+    .col-lg
+      = link_to 'Add new user', new_roster_user_path
+    .col-lg.order-lg-last.text-right
+      - if @other_users.present?
+        = form_tag transfer_roster_users_path, class: 'form-inline' do
+          = label_tag :id, 'Add user from another roster:', class: 'mr-1'
+          .input-group
+            = select_tag :id,
+              options_from_collection_for_select(@other_users, :id, :last_name),
+              class: 'form-control form-control-sm custom-select custom-select-sm'
+            = submit_tag 'Add', class: 'btn btn-primary btn-sm input-group-append'
+    .col-lg.mt-4.mt-lg-0.text-center
+      - if @active
+        = link_to 'Inactive users', roster_users_path(active: false)
+      - else
+        = link_to 'Active users', roster_users_path
 
 %table.table
   %thead
@@ -35,28 +34,27 @@
       %th Phone
       %th
       %th
+      %th
   %tbody
     - @users.each do |user|
       %tr
-        %td
+        %td.align-middle
           = user.full_name
           - if user == @fallback
             (fallback)
-        %td= user.spire
-        %td= user.email
-        %td= user.phone
-        %td= link_to 'Edit',
-        edit_roster_user_path(@roster, user),
-         class: 'btn btn-info'
+        %td.align-middle= user.spire
+        %td.align-middle= user.email
+        %td.align-middle= user.phone
+        %td.align-middle= link_to 'Edit', edit_roster_user_path(@roster, user)
         %td
-          =form_for user, url: roster_user_url(@roster, user) do |f|
+          =form_for user, url: roster_user_path(@roster, user) do |f|
             - if user.active?
               = f.hidden_field :active, value: false
-              = f.submit 'Deactivate', class: 'btn btn-primary',
+              = f.submit 'Deactivate', class: 'btn btn-warning',
                data: { confirm: 'Deactivating user will delete all upcoming assignments.' }
             - else
               = f.hidden_field :active, value: true
-              = f.submit 'Activate', class: 'btn btn-primary'
+              = f.submit 'Activate', class: 'btn btn-success'
         %td= button_to 'Destroy',
         roster_user_path(@roster, user),
          method: :delete, class: 'btn btn-danger'
