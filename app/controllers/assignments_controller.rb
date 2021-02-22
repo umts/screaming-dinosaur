@@ -13,12 +13,8 @@ class AssignmentsController < ApplicationController
                        .permit :start_date, :end_date,
                                :user_id, :roster_id
     assignment = Assignment.new ass_params
-    unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
-      # ... and return is correct here
-      # rubocop:disable Style/AndOr
-      require_taking_ownership and return
-      # rubocop:enable Style/AndOr
-    end
+    require_taking_ownership or return
+
     if assignment.save
       confirm_change(assignment)
       assignment.notify :owner, of: :new_assignment, by: @current_user
@@ -39,17 +35,14 @@ class AssignmentsController < ApplicationController
   end
 
   def generate_rotation
-    start_date = Date.parse(params.require :start_date)
-    end_date = Date.parse(params.require :end_date)
+    start_date = Date.parse params.require(:start_date)
+    end_date = Date.parse params.require(:end_date)
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
     unless user_ids.include? start_user
       flash[:errors] = 'The starting user must be in the rotation.'
-      # ... and return is correct here
-      # rubocop:disable Style/AndOr
       redirect_back(fallback_location:
                     roster_assignments_path(@roster)) and return
-      # rubocop:enable Style/AndOr
     end
     @roster.generate_assignments(user_ids, start_date,
                                  end_date, start_user).each do |assignment|
@@ -68,7 +61,7 @@ class AssignmentsController < ApplicationController
   end
 
   def new
-    @start_date = Date.parse(params.require :date)
+    @start_date = Date.parse params.require(:date)
     @end_date = @start_date + 6.days
     @users = @roster.users.active.order :last_name
   end
@@ -81,12 +74,8 @@ class AssignmentsController < ApplicationController
   def update
     ass_params = params.require(:assignment)
                        .permit :start_date, :end_date, :user_id
-    unless @current_user.admin_in?(@roster) || taking_ownership?(ass_params)
-      # ... and return is correct here
-      # rubocop:disable Style/AndOr
-      require_taking_ownership and return
-      # rubocop:enable Style/AndOr
-    end
+    require_taking_ownership or return
+
     @previous_owner = @assignment.user
     if @assignment.update ass_params
       confirm_change(@assignment)
@@ -112,7 +101,7 @@ class AssignmentsController < ApplicationController
   private
 
   def find_assignment
-    @assignment = Assignment.includes(:user).find(params.require :id)
+    @assignment = Assignment.includes(:user).find(params.require(:id))
   end
 
   def index_html
@@ -150,15 +139,19 @@ class AssignmentsController < ApplicationController
   end
 
   def require_taking_ownership
+    return true if @current_user.admin_in?(@roster) || taking_ownership?
+
     flash[:errors] = [<<-TEXT]
       You may only edit or create assignments such that you become on call.
       The intended new owner of this assignment must take it themselves.
       Or, a roster administrator can perform this change for you.
     TEXT
     redirect_back fallback_location: roster_assignments_path(@roster)
+    false
   end
 
-  def taking_ownership?(assignment_params)
-    assignment_params.require(:user_id) == @current_user.id.to_s
+  def taking_ownership?
+    new_user_id = params.require(:assignment).require(:user_id)
+    new_user_id == @current_user.id.to_s
   end
 end

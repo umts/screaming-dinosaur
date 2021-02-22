@@ -16,7 +16,7 @@ engines:
     enabled: true
   rubocop:
     enabled: true
-    channel: rubocop-0-65
+    channel: rubocop-1-9-1
     config: .rubocop-no-umts-cops.yml
 ratings:
   paths:

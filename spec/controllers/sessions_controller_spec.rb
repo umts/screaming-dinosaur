@@ -51,7 +51,7 @@ RSpec.describe SessionsController do
       roster1 = create :roster
       roster2 = create :roster
       submit
-      expect(assigns.fetch :rosters).to contain_exactly roster1, roster2
+      expect(assigns.fetch(:rosters)).to contain_exactly roster1, roster2
     end
     it 'renders the correct template' do
       submit
