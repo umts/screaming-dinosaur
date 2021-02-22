@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_14_031209) do
+ActiveRecord::Schema.define(version: 2021_02_18_203357) do
 
   create_table "assignments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2021_02_14_031209) do
     t.boolean "admin", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "roster_id"], name: "index_memberships_on_user_id_and_roster_id", unique: true
   end
 
   create_table "rosters", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -34,6 +35,7 @@ ActiveRecord::Schema.define(version: 2021_02_14_031209) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "fallback_user_id"
+    t.index ["name"], name: "index_rosters_on_name", unique: true
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -48,6 +50,9 @@ ActiveRecord::Schema.define(version: 2021_02_14_031209) do
     t.boolean "change_notifications_enabled", default: true
     t.boolean "active", default: true
     t.string "calendar_access_token"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["phone"], name: "index_users_on_phone", unique: true
+    t.index ["spire"], name: "index_users_on_spire", unique: true
   end
 
   create_table "versions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|

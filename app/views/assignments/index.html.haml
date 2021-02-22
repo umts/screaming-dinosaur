@@ -7,9 +7,11 @@
 .form-inline.text-center.pad-bottom
   %span.glyphicon.glyphicon-info-sign{ data: { toggle: 'tooltip', placement: 'top' },
    title: 'Use this address to subscribe to this calendar in another application (i.e. Google Calendar).' }
+  - roster_name = @roster.name.parameterize
+  - token = @current_user.calendar_access_token
   = text_field_tag :access_token,
-   "https://umts-oncall.admin.umass.edu/feed/#{ @roster.name.parameterize }/#{ @current_user.calendar_access_token }.ics",
-   readonly: true, class: 'form-control copy-text'
+    feed_url(roster: roster_name, token: token, format: :ics),
+    readonly: true, class: 'form-control copy-text'
   .btn.btn-default.copy-text-btn.copy-tooltip{ data: { toggle: 'tooltip', placement: 'top' },
    title: 'Click to copy link' }
     %span.glyphicon.glyphicon-copy
