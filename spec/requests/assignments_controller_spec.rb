@@ -52,13 +52,8 @@ RSpec.describe AssignmentsController do
         end_date = Date.parse(assignment_object.fetch('end'))
         expect(end_date).to eq 1.day.after(assignment.end_date)
       end
-      it 'has an event class' do
-        expect(assignment_object.fetch('classNames'))
-          .to include('assignment-event')
-      end
-      it 'does not have an "owned" event class' do
-        expect(assignment_object.fetch('classNames'))
-          .not_to include('assignment-event-owned')
+      it 'has an event color' do
+        expect(assignment_object.fetch('color')).to eq('var(--secondary)')
       end
     end
 
@@ -67,13 +62,8 @@ RSpec.describe AssignmentsController do
         json.find { |a| a['id'] == "assignment-#{own_assignment.id}" }
       end
 
-      it 'has an event class' do
-        expect(assignment_object.fetch('classNames'))
-          .to include('assignment-event')
-      end
-      it 'has an "owned" event class' do
-        expect(assignment_object.fetch('classNames'))
-          .to include('assignment-event-owned')
+      it 'has an "owned" event color' do
+        expect(assignment_object.fetch('color')).to eq('var(--info)')
       end
     end
   end
