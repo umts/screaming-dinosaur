@@ -15,3 +15,5 @@ append :linked_files,
   'config/application.yml'
 
 append :linked_dirs, '.bundle', 'log'
+
+set :passenger_restart_with_sudo, true
