@@ -4,6 +4,7 @@ require 'assignments_ics'
 
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
+  before_action :set_roster_users, only: %i[edit new rotation_generator]
   before_action :require_admin_in_roster, only: %i[generate_rotation
                                                    rotation_generator]
   skip_before_action :set_current_user, :set_roster, only: :feed
@@ -30,9 +31,7 @@ class AssignmentsController < ApplicationController
     redirect_to roster_assignments_path(@roster)
   end
 
-  def edit
-    @users = @roster.users.active.order :last_name
-  end
+  def edit; end
 
   def generate_rotation
     start_date = Date.parse params.require(:start_date)
@@ -63,11 +62,10 @@ class AssignmentsController < ApplicationController
   def new
     @start_date = Date.parse params.require(:date)
     @end_date = @start_date + 6.days
-    @users = @roster.users.active.order :last_name
+    @assignment = Assignment.new
   end
 
   def rotation_generator
-    @users = @roster.users.active.order :last_name
     @start_date = Assignment.next_rotation_start_date
   end
 
@@ -102,6 +100,10 @@ class AssignmentsController < ApplicationController
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require(:id))
+  end
+
+  def set_roster_users
+    @users = @roster.users.active.order :last_name
   end
 
   def index_html

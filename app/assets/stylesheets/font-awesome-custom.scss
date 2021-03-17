@@ -1,0 +1,60 @@
+$fa-font-path: "@fortawesome/fontawesome-free/webfonts/";
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+
+/* This is a copy of @fortawesome/fontawesome-free/scss/{regular,solid,free}
+ * with the `url()`s replaced with `font-url()`s to make them work with
+ *  sprockets.
+ */
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 400;
+  font-display: $fa-font-display;
+  src: font-url('#{$fa-font-path}/fa-regular-400.eot');
+  src: font-url('#{$fa-font-path}/fa-regular-400.eot?#iefix') format('embedded-opentype'),
+  font-url('#{$fa-font-path}/fa-regular-400.woff2') format('woff2'),
+  font-url('#{$fa-font-path}/fa-regular-400.woff') format('woff'),
+  font-url('#{$fa-font-path}/fa-regular-400.ttf') format('truetype'),
+  font-url('#{$fa-font-path}/fa-regular-400.svg#fontawesome') format('svg');
+}
+
+.far {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 900;
+  font-display: $fa-font-display;
+  src: font-url('#{$fa-font-path}/fa-solid-900.eot');
+  src: font-url('#{$fa-font-path}/fa-solid-900.eot?#iefix') format('embedded-opentype'),
+  font-url('#{$fa-font-path}/fa-solid-900.woff2') format('woff2'),
+  font-url('#{$fa-font-path}/fa-solid-900.woff') format('woff'),
+  font-url('#{$fa-font-path}/fa-solid-900.ttf') format('truetype'),
+  font-url('#{$fa-font-path}/fa-solid-900.svg#fontawesome') format('svg');
+}
+
+.fa,
+.fas {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  font-style: normal;
+  font-weight: normal;
+  font-display: $fa-font-display;
+  src: font-url('#{$fa-font-path}/fa-brands-400.eot');
+  src: font-url('#{$fa-font-path}/fa-brands-400.eot?#iefix') format('embedded-opentype'),
+  font-url('#{$fa-font-path}/fa-brands-400.woff2') format('woff2'),
+  font-url('#{$fa-font-path}/fa-brands-400.woff') format('woff'),
+  font-url('#{$fa-font-path}/fa-brands-400.ttf') format('truetype'),
+  font-url('#{$fa-font-path}/fa-brands-400.svg#fontawesome') format('svg');
+}
+
+.fab {
+  font-family: 'Font Awesome 5 Brands';
+}

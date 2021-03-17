@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
-  layout false
   skip_before_action :set_current_user, :set_roster
 
   def destroy
@@ -22,6 +21,5 @@ class SessionsController < ApplicationController
     end
   end
 
-  # Only shows if no user in database AND no SPIRE provided from Shibboleth
   def unauthenticated; end
 end

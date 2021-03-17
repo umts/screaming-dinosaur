@@ -9,7 +9,7 @@ RSpec.describe 'user pages' do
     before :each do
       when_current_user_is admin
       visit root_path
-      click_link 'Manage users'
+      click_link 'Manage Users'
       click_button 'Deactivate'
       @dialog = page.driver.browser.switch_to.alert
     end
@@ -28,7 +28,7 @@ RSpec.describe 'user pages' do
     before :each do
       set_current_user(admin)
       visit root_path
-      click_link 'Manage users'
+      click_link 'Manage Users'
     end
     it 'directs you to the appropriate page' do
       expect(current_url).to end_with roster_users_path(admin_membership.roster)

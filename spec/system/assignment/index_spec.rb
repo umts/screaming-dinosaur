@@ -10,7 +10,7 @@ RSpec.describe 'viewing the index' do
       visit root_path
     end
     it 'displays copy url info' do
-      find('.glyphicon-info-sign').click.hover
+      find("[aria-label='Calendar feed information']").click
       expect(page).to have_selector '.tooltip',
                                     text: 'Use this address to subscribe'
     end
@@ -25,6 +25,10 @@ RSpec.describe 'viewing the index' do
   end
 
   describe 'interacting with the calendar', js: true do
+    def bg_variable(var)
+      /background-color: *var\(--#{var}\)/
+    end
+
     before(:each) do
       set_current_user(user)
     end
@@ -40,7 +44,8 @@ RSpec.describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
         visit roster_assignments_path(roster)
-        expect(page).to have_selector('.assignment-event-owned')
+        expect(find_all('.fc-event').map { |e| e['style'] })
+          .to all(match(bg_variable('info')))
       end
     end
 
@@ -49,9 +54,8 @@ RSpec.describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
         visit roster_assignments_path(roster)
-        expect(page).to have_selector(
-          '.assignment-event:not(.assignment-event-owned)'
-        )
+        expect(find_all('.fc-event').map { |e| e['style'] })
+          .to all(match(bg_variable('secondary')))
       end
     end
 

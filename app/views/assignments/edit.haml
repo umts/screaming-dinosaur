@@ -1,20 +1,9 @@
 %h1.title Edit assignment
 .container-fluid
-  = form_for @assignment, url: roster_assignment_url(@roster, @assignment) do |f|
-    .row
-      .col-xs-2.col-xs-offset-3
-        .form-group
-          = f.label :user_id
-          = f.collection_select :user_id, @users, :id, :last_name,
-                                {}, class: 'form-control'
-      .col-xs-4
-        .form-group
-          = f.label :start_date
-          = f.text_field :start_date, class: 'datepicker form-control'
-        .form-group
-          = f.label :end_date
-          = f.text_field :end_date, class: 'datepicker form-control'
-    .col-xs-offset-4.col-xs-1= f.submit 'Save', class: 'btn btn-primary'
-  .col-xs-1= button_to 'Delete assignment',
-    roster_assignment_path(@roster, @assignment),
-    method: :delete, class: 'btn btn-danger'
+  .row.mb-4
+    .col
+      = button_to 'Delete assignment',
+        roster_assignment_path(@roster, @assignment),
+        method: :delete, class: 'btn btn-danger'
+  = render partial: 'form',
+    locals: { path: roster_assignment_path(@roster, @assignment) }

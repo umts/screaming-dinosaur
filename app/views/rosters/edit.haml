@@ -1,17 +1,14 @@
 %h1.title Edit roster
 
 = form_for @roster do |f|
-  .container-fluid
-    .row
-      .col-xs-4.col-xs-offset-3
-        .form-group
-          = f.label :name
-          = f.text_field :name, class: 'form-control'
-      .col-xs-2
-        .form-group
-          = f.label :fallback_user
-          .vert-center
-            = f.select :fallback_user_id,
-             options_from_collection_for_select(@users, :id, :last_name)
-  .text-center
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control'
+  .form-group
+    = f.label :fallback_user
+    .vert-center
+      = f.select :fallback_user_id,
+        options_from_collection_for_select(@users, :id, :last_name),
+       {}, class: 'form-control custom-select'
+  .form-group
     = f.submit 'Save', class: 'btn btn-primary'

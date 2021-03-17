@@ -1,29 +1,24 @@
-%nav.navbar.navbar-default.nav-custom
+%nav.navbar.navbar-dark.navbar-expand-md.bg-primary.mb-2
   .container-fluid
     .navbar-header
-      %button.navbar-toggle.collapsed{ type: 'button',
-       data: { toggle: 'collapse', target: '#bs-example-navbar-collapse-1' },
-        aria: { expanded: 'false' } }
-    .collapse.navbar-collapse#bs-example-navbar-collapse-1
-      %ul.nav.navbar-nav
-        - @current_user.rosters.each do |roster|
-          %li{ class: active_class(roster_assignments_path(roster)) }
-            = link_to roster.name, roster_assignments_path(roster)
-        - if @current_user.admin?
-          %li{ class: active_class(rosters_path) }
-            = link_to 'Manage rosters', rosters_path
-          - if @current_user.admin_in? @roster
-            %li{ class: active_class(roster_users_path(@roster)) }
-              = link_to 'Manage users', roster_users_path(@roster)
-            %li{ class: active_class(rotation_generator_roster_assignments_path(@roster)) }
-              = link_to 'Generate rotation',
+      %button.navbar-toggler{ type: 'button',
+      data: { toggle: 'collapse', target: '#navCollapse' },
+      aria: { expanded: 'false', label: 'Toggle Navigation' } }
+        %span.fas.fa-bars
+    .collapse.navbar-collapse#navCollapse
+      %ul.navbar-nav.mr-auto
+        - rosters.each do |roster|
+          = nav_link_item roster.name, roster_assignments_path(roster)
+        - if @current_user&.admin?
+          = nav_link_item 'Manage Rosters', rosters_path
+          - if @current_user&.admin_in? @roster
+            = nav_link_item 'Manage Users', roster_users_path(@roster)
+            = nav_link_item 'Generate Rotation',
               rotation_generator_roster_assignments_path(@roster)
-      %ul.nav.navbar-nav.navbar-right
-        %li.name
-          Logged in as #{@current_user.full_name}
-        %li{ class: active_class(edit_roster_user_path(@roster,
-         @current_user)) }
-          = link_to 'Edit profile',
-           edit_roster_user_path(@roster, @current_user)
-        %li
-          = link_to 'Logout', destroy_session_path
+      %ul.navbar-nav
+        - if @current_user.present?
+          %li.nav-item.navbar-text.mx-2
+            Logged in as #{@current_user.full_name}
+          = nav_link_item 'Edit Profile',
+            edit_roster_user_path(@roster, @current_user)
+        = nav_link_item 'Logout', destroy_session_path

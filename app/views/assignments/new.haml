@@ -1,22 +1,3 @@
 %h1.title New assignment
-= form_for Assignment.new, url: roster_assignments_path(@roster) do |f|
-  .container-fluid
-    .row
-      .col-xs-2.col-xs-offset-3
-        .form-group
-          = f.label :user_id
-          = f.select :user_id,
-           options_from_collection_for_select(@users, :id, :last_name),
-           class: 'form-control'
-      .col-xs-4
-        .form-group
-          = f.label :start_date
-          = f.text_field :start_date, value: @start_date,
-           class: 'datepicker form-control'
-        .form-group
-          = f.label :end_date
-          = f.text_field :end_date, value: @end_date,
-           class: 'datepicker form-control'
-      = f.hidden_field :roster_id, value: @roster.id
-    .text-center
-      = f.submit 'Create', class: 'btn btn-primary'
+.container-fluid
+  = render partial: 'form', locals: { path: roster_assignments_path(@roster) }

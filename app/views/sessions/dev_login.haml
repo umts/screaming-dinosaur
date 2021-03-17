@@ -1,13 +1,17 @@
 %h1 Development login
 %h2 Login as:
-%ul
-- @rosters.each do |roster|
-  %li
-    = roster.name
-    %ul
-      - roster.users.each do |user|
-        %li
-          = form_tag '/sessions/dev_login' do
-            = hidden_field_tag :user_id, user.id
-            = hidden_field_tag :roster_id, roster.id
-            = submit_tag user.full_name
+.row
+  - @rosters.each do |roster|
+    .col-sm-4
+      .card
+        .card-body
+          %h5.card-title= roster.name
+          .card-text
+            =form_tag sessions_dev_login_path do
+              = hidden_field_tag :roster_id, roster.id
+              .input-group
+                = select_tag :user_id,
+                  options_from_collection_for_select(roster.users, :id, :full_name),
+                  class: 'form-control custom-select'
+                .input-group-append
+                  =submit_tag 'Login', class: 'btn btn-success'

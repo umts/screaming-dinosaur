@@ -7,19 +7,21 @@
     Under Voice and Fax:
     %ol
       %li
-        Set the call webhook to an HTTP GET request for
+        Set the call webhook to an HTTP GET request to
         %tt= roster_twilio_call_url(@roster, format: :xml)
       - if @roster.fallback_user.present?
         %li
           Set the failure handler to a TwiML Bin containing
-          %pre= @roster.fallback_call_twiml
+          .card.w-75
+            %pre.m-0.card-body= @roster.fallback_call_twiml
   %li
     Under Messaging:
     %ol
       %li
-        Set the message webhook to an HTTP GET request for
+        Set the message webhook to an HTTP GET request to
         %tt= roster_twilio_text_url(@roster, format: :xml)
       - if @roster.fallback_user.present?
         %li
           Set the failure handler to a TwiML Bin containing
-          %pre= @roster.fallback_text_twiml
+          .card.w-75
+            %pre.m-0.card-body= @roster.fallback_text_twiml

@@ -12,7 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery-ui
-//= require bootstrap-sprockets
+//= require popper
+//= require bootstrap
+//= require ab-datepicker/js/datepicker
 //= require fullcalendar
 //= require_tree .

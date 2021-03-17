@@ -1,18 +1,3 @@
-#assignments {
-  text-align: center;
-  table#assignments-table {
-    margin: 0 auto;
-    td {
-      padding: 1%;
-    }
-  }
-}
-
-#current-assignment {
-  text-align: center;
-  margin: 4% 5%;
-}
-
-.img-space {
-  padding: 1%;
+#assignments table caption {
+  caption-side: top;
 }

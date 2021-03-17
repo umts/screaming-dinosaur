@@ -43,7 +43,9 @@ class UsersController < ApplicationController
     @other_users = User.all - @roster.users
   end
 
-  def new; end
+  def new
+    @user = User.new
+  end
 
   def transfer
     @user.rosters += [@roster]

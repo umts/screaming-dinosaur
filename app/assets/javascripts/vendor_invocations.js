@@ -1,6 +1,8 @@
 $(document).ready(function() {
   $('.datepicker').datepicker({
-    'changeMonth': true,
-    'dateFormat': 'yy-mm-dd'
+    'markup': 'bootstrap4',
+    'theme': 'umts-sd',
+    'inputFormat': 'y-MM-dd',
+    'outputFormat': 'y-MM-dd'
   });
 });

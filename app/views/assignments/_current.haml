@@ -1,10 +1,11 @@
-#current-assignment
+#current-assignment.text-center
   - if @current_assignment.present?
-    %h3.vague-success Currently on call: #{@current_assignment.user.last_name}
+    .card.text-white.bg-success
+      %h5.card-title Currently on call: #{@current_assignment.user.last_name}
   - else
-    %h3.vague-warning
-      No one is currently on call!
+    .card.text-white.bg-warning
+      %h5.card-title No one is currently on call!
       - if @fallback_user.present?
-        #{@fallback_user.last_name} is the fallback.
-        .fallback.img-space= image_tag 'the_fallback.jpg'
-  On-call switches at: #{switchover_time(@switchover_hour)}
+        .card-body #{@fallback_user.last_name} is the fallback.
+  .card
+    .card-body On-call switches at: #{switchover_time(@switchover_hour)}

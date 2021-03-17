@@ -3,14 +3,13 @@
 source 'https://rubygems.org'
 ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
 
-gem 'bootstrap-sass', '~> 3.3'
+gem 'bootstrap', '~> 4.2'
 gem 'factory_bot_rails'
 gem 'haml'
 gem 'haml-rails'
 gem 'icalendar'
 gem 'jbuilder'
 gem 'jquery-rails'
-gem 'jquery-ui-rails'
 gem 'mysql2'
 gem 'paper_trail', '~> 11.1'
 gem 'rails', '~> 6.0.3'

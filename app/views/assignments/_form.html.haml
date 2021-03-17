@@ -1,0 +1,20 @@
+= form_for @assignment, url: path do |f|
+  = f.hidden_field :roster_id, value: @roster.id
+  .row
+    .col-2.offset-3
+      .form-group
+        = f.label :user_id
+        = f.collection_select :user_id, @users, :id, :last_name,
+                              {}, class: 'form-control custom-select'
+    .col-4
+      .form-group
+        = f.label :start_date
+        = f.text_field :start_date, value: f.object.start_date || @start_date,
+          class: 'datepicker form-control'
+      .form-group
+        = f.label :end_date
+        = f.text_field :end_date, value: f.object.end_date || @end_date,
+          class: 'datepicker form-control'
+  .row
+    .col-2.offset-3
+      = f.submit 'Save', class: 'btn btn-secondary'
