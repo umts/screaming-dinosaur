@@ -6,9 +6,9 @@ class Roster < ApplicationRecord
 
   has_many :memberships, dependent: :destroy
   has_many :admin_memberships, -> { where(admin: true) },
-           class_name: 'Membership'
+           class_name: 'Membership', inverse_of: :roster
   has_many :non_admin_memberships, -> { where.not(admin: true) },
-           class_name: 'Membership'
+           class_name: 'Membership', inverse_of: :roster
 
   has_many :users, through: :memberships
   has_many :admins, through: :admin_memberships, source: :user
