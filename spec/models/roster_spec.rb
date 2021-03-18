@@ -147,4 +147,21 @@ RSpec.describe Roster do
       end
     end
   end
+
+  describe 'user_options' do
+    let(:roster) { create :roster }
+    let!(:admins) { [roster_admin(roster)] }
+    let!(:non_admins) { [roster_user(roster)] }
+    let(:call) { roster.user_options }
+
+    it 'has admins in the "Admins"' do
+      expect(call.fetch('Admins'))
+        .to contain_exactly(*admins.map { |a| [a.full_name, a.id] })
+    end
+
+    it 'has non-admins in the "Non-Admins"' do
+      expect(call.fetch('Non-Admins'))
+        .to contain_exactly(*non_admins.map { |na| [na.full_name, na.id] })
+    end
+  end
 end
