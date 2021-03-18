@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'user pages' do
+RSpec.describe 'user index' do
   let(:roster) { create :roster }
   let(:admin_membership) { create :membership, roster: roster, admin: true }
   let(:admin) { admin_membership.user }
@@ -42,8 +42,8 @@ RSpec.describe 'user pages' do
         expect(page).to have_selector 'td', text: admin.first_name
         expect(page).to have_button 'Deactivate'
       end
-      # deactivate user test under system test directory
     end
+
     context 'inactive users' do
       before :each do
         @inactive_user = create :user, active: false

@@ -4,7 +4,10 @@ class Roster < ApplicationRecord
   has_paper_trail
   has_many :assignments, dependent: :destroy
   has_many :memberships, dependent: :destroy
+  has_many :admin_memberships, -> { where(admin: true) },
+           class_name: 'Membership'
   has_many :users, through: :memberships
+  has_many :admins, through: :admin_memberships, source: :user
   belongs_to :fallback_user, class_name: 'User',
                              optional: true,
                              inverse_of: 'fallback_rosters'
