@@ -156,12 +156,12 @@ RSpec.describe Roster do
 
     it 'has admins in the "Admins"' do
       expect(call.fetch('Admins'))
-        .to contain_exactly(*admins.map { |a| [a.full_name, a.id] })
+        .to match_array(admins.map { |a| [a.full_name, a.id] })
     end
 
     it 'has non-admins in the "Non-Admins"' do
       expect(call.fetch('Non-Admins'))
-        .to contain_exactly(*non_admins.map { |na| [na.full_name, na.id] })
+        .to match_array(non_admins.map { |na| [na.full_name, na.id] })
     end
   end
 end
