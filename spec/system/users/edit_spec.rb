@@ -6,7 +6,6 @@ RSpec.describe 'user editing' do
     let(:user) { roster_admin roster }
     before { when_current_user_is user }
 
-
     context 'as the only admin' do
       it 'is prohibitted to make yourself a non-admin' do
         visit edit_roster_user_path(roster, user)
