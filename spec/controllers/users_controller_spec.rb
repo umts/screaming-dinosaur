@@ -330,6 +330,19 @@ RSpec.describe UsersController do
           expect(flash[:errors]).not_to be_empty
         end
       end
+      context 'as the only admin' do
+        before(:each) do
+          @user = roster_admin(@roster)
+          when_current_user_is @user
+        end
+        it 'is an error to take away the last admin in a roster' do
+          @changes[:membership] = { admin: false }
+          expect { submit }.to redirect_back
+          expect { submit }
+            .not_to change { @user.membership_in @roster }
+          expect(flash[:errors]).not_to be_empty
+        end
+      end
     end
     context 'not admin' do
       before(:each) { when_current_user_is :whoever }

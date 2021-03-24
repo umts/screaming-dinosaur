@@ -34,12 +34,8 @@ class UsersController < ApplicationController
 
   def index
     @fallback = @roster.fallback_user
-    @active = if params[:active]
-                false
-              else
-                true
-              end
-    @users = User.where active: @active
+    @active = !params[:active]
+    @users = @roster.users.where active: @active
     @other_users = User.all - @roster.users
   end
 
@@ -77,11 +73,13 @@ class UsersController < ApplicationController
   end
 
   def update_membership(membership_params)
-    if membership_params.present? && @current_user.admin_in?(@roster)
-      membership = @user.membership_in @roster
-      membership.update membership_params
-    else true
-    end
+    return true unless membership_params.present? && @current_user.admin_in?(@roster)
+
+    membership = @user.membership_in @roster
+    return true if membership.update membership_params
+
+    @user.errors.merge! membership.errors
+    false
   end
 
   def parse_roster_ids(attrs)
