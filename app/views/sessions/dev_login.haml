@@ -11,7 +11,7 @@
               = hidden_field_tag :roster_id, roster.id
               .input-group
                 = select_tag :user_id,
-                  options_from_collection_for_select(roster.users, :id, :full_name),
+                  grouped_options_for_select(roster.user_options),
                   class: 'form-control custom-select'
                 .input-group-append
                   =submit_tag 'Login', class: 'btn btn-success'
