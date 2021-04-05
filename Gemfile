@@ -42,7 +42,7 @@ group :development, :test do
   gem 'puma', '~> 3.12'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
-  gem 'umts-custom-cops'
+  gem 'rubocop-rspec', require: false
 end
 
 group :test do
