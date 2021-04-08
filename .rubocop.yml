@@ -1,10 +1,42 @@
-require: umts-custom-cops
-inherit_from: .rubocop-no-umts-cops.yml
+require:
+  - rubocop-rails
+  - rubocop-rspec
 
-# Hold on there cowpoke! Don't write them rules here!
-# Write them in .rubocop-no-umts-cops.yml!
-# Otherwise any setting here will be respected by your local Rubocop,
-# but not by CodeClimate.
-# This is because CodeClimate is not capable of running our custom cops.
-UmtsCustomCops/BeMatcherForNonDuplicableTypes:
+AllCops:
+  TargetRubyVersion: 2.6
+  Exclude:
+    - 'bin/**/*'
+    - 'config/**/*'
+    - 'db/**/*'
+    - 'script/**/*'
+    - 'vendor/**/*'
+  NewCops: enable
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/AbcSize:
+  Max: 25
+
+Metrics/BlockLength:
+  Exclude: 
+    - 'spec/**/*'
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/MethodLength:
+  Max: 15
+
+RSpec:
+  Enabled: false
+
+RSpec/BeEql:
+  Enabled: true
+
+RSpec/PredicateMatcher:
+  Enabled: true
+
+Style/Documentation:
   Enabled: false
