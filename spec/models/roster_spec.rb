@@ -2,7 +2,7 @@
 
 RSpec.describe Roster do
   describe 'generate_assignments' do
-    before :each do
+    before do
       @roster = create :roster
       @user1 = roster_user @roster
       @user2 = roster_user @roster
@@ -65,15 +65,18 @@ RSpec.describe Roster do
     let(:fallback_user) { create :user }
     let(:assignment) { create :assignment, roster: roster }
     let(:result) { roster.on_call_user }
+
     context 'there is a current assignment' do
-      before :each do
+      before do
         expect(roster).to receive(:assignments)
           .and_return double(current: assignment)
       end
+
       it 'returns the user of the current assignment' do
         expect(result).to eql assignment.user
       end
     end
+
     context 'no current assignment' do
       it 'returns the fallback user' do
         expect(result).to eql fallback_user
@@ -130,10 +133,12 @@ RSpec.describe Roster do
         expect(document.version).to eql '1.0'
         expect(document.root.name).to eql 'Response'
       end
+
       it 'replies to the texter' do
         expect(reply).to be_present
         expect(reply.text).to match(/application error/i)
       end
+
       it 'texts the fallback user' do
         expect(forward).to be_present
       end

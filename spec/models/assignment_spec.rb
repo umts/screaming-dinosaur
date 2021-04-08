@@ -6,7 +6,8 @@ RSpec.describe Assignment do
       create :assignment, start_date: Date.new(2017, 4, 10),
                           end_date: Date.new(2017, 4, 11)
     end
-    before :each do
+
+    before do
       expect(CONFIG).to receive(:[]).with(:switchover_hour).and_return 14
     end
 
@@ -26,7 +27,7 @@ RSpec.describe Assignment do
   end
 
   describe 'current' do
-    before :each do
+    before do
       @yesterday = create :assignment,
                           start_date: Date.new(2019, 11, 12),
                           end_date: Date.new(2019, 11, 12)
@@ -36,9 +37,11 @@ RSpec.describe Assignment do
       @switchover_time = Date.new(2019, 11, 13) +
                          CONFIG.fetch(:switchover_hour).hours
     end
+
     let :call do
       Assignment.current
     end
+
     context 'before switchover hour' do
       it "returns yesterday's assignment" do
         Timecop.freeze(@switchover_time - 1.minute) do
@@ -46,6 +49,7 @@ RSpec.describe Assignment do
         end
       end
     end
+
     context 'after switchover hour' do
       it "returns today's assignment" do
         Timecop.freeze(@switchover_time + 1.minute) do
@@ -53,6 +57,7 @@ RSpec.describe Assignment do
         end
       end
     end
+
     context 'target assignments are only in the current roster' do
       it 'only looks at assignments in the current roster' do
         Timecop.freeze(@switchover_time + 1.minute) do
@@ -70,16 +75,19 @@ RSpec.describe Assignment do
 
   describe 'next_rotation_start_date' do
     let(:result) { Assignment.next_rotation_start_date }
+
     context 'with existing assignments' do
-      before :each do
+      before do
         create :assignment, end_date: 1.week.since.to_date
         create :assignment, end_date: 2.weeks.since.to_date
         create :assignment, end_date: 3.weeks.since.to_date
       end
+
       it 'returns the day after the last assignment ends' do
         expect(result).to eql 22.days.since.to_date
       end
     end
+
     context 'with no existing assignments' do
       it 'returns the upcoming Friday' do
         Timecop.freeze Date.parse('Monday, May 8th, 2017') do
@@ -98,16 +106,20 @@ RSpec.describe Assignment do
     let(:conditions) { { of: change_type, by: changer } }
     let(:change_type) { :changed_assignment }
     let(:changer) { create :user }
+
     context 'changer is recipient' do
       let(:changer) { recipient }
+
       it 'does not send an email' do
         expect(AssignmentsMailer).not_to receive :changed_assignment
         submit
       end
     end
+
     context 'changer is not recipient' do
       context 'change type is create' do
         let(:change_type) { :new_assignment }
+
         it 'sends the new_assignment mail' do
           expect(AssignmentsMailer).to receive(:new_assignment)
             .with(assignment, recipient, changer)
@@ -115,8 +127,10 @@ RSpec.describe Assignment do
           submit
         end
       end
+
       context 'change type is destroy' do
         let(:change_type) { :deleted_assignment }
+
         it 'sends the deleted_assignment mail' do
           expect(AssignmentsMailer).to receive(:deleted_assignment)
             .with(assignment, recipient, changer)
@@ -124,6 +138,7 @@ RSpec.describe Assignment do
           submit
         end
       end
+
       context 'change type is update' do
         it 'sends the changed_assignment mail' do
           expect(AssignmentsMailer).to receive(:changed_assignment)
@@ -133,8 +148,10 @@ RSpec.describe Assignment do
         end
       end
     end
+
     context 'recipient is the symbol owner' do
       let(:recipient) { :owner }
+
       it 'sends to the assignment owner' do
         expect(AssignmentsMailer).to receive(:changed_assignment)
           .with(assignment, owner, changer)
@@ -142,8 +159,10 @@ RSpec.describe Assignment do
         submit
       end
     end
+
     context 'recipient other than owner' do
       let(:recipient) { create :user }
+
       it 'sends to the recipient, not the owner' do
         expect(AssignmentsMailer).to receive(:changed_assignment)
           .with(assignment, recipient, changer)
@@ -151,8 +170,10 @@ RSpec.describe Assignment do
         submit
       end
     end
+
     context 'change notifications disabled' do
-      before(:each) { recipient.update change_notifications_enabled: false }
+      before { recipient.update change_notifications_enabled: false }
+
       it 'does not send notifications' do
         expect(AssignmentsMailer).not_to receive :changed_assignment
         submit
@@ -161,7 +182,7 @@ RSpec.describe Assignment do
   end
 
   describe 'on' do
-    before :each do
+    before do
       @date = Date.new(2019, 11, 13)
       create :assignment,
              start_date: 1.week.before(@date).to_date,
@@ -173,20 +194,23 @@ RSpec.describe Assignment do
              start_date: 1.week.since(@date).to_date,
              end_date: 13.days.since(@date).to_date
     end
+
     let :call do
       Assignment.on @date
     end
+
     it 'finds the assignment which covers the given date' do
       expect(call).to eql @correct_assignment
     end
   end
 
   describe 'overlapping assignment validation' do
-    before :each do
+    before do
       @assignment = create :assignment,
                            start_date: Time.zone.today,
                            end_date: 6.days.since.to_date
     end
+
     context 'creating assignments that do not overlap' do
       it 'does not add errors' do
         cool_assignment = create :assignment,
@@ -199,6 +223,7 @@ RSpec.describe Assignment do
         expect(another_cool_assignment).to be_valid
       end
     end
+
     context 'with an overlapping assignment in the same roster' do
       it 'adds errors' do
         not_cool_assignment = build :assignment,
@@ -212,6 +237,7 @@ RSpec.describe Assignment do
 
   describe 'upcoming' do
     subject { described_class.upcoming }
+
     let :assignment_today do
       create :assignment,
              start_date: Time.zone.today,
@@ -227,15 +253,16 @@ RSpec.describe Assignment do
     end
 
     context 'before 5pm' do
-      around :each do |example|
+      around do |example|
         Timecop.freeze(switchover_time - 1.minute) { example.run }
       end
 
       it { is_expected.to include assignment_today }
       it { is_expected.to include assignment_tomorrow }
     end
+
     context 'after 5pm' do
-      around :each do |example|
+      around do |example|
         Timecop.freeze(switchover_time + 1.minute) { example.run }
       end
 
@@ -247,6 +274,7 @@ RSpec.describe Assignment do
   describe 'send_reminders!' do
     let(:assignment_today) { create :assignment, start_date: Time.zone.today }
     let(:assignment_tomorrow) { create :assignment, start_date: Date.tomorrow }
+
     it 'sends reminders about assignments starting tomorrow' do
       expect(AssignmentsMailer)
         .to receive(:upcoming_reminder)

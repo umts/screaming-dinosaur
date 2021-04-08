@@ -1,53 +1,63 @@
 # frozen_string_literal: true
 
 RSpec.describe UsersController do
-  before :each do
+  before do
     @roster = create :roster
   end
 
   describe 'POST #create' do
-    before :each do
+    before do
       @attributes = attributes_for(:user)
       when_current_user_is :whoever
     end
+
     let :submit do
       post :create, params: { user: @attributes, roster_id: @roster.id }
     end
+
     context 'admin in roster' do
-      before(:each) { when_current_user_is roster_admin(@roster) }
+      before { when_current_user_is roster_admin(@roster) }
+
       context 'without errors' do
         it 'creates a user' do
           expect { submit }
-            .to change { User.count }
+            .to change(User, :count)
             .by 1
         end
+
         it 'redirects to the index' do
           submit
           expect(response).to redirect_to roster_users_path
         end
       end
+
       context 'with errors' do
-        before :each do
+        before do
           # invalid phone
           @attributes[:phone] = 'not a valid phone number'
         end
+
         it 'does not create a user, gives errors, and redirects back' do
           expect { submit }.to redirect_back
           expect { submit }
-            .not_to change { User.count }
+            .not_to change(User, :count)
           expect(flash[:errors]).not_to be_empty
         end
       end
     end
+
     context 'admin, not in roster' do
-      before(:each) { when_current_user_is roster_admin }
+      before { when_current_user_is roster_admin }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
       end
     end
+
     context 'not admin' do
-      before(:each) { when_current_user_is :whoever }
+      before { when_current_user_is :whoever }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
@@ -56,19 +66,23 @@ RSpec.describe UsersController do
   end
 
   describe 'DELETE #destroy' do
-    before :each do
+    before do
       @user = roster_user(@roster)
       when_current_user_is :whoever
     end
+
     let :submit do
       delete :destroy, params: { id: @user.id, roster_id: @roster.id }
     end
+
     context 'admin in roster' do
-      before(:each) { when_current_user_is roster_admin(@roster) }
+      before { when_current_user_is roster_admin(@roster) }
+
       it 'finds the correct user' do
         submit
         expect(assigns.fetch(:user)).to eql @user
       end
+
       context 'no existing assignments' do
         it 'destroys the user' do
           expect_any_instance_of(User)
@@ -76,28 +90,35 @@ RSpec.describe UsersController do
             .and_return true
           submit
         end
+
         it 'redirects to the index' do
           submit
           expect(response).to redirect_to roster_users_path
         end
       end
+
       context 'with existing assignments' do
-        before(:each) { create :assignment, user: @user, roster: @roster }
+        before { create :assignment, user: @user, roster: @roster }
+
         it 'redirects back and shows errors' do
           expect { submit }.to redirect_back
           expect(flash[:errors]).not_to be_empty
         end
       end
     end
+
     context 'admin, not in roster' do
-      before(:each) { when_current_user_is roster_admin }
+      before { when_current_user_is roster_admin }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
       end
     end
+
     context 'not admin' do
-      before(:each) { when_current_user_is :whoever }
+      before { when_current_user_is :whoever }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
@@ -106,37 +127,46 @@ RSpec.describe UsersController do
   end
 
   describe 'GET #edit' do
-    before :each do
+    before do
       @user = create :user
       when_current_user_is :whoever
     end
+
     let :submit do
       get :edit, params: { id: @user.id, roster_id: @roster.id }
     end
+
     context 'admin in roster' do
-      before(:each) { when_current_user_is roster_admin(@roster) }
+      before { when_current_user_is roster_admin(@roster) }
+
       it 'finds the correct user' do
         submit
         expect(assigns.fetch(:user)).to eql @user
       end
+
       it 'renders the edit template' do
         submit
         expect(response).to render_template :edit
       end
     end
+
     context 'self' do
-      before(:each) { when_current_user_is @user }
+      before { when_current_user_is @user }
+
       it 'finds the correct user' do
         submit
         expect(assigns.fetch(:user)).to eql @user
       end
+
       it 'renders the edit template' do
         submit
         expect(response).to render_template :edit
       end
     end
+
     context 'not admin or self' do
-      before(:each) { when_current_user_is :whoever }
+      before { when_current_user_is :whoever }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
@@ -148,8 +178,10 @@ RSpec.describe UsersController do
     let :submit do
       get :index, params: { roster_id: @roster.id }
     end
+
     context 'admin in roster' do
-      before(:each) { when_current_user_is roster_admin(@roster) }
+      before { when_current_user_is roster_admin(@roster) }
+
       it 'populates a users variable of all users' do
         user1 = roster_user @roster
         user2 = roster_user @roster
@@ -157,6 +189,7 @@ RSpec.describe UsersController do
         submit
         expect(assigns.fetch(:users)).to include user1, user2, user3
       end
+
       it 'populates a fallback variable with the roster fallback user' do
         user = roster_user @roster
         Roster.where.not(id: @roster.id).delete_all
@@ -165,20 +198,25 @@ RSpec.describe UsersController do
         submit
         expect(assigns.fetch(:fallback)).to eql user
       end
+
       it 'renders the index template' do
         submit
         expect(response).to render_template :index
       end
     end
+
     context 'admin, not in roster' do
-      before(:each) { when_current_user_is roster_admin }
+      before { when_current_user_is roster_admin }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
       end
     end
+
     context 'not admin' do
-      before(:each) { when_current_user_is :whoever }
+      before { when_current_user_is :whoever }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
@@ -190,22 +228,28 @@ RSpec.describe UsersController do
     let :submit do
       get :new, params: { roster_id: @roster.id }
     end
+
     context 'admin in roster' do
-      before(:each) { when_current_user_is roster_admin(@roster) }
+      before { when_current_user_is roster_admin(@roster) }
+
       it 'renders the new template' do
         submit
         expect(response).to render_template :new
       end
     end
+
     context 'admin, not in roster' do
-      before(:each) { when_current_user_is roster_admin }
+      before { when_current_user_is roster_admin }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
       end
     end
+
     context 'not admin' do
-      before(:each) { when_current_user_is :whoever }
+      before { when_current_user_is :whoever }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
@@ -218,39 +262,48 @@ RSpec.describe UsersController do
     let :submit do
       post :transfer, params: { id: user.id, roster_id: @roster.id }
     end
+
     context 'admin in roster' do
-      before(:each) { when_current_user_is roster_admin(@roster) }
+      before { when_current_user_is roster_admin(@roster) }
+
       context 'user added succesfullly' do
         it 'redirects to the index' do
           submit
           expect(response).to redirect_to roster_users_path(@roster)
         end
+
         it 'shows a nice message' do
           submit
           expect(flash[:message]).to be_present
         end
       end
+
       context 'user somehow not added succesfully' do
-        before :each do
+        before do
           expect_any_instance_of(User)
             .to receive(:save)
             .and_return false
         end
+
         it 'redirects back and shows errors' do
           expect { submit }.to redirect_back
           expect(flash[:errors]).not_to be_nil
         end
       end
     end
+
     context 'admin, not in roster' do
-      before(:each) { when_current_user_is roster_admin }
+      before { when_current_user_is roster_admin }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
       end
     end
+
     context 'not admin' do
-      before(:each) { when_current_user_is :whoever }
+      before { when_current_user_is :whoever }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
@@ -259,39 +312,46 @@ RSpec.describe UsersController do
   end
 
   describe 'POST #update' do
-    before :each do
+    before do
       @new_roster = create :roster
       @user = roster_user @roster
       @changes = { phone: '+14135451451',
                    rosters: [@roster.id, @new_roster.id] }
     end
+
     let :submit do
       post :update,
            params: { id: @user.id, user: @changes, roster_id: @roster.id }
     end
+
     context 'admin in roster' do
-      before(:each) { when_current_user_is roster_admin(@roster) }
+      before { when_current_user_is roster_admin(@roster) }
+
       context 'without errors' do
         it 'updates the user' do
           submit
           expect(@user.reload.phone).to eql @changes[:phone]
           expect(@user.rosters).to include @new_roster
         end
+
         it 'redirects to the index' do
           submit
           expect(response).to redirect_to roster_users_path
         end
+
         it 'allows changing admin status in roster' do
           @changes[:membership] = { admin: true }
           submit
           expect(@user).to be_admin_in @roster
         end
       end
+
       context 'with errors' do
-        before :each do
+        before do
           # incorrect phone
           @changes[:phone] = 'not a valid phone number'
         end
+
         it 'does not update the user, shows errors, and redirects back' do
           expect { submit }.to redirect_back
           expect { submit }
@@ -300,29 +360,35 @@ RSpec.describe UsersController do
         end
       end
     end
+
     context 'self' do
-      before(:each) { when_current_user_is @user }
+      before { when_current_user_is @user }
+
       context 'without errors' do
         it 'updates the user' do
           submit
           expect(@user.reload.phone).to eql @changes[:phone]
           expect(@user.rosters).to include @new_roster
         end
+
         it 'redirects to the assignments page' do
           submit
           expect(response).to redirect_to roster_assignments_path(@roster)
         end
+
         it 'does not allow changing admin status in roster' do
           @changes[:membership] = { admin: true }
           submit
           expect(@user).not_to be_admin_in @roster
         end
       end
+
       context 'with errors' do
-        before :each do
+        before do
           # incorrect phone
           @changes[:phone] = 'not a valid phone number'
         end
+
         it 'does not update the user, shows errors, and redirects back' do
           expect { submit }.to redirect_back
           expect { submit }
@@ -330,11 +396,13 @@ RSpec.describe UsersController do
           expect(flash[:errors]).not_to be_empty
         end
       end
+
       context 'as the only admin' do
-        before(:each) do
+        before do
           @user = roster_admin(@roster)
           when_current_user_is @user
         end
+
         it 'is an error to take away the last admin in a roster' do
           @changes[:membership] = { admin: false }
           expect { submit }.to redirect_back
@@ -344,8 +412,10 @@ RSpec.describe UsersController do
         end
       end
     end
+
     context 'not admin' do
-      before(:each) { when_current_user_is :whoever }
+      before { when_current_user_is :whoever }
+
       it 'returns a 401' do
         submit
         expect(response).to have_http_status :unauthorized
