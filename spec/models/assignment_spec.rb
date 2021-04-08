@@ -39,7 +39,7 @@ RSpec.describe Assignment do
     end
 
     let :call do
-      Assignment.current
+      described_class.current
     end
 
     context 'before switchover hour' do
@@ -74,7 +74,7 @@ RSpec.describe Assignment do
   end
 
   describe 'next_rotation_start_date' do
-    let(:result) { Assignment.next_rotation_start_date }
+    let(:result) { described_class.next_rotation_start_date }
 
     context 'with existing assignments' do
       before do
@@ -196,7 +196,7 @@ RSpec.describe Assignment do
     end
 
     let :call do
-      Assignment.on @date
+      described_class.on @date
     end
 
     it 'finds the assignment which covers the given date' do
@@ -283,7 +283,7 @@ RSpec.describe Assignment do
       expect(AssignmentsMailer)
         .not_to receive(:upcoming_reminder)
         .with assignment_today
-      Assignment.send_reminders!
+      described_class.send_reminders!
     end
   end
 end
