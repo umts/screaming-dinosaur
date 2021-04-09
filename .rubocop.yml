@@ -29,5 +29,9 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Max: 15
 
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/system/**/*'
+
 Style/Documentation:
   Enabled: false
