@@ -4,35 +4,30 @@ RSpec.describe User do
   let(:user) { create :user }
 
   describe 'full_name' do
-    it 'returns first name followed by last name' do
-      expect(user.full_name).to eql [user.first_name, user.last_name].join(' ')
-    end
+    subject { user.full_name }
+
+    it { is_expected.to eq [user.first_name, user.last_name].join(' ') }
   end
 
   describe 'proper name' do
-    it 'returns first name followed by last name' do
-      expect(user.proper_name)
-        .to eql [user.last_name, user.first_name].join(', ')
-    end
+    subject { user.proper_name }
+
+    it { is_expected.to eq [user.last_name, user.first_name].join(', ') }
   end
 
   describe 'admin_in?' do
     let(:roster) { create :roster }
 
-    context 'membership has admin true' do
-      it 'returns true' do
-        create :membership, roster: roster, user: user,
-                            admin: true
-        expect(user).to be_admin_in(roster)
-      end
+    context 'with admin membership in the roster' do
+      before { create :membership, roster: roster, user: user, admin: true }
+
+      it('returns true') { expect(user).to be_admin_in(roster) }
     end
 
-    context 'membership has admin false' do
-      it 'returns false' do
-        create :membership, roster: roster, user: user,
-                            admin: false
-        expect(user).not_to be_admin_in(roster)
-      end
+    context 'with non-admin membership in the roster' do
+      before { create :membership, roster: roster, user: user, admin: false }
+
+      it('returns false') { expect(user).not_to be_admin_in(roster) }
     end
   end
 
@@ -40,16 +35,12 @@ RSpec.describe User do
     let(:membership) { create :membership }
     let(:admin_membership) { create :membership, admin: true }
 
-    context 'admin in any roster' do
-      it 'returns true' do
-        expect(admin_membership.user).to be_admin
-      end
+    context 'with admin membership in any roster' do
+      it('returns true') { expect(admin_membership.user).to be_admin }
     end
 
-    context 'admin in no rosters' do
-      it 'returns false' do
-        expect(membership.user).not_to be_admin
-      end
+    context 'without any admin memberships' do
+      it('returns false') { expect(membership.user).not_to be_admin }
     end
   end
 
@@ -57,9 +48,7 @@ RSpec.describe User do
     let(:future_assignment) { create :assignment, start_date: Date.tomorrow }
 
     it 'destroys future assignments for users' do
-      user = future_assignment.user
-      user.active = false
-      user.save
+      future_assignment.user.update(active: false)
       expect(user.assignments).to be_empty
     end
   end
