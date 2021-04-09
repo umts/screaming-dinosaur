@@ -2,74 +2,107 @@
 
 RSpec.describe Roster do
   describe 'generate_assignments' do
-    before do
-      @roster = create :roster
-      @user1 = roster_user @roster
-      @user2 = roster_user @roster
-      @user3 = roster_user @roster
+    subject :call do
+      roster.generate_assignments users.map(&:id), start_date, end_date, users[1].id
     end
+
+    let(:roster) { create :roster }
+    let(:users) { Array.new(3) { roster_user(roster) } }
 
     let(:start_date) { Date.new(2019, 1, 1) }
     # A day short of four weeks, to test that the end date
     # is a day short as well
     let(:end_date) { start_date + 4.weeks - 2.days }
 
-    let :call do
-      @roster.generate_assignments [@user1.id, @user2.id, @user3.id],
-                                   start_date,
-                                   end_date,
-                                   @user2.id
-    end
-
     it 'creates the correct number of assignments' do
       expect(call.size).to be 4
     end
 
-    it 'creates the expected assignments (part 1)' do
-      assignment = call[0]
-      expect(assignment.user).to eql @user2 # starts in the correct place
-      expect(assignment.roster).to eql @roster
-      expect(assignment.start_date).to eql start_date
-      expect(assignment.end_date).to eql 6.days.since(start_date).to_date
+    it 'creates all assignments in the correct roster' do
+      expect(call.map(&:roster)).to all(eq(roster))
     end
 
-    it 'creates the expected assignments (part 2)' do
-      assignment = call[1]
-      expect(assignment.user).to eql @user3
-      expect(assignment.roster).to eql @roster
-      expect(assignment.start_date).to eql 1.week.since(start_date).to_date
-      expect(assignment.end_date).to eql 13.days.since(start_date).to_date
+    context 'with the 1st assignment' do
+      let(:assignment) { call[0] }
+
+      # starts in the correct place
+      it 'has the correct user' do
+        expect(assignment.user).to eq users[1]
+      end
+
+      it 'starts on the start date' do
+        expect(assignment.start_date).to eq start_date
+      end
+
+      it 'ends a week later' do
+        expect(assignment.end_date).to eq 6.days.after(start_date)
+      end
     end
 
-    it 'creates the expected assignments (part 3)' do
-      assignment = call[2]
-      expect(assignment.user).to eql @user1 # wraps back around
-      expect(assignment.roster).to eql @roster
-      expect(assignment.start_date).to eql 2.weeks.since(start_date).to_date
-      expect(assignment.end_date).to eql 20.days.since(start_date).to_date
+    context 'with the 2nd assignment' do
+      let(:assignment) { call[1] }
+
+      it 'has the correct user' do
+        expect(assignment.user).to eq users[2]
+      end
+
+      it 'starts 1 week after the start date' do
+        expect(assignment.start_date).to eq 1.week.after(start_date)
+      end
+
+      it 'ends a week later' do
+        expect(assignment.end_date).to eq 13.days.after(start_date)
+      end
+    end
+
+    context 'with the 3rd assignment' do
+      let(:assignment) { call[2] }
+
+      # wraps back around
+      it 'has the correct user' do
+        expect(assignment.user).to eq users[0]
+      end
+
+      it 'starts 2 weeks after the start date' do
+        expect(assignment.start_date).to eq 2.weeks.after(start_date)
+      end
+
+      it 'ends a week later' do
+        expect(assignment.end_date).to eq 20.days.after(start_date)
+      end
     end
 
     # this one is significant because there are more weeks than
     # people - just make sure the modular arithmetic works
-    it 'creates the expected assignments (part 4)' do
-      assignment = call[3]
-      expect(assignment.user).to eql @user2
-      expect(assignment.roster).to eql @roster
-      expect(assignment.start_date).to eql 3.weeks.since(start_date).to_date
-      expect(assignment.end_date).to eql 26.days.since(start_date).to_date
+    context 'with the 4th assignment' do
+      let(:assignment) { call[3] }
+
+      it 'has the correct user' do
+        expect(assignment.user).to eq users[1]
+      end
+
+      it 'starts 3 weeks after the start date' do
+        expect(assignment.start_date).to eq 3.weeks.after(start_date)
+      end
+
+      it 'ends on the end date' do
+        expect(assignment.end_date).to eq end_date
+      end
     end
   end
 
   describe 'on_call_user' do
+    subject(:result) { roster.on_call_user }
+
     let(:roster) { create :roster, fallback_user: fallback_user }
     let(:fallback_user) { create :user }
     let(:assignment) { create :assignment, roster: roster }
-    let(:result) { roster.on_call_user }
 
-    context 'there is a current assignment' do
+    context 'when there is a current assignment' do
       before do
-        expect(roster).to receive(:assignments)
-          .and_return double(current: assignment)
+        assignments = roster.assignments
+        allow(roster).to receive(:assignments).and_return(assignments)
+        allow(assignments).to receive(:current).and_return(assignment)
       end
 
       it 'returns the user of the current assignment' do
@@ -77,10 +110,20 @@ RSpec.describe Roster do
       end
     end
 
-    context 'no current assignment' do
+    context "when there isn't a current assignment" do
       it 'returns the fallback user' do
         expect(result).to eql fallback_user
       end
+    end
+  end
+
+  shared_examples_for 'a valid TwiML document' do
+    it 'has an XML version of 1.0' do
+      expect(document.version).to eql '1.0'
+    end
+
+    it 'has a "Response" root element' do
+      expect(document.root.name).to eql 'Response'
     end
   end
 
@@ -90,19 +133,22 @@ RSpec.describe Roster do
       let(:roster) { create :roster, fallback_user: fallback_user }
       let(:document) { Nokogiri::XML roster.fallback_call_twiml }
 
-      it 'is a valid TwiML document' do
-        expect(document.version).to eql '1.0'
-        expect(document.root.name).to eql 'Response'
+      it_behaves_like 'a valid TwiML document'
+
+      it 'apologizes once' do
+        expect(document.xpath('/Response/Say').count).to be 1
       end
 
-      it 'apologizes' do
-        expect(document.xpath('/Response/Say').count).to be 1
+      it 'tells the caller there has been an eror' do
         expect(document.at_xpath('/Response/Say').text)
           .to match(/application error/i)
       end
 
-      it 'calls the fallback user' do
+      it 'calls the fallback someone' do
         expect(document.xpath('/Response/Dial').count).to be 1
+      end
+
+      it 'calls the fallback user' do
         expect(document.at_xpath('/Response/Dial').text)
           .to eql fallback_user.phone
       end
@@ -129,13 +175,13 @@ RSpec.describe Roster do
         document.at_xpath "/Response/Message[@to='+12125551212']"
       end
 
-      it 'is a valid TwiML document' do
-        expect(document.version).to eql '1.0'
-        expect(document.root.name).to eql 'Response'
+      it_behaves_like 'a valid TwiML document'
+
+      it 'replies' do
+        expect(reply).to be_present
       end
 
       it 'replies to the texter' do
-        expect(reply).to be_present
         expect(reply.text).to match(/application error/i)
       end
 
