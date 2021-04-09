@@ -2,24 +2,33 @@
 
 RSpec.describe 'ICS views' do
   shared_examples 'ics assignments feed' do
+    subject(:lines) { page.html.split("\r\n") }
+
     let(:roster) { create :roster }
-    let(:user) { roster_user(roster) }
-    let(:lines) { page.html.split("\r\n") }
+    let(:assignments) do
+      Array.new(2) do |n|
+        create :assignment,
+               roster: roster,
+               start_date: n.weeks.from_now,
+               end_date: (n.weeks + 6.days).from_now
+      end
+    end
+    let(:users) { assignments.map(&:user) }
 
-    it 'contains correctly formatted data' do
-      new_user = roster_user(roster)
-      assignment1 = create :assignment, roster: roster, user: user
-      assignment2 = create :assignment, roster: roster, user: new_user,
-                                        start_date: 1.week.ago,
-                                        end_date: 2.days.ago
-      submit
+    before { submit }
 
-      expect(lines).to include(summary(user))
-      expect(lines).to include(description(user, roster))
-      expect(lines).to include(*assignment_dates(assignment1))
-      expect(lines).to include(summary(new_user))
-      expect(lines).to include(description(new_user, roster))
-      expect(lines).to include(*assignment_dates(assignment2))
+    2.times do |n|
+      it "contains a summary for assignment ##{n + 1}" do
+        expect(lines).to include(summary(users[n]))
+      end
+
+      it "contains a description for assignment ##{n + 1}" do
+        expect(lines).to include(description(users[n], roster))
+      end
+
+      it "contains the dates for assignment ##{n + 1}" do
+        expect(lines).to include(*assignment_dates(assignments[n]))
+      end
     end
 
     def summary(user)
@@ -39,7 +48,7 @@ RSpec.describe 'ICS views' do
 
   describe 'viewing the ics formatted index' do
     let :submit do
-      set_current_user(user)
+      when_current_user_is users[0]
       visit roster_assignments_path(roster, format: 'ics')
     end
 
@@ -49,7 +58,7 @@ RSpec.describe 'ICS views' do
   describe 'viewing the ics feed' do
     let :submit do
       name = roster.name.parameterize
-      visit "feed/#{name}/#{user.calendar_access_token}.ics"
+      visit "feed/#{name}/#{users[0].calendar_access_token}.ics"
     end
 
     include_examples 'ics assignments feed'
