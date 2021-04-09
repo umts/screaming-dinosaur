@@ -5,28 +5,31 @@ RSpec.describe 'user index' do
   let(:admin_membership) { create :membership, roster: roster, admin: true }
   let(:admin) { admin_membership.user }
 
-  context 'deactivating a user', js: true do
+  context 'when deactivating a user', js: true do
+    let(:alert) { accept_alert { click_button 'Deactivate' } }
+
     before do
       when_current_user_is admin
       visit root_path
       click_link 'Manage Users'
-      click_button 'Deactivate'
-      @dialog = page.driver.browser.switch_to.alert
     end
 
     it 'warns current user before deactivation with a pop up' do
-      expect(@dialog.text).to eq 'Deactivating user will delete all upcoming' \
-        ' assignments.'
+      expect(alert).to eq('Deactivating user will delete all upcoming assignments.')
     end
 
     it 'deactivates a user' do
-      @dialog.accept
-      expect(page).to have_selector 'div', text: 'User has been updated.'
+      alert
       expect(page).not_to have_selector 'td', text: admin.first_name
+    end
+
+    it 'informs you of success' do
+      alert
+      expect(page).to have_selector 'div', text: 'User has been updated.'
     end
   end
 
-  context 'viewing the index' do
+  context 'when viewing the index' do
     before do
       set_current_user(admin)
       visit root_path
@@ -34,25 +37,30 @@ RSpec.describe 'user index' do
     end
 
     it 'directs you to the appropriate page' do
-      expect(current_url).to end_with roster_users_path(admin_membership.roster)
+      expect(page).to have_current_path(roster_users_path(admin_membership.roster))
+    end
+
+    it 'has a title' do
       expect(page).to have_selector 'h1', text: 'Users'
     end
 
-    context 'active users' do
+    context 'when viewing active users' do
       it 'shows inactive users button' do
         expect(page).to have_link 'Inactive users'
       end
 
       it 'shows deactivate user button on users' do
-        expect(page).to have_selector 'td', text: admin.first_name
-        expect(page).to have_button 'Deactivate'
+        within 'tr', text: admin.first_name do
+          expect(page).to have_button 'Deactivate'
+        end
       end
     end
 
-    context 'inactive users' do
+    context 'when viewing inactive users' do
+      let(:inactive_user) { create :user, active: false }
+
       before do
-        @inactive_user = create :user, active: false
-        @membership = create :membership, roster: roster, user: @inactive_user
+        create :membership, roster: roster, user: inactive_user
         click_link 'Inactive users'
       end
 
@@ -61,14 +69,19 @@ RSpec.describe 'user index' do
       end
 
       it 'shows activate user button on users' do
-        expect(page).to have_selector 'td', text: @inactive_user.first_name
-        expect(page).to have_button 'Activate'
+        within 'tr', text: inactive_user.first_name do
+          expect(page).to have_button 'Activate'
+        end
       end
 
       it 'activates a user' do
         click_button 'Activate'
+        expect(page).to have_selector 'td', text: inactive_user.first_name
+      end
+
+      it 'informs you of success' do
+        click_button 'Activate'
         expect(page).to have_selector 'div', text: 'User has been updated.'
-        expect(page).to have_selector 'td', text: @inactive_user.first_name
       end
     end
   end
