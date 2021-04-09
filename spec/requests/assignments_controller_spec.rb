@@ -2,36 +2,33 @@
 
 RSpec.describe AssignmentsController do
   describe 'GET #index.json' do
+    subject(:json) { JSON.parse(response.body) }
+
     let(:roster) { create :roster }
-    let(:user) { roster_user(roster) }
-    let(:assignment) { create :assignment, roster: roster }
+    let!(:assignment) { create :assignment, roster: roster }
     let!(:own_assignment) do
       create :assignment,
              roster: roster,
-             user: user,
              start_date: 1.day.after(assignment.end_date),
              end_date: 2.days.after(assignment.end_date)
     end
-    let(:json) { JSON.parse(response.body) }
 
     before do
-      when_current_user_is user
+      when_current_user_is own_assignment.user
       get "/rosters/#{roster.id}/assignments.json",
-          params: { start_date: 1.month.ago,
-                    end_date: 1.month.from_now }
+          params: { start_date: 1.month.ago, end_date: 1.month.from_now }
     end
 
-    it 'is a JSON array' do
-      expect(json).to be_a Array
-    end
+    it { is_expected.to be_a Array }
 
-    it 'has an object for each assignment' do
+    it { is_expected.to all(be_a Hash) }
+
+    it 'has an entry for each assignment' do
       expect(json.count).to be(2)
-      expect(json).to all(be_a Hash)
     end
 
-    context 'within an assignment not our own' do
-      let(:assignment_object) do
+    context 'with an assignment not our own' do
+      subject(:assignment_object) do
         json.find { |a| a['id'] == "assignment-#{assignment.id}" }
       end
 
@@ -65,7 +62,7 @@ RSpec.describe AssignmentsController do
     end
 
     context 'with our own assignment' do
-      let(:assignment_object) do
+      subject(:assignment_object) do
         json.find { |a| a['id'] == "assignment-#{own_assignment.id}" }
       end
 
