@@ -4,7 +4,7 @@ RSpec.describe 'viewing the index' do
   let(:roster) { create :roster }
   let(:user) { roster_user(roster) }
 
-  context 'interacting with the ICS feed URL', js: true do
+  context 'when interacting with the ICS feed URL', js: true do
     before do
       set_current_user(user)
       visit root_path
@@ -27,7 +27,7 @@ RSpec.describe 'viewing the index' do
     end
   end
 
-  describe 'interacting with the calendar', js: true do
+  describe 'when interacting with the calendar', js: true do
     def bg_variable(var)
       /background-color: *var\(--#{var}\)/
     end
@@ -42,7 +42,7 @@ RSpec.describe 'viewing the index' do
       expect(page).to have_selector('td.fc-day-today', text: today)
     end
 
-    context 'assignment belongs to user' do
+    context 'when the assignment belongs to the user' do
       it 'appears highlighted for your assignment' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
@@ -52,7 +52,7 @@ RSpec.describe 'viewing the index' do
       end
     end
 
-    context 'assignment does not belong to user' do
+    context 'when the assignment does not belong to the user' do
       it 'appears highlighted differently for other assignments' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
@@ -62,7 +62,7 @@ RSpec.describe 'viewing the index' do
       end
     end
 
-    context 'clicking on an empty day' do
+    context 'when clicking on an empty day' do
       let(:date) { Time.zone.today.change(day: 14) }
       let(:new_path) do
         new_roster_assignment_path roster_id: roster.id,
@@ -77,13 +77,16 @@ RSpec.describe 'viewing the index' do
       end
     end
 
-    context 'switching months' do
-      it 'stores the last viewed month' do
+    context 'when switching months' do
+      before do
         visit roster_assignments_path(roster)
         3.times { click_on 'next' }
 
-        # Go anywhere else, come back
+        # Go anywhere else
         visit edit_roster_user_path(roster, user)
+      end
+
+      it 'stores the last viewed month' do
         visit roster_assignments_path(roster)
 
         three_months_from_now = (Time.zone.now + 3.months).strftime('%B %Y')
