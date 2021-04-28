@@ -5,19 +5,22 @@ RSpec.describe 'viewing the index' do
   let(:user) { roster_user(roster) }
 
   context 'interacting with the ICS feed URL', js: true do
-    before :each do
+    before do
       set_current_user(user)
       visit root_path
     end
+
     it 'displays copy url info' do
       find("[aria-label='Calendar feed information']").click
       expect(page).to have_selector '.tooltip',
                                     text: 'Use this address to subscribe'
     end
+
     it 'displays click to copy tooltip' do
       find('.copy-text-btn').hover
       expect(page).to have_selector '.tooltip', text: 'Click to copy link'
     end
+
     it 'copys link on button press' do
       find('.copy-text-btn').click.hover
       expect(page).to have_selector '.tooltip', text: 'Copied successfully!'
@@ -29,7 +32,7 @@ RSpec.describe 'viewing the index' do
       /background-color: *var\(--#{var}\)/
     end
 
-    before(:each) do
+    before do
       set_current_user(user)
     end
 

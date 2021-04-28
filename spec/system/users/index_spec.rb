@@ -6,17 +6,19 @@ RSpec.describe 'user index' do
   let(:admin) { admin_membership.user }
 
   context 'deactivating a user', js: true do
-    before :each do
+    before do
       when_current_user_is admin
       visit root_path
       click_link 'Manage Users'
       click_button 'Deactivate'
       @dialog = page.driver.browser.switch_to.alert
     end
+
     it 'warns current user before deactivation with a pop up' do
       expect(@dialog.text).to eq 'Deactivating user will delete all upcoming' \
         ' assignments.'
     end
+
     it 'deactivates a user' do
       @dialog.accept
       expect(page).to have_selector 'div', text: 'User has been updated.'
@@ -25,19 +27,22 @@ RSpec.describe 'user index' do
   end
 
   context 'viewing the index' do
-    before :each do
+    before do
       set_current_user(admin)
       visit root_path
       click_link 'Manage Users'
     end
+
     it 'directs you to the appropriate page' do
       expect(current_url).to end_with roster_users_path(admin_membership.roster)
       expect(page).to have_selector 'h1', text: 'Users'
     end
+
     context 'active users' do
       it 'shows inactive users button' do
         expect(page).to have_link 'Inactive users'
       end
+
       it 'shows deactivate user button on users' do
         expect(page).to have_selector 'td', text: admin.first_name
         expect(page).to have_button 'Deactivate'
@@ -45,18 +50,21 @@ RSpec.describe 'user index' do
     end
 
     context 'inactive users' do
-      before :each do
+      before do
         @inactive_user = create :user, active: false
         @membership = create :membership, roster: roster, user: @inactive_user
         click_link 'Inactive users'
       end
+
       it 'shows active users button' do
         expect(page).to have_link 'Active users'
       end
+
       it 'shows activate user button on users' do
         expect(page).to have_selector 'td', text: @inactive_user.first_name
         expect(page).to have_button 'Activate'
       end
+
       it 'activates a user' do
         click_button 'Activate'
         expect(page).to have_selector 'div', text: 'User has been updated.'

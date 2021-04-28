@@ -29,14 +29,5 @@ Metrics/ClassLength:
 Metrics/MethodLength:
   Max: 15
 
-RSpec:
-  Enabled: false
-
-RSpec/BeEql:
-  Enabled: true
-
-RSpec/PredicateMatcher:
-  Enabled: true
-
 Style/Documentation:
   Enabled: false

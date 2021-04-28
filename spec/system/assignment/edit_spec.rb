@@ -14,7 +14,7 @@ RSpec.describe 'edit an assignment' do
   let(:start_date) { Date.new(2017, 3, 31) }
   let(:end_date) { Date.new(2017, 4, 6) }
 
-  before(:each) { set_current_user(user) }
+  before { set_current_user(user) }
 
   context 'returns the user to the appropriate index page' do
     it 'redirects to the correct URL' do
@@ -63,7 +63,7 @@ RSpec.describe 'edit an assignment' do
   end
 
   context 'only correct users can edit assignment' do
-    before :each do
+    before do
       @new_user = create :user, rosters: [roster]
       @last_name = @new_user.last_name
     end
