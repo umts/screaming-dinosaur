@@ -2,39 +2,26 @@
 
 RSpec.describe SessionsController do
   describe 'DELETE #destroy' do
-    before do
-      @user = create :user
-      when_current_user_is @user
-    end
+    subject(:submit) { delete :destroy }
 
-    let :submit do
-      delete :destroy
-    end
+    before { when_current_user_is :anyone }
 
-    context 'development' do
-      before do
-        expect(Rails.env)
-          .to receive(:production?)
-          .and_return false
-      end
-
+    context 'when the Rails env is not "production"' do
       it 'redirects to dev_login' do
         submit
         expect(response).to redirect_to dev_login_path
       end
 
       it 'clears the session' do
-        expect_any_instance_of(ActionController::TestSession)
-          .to receive :clear
+        allow(session).to receive(:clear)
         submit
+        expect(session).to have_received(:clear)
       end
     end
 
-    context 'production' do
+    context 'when the Rails env is "production"' do
       before do
-        expect(Rails.env)
-          .to receive(:production?)
-          .and_return true
+        allow(Rails.env).to receive(:production?).and_return(true)
       end
 
       it 'redirects to something about Shibboleth' do
@@ -43,9 +30,9 @@ RSpec.describe SessionsController do
       end
 
       it 'clears the session' do
-        expect_any_instance_of(ActionController::TestSession)
-          .to receive :clear
+        allow(session).to receive(:clear)
         submit
+        expect(session).to have_received(:clear)
       end
     end
   end
@@ -69,23 +56,21 @@ RSpec.describe SessionsController do
   end
 
   describe 'POST #dev_login' do
-    before do
-      @roster = create :roster
-      @user = roster_user @roster
+    subject :submit do
+      post :dev_login, params: { user_id: user.id, roster_id: roster.id }
     end
 
-    let :submit do
-      post :dev_login, params: { user_id: @user.id, roster_id: @roster.id }
-    end
+    let(:roster) { create :roster }
+    let(:user) { roster_user(roster) }
 
     it 'creates a session for the user specified' do
       submit
-      expect(session[:user_id]).to eql @user.id.to_s
+      expect(session[:user_id]).to eql user.id.to_s
     end
 
     it 'redirects to the assignments path for the specified roster' do
       submit
-      expect(response).to redirect_to roster_assignments_path(@roster)
+      expect(response).to redirect_to roster_assignments_path(roster)
     end
   end
 

@@ -2,11 +2,11 @@
 
 RSpec.describe RostersController do
   describe 'POST #create' do
-    let :submit do
+    subject :submit do
       post :create, params: { roster: { name: 'Operations' } }
     end
 
-    context 'admin' do
+    context 'when the current user is an admin' do
       let(:admin) { roster_admin }
 
       before { when_current_user_is admin }
@@ -28,29 +28,33 @@ RSpec.describe RostersController do
 
         it 'adds the current user to the roster as an admin' do
           submit
-          expect(Roster.last.users).to include admin
           expect(admin).to be_admin_in(Roster.last)
         end
       end
 
       context 'with errors' do
-        before do
-          @roster = create :roster, name: 'unique'
+        subject :submit do
+          post :create, params: { roster: { name: roster.name } }
         end
 
-        let :submit do
-          post :create, params: { roster: { name: @roster.name } }
-        end
+        let!(:roster) { create :roster, name: 'unique' }
 
-        it 'does not create roster, gives errors, and redirects back' do
-          expect { submit }.to redirect_back
+        it 'does not create roster' do
           expect { submit }.not_to change(Roster, :count)
+        end
+
+        it 'gives errors' do
+          submit
           expect(flash[:errors]).not_to be_empty
+        end
+
+        it 'redirects back' do
+          expect { submit }.to redirect_back
         end
       end
     end
 
-    context 'not admin' do
+    context 'when the current user is not an admin' do
       before { when_current_user_is :whoever }
 
       it 'renders a 401' do
@@ -65,25 +69,18 @@ RSpec.describe RostersController do
   end
 
   describe 'DELETE #destroy' do
-    before do
-      @roster = create :roster
+    subject :submit do
+      delete :destroy, params: { id: roster.id }
     end
 
-    let :submit do
-      delete :destroy, params: { id: @roster.id }
-    end
+    let(:roster) { create :roster }
 
-    context 'admin in roster' do
-      before { when_current_user_is roster_admin(@roster) }
+    context 'when the current user is an admin in the roster' do
+      before { when_current_user_is roster_admin(roster) }
 
       it 'deletes the correct roster' do
         submit
-        expect(Roster.where(id: @roster.id)).to be_empty
-      end
-
-      it 'destroys the roster' do
-        expect_any_instance_of(Roster).to receive :destroy
-        submit
+        expect(Roster.where(id: roster.id)).to be_empty
       end
 
       it 'puts a message in the flash' do
@@ -97,7 +94,7 @@ RSpec.describe RostersController do
       end
     end
 
-    context 'not admin in roster' do
+    context 'when the current user is not an admin in the roster' do
       before { when_current_user_is :whoever }
 
       it 'returns a 401' do
@@ -108,26 +105,24 @@ RSpec.describe RostersController do
   end
 
   describe 'GET #edit' do
-    before do
-      @roster = create :roster
+    subject :submit do
+      get :edit, params: { id: roster.id }
     end
 
-    let :submit do
-      get :edit, params: { id: @roster.id }
-    end
+    let(:roster) { create :roster }
 
-    context 'admin in roster' do
-      before { when_current_user_is roster_admin(@roster) }
+    context 'when the current user is an admin in the roster' do
+      before { when_current_user_is roster_admin(roster) }
 
       it 'finds the correct roster' do
         submit
-        expect(assigns.fetch(:roster)).to eql @roster
+        expect(assigns.fetch(:roster)).to eq roster
       end
 
       it 'populates a users variable of all users of the roster' do
-        user1 = roster_user @roster
-        user2 = roster_user @roster
-        user3 = roster_user @roster
+        user1 = roster_user roster
+        user2 = roster_user roster
+        user3 = roster_user roster
         submit
         expect(assigns.fetch(:users)).to include user1, user2, user3
       end
@@ -138,7 +133,7 @@ RSpec.describe RostersController do
       end
     end
 
-    context 'not admin in roster' do
+    context 'when the current user is not an admin in the roster' do
       before { when_current_user_is :whoever }
 
       it 'returns a 401' do
@@ -149,11 +144,9 @@ RSpec.describe RostersController do
   end
 
   describe 'GET #index' do
-    let :submit do
-      get :index
-    end
+    subject(:submit) { get :index }
 
-    context 'admin' do
+    context 'when the current user is an admin' do
       before { when_current_user_is roster_admin }
 
       it 'populates a rosters variable with all available rosters' do
@@ -167,7 +160,7 @@ RSpec.describe RostersController do
       end
     end
 
-    context 'not admin' do
+    context 'when the current user is not an admin' do
       before { when_current_user_is :whoever }
 
       it 'returns a 401' do
@@ -178,9 +171,9 @@ RSpec.describe RostersController do
   end
 
   describe 'GET #new' do
-    let(:submit) { get :new }
+    subject(:submit) { get :new }
 
-    context 'admin' do
+    context 'when the current user is an admin' do
       before { when_current_user_is roster_admin }
 
       it 'renders the new template' do
@@ -188,7 +181,7 @@ RSpec.describe RostersController do
       end
     end
 
-    context 'not admin' do
+    context 'when the current user is not an admin' do
       before { when_current_user_is :whoever }
 
       it 'returns a 401' do
@@ -199,24 +192,26 @@ RSpec.describe RostersController do
   end
 
   describe 'POST #update' do
-    before do
-      @roster = create :roster
-      @user = create :user
-      @attributes = { name: 'unique', fallback_user_id: @user.id }
+    subject :submit do
+      post :update, params: { id: roster.id, roster: attributes }
     end
 
-    let :submit do
-      post :update, params: { id: @roster.id, roster: @attributes }
-    end
+    let(:roster) { create :roster }
+    let(:user) { create :user }
+    let(:attributes) { { name: 'unique', fallback_user_id: user.id } }
 
-    context 'admin in roster' do
-      before { when_current_user_is roster_admin(@roster) }
+    context 'when the current user is an admin in the roster' do
+      before { when_current_user_is roster_admin(roster) }
 
       context 'without errors' do
-        it 'updates the roster' do
+        it 'updates the roster name' do
           submit
-          expect(@roster.reload.name).to eql 'unique'
-          expect(@roster.reload.fallback_user).to eql @user
+          expect(roster.reload.name).to eql 'unique'
+        end
+
+        it 'updates the roster fallback user' do
+          submit
+          expect(roster.reload.fallback_user).to eql user
         end
 
         it 'redirects to the index' do
@@ -226,20 +221,29 @@ RSpec.describe RostersController do
       end
 
       context 'with errors' do
+        let(:another_roster) { create :roster, name: 'not-unique' }
+
         before do
-          @another_roster = create :roster, name: 'not-unique'
-          @attributes[:name] = @another_roster.name
+          attributes[:name] = another_roster.name
         end
 
-        it 'does not update, includes errors, and redirects back' do
-          expect { submit }.to redirect_back
+        it 'does not update' do
+          submit
+          expect(roster.reload.fallback_user).not_to eql user
+        end
+
+        it 'includes errors' do
+          submit
           expect(flash[:errors]).not_to be_empty
-          expect(@roster.reload.fallback_user).not_to eql @user
+        end
+
+        it 'and redirects back' do
+          expect { submit }.to redirect_back
         end
       end
     end
 
-    context 'not admin in roster' do
+    context 'when the current user is not an admin in the roster' do
       before { when_current_user_is :whoever }
 
       it 'returns a 401' do

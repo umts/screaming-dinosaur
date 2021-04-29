@@ -1,71 +1,84 @@
 # frozen_string_literal: true
 
 RSpec.describe AssignmentsController do
-  before do
-    @roster = create :roster
-  end
+  let(:roster) { create :roster }
 
   describe 'POST #create' do
-    before do
-      @user = roster_user @roster
-      @attributes = {
-        start_date: Time.zone.today,
+    subject :submit do
+      post :create, params: { roster_id: roster, assignment: attributes }
+    end
+
+    let(:user) { roster_user(roster) }
+    let :attributes do
+      { start_date: Time.zone.today,
         end_date: Date.tomorrow,
-        user_id: @user.id,
-        roster_id: @roster.id
-      }
+        user_id: user.id,
+        roster_id: roster.id }
     end
 
-    let :submit do
-      post :create, params: { roster_id: @roster, assignment: @attributes }
-    end
+    context 'when you are an admin in roster' do
+      before { when_current_user_is roster_admin(roster) }
 
-    context 'admin in roster' do
-      before { when_current_user_is roster_admin(@roster) }
-
-      context 'without errors' do
+      context 'when there are no errors' do
         it 'creates an assignment' do
           submit
           expect(Assignment.count).to be 1
         end
 
         it 'sends an email to the new owner of the assignment' do
-          expect_any_instance_of(Assignment).to receive(:notify)
+          assignment = build :assignment
+          allow(Assignment).to receive(:new).and_return(assignment)
+          allow(assignment).to receive(:notify)
           submit
+          expect(assignment).to have_received(:notify)
         end
       end
 
-      context 'with errors' do
+      context 'when there are errors' do
         before do
           # Guaranteed to not be a user with this ID,
           # but will pass param validation in the controller.
-          @attributes[:user_id] = User.pluck(:id).max + 1
+          attributes[:user_id] = User.maximum(:id) + 1
         end
 
-        it 'does not create assignment, gives errors, and redirects back' do
-          expect { submit }.to redirect_back
+        it 'does not create assignment' do
+          submit
           expect(Assignment.all).to be_empty
+        end
+
+        it 'gives errors' do
+          submit
           expect(flash[:errors]).not_to be_empty
+        end
+
+        it 'redirects back' do
+          expect { submit }.to redirect_back
         end
       end
     end
 
-    context 'not admin' do
-      before { when_current_user_is @user }
+    context 'when you are not admin' do
+      before { when_current_user_is user }
 
-      context 'creating assignment belonging to self' do
+      context 'when creating assignment belonging to self' do
         it 'creates the assignment' do
           expect { submit }.to change(Assignment, :count).by 1
         end
       end
 
-      context 'creating assignment not belonging to self' do
-        before { @attributes[:user_id] = @user.id + 1 }
+      context 'when creating assignment not belonging to self' do
+        before { attributes[:user_id] = user.id + 1 }
 
-        it 'does not create the assignment and explains why' do
-          expect do
-            expect { submit }.to redirect_back
-          end.not_to change(Assignment, :count)
+        it 'does not create the assignment' do
+          expect { submit }.not_to change(Assignment, :count)
+        end
+
+        it 'gives errors' do
+          expect { submit }.to redirect_back
+        end
+
+        it 'redirects back' do
+          submit
           expect(flash[:errors]).not_to be_empty
         end
       end
@@ -73,52 +86,58 @@ RSpec.describe AssignmentsController do
   end
 
   describe 'DELETE #destroy' do
-    before do
-      @assignment = create :assignment
-      when_current_user_is :whoever
+    subject :submit do
+      delete :destroy, params: { roster_id: assignment.roster.id, id: assignment.id }
     end
 
-    let :submit do
-      delete :destroy,
-             params: { roster_id: @assignment.roster.id, id: @assignment.id }
+    let(:assignment) { create :assignment }
+
+    before do
+      when_current_user_is :whoever
     end
 
     it 'finds the correct assignment' do
       submit
-      expect(assigns.fetch(:assignment)).to eql @assignment
+      expect(assigns.fetch(:assignment)).to eql assignment
     end
 
     it 'destroys the assignment' do
-      expect_any_instance_of(Assignment).to receive :destroy
+      allow(Assignment).to receive(:includes).and_return(Assignment)
+      allow(Assignment).to receive(:find).and_return(assignment)
+      allow(assignment).to receive(:destroy)
       submit
+      expect(assignment).to have_received(:destroy)
     end
 
     it 'sends a notification to the owner of the assignment' do
-      expect_any_instance_of(Assignment).to receive :notify
+      allow(Assignment).to receive(:includes).and_return(Assignment)
+      allow(Assignment).to receive(:find).and_return(assignment)
+      allow(assignment).to receive(:notify)
       submit
+      expect(assignment).to have_received(:notify)
     end
   end
 
   describe 'GET #edit' do
-    before do
-      @assignment = create :assignment
-      @roster = create :roster
-      when_current_user_is :whoever
+    subject :submit do
+      get :edit, params: { roster_id: roster.id, id: assignment.id }
     end
 
-    let :submit do
-      get :edit, params: { roster_id: @roster.id, id: @assignment.id }
+    let(:assignment) { create :assignment }
+
+    before do
+      when_current_user_is :whoever
     end
 
     it 'finds the correct assignment' do
       submit
-      expect(assigns.fetch(:assignment)).to eql @assignment
+      expect(assigns.fetch(:assignment)).to eql assignment
     end
 
     it 'populates a users variable of all users' do
-      user1 = roster_user @roster
-      user2 = roster_user @roster
-      user3 = roster_user @roster
+      user1 = roster_user roster
+      user2 = roster_user roster
+      user3 = roster_user roster
       submit
       expect(assigns.fetch(:users)).to include user1, user2, user3
     end
@@ -130,42 +149,40 @@ RSpec.describe AssignmentsController do
   end
 
   describe 'POST #generate_rotation' do
-    before do
-      @start_date = Time.zone.today.strftime '%Y-%m-%d'
-      @end_date = Date.tomorrow.strftime '%Y-%m-%d'
-      user1 = roster_user @roster
-      user2 = roster_user @roster
-      user3 = roster_user @roster
-      @user_ids = [user1.id.to_s, user2.id.to_s, user3.id.to_s]
-      @starting_user_id = @user_ids[1]
-      when_current_user_is :whoever
-      # To test the mailer method called on the returned assignments
-      @assignments = [create(:assignment)]
-    end
-
-    let :submit do
+    subject :submit do
       post :generate_rotation,
-           params: {
-             roster_id: @roster.id,
-             start_date: @start_date,
-             end_date: @end_date,
-             user_ids: @user_ids,
-             starting_user_id: @starting_user_id
-           }
+           params: { roster_id: roster.id,
+                     start_date: Time.zone.today.to_s(:db),
+                     end_date: Date.tomorrow.to_s(:db),
+                     user_ids: user_ids,
+                     starting_user_id: starting_user_id }
     end
 
-    context 'admin in roster' do
-      before { when_current_user_is roster_admin(@roster) }
+    let(:user_ids) { Array.new(3) { roster_user(roster).id.to_s } }
+    let(:starting_user_id) { user_ids[1] }
+    let(:assignment) { create(:assignment) }
 
-      it 'calls Assignment#generate rotation with the given arguments' do
-        # remove all other instances of roster so 'any instance' definitely
-        # refers to our @roster instance
-        Roster.where.not(id: @roster.id).delete_all
-        expect_any_instance_of(Roster).to receive(:generate_assignments)
-          .with(@user_ids, Time.zone.today, Date.tomorrow, @starting_user_id)
-          .and_return @assignments
-        expect_any_instance_of(Assignment).to receive :notify
+    before do
+      when_current_user_is :whoever
+    end
+
+    context 'when you are an admin in roster' do
+      before { when_current_user_is roster_admin(roster) }
+
+      it 'calls Roster#generate_assignments with the given arguments' do
+        allow(Roster).to receive(:find_by).and_return(roster)
+        allow(roster).to receive(:generate_assignments).and_return []
         submit
+        expect(roster).to have_received(:generate_assignments)
+          .with(user_ids, Time.zone.today, Date.tomorrow, starting_user_id)
+      end
+
+      it 'notifies the new assignment holders' do
+        allow(Roster).to receive(:find_by).and_return(roster)
+        allow(roster).to receive(:generate_assignments).and_return [assignment]
+        allow(assignment).to receive :notify
+        submit
+        expect(assignment).to have_received :notify
       end
 
       it 'has a flash message' do
@@ -179,17 +196,21 @@ RSpec.describe AssignmentsController do
           .to redirect_to roster_assignments_path(date: Time.zone.today)
       end
 
-      context 'starting user not in selected users' do
-        before { @starting_user_id = roster_user(@roster).id }
+      context 'when the starting user is not in the selected users' do
+        let(:starting_user_id) { roster_user(roster).id }
 
         it 'warns that the starting user is not in the selected users' do
-          expect { submit }.to redirect_back
+          submit
           expect(flash[:errors]).not_to be_empty
+        end
+
+        it 'redirects back' do
+          expect { submit }.to redirect_back
         end
       end
     end
 
-    context 'admin, not in roster' do
+    context 'when you are an admin, but not in roster' do
       before { when_current_user_is roster_admin }
 
       it 'returns a 401' do
@@ -198,7 +219,7 @@ RSpec.describe AssignmentsController do
       end
     end
 
-    context 'not admin' do
+    context 'when you are not admin' do
       before { when_current_user_is :whoever }
 
       it 'returns a 401' do
@@ -209,51 +230,66 @@ RSpec.describe AssignmentsController do
   end
 
   describe 'GET #index' do
-    let :submit do
-      get :index, params: { roster_id: @roster.id }
+    subject :submit do
+      get :index, params: { roster_id: roster.id }
     end
 
-    context 'user_id in session' do
-      before do
-        @user = roster_user @roster
-        when_current_user_is @user
+    context 'with a user_id in session' do
+      let(:user) { roster_user(roster) }
+      let! :old_assignment do
+        create :assignment,
+               user: user,
+               roster: roster,
+               start_date: 1.month.ago.to_date,
+               end_date: 3.weeks.ago.to_date
       end
+      let! :new_assignment do
+        create :assignment,
+               user: user,
+               roster: roster,
+               start_date: 1.month.since.to_date,
+               end_date: 5.weeks.since.to_date
+      end
+
+      before { when_current_user_is user }
 
       it 'assigns the correct current user' do
         submit
-        expect(assigns.fetch(:current_user)).to eql @user
+        expect(assigns.fetch(:current_user)).to eql user
       end
 
-      it 'populates an assignments variable of upcoming assignments' do
-        old_assignment = create :assignment, user: @user,
-                                             roster: @roster,
-                                             start_date: 1.month.ago.to_date,
-                                             end_date: 3.weeks.ago.to_date
-        new_assignment = create :assignment, user: @user,
-                                             roster: @roster,
-                                             start_date: 1.month.since.to_date,
-                                             end_date: 5.weeks.since.to_date
+      it 'populates assignments including upcoming assignments' do
         submit
         expect(assigns.fetch(:assignments)).to include new_assignment
+      end
+
+      it 'populates assignments excluding upcoming assignments' do
+        submit
         expect(assigns.fetch(:assignments)).not_to include old_assignment
       end
 
-      it 'populates a current_assignment variable of Assignment.current' do
+      it 'populates the current assignment' do
         assignment = create :assignment
-        expect(Assignment).to receive(:current).and_return assignment
+        allow(Assignment).to receive(:current).and_return assignment
         submit
         expect(assigns.fetch(:current_assignment)).to eql assignment
       end
 
+      it 'uses Assignment.current to populate the current assignment' do
+        allow(Assignment).to receive(:current)
+        submit
+        expect(Assignment).to have_received(:current)
+      end
+
       it 'includes the switchover hour as a variable' do
-        expect(CONFIG).to receive(:[]).with(:switchover_hour).and_return 12
+        stub_const('CONFIG', { switchover_hour: 12 })
         submit
         expect(assigns.fetch(:switchover_hour)).to be 12
       end
 
       it 'includes a variable of the fallback user' do
         fallback = create :user
-        @roster.update(fallback_user_id: fallback.id)
+        roster.update(fallback_user_id: fallback.id)
         submit
         expect(assigns.fetch(:fallback_user)).to eql fallback
       end
@@ -264,16 +300,17 @@ RSpec.describe AssignmentsController do
       end
     end
 
-    context 'fcIdNumber in request' do
-      context 'user exists' do
-        before do
-          @user = create :user
-          request.env['fcIdNumber'] = @user.spire
-        end
+    context 'with fcIdNumber in the request' do
+      before { request.env['fcIdNumber'] = '00000000@umass.edu' }
+
+      context 'when that user exists' do
+        let(:user) { create :user }
+
+        before { request.env['fcIdNumber'] = user.spire }
 
         it 'assigns the correct current user' do
           submit
-          expect(assigns.fetch(:current_user)).to eql @user
+          expect(assigns.fetch(:current_user)).to eql user
         end
 
         it 'renders the correct template' do
@@ -282,9 +319,8 @@ RSpec.describe AssignmentsController do
         end
       end
 
-      context 'user does not exist' do
+      context 'when that user does not exist' do
         it 'redirects to unauthenticated sessions path' do
-          request.env['fcIdNumber'] = '00000000@umass.edu'
           submit
           expect(response).to redirect_to unauthenticated_session_path
         end
@@ -293,29 +329,28 @@ RSpec.describe AssignmentsController do
   end
 
   describe 'GET #new' do
-    before do
-      @date = Time.zone.today
-      when_current_user_is :whoever
+    subject :submit do
+      get :new, params: { roster_id: roster.id, date: date }
     end
 
-    let :submit do
-      get :new, params: { roster_id: @roster.id, date: @date }
-    end
+    let(:date) { Time.zone.today }
+
+    before { when_current_user_is :whoever }
 
     it 'passes the date parameter through as a start_date variable' do
       submit
-      expect(assigns.fetch(:start_date)).to eql @date
+      expect(assigns.fetch(:start_date)).to eql date
     end
 
     it 'populates an end_date instance variable 6 days after start_date' do
       submit
-      expect(assigns.fetch(:end_date)).to eql(@date + 6.days)
+      expect(assigns.fetch(:end_date)).to eql(date + 6.days)
     end
 
     it 'populates a users variable containing all the users' do
-      user1 = roster_user @roster
-      user2 = roster_user @roster
-      user3 = roster_user @roster
+      user1 = roster_user roster
+      user2 = roster_user roster
+      user3 = roster_user roster
       submit
       expect(assigns.fetch(:users)).to include user1, user2, user3
     end
@@ -327,25 +362,26 @@ RSpec.describe AssignmentsController do
   end
 
   describe 'GET #rotation_generator' do
-    before do
-      when_current_user_is :whoever
+    subject :submit do
+      get :rotation_generator, params: { roster_id: roster.id }
     end
 
-    let :submit do
-      get :rotation_generator, params: { roster_id: @roster.id }
-    end
-
-    context 'admin in roster' do
-      before { when_current_user_is roster_admin(@roster) }
+    context 'when you are an admin in roster' do
+      before { when_current_user_is roster_admin(roster) }
 
       it 'sets the users instance variable' do
         submit
-        expect(assigns.fetch(:users)).to include(*@roster.users)
+        expect(assigns.fetch(:users)).to include(*roster.users)
+      end
+
+      it 'uses the next rotation start date' do
+        allow(Assignment).to receive(:next_rotation_start_date)
+        submit
+        expect(Assignment).to have_received(:next_rotation_start_date)
       end
 
       it 'sets the start date instance variable' do
-        expect(Assignment).to receive(:next_rotation_start_date)
-          .and_return 'whatever'
+        allow(Assignment).to receive(:next_rotation_start_date).and_return 'whatever'
         submit
         expect(assigns.fetch(:start_date)).to eql 'whatever'
       end
@@ -356,7 +392,7 @@ RSpec.describe AssignmentsController do
       end
     end
 
-    context 'admin, not in roster' do
+    context 'when you are an admin, but not in the roster' do
       before { when_current_user_is roster_admin }
 
       it 'returns a 401' do
@@ -365,7 +401,7 @@ RSpec.describe AssignmentsController do
       end
     end
 
-    context 'not admin' do
+    context 'when you are not an admin' do
       before { when_current_user_is :whoever }
 
       it 'returns a 401' do
@@ -376,88 +412,107 @@ RSpec.describe AssignmentsController do
   end
 
   describe 'POST #update' do
-    before do
-      @assignment = create :assignment
-      @user = roster_user @assignment.roster
-      @changes = { user_id: @user.id }
+    subject :submit do
+      post :update, params: { id: assignment.id,
+                              assignment: changes,
+                              roster_id: assignment.roster.id }
     end
 
-    let :submit do
-      post :update,
-           params: {
-             id: @assignment.id,
-             assignment: @changes,
-             roster_id: @assignment.roster.id
-           }
-    end
+    let(:assignment) { create :assignment }
+    let(:user) { roster_user(assignment.roster) }
+    let(:changes) { { user_id: user.id } }
 
-    context 'admin in roster' do
-      before do
-        @roster_admin = roster_admin @assignment.roster
-        when_current_user_is @roster_admin
+    context 'when you are an admin in the roster' do
+      let(:admin) { roster_admin(assignment.roster) }
+
+      before { when_current_user_is admin }
+
+      it 'updates the assignment' do
+        submit
+        expect(assignment.reload.user).to eql user
       end
 
-      context 'without errors' do
-        it 'updates the assignment' do
+      context 'when the owner is being changed' do
+        before do
+          allow(Assignment).to receive(:includes).and_return(Assignment)
+          allow(Assignment).to receive(:find).and_return(assignment)
+          allow(assignment).to receive(:notify)
+        end
+
+        it 'notifies the owner of the new assignment' do
           submit
-          expect(@assignment.reload.user).to eql @user
+          expect(assignment).to have_received(:notify)
+            .with(:owner, of: :new_assignment, by: admin)
         end
 
-        context 'owner is being changed' do
-          it "notifies the new owner of the new assignment \
-              and notifies the old owner of the deleted assignment" do
-            expect_any_instance_of(Assignment).to receive(:notify)
-              .with(:owner, of: :new_assignment, by: @roster_admin)
-            expect_any_instance_of(Assignment).to receive(:notify)
-              .with(@assignment.user, of: :deleted_assignment,
-                                      by: @roster_admin)
-            submit
-          end
+        it 'notifies the owner of the deleted assignment' do
+          previous_user = assignment.user
+          submit
+          expect(assignment).to have_received(:notify)
+            .with(previous_user, of: :deleted_assignment, by: admin)
+        end
+      end
+
+      context 'when the owner is not being changed' do
+        let(:changes) { { user_id: assignment.user_id } }
+
+        before do
+          allow(Assignment).to receive(:includes).and_return(Assignment)
+          allow(Assignment).to receive(:find).and_return(assignment)
+          allow(assignment).to receive(:notify)
         end
 
-        context 'owner is not being changed' do
-          before { @changes[:user_id] = @assignment.user_id }
-
-          it 'notifies the owner of the changed assignment' do
-            expect_any_instance_of(Assignment).to receive(:notify)
-              .with(:owner, of: :changed_assignment, by: @roster_admin)
-            submit
-          end
+        it 'notifies the owner of the changed assignment' do
+          submit
+          expect(assignment).to have_received(:notify)
+            .with(:owner, of: :changed_assignment, by: admin)
         end
       end
 
       context 'with errors' do
-        before do
-          # Guaranteed to not be a user with this ID,
-          # but will pass param validation in the controller.
-          @changes[:user_id] = User.pluck(:id).max + 1
+        let(:changes) { { user_id: User.maximum(:id) + 1 } }
+
+        it 'does not update the assignment' do
+          submit
+          expect(assignment.reload.user).not_to eql user
         end
 
-        it 'does not update, includes errors, and redirects back' do
-          expect { submit }.to redirect_back
+        it 'displays errors' do
+          submit
           expect(flash[:errors]).not_to be_empty
-          expect(@assignment.reload.user).not_to eql @user
+        end
+
+        it ' redirects back' do
+          expect { submit }.to redirect_back
         end
       end
     end
 
-    context 'self' do
-      before { when_current_user_is @user }
+    context 'when you are updating your own assignment' do
+      before { when_current_user_is user }
 
-      context 'updated assignment will belong to self' do
+      context 'when the updated assignment will belong to you' do
         it 'updates the assignment' do
           submit
-          expect(@assignment.reload.user).to eql @user
+          expect(assignment.reload.user).to eql user
         end
       end
 
-      context 'updated assignment will not belong to self' do
-        before { @changes[:user_id] = @user.id + 1 }
+      context 'when the updated assignment will not belong to you' do
+        let(:changes) { { user_id: user.id + 1 } }
 
-        it 'does not update the assignment and explains why' do
-          expect { submit }.to redirect_back
-          expect(@assignment.reload.user).not_to eql @user
+        it 'does not update the assignment' do
+          submit
+          expect(assignment.reload.user).not_to eql user
+        end
+
+        it 'displays errors' do
+          submit
           expect(flash[:errors]).not_to be_empty
+        end
+
+        it 'redirects back' do
+          expect { submit }.to redirect_back
         end
       end
     end
@@ -467,7 +522,7 @@ RSpec.describe AssignmentsController do
     let(:roster) { create :roster }
     let(:user) { create :user, rosters: [roster] }
 
-    context 'user has a valid access token' do
+    context 'when the user has a valid access token' do
       let :submit do
         get :feed, params: { format: 'ics', token: user.calendar_access_token,
                              roster: roster.name }
@@ -484,7 +539,7 @@ RSpec.describe AssignmentsController do
       end
     end
 
-    context 'user does not belong to roster' do
+    context 'when the user does not belong to roster' do
       let :submit do
         new_roster = create :roster
         get :feed, params: { format: 'ics', token: user.calendar_access_token,
@@ -497,7 +552,7 @@ RSpec.describe AssignmentsController do
       end
     end
 
-    context 'not a valid access token' do
+    context 'when the user does not have a valid access token' do
       let :submit do
         get :feed, params: { format: 'ics', token: SecureRandom.hex,
                              roster: roster.name }

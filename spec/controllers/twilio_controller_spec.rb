@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
 RSpec.describe TwilioController do
-  describe 'GET #call, XML' do
-    let(:roster) { create :roster }
-    let :submit do
-      get :call, params: { roster_id: roster.id, format: :xml }
-    end
+  let(:roster) { create :roster }
+  let(:user) { roster_user(roster) }
 
-    before do
-      @user = create :user
-      expect_any_instance_of(Roster)
-        .to receive(:on_call_user)
-        .and_return @user
+  before do
+    allow(Roster).to receive(:find_by).and_return roster
+    allow(roster).to receive(:on_call_user).and_return user
+  end
+
+  describe 'GET #call, XML' do
+    subject :submit do
+      get :call, params: { roster_id: roster.id, format: :xml }
     end
 
     it 'sets the current on call user to the user variable' do
       submit
-      expect(assigns.fetch(:user)).to eql @user
+      expect(assigns.fetch(:user)).to eql user
     end
 
     it 'renders the call template' do
@@ -26,27 +26,20 @@ RSpec.describe TwilioController do
   end
 
   describe 'GET #text, XML' do
-    before do
-      @body = 'message body'
-      @roster = create :roster
-      @user = create :user
-      expect_any_instance_of(Roster)
-        .to receive(:on_call_user)
-        .and_return @user
+    subject :submit do
+      get :text, params: { format: :xml, Body: body, roster_id: roster.id }
     end
 
-    let :submit do
-      get :text, params: { format: :xml, Body: @body, roster_id: @roster.id }
-    end
+    let(:body) { 'message body' }
 
     it 'sets the current on call user to the user variable' do
       submit
-      expect(assigns.fetch(:user)).to eql @user
+      expect(assigns.fetch(:user)).to eql user
     end
 
     it 'passes the Body parameter through as a body instance variable' do
       submit
-      expect(assigns.fetch(:body)).to eql @body
+      expect(assigns.fetch(:body)).to eql body
     end
 
     it 'renders the text template' do

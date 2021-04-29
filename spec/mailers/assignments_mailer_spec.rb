@@ -6,21 +6,16 @@ RSpec.describe AssignmentsMailer do
       described_class.changed_assignment assignment, recipient, changer
     end
 
-    let(:start_date) { Date.parse '2017-04-21' }
-    let(:end_date) { Date.parse '2017-04-27' }
     let :assignment do
-      create :assignment, start_date: start_date, end_date: end_date
+      create :assignment,
+             start_date: Date.new(2017, 4, 21),
+             end_date: Date.new(2017, 4, 27)
     end
     let(:roster) { assignment.roster }
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
 
-    before do
-      expect(CONFIG).to receive(:[])
-        .with(:switchover_hour)
-        .at_least(:once)
-        .and_return 9
-    end
+    before { stub_const('CONFIG', { switchover_hour: 9 }) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -56,21 +51,16 @@ RSpec.describe AssignmentsMailer do
       described_class.deleted_assignment assignment, recipient, changer
     end
 
-    let(:start_date) { Date.parse '2017-04-21' }
-    let(:end_date) { Date.parse '2017-04-27' }
     let :assignment do
-      create :assignment, start_date: start_date, end_date: end_date
+      create :assignment,
+             start_date: Date.new(2017, 4, 21),
+             end_date: Date.new(2017, 4, 27)
     end
     let(:roster) { assignment.roster }
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
 
-    before do
-      expect(CONFIG).to receive(:[])
-        .with(:switchover_hour)
-        .at_least(:once)
-        .and_return 10
-    end
+    before { stub_const('CONFIG', { switchover_hour: 10 }) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -106,21 +96,16 @@ RSpec.describe AssignmentsMailer do
       described_class.new_assignment assignment, recipient, changer
     end
 
-    let(:start_date) { Date.parse '2017-04-21' }
-    let(:end_date) { Date.parse '2017-04-27' }
     let :assignment do
-      create :assignment, start_date: start_date, end_date: end_date
+      create :assignment,
+             start_date: Date.new(2017, 4, 21),
+             end_date: Date.new(2017, 4, 27)
     end
     let(:roster) { assignment.roster }
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
 
-    before do
-      expect(CONFIG).to receive(:[])
-        .with(:switchover_hour)
-        .at_least(:once)
-        .and_return 11
-    end
+    before { stub_const('CONFIG', { switchover_hour: 11 }) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -156,20 +141,15 @@ RSpec.describe AssignmentsMailer do
       described_class.upcoming_reminder assignment
     end
 
-    let(:start_date) { Date.parse('2017-04-14') }
-    let(:end_date) { Date.parse('2017-04-20') }
     let :assignment do
-      create :assignment, start_date: start_date, end_date: end_date
+      create :assignment,
+             start_date: Date.new(2017, 4, 14),
+             end_date: Date.new(2017, 4, 20)
     end
     let(:roster) { assignment.roster }
     let(:user) { assignment.user }
 
-    before do
-      expect(CONFIG).to receive(:[])
-        .with(:switchover_hour)
-        .at_least(:once)
-        .and_return 12
-    end
+    before { stub_const('CONFIG', { switchover_hour: 12 }) }
 
     it 'emails to the user' do
       expect(output.to).to eql Array(user.email)

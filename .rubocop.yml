@@ -3,13 +3,14 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.6
   Exclude:
     - 'bin/**/*'
-    - 'config/**/*'
+    - 'config/{environments,initializers}/**/*'
+    - 'config/{application,boot,environment,puma,spring}.rb'
     - 'db/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'config.ru'
   NewCops: enable
 
 Lint/AmbiguousBlockAssociation:
@@ -20,7 +21,8 @@ Metrics/AbcSize:
   Max: 25
 
 Metrics/BlockLength:
-  Exclude: 
+  Exclude:
+    - 'config/routes.rb'
     - 'spec/**/*'
 
 Metrics/ClassLength:
@@ -32,6 +34,9 @@ Metrics/MethodLength:
 RSpec/DescribeClass:
   Exclude:
     - 'spec/system/**/*'
+
+RSpec/NestedGroups:
+  Max: 4
 
 Style/Documentation:
   Enabled: false
