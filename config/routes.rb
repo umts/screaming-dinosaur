@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   root 'rosters#assignments'
 
-  resources :rosters, except: %i(show) do
+  resources :rosters, except: %i[show] do
     member do
       get :setup
     end

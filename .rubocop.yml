@@ -5,10 +5,12 @@ require:
 AllCops:
   Exclude:
     - 'bin/**/*'
-    - 'config/**/*'
+    - 'config/{environments,initializers}/**/*'
+    - 'config/{application,boot,environment,puma,spring}.rb'
     - 'db/**/*'
     - 'script/**/*'
     - 'vendor/**/*'
+    - 'config.ru'
   NewCops: enable
 
 Lint/AmbiguousBlockAssociation:
@@ -19,7 +21,8 @@ Metrics/AbcSize:
   Max: 25
 
 Metrics/BlockLength:
-  Exclude: 
+  Exclude:
+    - 'config/routes.rb'
     - 'spec/**/*'
 
 Metrics/ClassLength:
