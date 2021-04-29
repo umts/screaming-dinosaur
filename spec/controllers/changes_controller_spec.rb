@@ -3,64 +3,83 @@
 require 'paper_trail/frameworks/rspec'
 
 RSpec.describe ChangesController do
-  describe 'GET #undo' do
-    before do
-      @change_user = create :user
-      with_versioning do
-        PaperTrail.request.whodunnit = @change_user.id.to_s
-        @created, @updated, @destroyed = Array.new(3) { create :assignment }
-        # CREATE
-        @create_version = @created.versions.last
-        # UPDATE
-        @original_start_date = @updated.start_date
-        @updated.start_date -= 1.day
-        @updated.save!
-        @update_version = @updated.versions.last
-        # DESTROY
-        @destroyed.destroy
-        @destroy_version = @destroyed.versions.last
-      end
-    end
+  describe 'GET #undo', versioning: true do
+    let(:change_user) { create :user }
+    let(:assignment) { create :assignment }
 
-    let(:submit) { get :undo, params: { id: version.id } }
+    context 'when the change is made by user' do
+      before { when_current_user_is change_user }
 
-    context 'change made by user' do
-      before { when_current_user_is @change_user }
+      context 'when the version is a "create" version' do
+        subject(:submit) { get :undo, params: { id: version.id } }
 
-      context 'create version' do
-        let(:version) { @create_version }
+        let! :version do
+          PaperTrail.request.whodunnit = change_user.id.to_s
+          assignment.versions.last
+        end
 
         it 'destroys the object' do
+          submit
+          expect { assignment.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        it 'redirects back' do
           expect { submit }.to redirect_back
-          expect { @created.reload }
-            .to raise_error(ActiveRecord::RecordNotFound)
-          expect(flash[:message]).to eql 'Assignment has been deleted.'
+        end
+
+        it 'informs you of success' do
+          submit
+          expect(flash[:message]).to eq 'Assignment has been deleted.'
         end
       end
 
-      context 'destroy version' do
-        let(:version) { @destroy_version }
+      context 'when the version is a "destroy" version' do
+        subject(:submit) { get :undo, params: { id: version.id } }
+
+        let! :version do
+          PaperTrail.request.whodunnit = change_user.id.to_s
+          assignment.destroy
+          assignment.versions.last
+        end
 
         it 'brings the object back to life' do
+          submit
+          expect { assignment.reload }.not_to raise_error
+        end
+
+        it 'redirects back' do
           expect { submit }.to redirect_back
-          expect { @destroyed.reload }.not_to raise_error
         end
       end
 
-      context 'update version' do
-        let(:version) { @update_version }
+      context 'when the version is an "update" version' do
+        subject(:submit) { get :undo, params: { id: version.id } }
+
+        let!(:original_start_date) { assignment.start_date }
+        let! :version do
+          PaperTrail.request.whodunnit = change_user.id.to_s
+          assignment.start_date -= 1.day
+          assignment.save!
+          assignment.versions.last
+        end
 
         it 'undoes the change' do
+          submit
+          expect(assignment.reload.start_date).to eql original_start_date
+        end
+
+        it 'redirects back' do
           expect { submit }.to redirect_back
-          expect(@updated.reload.start_date).to eql @original_start_date
         end
       end
     end
 
-    context 'change not made by current user' do
+    context 'when the change is not made by current user' do
+      subject(:submit) { get :undo, params: { id: version.id } }
+
       before { when_current_user_is :whoever }
 
-      let(:version) { @update_version } # it doesn't matter
+      let!(:version) { assignment.versions.last }
 
       it 'returns a 401' do
         submit
