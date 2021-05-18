@@ -39,7 +39,7 @@ end
 group :development, :test do
   gem 'haml_lint'
   gem 'pry-byebug'
-  gem 'puma', '~> 3.12'
+  gem 'puma'
   gem 'rubocop', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
