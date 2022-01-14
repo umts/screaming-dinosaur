@@ -38,7 +38,7 @@
           %div
             = f.fields_for membership || :membership do |g|
               %div
-                = g.check_box :admin, disabled: membership.admin? && @roster.admins.one?
+                = g.check_box :admin, disabled: membership&.admin? && @roster.admins.one?
                 = g.label :admin, "Admin in #{@roster.name}?"
     .text-center
       = f.submit 'Save', class: 'btn btn-primary btn-lg'
