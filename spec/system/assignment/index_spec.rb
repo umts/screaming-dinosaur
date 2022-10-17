@@ -66,7 +66,7 @@ RSpec.describe 'viewing the index' do
       let(:date) { Time.zone.today.change(day: 14) }
       let(:new_path) do
         new_roster_assignment_path roster_id: roster.id,
-                                   date: date.to_s(:db)
+                                   date: date.to_fs(:db)
       end
 
       it 'sends you to create a new assignment' do
