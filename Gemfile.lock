@@ -191,7 +191,7 @@ GEM
     nokogiri (1.13.8)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    paper_trail (11.1.0)
+    paper_trail (12.3.0)
       activerecord (>= 5.2)
       request_store (~> 1.1)
     parallel (1.20.1)
@@ -251,7 +251,7 @@ GEM
       ffi (~> 1.0)
     rb-readline (0.5.5)
     regexp_parser (2.1.1)
-    request_store (1.5.0)
+    request_store (1.5.1)
       rack (>= 1.4)
     rexml (3.2.5)
     rspec (3.10.0)
@@ -380,7 +380,7 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.0)
   mysql2
-  paper_trail (~> 11.1)
+  paper_trail (~> 12.3)
   pry-byebug
   puma
   rack_session_access
