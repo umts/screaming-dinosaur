@@ -12,9 +12,10 @@ gem 'jbuilder'
 gem 'jquery-rails'
 gem 'mysql2'
 gem 'paper_trail', '~> 11.1'
-gem 'rails', '~> 6.1.3'
+gem 'rails', '~> 7.0.4'
 gem 'sassc-rails'
 gem 'snappconfig'
+gem 'sprockets-rails'
 gem 'uglifier'
 gem 'whenever', require: false
 
