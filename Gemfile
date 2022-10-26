@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
 
+gem 'bootsnap', require: false
 gem 'bootstrap', '~> 4.2'
 gem 'factory_bot_rails'
 gem 'haml'

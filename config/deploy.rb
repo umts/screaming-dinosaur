@@ -19,3 +19,6 @@ append :linked_files,
 append :linked_dirs, '.bundle', 'log'
 
 set :passenger_restart_with_sudo, true
+
+set :bundle_bins, fetch(:bundle_bins, []).push('bootsnap')
+before 'deploy:updated', 'bootsnap:precompile'
