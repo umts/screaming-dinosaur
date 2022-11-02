@@ -27,7 +27,8 @@ class AssignmentsIcs
     Icalendar::Event.new.tap do |e|
       e.uid = "#{assignment.id}@screaming-dinosaur"
       e.status = 'CONFIRMED'
-      e.dtstamp = assignment.created_at.to_s(:ical)
+      e.dtstamp = DateTime.now.to_s(:ical)
+      e.created = assignment.created_at.to_s(:ical)
       e.last_modified = assignment.updated_at.to_s(:ical)
       e.dtstart = Icalendar::Values::Date.new(assignment.start_date)
       e.dtend = Icalendar::Values::Date.new(1.day.after(assignment.end_date))
