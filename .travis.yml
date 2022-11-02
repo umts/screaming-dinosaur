@@ -1,6 +1,9 @@
 dist: focal
 language: ruby
-cache: bundler
+cache:
+  bundler: true
+  directories:
+    - $HOME/.cache/yarn
 services:
   - mysql
 addons:
