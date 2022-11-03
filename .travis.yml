@@ -15,7 +15,7 @@ before_install:
   - nvm install 'lts/*'
   - nvm use 'lts/*'
   - npm i -g yarn
-  - gem install bundler --version $(tail -1 Gemfile.lock)
+  - gem install bundler
 install:
   - bundle config set --local deployment 'true'
   - bundle install --jobs=3 --retry=3
