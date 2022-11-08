@@ -17,7 +17,7 @@ gem 'rails', '~> 7.0.4'
 gem 'sassc-rails'
 gem 'snappconfig'
 gem 'sprockets-rails'
-gem 'uglifier'
+gem 'terser'
 gem 'whenever', require: false
 
 group :production do
@@ -33,6 +33,7 @@ group :development do
   gem 'capistrano-passenger', require: false
   gem 'capistrano-pending', require: false
   gem 'capistrano-rails', require: false
+  gem 'capistrano-yarn', require: false
   gem 'ed25519', '>= 1.2', '< 2.0', require: false
   gem 'listen', '~> 3.0'
   gem 'rb-readline', require: false
