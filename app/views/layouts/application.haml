@@ -11,11 +11,16 @@
       locals: { rosters: @current_user&.rosters || Roster.none }
     .container
       - if flash[:message].present?
-        .alert.alert-success
+        .alert.alert-success{ role: 'alert' }
           = flash[:message]
           - if flash[:change].present?
             (#{link_to 'undo', undo_change_path(flash[:change])})
       - if flash[:errors].present?
-        .alert.alert-danger
-          = flash[:errors]
+        .alert.alert-danger{ role: 'alert' }
+          - if flash[:errors].is_a? Array
+            %ul
+              - flash[:errors].each do |error_message|
+                %li= error_message
+          - else
+            = flash[:errors]
       #main-content= yield
