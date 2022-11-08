@@ -152,8 +152,8 @@ RSpec.describe AssignmentsController do
     subject :submit do
       post :generate_rotation,
            params: { roster_id: roster.id,
-                     start_date: Time.zone.today.to_s(:db),
-                     end_date: Date.tomorrow.to_s(:db),
+                     start_date: Time.zone.today.to_fs(:db),
+                     end_date: Date.tomorrow.to_fs(:db),
                      user_ids: user_ids,
                      starting_user_id: starting_user_id }
     end
