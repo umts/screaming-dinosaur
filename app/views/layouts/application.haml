@@ -17,8 +17,5 @@
             (#{link_to 'undo', undo_change_path(flash[:change])})
       - if flash[:errors].present?
         .alert.alert-danger
-          The following errors occurred:
-          %ul
-            - flash[:errors].each do |error_message|
-              %li= error_message
+          = flash[:errors]
       #main-content= yield
