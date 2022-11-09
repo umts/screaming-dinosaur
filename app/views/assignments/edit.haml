@@ -1,9 +1,10 @@
 %h1.title Edit assignment
 .container-fluid
-  .row.mb-4
-    .col
-      = button_to 'Delete assignment',
-        roster_assignment_path(@roster, @assignment),
-        method: :delete, class: 'btn btn-danger'
+  - if @current_user.admin_in?(@roster)
+    .row.mb-4
+      .col
+        = button_to 'Delete assignment',
+          roster_assignment_path(@roster, @assignment),
+          method: :delete, class: 'btn btn-danger'
   = render partial: 'form',
     locals: { path: roster_assignment_path(@roster, @assignment) }

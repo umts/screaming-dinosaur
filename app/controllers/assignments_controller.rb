@@ -25,10 +25,15 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
-    @assignment.notify :owner, of: :deleted_assignment, by: @current_user
-    @assignment.destroy
-    confirm_change(@assignment)
-    redirect_to roster_assignments_path(@roster)
+    if @current_user.admin_in?(@roster)
+      @assignment.notify :owner, of: :deleted_assignment, by: @current_user
+      @assignment.destroy
+      confirm_change(@assignment)
+      redirect_to roster_assignments_path(@roster)
+    else
+      flash[:errors] = 'Only roster admins may delete assignments.'
+      redirect_to edit_roster_assignment_path(@roster, @assignment)
+    end
   end
 
   def edit; end
