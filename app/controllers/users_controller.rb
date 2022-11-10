@@ -94,6 +94,6 @@ class UsersController < ApplicationController
   def require_admin_in_roster_or_self
     return if @current_user == @user || @current_user.admin_in?(@roster)
 
-    head :unauthorized and return
+    render file: 'public/401.html', status: :unauthorized
   end
 end
