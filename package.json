@@ -3,5 +3,9 @@
     "@fortawesome/fontawesome-free": "^5.15.2",
     "ab-datepicker": "^2.1.19",
     "fullcalendar": "^5.5.1"
+  },
+  "devDependencies": {
+    "eslint": ">=5.16.0",
+    "eslint-config-google": "^0.14.0"
   }
 }
