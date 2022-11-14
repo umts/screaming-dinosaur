@@ -11,8 +11,8 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery_ujs
-//= require popper
+//= require jquery-ujs
+//= require popper.js/dist/umd/popper.min.js
 //= require bootstrap
 //= require ab-datepicker/js/datepicker
 //= require fullcalendar
