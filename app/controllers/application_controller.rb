@@ -34,11 +34,11 @@ class ApplicationController < ActionController::Base
   # 3. Admins of specifically the current roster
 
   def require_admin
-    head :unauthorized and return unless @current_user.admin?
+    render file: 'public/401.html', status: :unauthorized unless @current_user.admin?
   end
 
   def require_admin_in_roster
-    head :unauthorized and return unless @current_user.admin_in? @roster
+    render file: 'public/401.html', status: :unauthorized unless @current_user.admin_in? @roster
   end
 
   def set_current_user
