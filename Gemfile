@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
 
 gem 'bootstrap', '~> 4.2'
-gem 'factory_bot_rails'
 gem 'haml'
 gem 'haml-rails'
 gem 'icalendar'
@@ -35,17 +34,20 @@ group :development do
   gem 'capistrano-rails', require: false
   gem 'capistrano-yarn', require: false
   gem 'ed25519', '>= 1.2', '< 2.0', require: false
+  gem 'haml_lint', require: false
   gem 'listen', '~> 3.0'
   gem 'rb-readline', require: false
+  gem 'rubocop', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :development, :test do
-  gem 'haml_lint'
+  gem 'factory_bot_rails'
   gem 'pry-byebug'
   gem 'puma'
-  gem 'rubocop', require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-rspec', require: false
+  gem 'rspec-rails'
 end
 
 group :test do
@@ -53,7 +55,6 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec-html-matchers'
-  gem 'rspec-rails'
   gem 'simplecov'
   gem 'timecop'
   gem 'umts-custom-matchers'
