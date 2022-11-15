@@ -37,15 +37,15 @@ group :development do
   gem 'ed25519', '>= 1.2', '< 2.0', require: false
   gem 'listen', '~> 3.0'
   gem 'rb-readline', require: false
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :development, :test do
   gem 'haml_lint'
   gem 'pry-byebug'
   gem 'puma'
-  gem 'rubocop', require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-rspec', require: false
 end
 
 group :test do

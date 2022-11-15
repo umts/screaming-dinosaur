@@ -1,33 +1,23 @@
-engines:
+version: "2"
+plugins:
   brakeman:
     enabled: true
   bundler-audit:
     enabled: true
   csslint:
     enabled: true
-  coffeelint:
-    enabled: true
-  duplication:
-    enabled: true
-    config:
-      languages:
-      - ruby
   fixme:
+    enabled: true
+  haml-lint:
     enabled: true
   rubocop:
     enabled: true
-    channel: rubocop-1-9-1
-ratings:
-  paths:
-  - Gemfile.lock
-  - "**.erb"
-  - "**.haml"
-  - "**.rb"
-  - "**.css"
-exclude_paths:
-- bin/**/*
-- coverage/**/*
-- config/**/*
-- db/**/*
-- spec/**/*
-- vendor/**/*
+    channel: rubocop-1-31-0
+  scss-lint:
+    enabled: true
+exclude_patterns:
+- "bin/**/*"
+- "coverage/**/*"
+- "config/**/*"
+- "db/**/*"
+- "vendor/**/*"
