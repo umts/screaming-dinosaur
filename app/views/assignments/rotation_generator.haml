@@ -6,14 +6,10 @@
       .col-4.offset-2
         .form-group
           = label_tag :start_date
-          = text_field_tag :start_date,
-            @start_date,
-            class: 'datepicker form-control'
+          = date_field_tag :start_date, @start_date, class: 'form-control'
         .form-group
           = label_tag :end_date
-          = text_field_tag :end_date,
-           @start_date + 3.months,
-           class: 'datepicker form-control'
+          = date_field_tag :end_date, @start_date + 3.months, class: 'form-control'
         .form-group
           = label_tag :starting_user_id, 'Starting with'
           = select_tag :starting_user_id,
