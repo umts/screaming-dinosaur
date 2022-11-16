@@ -31,7 +31,7 @@ class AssignmentsController < ApplicationController
       confirm_change(@assignment)
       redirect_to roster_assignments_path(@roster)
     else
-      flash[:errors] = 'Only roster admins may delete assignments.'
+      flash[:errors] = t('.not_an_admin')
       redirect_to edit_roster_assignment_path(@roster, @assignment)
     end
   end
