@@ -1,3 +1,5 @@
 linters:
-  TagName:
-    enabled: false
+  ClassesBeforeIds:
+    EnforcedStyle: id
+  LineLength:
+    max: 120

@@ -2,5 +2,9 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",
     "fullcalendar": "^5.11.3"
+  },
+  "devDependencies": {
+    "eslint": ">=5.16.0",
+    "eslint-config-google": "^0.14.0"
   }
 }
