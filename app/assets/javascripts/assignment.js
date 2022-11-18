@@ -11,7 +11,7 @@ $(document).ready(function() {
     } catch (err) {
       console.log('Unable to copy');
     }
-    if(successful) {
+    if (successful) {
       var title = 'Copied successfully!';
       $('.copy-tooltip').attr('title', title)
         .tooltip('dispose')
