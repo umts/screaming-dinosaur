@@ -65,12 +65,13 @@ RSpec.describe 'editing an assignment' do
 
     before { visit current_path }
 
-    it 'stops them from changing assignments they do not own' do
+    it 'they are the only selectable option' do
       select(new_user.last_name, from: 'User')
-      click_button 'Save'
-      within('div.alert.alert-danger') do
-        expect(page).to have_selector 'li', text: 'You may only edit'
-      end
+      expect(page).to have_select('User', selected: assignment.user.last_name)
+    end
+
+    it 'has other selectable users disabled' do
+      expect(page).to have_selector(:option, new_user.last_name, disabled: true)
     end
 
     it 'does not allow them to delete the assignment' do

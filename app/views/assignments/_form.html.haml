@@ -4,8 +4,13 @@
     .col-2.offset-3
       .form-group
         = f.label :user_id
-        = f.collection_select :user_id, @users, :id, :last_name,
-                              {}, class: 'form-control custom-select'
+        - if @current_user.admin_in?(@roster)
+          = f.collection_select :user_id, @users, :id, :last_name,
+            { selected: @assignment.user&.id || @current_user.id }, class: 'form-control custom-select'
+        - else
+          = f.collection_select :user_id, @users, :id, :last_name,
+            { disabled: @users.reject { |u| u == @current_user }.pluck(:id), selected: @current_user.id},
+            class: 'form-control custom-select'
     .col-4
       .form-group
         = f.label :start_date
