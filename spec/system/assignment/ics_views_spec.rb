@@ -41,8 +41,8 @@ RSpec.describe 'ICS views' do
     end
 
     def assignment_dates(assignment)
-      ["DTSTART;VALUE=DATE:#{assignment.start_date.to_s(:number)}",
-       "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_s(:number)}"]
+      ["DTSTART;VALUE=DATE:#{assignment.start_date.to_fs(:number)}",
+       "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_fs(:number)}"]
     end
   end
 

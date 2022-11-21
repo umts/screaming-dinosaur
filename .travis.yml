@@ -1,6 +1,9 @@
 dist: focal
 language: ruby
-cache: bundler
+cache:
+  bundler: true
+  directories:
+    - $HOME/.cache/yarn
 services:
   - mysql
 addons:
@@ -12,6 +15,7 @@ before_install:
   - nvm install 'lts/*'
   - nvm use 'lts/*'
   - npm i -g yarn
+  - gem install bundler
 install:
   - bundle config set --local deployment 'true'
   - bundle install --jobs=3 --retry=3
