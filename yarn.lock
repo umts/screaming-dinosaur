@@ -17,11 +17,6 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@fortawesome/fontawesome-free@^5.15.2":
-  version "5.15.2"
-  resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.15.2.tgz#218cd7276ab4f9ab57cc3d2efa2697e6a579f25d"
-  integrity sha512-7l/AX41m609L/EXI9EKH3Vs3v0iA8tKlIOGtw+kgcoanI7p+e4I4GYLqW3UXWiTnjSFymKSmTTPKYrivzbxxqA==
-
 "@humanwhocodes/config-array@^0.11.6":
   version "0.11.7"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.7.tgz#38aec044c6c828f6ed51d5d7ae3d9b9faf6dbb0f"
@@ -103,6 +98,11 @@ balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
+
+bootstrap-icons@^1.10.2:
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/bootstrap-icons/-/bootstrap-icons-1.10.2.tgz#6a5729e0475e007ed82d752225645e4e6fec48d7"
+  integrity sha512-PTPYadRn1AMGr+QTSxe4ZCc+Wzv9DGZxbi3lNse/dajqV31n2/wl/7NX78ZpkvFgRNmH4ogdIQPQmxAfhEV6nA==
 
 brace-expansion@^1.1.7:
   version "1.1.11"

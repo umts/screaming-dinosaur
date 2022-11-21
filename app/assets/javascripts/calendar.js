@@ -3,13 +3,20 @@ $(document).ready(function() {
   if (!calendar_container) { return }
 
   var calendar = new FullCalendar.Calendar(calendar_container, {
-    'themeSystem': 'bootstrap',
-    'initialDate': sessionStorage.getItem('lastDate') || null,
-    'events': 'assignments.json',
-    'startParam': 'start_date',
-    'endParam': 'end_date',
-    'dayCellClassNames': 'day-empty',
-    'eventDidMount': function(info) {
+    // Bootstrap icon override, can be removed when theme is set to "bootstrap5"
+    bootstrapFontAwesome: {
+      prev: 'bi bi bi-chevron-left',
+      next: 'bi bi bi-chevron-right',
+      prevYear: 'bi bi bi-chevron-double-left',
+      nextYear: 'bi bi bi-chevron-double-right'
+    },
+    themeSystem: 'bootstrap',
+    initialDate: sessionStorage.getItem('lastDate') || null,
+    events: 'assignments.json',
+    startParam: 'start_date',
+    endParam: 'end_date',
+    dayCellClassNames: 'day-empty',
+    eventDidMount: function(info) {
       var date = info.event.start;
       while (date < info.event.end) {
         var dateString = date.toISOString().split('T')[0];
@@ -17,7 +24,7 @@ $(document).ready(function() {
         date.setDate(date.getDate() + 1);
       }
     },
-    'datesSet': function(info) {
+    datesSet: function(info) {
       var currentStart = info.view.currentStart.toISOString();
       sessionStorage.setItem('lastDate', currentStart);
     }

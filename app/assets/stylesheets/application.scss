@@ -5,13 +5,14 @@ $theme-colors: (
   "danger": #a8431e,
   "warning": #c69214,
   "info": #71b2c9,
-  "light": #eeeeee,
-  "dark": #333333
+  "light": #eee,
+  "dark": #333
 );
 
-@import "bootstrap";
-@import "fullcalendar/main";
+$bootstrap-icons-font-file: 'bootstrap-icons/font/fonts/bootstrap-icons' !default;
 
-@import "font-awesome-custom";
-@import "assignments";
-@import "assignments/calendar";
+@import 'bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
+@import 'fullcalendar/main';
+@import 'assignments';
+@import 'assignments/calendar';
