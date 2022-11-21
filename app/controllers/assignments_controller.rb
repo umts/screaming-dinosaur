@@ -84,7 +84,8 @@ class AssignmentsController < ApplicationController
       confirm_change(@assignment)
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster)
-    else report_errors(@assignment, fallback_location: roster_assignments_path)
+    else
+      report_errors(@assignment, fallback_location: roster_assignments_path)
     end
   end
 
@@ -148,11 +149,7 @@ class AssignmentsController < ApplicationController
   def require_taking_ownership
     return true if @current_user.admin_in?(@roster) || taking_ownership?
 
-    flash[:errors] = [<<-TEXT]
-      You may only edit or create assignments such that you become on call.
-      The intended new owner of this assignment must take it themselves.
-      Or, a roster administrator can perform this change for you.
-    TEXT
+    flash[:errors] = t('.not_an_admin')
     redirect_back fallback_location: roster_assignments_path(@roster)
     false
   end
