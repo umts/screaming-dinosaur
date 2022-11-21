@@ -66,7 +66,7 @@ RSpec.describe 'viewing the index' do
       let(:date) { Time.zone.today.change(day: 14) }
       let(:new_path) do
         new_roster_assignment_path roster_id: roster.id,
-                                   date: date.to_s(:db)
+                                   date: date.to_fs(:db)
       end
 
       it 'sends you to create a new assignment' do
@@ -80,7 +80,7 @@ RSpec.describe 'viewing the index' do
     context 'when switching months' do
       before do
         visit roster_assignments_path(roster)
-        3.times { click_on 'next' }
+        3.times { click_on 'Next month' }
 
         # Go anywhere else
         visit edit_roster_user_path(roster, user)
@@ -89,7 +89,7 @@ RSpec.describe 'viewing the index' do
       it 'stores the last viewed month' do
         visit roster_assignments_path(roster)
 
-        three_months_from_now = (Time.zone.now + 3.months).strftime('%B %Y')
+        three_months_from_now = 3.months.from_now.strftime('%B %Y')
         expect(page).to have_text(three_months_from_now)
       end
     end

@@ -85,39 +85,6 @@ RSpec.describe AssignmentsController do
     end
   end
 
-  describe 'DELETE #destroy' do
-    subject :submit do
-      delete :destroy, params: { roster_id: assignment.roster.id, id: assignment.id }
-    end
-
-    let(:assignment) { create :assignment }
-
-    before do
-      when_current_user_is :whoever
-    end
-
-    it 'finds the correct assignment' do
-      submit
-      expect(assigns.fetch(:assignment)).to eql assignment
-    end
-
-    it 'destroys the assignment' do
-      allow(Assignment).to receive(:includes).and_return(Assignment)
-      allow(Assignment).to receive(:find).and_return(assignment)
-      allow(assignment).to receive(:destroy)
-      submit
-      expect(assignment).to have_received(:destroy)
-    end
-
-    it 'sends a notification to the owner of the assignment' do
-      allow(Assignment).to receive(:includes).and_return(Assignment)
-      allow(Assignment).to receive(:find).and_return(assignment)
-      allow(assignment).to receive(:notify)
-      submit
-      expect(assignment).to have_received(:notify)
-    end
-  end
-
   describe 'GET #edit' do
     subject :submit do
       get :edit, params: { roster_id: roster.id, id: assignment.id }
@@ -152,8 +119,8 @@ RSpec.describe AssignmentsController do
     subject :submit do
       post :generate_rotation,
            params: { roster_id: roster.id,
-                     start_date: Time.zone.today.to_s(:db),
-                     end_date: Date.tomorrow.to_s(:db),
+                     start_date: Time.zone.today.to_fs(:db),
+                     end_date: Date.tomorrow.to_fs(:db),
                      user_ids: user_ids,
                      starting_user_id: starting_user_id }
     end
