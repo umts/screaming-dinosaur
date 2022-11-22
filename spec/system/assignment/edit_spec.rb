@@ -38,11 +38,6 @@ RSpec.describe 'editing an assignment' do
       click_button 'Save'
       expect(assignment.reload.end_date).to eq(date_today)
     end
-
-    it 'destroys the assignment' do
-      click_button 'Delete assignment'
-      expect(Assignment.find_by(id: assignment)).to be_blank
-    end
   end
 
   context 'when the current user is an admin' do
@@ -58,6 +53,11 @@ RSpec.describe 'editing an assignment' do
       click_button 'Save'
       expect(assignment.reload.user).to eq new_user
     end
+
+    it 'destroys the assignment' do
+      click_button 'Delete assignment'
+      expect(Assignment.find_by(id: assignment)).to be_blank
+    end
   end
 
   context 'when the current user is not an admin' do
@@ -68,9 +68,14 @@ RSpec.describe 'editing an assignment' do
     it 'stops them from changing assignments they do not own' do
       select(new_user.last_name, from: 'User')
       click_button 'Save'
-      within('div.alert.alert-danger') do
-        expect(page).to have_selector 'li', text: 'You may only edit'
-      end
+      expect(page).to have_selector '.alert.alert-danger',
+                                    text: 'You may only edit or create assignments such that you become on call. ' \
+                                          'The intended new owner of this assignment must take it themselves. ' \
+                                          'Or, a roster administrator can perform this change for you.'
+    end
+
+    it 'does not allow them to delete the assignment' do
+      expect(page).not_to have_button 'Delete assignment'
     end
   end
 end

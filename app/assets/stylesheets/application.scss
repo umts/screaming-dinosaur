@@ -11,9 +11,7 @@ $theme-colors: (
 
 @import "bootstrap/scss/bootstrap";
 @import "fullcalendar/main";
-@import "ab-datepicker/css/datepicker";
 
 @import "font-awesome-custom";
-@import "datepicker-theme";
 @import "assignments";
 @import "assignments/calendar";

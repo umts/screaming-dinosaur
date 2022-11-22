@@ -14,6 +14,5 @@
 //= require jquery-ujs
 //= require popper.js/dist/umd/popper.min.js
 //= require bootstrap
-//= require ab-datepicker/js/datepicker
 //= require fullcalendar
 //= require_tree .

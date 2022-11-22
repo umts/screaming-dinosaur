@@ -71,4 +71,53 @@ RSpec.describe AssignmentsController do
       end
     end
   end
+
+  describe 'DELETE /rosters/:roster_id/assignments/:id' do
+    subject(:submit) { delete "/rosters/#{roster.id}/assignments/#{assignment.id}" }
+
+    let(:roster) { create :roster }
+    let!(:assignment) { create :assignment, roster: roster }
+    let(:roster_admin) { create :user, rosters: [roster] }
+
+    context 'when the current user is an admin in the roster' do
+      before do
+        roster_admin.membership_in(roster).update admin: true
+        when_current_user_is roster_admin
+      end
+
+      it 'deletes an Assignment' do
+        expect { submit }.to change(Assignment, :count).by(-1)
+      end
+
+      it 'deletes the target Assignment' do
+        submit
+        expect(Assignment.find_by(id: roster.id)).to be_nil
+      end
+
+      it { is_expected.to redirect_to("/rosters/#{roster.id}/assignments") }
+
+      it 'sends a notification to the owner of the assignment' do
+        allow(Assignment).to receive(:includes).and_return(Assignment)
+        allow(Assignment).to receive(:find).and_return(assignment)
+        allow(assignment).to receive(:notify)
+        submit
+        expect(assignment).to have_received(:notify).with(:owner, of: :deleted_assignment, by: roster_admin)
+      end
+    end
+
+    context 'when the current user is not an admin in the roster' do
+      before { when_current_user_is assignment.user }
+
+      it 'does not delete an Assignment' do
+        expect { submit }.not_to change(Assignment, :count)
+      end
+
+      it 'sets the correct flash[:errors] message' do
+        submit
+        expect(flash[:errors]).to eq('Only roster admins may delete assignments.')
+      end
+
+      it { is_expected.to redirect_to("/rosters/#{roster.id}/assignments/#{assignment.id}/edit") }
+    end
+  end
 end
