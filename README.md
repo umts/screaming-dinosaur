@@ -28,3 +28,26 @@ Rails 5 app for management of Transportation IT on-call schedule and interaction
 7. Seed development data: `rails db:seed`
 
 When seeding, you can skip creating assignments with `SKIP_ASSIGNMENTS=true rake db:reset` etc.
+
+### Style guides
+
+This app comes bundled with [RuboCop](https://github.com/rubocop/rubocop) for ruby files,
+[haml-lint](https://github.com/sds/haml-lint) for haml files, [ESLint](https://eslint.org/) for JavaScript files,
+and [Stylelint](https://github.com/stylelint/stylelint) for scss files.
+
+Many text editors have support for these linters and can show code violations in real time.
+
+You can also run the linters from the command line:
+
+```bash
+rubocop your_file.rb
+```
+```bash
+haml-lint your_file.html.haml
+```
+```bash
+yarn run eslint your_file.js
+```
+```bash
+yarn run stylelint your_file.scss
+```
