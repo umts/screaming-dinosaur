@@ -9,7 +9,7 @@ $theme-colors: (
   "dark": #333333
 );
 
-@import "bootstrap";
+@import "bootstrap/scss/bootstrap";
 @import "fullcalendar/main";
 
 @import "font-awesome-custom";
