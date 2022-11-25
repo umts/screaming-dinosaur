@@ -10,8 +10,9 @@ $theme-colors: (
 );
 
 @import "bootstrap/scss/bootstrap";
-@import "fullcalendar/main";
-
+@import "@fullcalendar/common/main";
+@import "@fullcalendar/daygrid/main";
+@import "@fullcalendar/bootstrap/main";
 @import "font-awesome-custom";
 @import "assignments";
 @import "assignments/calendar";
