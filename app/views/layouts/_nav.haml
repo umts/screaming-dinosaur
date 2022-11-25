@@ -6,7 +6,7 @@
       aria: { expanded: 'false', label: 'Toggle Navigation' } }
         %span.fas.fa-bars
     #navCollapse.collapse.navbar-collapse
-      %ul.navbar-nav.mr-auto
+      %ul.navbar-nav.me-auto
         - rosters.each do |roster|
           = nav_link_item roster.name, roster_assignments_path(roster)
         - if @current_user&.admin?
@@ -17,8 +17,6 @@
               rotation_generator_roster_assignments_path(@roster)
       %ul.navbar-nav
         - if @current_user.present?
-          %li.nav-item.navbar-text.mx-2
-            Logged in as #{@current_user.full_name}
-          = nav_link_item 'Edit Profile',
+          = nav_link_item @current_user.full_name,
             edit_roster_user_path(@roster, @current_user)
         = nav_link_item 'Logout', destroy_session_path

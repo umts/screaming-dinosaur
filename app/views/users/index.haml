@@ -13,7 +13,7 @@
     .col-lg.order-lg-last.text-right
       - if @other_users.present?
         = form_tag transfer_roster_users_path, class: 'form-inline' do
-          = label_tag :id, 'Add user from another roster:', class: 'mr-1'
+          = label_tag :id, 'Add user from another roster:', class: 'me-1'
           .input-group
             = select_tag :id,
               options_from_collection_for_select(@other_users, :id, :last_name),
