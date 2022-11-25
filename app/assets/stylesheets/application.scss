@@ -1,17 +1,14 @@
-$theme-colors: (
-  "primary": #881c1c,
-  "secondary": #63666a,
-  "success": #76881d,
-  "danger": #a8431e,
-  "warning": #c69214,
-  "info": #71b2c9,
-  "light": #eeeeee,
-  "dark": #333333
-);
+$primary: #881c1c;
+$secondary: #63666a;
+$success: #76881d;
+$danger: #a8431e;
+$warning: #c69214;
+$info: #71b2c9;
+$light: #eee;
+$dark: #333;
 
 @import "bootstrap/scss/bootstrap";
-@import "fullcalendar/main";
-
 @import "font-awesome-custom";
+@import "fullcalendar/main";
 @import "assignments";
 @import "assignments/calendar";
