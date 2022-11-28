@@ -5,7 +5,7 @@
       data: { toggle: 'collapse', target: '#navCollapse' },
       aria: { expanded: 'false', label: 'Toggle Navigation' } }
         %span.fas.fa-bars
-    .collapse.navbar-collapse#navCollapse
+    #navCollapse.collapse.navbar-collapse
       %ul.navbar-nav.mr-auto
         - rosters.each do |roster|
           = nav_link_item roster.name, roster_assignments_path(roster)

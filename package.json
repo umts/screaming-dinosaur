@@ -1,10 +1,16 @@
 {
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",
-    "fullcalendar": "^5.11.3"
+    "bootstrap": "^4.6",
+    "fullcalendar": "^5.11.3",
+    "jquery": "^1.12.4",
+    "jquery-ujs": "^1.2.3",
+    "popper.js": "^1.16.1"
   },
   "devDependencies": {
     "eslint": ">=5.16.0",
-    "eslint-config-google": "^0.14.0"
+    "eslint-config-google": "^0.14.0",
+    "stylelint": "^14.15.0",
+    "stylelint-config-standard-scss": "^6.1.0"
   }
 }

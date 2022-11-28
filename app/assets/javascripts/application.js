@@ -11,8 +11,8 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery_ujs
-//= require popper
+//= require jquery-ujs
+//= require popper.js/
 //= require bootstrap
 //= require fullcalendar
 //= require_tree .
