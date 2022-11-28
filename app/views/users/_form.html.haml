@@ -1,44 +1,42 @@
 = form_for @user, url: path do |f|
   .container-fluid
-    .row
-      .col-lg-6
-        .form-group
-          = f.label :first_name
+    .row.mb-3
+      .col-lg
+        .mb-3
+          = f.label :first_name, class: 'form-label'
           = f.text_field :first_name, class: 'form-control'
-        .form-group
-          = f.label :last_name
+        .mb-3
+          = f.label :last_name, class: 'form-label'
           = f.text_field :last_name, class: 'form-control'
-        .form-group
-          = f.label :spire
+        .mb-3
+          = f.label :spire, class: 'form-label'
           = f.email_field :spire, size: 25,
            placeholder: '12345678@umass.edu', class: 'form-control'
-        .form-group
-          = f.label :email
+        .mb-3
+          = f.label :email, class: 'form-label'
           = f.email_field :email, size: 30, class: 'form-control'
-        .form-group
-          = f.label :phone
+        .mb-3
+          = f.label :phone, class: 'form-label'
           = f.phone_field :phone,
            placeholder: '+14135450056', class: 'form-control'
-      .col-lg-6
-        .form-group
-          = f.label :rosters
+      .col-lg
+        .mb-3
+          = f.label :rosters, class: 'form-label'
           = f.select :rosters,
            options_from_collection_for_select(Roster.all, :id, :name,
-            selected: selected_rosters(@user, @roster)), {}, multiple: true, class: 'form-control'
-        %div
-          = f.check_box :reminders_enabled
-          = f.label :reminders_enabled,
-           'Receive email reminders of upcoming assignments?'
-        %div
-          = f.check_box :change_notifications_enabled
-          = f.label :change_notifications_enabled,
-           'Receive notifications when your assignments are changed?'
+            selected: selected_rosters(@user, @roster)), {}, multiple: true, class: 'form-select'
+        .mb-3.form-check
+          = f.check_box :reminders_enabled, class: 'form-check-input'
+          = f.label :reminders_enabled, 'Receive email reminders of upcoming assignments?', class: 'form-check-label'
+        .mb-3.form-check
+          = f.check_box :change_notifications_enabled, class: 'form-check-input'
+          = f.label :change_notifications_enabled, 'Receive notifications when your assignments are changed?',
+            class: 'form-check-label'
         - if @current_user.admin_in? @roster
           - membership = @user.membership_in @roster
-          %div
+          .mb-3.form-check
             = f.fields_for membership || :membership do |g|
-              %div
-                = g.check_box :admin, disabled: membership&.admin? && @roster.admins.one?
-                = g.label :admin, "Admin in #{@roster.name}?"
+              = g.check_box :admin, disabled: membership&.admin? && @roster.admins.one?, class: 'form-check-input'
+              = g.label :admin, "Admin in #{@roster.name}?", class: 'form-check-label'
     .text-center
       = f.submit 'Save', class: 'btn btn-primary btn-lg'

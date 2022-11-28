@@ -1,4 +1,4 @@
-%h1.title Users in #{@roster.name}
+%h1 Users in #{@roster.name}
 
 - if @fallback.nil?
   .card.bg-warning
@@ -10,20 +10,20 @@
   .row
     .col-lg
       = link_to 'Add new user', new_roster_user_path
-    .col-lg.order-lg-last.text-right
-      - if @other_users.present?
-        = form_tag transfer_roster_users_path, class: 'form-inline' do
-          = label_tag :id, 'Add user from another roster:', class: 'me-1'
-          .input-group
-            = select_tag :id,
-              options_from_collection_for_select(@other_users, :id, :last_name),
-              class: 'form-control form-control-sm custom-select custom-select-sm'
-            = submit_tag 'Add', class: 'btn btn-primary btn-sm input-group-append'
-    .col-lg.mt-4.mt-lg-0.text-center
+    .col-lg
       - if @active
         = link_to 'Inactive users', roster_users_path(active: false)
       - else
         = link_to 'Active users', roster_users_path
+    .col-lg
+      - if @other_users.present?
+        = form_tag transfer_roster_users_path do
+          = label_tag :id, 'Add user from another roster:', class: 'form-label'
+          .input-group
+            = select_tag :id,
+              options_from_collection_for_select(@other_users, :id, :last_name),
+              class: 'form-select form-select-sm'
+            = submit_tag 'Add', class: 'btn btn-primary btn-sm'
 
 %table.table
   %thead
