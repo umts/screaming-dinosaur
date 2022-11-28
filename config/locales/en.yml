@@ -36,8 +36,12 @@ en:
         is_fallback: Fallback
   assignments:
     update:
-      not_an_admin: 'You may only edit or create assignments such that you become on call.
+      not_an_admin: 'You may only edit assignments such that you become on call.
                     The intended new owner of this assignment must take it themselves.
+                    Or, a roster administrator can perform this change for you.'
+    create:
+      not_an_admin: 'You may only create assignments such that you become on call.
+                    The intended new owner of this assignment must create it themselves.
                     Or, a roster administrator can perform this change for you.'
     destroy:
       not_an_admin: 'Only roster admins may delete assignments.'
