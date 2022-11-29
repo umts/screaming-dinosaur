@@ -1,11 +1,10 @@
-%nav.navbar.navbar-dark.navbar-expand-md.bg-primary.mb-2
+%nav.navbar.navbar-expand-lg.navbar-dark.bg-primary.mb-2
   .container-fluid
-    .navbar-header
-      %button.navbar-toggler{ type: 'button',
-      data: { toggle: 'collapse', target: '#navCollapse' },
-      aria: { expanded: 'false', label: 'Toggle Navigation' } }
-        %span.fas.fa-bars
-    #navCollapse.collapse.navbar-collapse
+    %button.navbar-toggler{ type: 'button',
+      'data-bs': { toggle: 'collapse', target: '#navCollapse' },
+      aria: { controlls: '#navCollapse', expanded: 'false', label: 'Toggle navigation' } }
+      %span.navbar-toggler-icon
+    #navCollapse.collapse.navbar-collapse.mb-2.mb-lg-0
       %ul.navbar-nav.me-auto
         - rosters.each do |roster|
           = nav_link_item roster.name, roster_assignments_path(roster)
