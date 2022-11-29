@@ -57,7 +57,7 @@ RSpec.describe AssignmentsController do
       end
 
       it 'has an event color' do
-        expect(assignment_object.fetch('color')).to eq('var(--secondary)')
+        expect(assignment_object.fetch('color')).to eq('var(--bs-secondary)')
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe AssignmentsController do
       end
 
       it 'has an "owned" event color' do
-        expect(assignment_object.fetch('color')).to eq('var(--info)')
+        expect(assignment_object.fetch('color')).to eq('var(--bs-info)')
       end
     end
   end

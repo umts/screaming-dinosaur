@@ -17,12 +17,12 @@ RSpec.describe 'viewing the index' do
     end
 
     it 'displays click to copy tooltip' do
-      find('.copy-text-btn').hover
-      expect(page).to have_selector '.tooltip', text: 'Click to copy link'
+      find('.copy-tooltip').hover
+      expect(page).to have_selector '.tooltip', text: 'Copy to clipboard'
     end
 
     it 'copys link on button press' do
-      find('.copy-text-btn').click.hover
+      find('.copy-tooltip').click.hover
       expect(page).to have_selector '.tooltip', text: 'Copied successfully!'
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe 'viewing the index' do
                             user: user, roster: roster
         visit roster_assignments_path(roster)
         expect(find_all('.fc-event').map { |e| e['style'] })
-          .to all(match(bg_variable('info')))
+          .to all(match(bg_variable('bs-info')))
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe 'viewing the index' do
                             user: roster_user(roster), roster: roster
         visit roster_assignments_path(roster)
         expect(find_all('.fc-event').map { |e| e['style'] })
-          .to all(match(bg_variable('secondary')))
+          .to all(match(bg_variable('bs-secondary')))
       end
     end
 
