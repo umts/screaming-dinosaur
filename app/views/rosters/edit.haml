@@ -1,12 +1,15 @@
-%h1.title Edit roster
+%h1 Edit roster
 
 = form_for @roster do |f|
-  .form-group
-    = f.label :name
-    = f.text_field :name, class: 'form-control'
-  .form-group
-    = f.label :fallback_user
-    = f.collection_select :fallback_user_id, @users, :id, :last_name,
-      { include_blank: true }, class: 'form-control custom-select'
-  .form-group
+  .row
+    .col-lg
+      .mb-3
+        = f.label :name, class: 'form-label'
+        = f.text_field :name, class: 'form-control'
+    .col-lg
+      .mb-3
+        = f.label :fallback_user, class: 'form-label'
+        = f.collection_select :fallback_user_id, @users, :id, :last_name,
+          { include_blank: true }, class: 'form-select'
+  .text-center
     = f.submit 'Save', class: 'btn btn-primary'

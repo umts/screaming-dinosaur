@@ -1,11 +1,11 @@
-%h1.title New roster
+%h1 New roster
 %p
   To assign the fallback user, first create the roster,
   then add some users to it.
 
 = form_for Roster.new do |f|
-  .form-group
-    = f.label :name
+  .mb-3
+    = f.label :name, class: 'form-label'
     = f.text_field :name, class: 'form-control'
-  .form-group
+  .text-center
     = f.submit 'Save', class: 'btn btn-primary'
