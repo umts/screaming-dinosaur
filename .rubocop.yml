@@ -21,7 +21,7 @@ Metrics/BlockLength:
     - array
     - hash
     - heredoc
-  IgnoredMethods:
+  AllowedMethods:
     - configure
 
     # ActiveSupport::Concern
@@ -70,6 +70,9 @@ RSpec/ExampleLength:
     - array
     - hash
     - heredoc
+
+RSpec/FactoryBot/ConsistentParenthesesStyle:
+  EnforcedStyle: omit_parentheses
 
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
