@@ -5,8 +5,7 @@ class Assignment < ApplicationRecord
   belongs_to :user
   belongs_to :roster
 
-  validates :user, :start_date, :end_date, :roster,
-            presence: true
+  validates :start_date, :end_date, presence: true
   validate :overlaps_any?
   validate :user_in_roster?
 
