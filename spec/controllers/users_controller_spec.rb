@@ -350,7 +350,7 @@ RSpec.describe UsersController do
         before { changes[:phone] = 'not a valid phone number' }
 
         it 'does not update the user' do
-          expect { submit }.not_to change { user.reload.phone }
+          expect { submit }.not_to(change { user.reload.phone })
         end
 
         it 'shows errors' do
@@ -394,7 +394,7 @@ RSpec.describe UsersController do
         before { changes[:phone] = 'not a valid phone number' }
 
         it 'does not update the user' do
-          expect { submit }.not_to change { user.reload.phone }
+          expect { submit }.not_to(change { user.reload.phone })
         end
 
         it 'shows errors' do
@@ -416,7 +416,7 @@ RSpec.describe UsersController do
         end
 
         it 'does not change their adminhood' do
-          expect { submit }.not_to change { user.membership_in roster }
+          expect { submit }.not_to(change { user.membership_in roster })
         end
 
         it 'redirects back' do
