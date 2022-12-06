@@ -11,6 +11,14 @@ class RostersController < ApplicationController
     redirect_to roster_assignments_path(@roster)
   end
 
+  def index
+    @rosters = Roster.all
+  end
+
+  def edit
+    @users = @roster.users
+  end
+
   def create
     roster_params = params.require(:roster).permit(:name)
     roster = Roster.new roster_params
@@ -20,33 +28,27 @@ class RostersController < ApplicationController
     if roster.save
       confirm_change(roster)
       redirect_to rosters_path
-    else report_errors(roster, fallback_location: rosters_path)
+    else
+      report_errors(roster, fallback_location: rosters_path)
     end
   end
-
-  def destroy
-    @roster.destroy
-    confirm_change(@roster, 'Roster and any assignments have been deleted.')
-    redirect_to rosters_path
-  end
-
-  def edit
-    @users = @roster.users
-  end
-
-  def index
-    @rosters = Roster.all
-  end
-
-  def setup; end
 
   def update
     roster_params = params.require(:roster).permit(:name, :fallback_user_id)
     if @roster.update roster_params
       confirm_change(@roster)
       redirect_to rosters_path
-    else report_errors(@roster, fallback_location: rosters_path)
+    else
+      report_errors(@roster, fallback_location: rosters_path)
     end
+  end
+
+  def setup; end
+
+  def destroy
+    @roster.destroy
+    confirm_change(@roster, 'Roster and any assignments have been deleted.')
+    redirect_to rosters_path
   end
 
   private

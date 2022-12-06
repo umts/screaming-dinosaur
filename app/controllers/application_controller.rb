@@ -12,7 +12,8 @@ class ApplicationController < ActionController::Base
     # If we don't, try and infer from the current controller action.
     # Otherwise, just go with 'updated'.
     event = if change.present? then change.event
-            else params[:action] || 'update'
+            else
+              params[:action] || 'update'
             end
     action_taken = case event
                    when 'destroy' then 'deleted'
@@ -48,7 +49,8 @@ class ApplicationController < ActionController::Base
       @current_user = User.find_by spire: request.env['fcIdNumber']
       if @current_user.present?
         session[:user_id] = @current_user.id
-      else redirect_to unauthenticated_session_path
+      else
+        redirect_to unauthenticated_session_path
       end
     end
   end

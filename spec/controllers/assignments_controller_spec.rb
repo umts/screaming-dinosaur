@@ -127,7 +127,7 @@ RSpec.describe AssignmentsController do
 
     let(:user_ids) { Array.new(3) { roster_user(roster).id.to_s } }
     let(:starting_user_id) { user_ids[1] }
-    let(:assignment) { create(:assignment) }
+    let(:assignment) { create :assignment }
 
     before do
       when_current_user_is :whoever
@@ -449,7 +449,7 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it ' redirects back' do
+        it 'redirects back' do
           expect { submit }.to redirect_back
         end
       end

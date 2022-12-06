@@ -41,7 +41,8 @@ class Assignment < ApplicationRecord
     def current
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
         on Date.yesterday
-      else on Time.zone.today
+      else
+        on Time.zone.today
       end
     end
 
@@ -55,7 +56,8 @@ class Assignment < ApplicationRecord
       last = order(:end_date).last
       if last.present?
         last.end_date + 1.day
-      else 1.week.since.beginning_of_week(:friday).to_date
+      else
+        1.week.since.beginning_of_week(:friday).to_date
       end
     end
 
@@ -69,7 +71,8 @@ class Assignment < ApplicationRecord
     def upcoming
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
         where 'start_date >= ?', Time.zone.today
-      else where 'start_date > ?', Time.zone.today
+      else
+        where 'start_date > ?', Time.zone.today
       end
     end
 
