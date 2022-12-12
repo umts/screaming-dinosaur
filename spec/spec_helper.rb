@@ -2,8 +2,7 @@
 
 require 'simplecov'
 SimpleCov.start 'rails' do
-  add_filter '/vendor/gems/'
-  refuse_coverage_drop
+  maximum_coverage_drop 0.5 if ENV['CI']
 end
 
 ENV['RAILS_ENV'] ||= 'test'
