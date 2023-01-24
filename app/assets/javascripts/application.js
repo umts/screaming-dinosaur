@@ -12,7 +12,7 @@
 //
 //= require jquery
 //= require jquery-ujs
-//= require popper.js/
+//= require @popperjs/core/dist/umd/popper
 //= require bootstrap
 //= require fullcalendar
 //= require_tree .

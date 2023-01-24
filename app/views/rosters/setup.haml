@@ -1,4 +1,4 @@
-%h1.title Setup Twilio for #{@roster.name}
+%h1 Setup Twilio for #{@roster.name}
 
 %ol#twilio-instructions
   %li= link_to 'Add a phone number',
@@ -13,7 +13,8 @@
         %li
           Set the failure handler to a TwiML Bin containing
           .card.w-75
-            %pre.m-0.card-body= @roster.fallback_call_twiml
+            .card-body
+              %pre.m-0= @roster.fallback_call_twiml
   %li
     Under Messaging:
     %ol
@@ -24,4 +25,5 @@
         %li
           Set the failure handler to a TwiML Bin containing
           .card.w-75
-            %pre.m-0.card-body= @roster.fallback_text_twiml
+            .card-body
+              %pre.m-0= @roster.fallback_text_twiml

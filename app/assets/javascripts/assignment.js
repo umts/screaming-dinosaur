@@ -1,8 +1,11 @@
 $(document).ready(function() {
-  // enable bootstrap tooltips
-  $("[data-toggle='tooltip']").tooltip('enable');
+  // Enable bootstrap tooltips
+  var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltipTriggerList.forEach(function(tooltipTriggerNode) {
+    new bootstrap.Tooltip(tooltipTriggerNode);
+  });
 
-  $('.copy-text-btn').on('click', function() {
+  $('.copy-tooltip').on('click', function() {
     var copyTextarea = $('.copy-text');
     copyTextarea.focus();
     copyTextarea.select();
