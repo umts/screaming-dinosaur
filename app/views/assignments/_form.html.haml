@@ -8,9 +8,8 @@
           = f.collection_select :user_id, @users, :id, :last_name,
             { selected: @assignment.user&.id || @current_user.id }, class: 'form-control custom-select'
         - else
-          = f.collection_select :user_id, @users, :id, :last_name,
-            { disabled: @users.reject { |u| u == @current_user }.pluck(:id), selected: @current_user.id},
-            class: 'form-control custom-select'
+          = f.hidden_field :user_id, value: @current_user.id
+          = f.text_field :user_name, value: @current_user.last_name, disabled: true, class: 'form-control'
     .col-4
       .form-group
         = f.label :start_date
