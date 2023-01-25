@@ -2,7 +2,7 @@
 
 RSpec.describe 'editing an assignment' do
   let(:assignment) do
-    create :assignment, start_date: start_date, end_date: end_date
+    create(:assignment, start_date: start_date, end_date: end_date)
   end
   let(:start_date) { Date.new(2017, 3, 31) }
   let(:end_date) { Date.new(2017, 4, 6) }
@@ -19,7 +19,7 @@ RSpec.describe 'editing an assignment' do
 
   context 'when viewing the page' do
     it 'displays the correct owner' do
-      expect(page).to have_selector :select, text: assignment.user.last_name
+      expect(page).to have_field 'assignment_user_name', with: assignment.user.last_name, disabled: true
     end
 
     it 'displays the start date' do
@@ -61,19 +61,6 @@ RSpec.describe 'editing an assignment' do
   end
 
   context 'when the current user is not an admin' do
-    let!(:new_user) { roster_user(assignment.roster) }
-
-    before { visit current_path }
-
-    it 'stops them from changing assignments they do not own' do
-      select(new_user.last_name, from: 'User')
-      click_button 'Save'
-      expect(page).to have_selector '.alert.alert-danger',
-                                    text: 'You may only edit or create assignments such that you become on call. ' \
-                                          'The intended new owner of this assignment must take it themselves. ' \
-                                          'Or, a roster administrator can perform this change for you.'
-    end
-
     it 'does not allow them to delete the assignment' do
       expect(page).not_to have_button 'Delete assignment'
     end
