@@ -69,4 +69,12 @@ class Roster < ApplicationRecord
     nas = non_admins.order(:last_name).map { |na| [na.full_name, na.id] }
     { 'Admins' => as, 'Non-Admins' => nas }
   end
+
+  def check_for_open_dates_between(start_date, end_date)
+    open_dates = []
+    start_date.to_date.upto(end_date.to_date).each do |date|
+      open_dates << date if Assignment.where(roster: self).between(date, date).empty?
+    end
+    open_dates
+  end
 end
