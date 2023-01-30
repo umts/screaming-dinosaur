@@ -216,7 +216,7 @@ RSpec.describe Roster do
     end
   end
 
-  describe 'check_for_open_dates_between' do
+  describe '#check_for_open_dates_between' do
     subject(:call) { roster.check_for_open_dates_between(start_date, end_date) }
 
     let(:roster) { create(:roster) }

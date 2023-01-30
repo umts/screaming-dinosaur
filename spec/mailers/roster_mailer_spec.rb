@@ -12,7 +12,7 @@ RSpec.describe RosterMailer do
     context 'with open assignments in the next two weeks' do
       before { create(:assignment, roster: roster, start_date: 1.week.from_now, end_date: 2.weeks.from_now) }
 
-      it 'ques the email to be sent' do
+      it 'queues the email to be sent' do
         expect { email.deliver_now }.to change { ActionMailer::Base.deliveries.size }.by 1
       end
 
@@ -57,7 +57,7 @@ RSpec.describe RosterMailer do
     context 'without open assignments in the next two weeks' do
       before { create(:assignment, roster: roster, start_date: Time.zone.today, end_date: 2.weeks.from_now) }
 
-      it 'does not ques the email to be sent' do
+      it 'does not queue the email to be sent' do
         expect { email.deliver_now }.not_to(change { ActionMailer::Base.deliveries.size })
       end
     end
