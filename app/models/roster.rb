@@ -70,7 +70,7 @@ class Roster < ApplicationRecord
     { 'Admins' => as, 'Non-Admins' => nas }
   end
 
-  def check_for_open_dates_between(start_date, end_date)
+  def uncovered_dates_between(start_date, end_date)
     open_dates = []
     start_date.to_date.upto(end_date.to_date).each do |date|
       open_dates << date if Assignment.where(roster: self).between(date, date).empty?
