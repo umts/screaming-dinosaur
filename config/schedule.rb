@@ -7,5 +7,5 @@ every :day, at: '9:00am' do
 end
 
 every :day, at: '4:00am' do
-  runner 'Roster.find_each { |roster| RosterMailer.with(roster: roster).open_dates_alert.deliver_now }'
+  runner 'CheckUncoveredDatesJob.perform_now'
 end
