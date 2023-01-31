@@ -7,5 +7,5 @@ every :day, at: '9:00am' do
 end
 
 every :day, at: '4:00am' do
-  runner 'CheckUncoveredDatesJob.perform_now'
+  runner 'CheckRostersUncoveredDatesJob.perform_now'
 end
