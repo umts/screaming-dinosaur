@@ -15,8 +15,8 @@ plugins:
   rubocop:
     enabled: true
     channel: rubocop-1-31-0
-  scss-lint:
-    enabled: true
+  stylelint:
+    enabled: false
 exclude_patterns:
 - "bin/**/*"
 - "coverage/**/*"

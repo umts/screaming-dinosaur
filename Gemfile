@@ -4,12 +4,10 @@ source 'https://rubygems.org'
 ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
 
 gem 'bootsnap', require: false
-gem 'bootstrap', '~> 4.2'
 gem 'haml'
 gem 'haml-rails'
 gem 'icalendar'
 gem 'jbuilder'
-gem 'jquery-rails'
 gem 'mysql2'
 gem 'net-http'
 gem 'paper_trail', '~> 12.3'
