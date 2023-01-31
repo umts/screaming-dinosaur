@@ -5,7 +5,7 @@ lock '~> 3.14.1'
 
 set :application, 'screaming_dinosaur'
 set :repo_url, 'https://github.com/umts/screaming-dinosaur.git'
-set :branch, :master
+set :branch, :main
 set :deploy_to, "/srv/#{fetch :application}"
 
 set :log_level, :info
