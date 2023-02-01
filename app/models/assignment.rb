@@ -5,8 +5,7 @@ class Assignment < ApplicationRecord
   belongs_to :user
   belongs_to :roster
 
-  validates :user, :start_date, :end_date, :roster,
-            presence: true
+  validates :start_date, :end_date, presence: true
   validate :overlaps_any?
   validate :user_in_roster?
 
@@ -41,7 +40,8 @@ class Assignment < ApplicationRecord
     def current
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
         on Date.yesterday
-      else on Time.zone.today
+      else
+        on Time.zone.today
       end
     end
 
@@ -55,7 +55,8 @@ class Assignment < ApplicationRecord
       last = order(:end_date).last
       if last.present?
         last.end_date + 1.day
-      else 1.week.since.beginning_of_week(:friday).to_date
+      else
+        1.week.since.beginning_of_week(:friday).to_date
       end
     end
 
@@ -69,7 +70,8 @@ class Assignment < ApplicationRecord
     def upcoming
       if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
         where 'start_date >= ?', Time.zone.today
-      else where 'start_date > ?', Time.zone.today
+      else
+        where 'start_date > ?', Time.zone.today
       end
     end
 

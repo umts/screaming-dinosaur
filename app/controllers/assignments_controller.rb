@@ -9,31 +9,18 @@ class AssignmentsController < ApplicationController
                                                    rotation_generator]
   skip_before_action :set_current_user, :set_roster, only: :feed
 
-  def create
-    ass_params = params.require(:assignment)
-                       .permit :start_date, :end_date,
-                               :user_id, :roster_id
-    assignment = Assignment.new ass_params
-    require_taking_ownership or return
-
-    if assignment.save
-      confirm_change(assignment)
-      assignment.notify :owner, of: :new_assignment, by: @current_user
-      redirect_to roster_assignments_path(@roster)
-    else report_errors(assignment, fallback_location: roster_assignments_path)
+  def index
+    respond_to do |format|
+      format.html { index_html }
+      format.ics { render_ics_feed }
+      format.json { index_json }
     end
   end
 
-  def destroy
-    if @current_user.admin_in?(@roster)
-      @assignment.notify :owner, of: :deleted_assignment, by: @current_user
-      @assignment.destroy
-      confirm_change(@assignment)
-      redirect_to roster_assignments_path(@roster)
-    else
-      flash[:errors] = t('.not_an_admin')
-      redirect_to edit_roster_assignment_path(@roster, @assignment)
-    end
+  def new
+    @start_date = Date.parse params.require(:date)
+    @end_date = @start_date + 6.days
+    @assignment = Assignment.new
   end
 
   def edit; end
@@ -56,22 +43,20 @@ class AssignmentsController < ApplicationController
     redirect_to roster_assignments_path(@roster, date: start_date)
   end
 
-  def index
-    respond_to do |format|
-      format.html { index_html }
-      format.ics { render_ics_feed }
-      format.json { index_json }
+  def create
+    ass_params = params.require(:assignment)
+                       .permit :start_date, :end_date,
+                               :user_id, :roster_id
+    assignment = Assignment.new ass_params
+    require_taking_ownership or return
+
+    if assignment.save
+      confirm_change(assignment)
+      assignment.notify :owner, of: :new_assignment, by: @current_user
+      redirect_to roster_assignments_path(@roster)
+    else
+      report_errors(assignment, fallback_location: roster_assignments_path)
     end
-  end
-
-  def new
-    @start_date = Date.parse params.require(:date)
-    @end_date = @start_date + 6.days
-    @assignment = Assignment.new
-  end
-
-  def rotation_generator
-    @start_date = Assignment.next_rotation_start_date
   end
 
   def update
@@ -86,6 +71,22 @@ class AssignmentsController < ApplicationController
       redirect_to roster_assignments_path(@roster)
     else
       report_errors(@assignment, fallback_location: roster_assignments_path)
+    end
+  end
+
+  def rotation_generator
+    @start_date = Assignment.next_rotation_start_date
+  end
+
+  def destroy
+    if @current_user.admin_in?(@roster)
+      @assignment.notify :owner, of: :deleted_assignment, by: @current_user
+      @assignment.destroy
+      confirm_change(@assignment)
+      redirect_to roster_assignments_path(@roster)
+    else
+      flash[:errors] = t('.not_an_admin')
+      redirect_to edit_roster_assignment_path(@roster, @assignment)
     end
   end
 

@@ -10,28 +10,6 @@ class UsersController < ApplicationController
                             :change_notifications_enabled,
                             { rosters: [], membership: [:admin] }].freeze
 
-  def create
-    user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
-    membership_params = user_params[:membership]
-    user_params = parse_roster_ids(user_params.except(:membership))
-    @user = User.new(user_params)
-    if @user.save && update_membership(membership_params)
-      confirm_change(@user)
-      redirect_to roster_users_path(@roster)
-    else report_errors(@user, fallback_location: roster_users_path)
-    end
-  end
-
-  def destroy
-    if @user.destroy
-      confirm_change(@user)
-      redirect_to roster_users_path
-    else report_errors(@user, fallback_location: roster_users_path)
-    end
-  end
-
-  def edit; end
-
   def index
     @fallback = @roster.fallback_user
     @active = !params[:active]
@@ -43,12 +21,18 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-  def transfer
-    @user.rosters += [@roster]
-    if @user.save
-      confirm_change(@user, "Added #{@user.full_name} to roster.")
+  def edit; end
+
+  def create
+    user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
+    membership_params = user_params[:membership]
+    user_params = parse_roster_ids(user_params.except(:membership))
+    @user = User.new(user_params)
+    if @user.save && update_membership(membership_params)
+      confirm_change(@user)
       redirect_to roster_users_path(@roster)
-    else report_errors(@user, fallback_location: roster_users_path)
+    else
+      report_errors(@user, fallback_location: roster_users_path)
     end
   end
 
@@ -60,9 +44,30 @@ class UsersController < ApplicationController
       confirm_change(@user)
       if @current_user.admin_in? @roster
         redirect_to roster_users_path(@roster)
-      else redirect_to roster_assignments_path(@roster)
+      else
+        redirect_to roster_assignments_path(@roster)
       end
-    else report_errors(@user, fallback_location: roster_assignments_path)
+    else
+      report_errors(@user, fallback_location: roster_assignments_path)
+    end
+  end
+
+  def transfer
+    @user.rosters += [@roster]
+    if @user.save
+      confirm_change(@user, "Added #{@user.full_name} to roster.")
+      redirect_to roster_users_path(@roster)
+    else
+      report_errors(@user, fallback_location: roster_users_path)
+    end
+  end
+
+  def destroy
+    if @user.destroy
+      confirm_change(@user)
+      redirect_to roster_users_path
+    else
+      report_errors(@user, fallback_location: roster_users_path)
     end
   end
 
@@ -84,9 +89,9 @@ class UsersController < ApplicationController
 
   def parse_roster_ids(attrs)
     if attrs[:rosters].present?
-      attrs[:rosters] = attrs[:rosters].map do |roster_id|
+      attrs[:rosters] = attrs[:rosters].filter_map do |roster_id|
         Roster.find_by id: roster_id
-      end.compact
+      end
     end
     attrs
   end

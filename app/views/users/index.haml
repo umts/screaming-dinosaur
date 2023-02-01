@@ -47,7 +47,7 @@
         %td.align-middle= user.phone
         %td.align-middle= link_to 'Edit', edit_roster_user_path(@roster, user)
         %td
-          =form_for user, url: roster_user_path(@roster, user) do |f|
+          = form_for user, url: roster_user_path(@roster, user) do |f|
             - if user.active?
               = f.hidden_field :active, value: false
               = f.submit 'Deactivate', class: 'btn btn-warning',

@@ -3,7 +3,7 @@
 module ApplicationHelper
   def calendar_instructions
     'Use this address to subscribe to this calendar in ' \
-    'another application (i.e. Google Calendar).'
+      'another application (i.e. Google Calendar).'
   end
 
   def nav_link_item(text, path)
