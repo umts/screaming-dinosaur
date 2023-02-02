@@ -1,0 +1,15 @@
+!!!
+%html
+  %head
+    %meta{ content: 'text/html; charset=UTF-8', 'http-equiv': 'Content-Type' }
+  %body
+    %strong There are uncovered #{@roster.name} On-Call dates within the next two weeks.
+    %p The following dates are uncovered:
+    %ul
+      - @open_dates.each do |date|
+        %li= date.to_fs(:short)
+    %p
+      - if @roster.fallback_user_id
+        The fallback user is #{content_tag(:b, @roster.fallback_user.full_name)}.
+      - else
+        %strong There is no fallback user!

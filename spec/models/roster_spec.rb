@@ -215,4 +215,18 @@ RSpec.describe Roster do
         .to match_array(non_admins.map { |na| [na.full_name, na.id] })
     end
   end
+
+  describe '#uncovered_dates_between' do
+    subject(:call) { roster.uncovered_dates_between(start_date, end_date) }
+
+    let(:roster) { create(:roster) }
+    let(:start_date) { Time.zone.today }
+    let(:end_date) { 1.week.from_now }
+
+    before { create(:assignment, roster: roster, start_date: 1.day.from_now, end_date: 6.days.from_now) }
+
+    it 'returns the dates with no assignments between the given start and end date' do
+      expect(call).to eq [Time.zone.today.to_date, 7.days.from_now.to_date]
+    end
+  end
 end
