@@ -12,11 +12,7 @@ A Rails app for the management of on-call schedules and interactions with Twilio
 ## Development
 
 ### Setup
-1. Install Gems: `bundle`
-2. Install Node packages: `yarn`
-3. Create your application.yml: `cp config/application.yml.example config/application.yml`
-4. Create your database.yml: `cp config/database.yml.example config/database.yml`
-5. Setup your databases: `rails db:setup`
+Run `bin/setup`
 
 ### Style guides
 
