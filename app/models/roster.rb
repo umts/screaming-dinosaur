@@ -72,7 +72,7 @@ class Roster < ApplicationRecord
 
   def uncovered_dates_between(start_date, end_date)
     (start_date.to_date..end_date.to_date).to_a -
-      assignments.between(start_date, end_date).inject([]) do |dates, assignment|
+      assignments.between(start_date.to_date, end_date.to_date).inject([]) do |dates, assignment|
         dates | (assignment.start_date..assignment.end_date).to_a
       end
   end
