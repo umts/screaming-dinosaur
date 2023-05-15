@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
-  skip_before_action :set_current_user, :set_roster
+  skip_before_action :check_primary_account, :set_current_user, :set_roster
 
   def destroy
     session.clear
