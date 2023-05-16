@@ -14,5 +14,7 @@
 //= require jquery-ujs
 //= require popper.js/
 //= require bootstrap
-//= require fullcalendar
+//= require @fullcalendar/core/main.global.js
+//= require @fullcalendar/daygrid/main.global.js
+//= require @fullcalendar/bootstrap/main.global.js
 //= require_tree .
