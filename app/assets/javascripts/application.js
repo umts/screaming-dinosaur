@@ -11,6 +11,7 @@
 // about supported directives.
 //
 //= require jquery
+//= require jquery-migrate
 //= require jquery-ujs
 //= require popper.js/
 //= require bootstrap
