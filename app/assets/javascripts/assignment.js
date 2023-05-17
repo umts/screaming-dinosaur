@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
   // enable bootstrap tooltips
   $("[data-toggle='tooltip']").tooltip('enable');
 
