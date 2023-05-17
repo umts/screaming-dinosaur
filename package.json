@@ -5,8 +5,8 @@
     "@fullcalendar/core": "^5.11.3",
     "@fullcalendar/daygrid": "^5.11.3",
     "bootstrap": "^4.6",
-    "jquery": "^1.12.4",
-    "jquery-migrate": "^1",
+    "jquery": "^3.0.0",
+    "jquery-migrate": "^3.0.0",
     "jquery-ujs": "^1.2.3",
     "popper.js": "^1.16.1"
   },
