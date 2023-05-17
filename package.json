@@ -6,7 +6,6 @@
     "@fullcalendar/daygrid": "^5.11.3",
     "bootstrap": "^4.6",
     "jquery": "^3.7.0",
-    "jquery-ujs": "^1.2.3",
     "popper.js": "^1.16.1"
   },
   "devDependencies": {
