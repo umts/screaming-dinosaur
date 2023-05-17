@@ -12,12 +12,12 @@ class Assignment < ApplicationRecord
   scope :future, -> { where 'start_date > ?', Time.zone.today }
 
   def effective_start_datetime
-    start_date + CONFIG[:switchover_hour].hours
+    start_date + Assignment.switchover.hours
   end
 
   # Assignments effectively end at the switchover hour on the following day.
   def effective_end_datetime
-    end_date + 1.day + CONFIG[:switchover_hour].hours
+    end_date + 1.day + Assignment.switchover.hours
   end
 
   def notify(receiver, of:, by:)
@@ -38,7 +38,7 @@ class Assignment < ApplicationRecord
     # The current assignment - this method accounts for the 5pm switchover hour.
     # This should be called while scoped to a particular roster.
     def current
-      if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
+      if Time.zone.now.hour < switchover
         on Date.yesterday
       else
         on Time.zone.today
@@ -65,10 +65,14 @@ class Assignment < ApplicationRecord
       between(date, date).first
     end
 
+    def switchover
+      Rails.application.config.on_call.fetch(:switchover_hour)
+    end
+
     # If it's before 5pm, return assignments that start today or after.
     # It it's after 5pm, return assignments that start tomorrow or after.
     def upcoming
-      if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
+      if Time.zone.now.hour < switchover
         where 'start_date >= ?', Time.zone.today
       else
         where 'start_date > ?', Time.zone.today
