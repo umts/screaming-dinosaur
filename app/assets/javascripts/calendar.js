@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
   var calendar_container = document.getElementById('calendar');
   if (!calendar_container) { return }
 

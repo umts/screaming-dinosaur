@@ -11,7 +11,7 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery-ujs
+//= require rails-ujs
 //= require popper.js/
 //= require bootstrap
 //= require @fullcalendar/core/main.global.js
