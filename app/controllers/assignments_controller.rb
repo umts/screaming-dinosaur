@@ -118,7 +118,6 @@ class AssignmentsController < ApplicationController
                                 .upcoming
                                 .order :start_date
     @current_assignment = @roster.assignments.current
-    @switchover_hour = CONFIG[:switchover_hour]
     @fallback_user = @roster.fallback_user
   end
 

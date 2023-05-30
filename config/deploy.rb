@@ -14,7 +14,7 @@ set :whenever_command, %i[sudo bundle exec whenever]
 
 append :linked_files,
        'config/database.yml',
-       'config/application.yml'
+       'config/on_call.yml'
 
 append :linked_dirs, '.bundle', 'log'
 

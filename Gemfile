@@ -13,7 +13,6 @@ gem 'net-http'
 gem 'paper_trail', '~> 12.3'
 gem 'rails', '~> 7.0.4'
 gem 'sassc-rails'
-gem 'snappconfig'
 gem 'sprockets-rails'
 gem 'terser'
 gem 'whenever', require: false

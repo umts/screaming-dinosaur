@@ -15,7 +15,7 @@ RSpec.describe AssignmentsMailer do
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
 
-    before { stub_const('CONFIG', { switchover_hour: 9 }) }
+    before { allow(Assignment).to receive(:switchover).and_return(9) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -60,7 +60,7 @@ RSpec.describe AssignmentsMailer do
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
 
-    before { stub_const('CONFIG', { switchover_hour: 10 }) }
+    before { allow(Assignment).to receive(:switchover).and_return(10) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -105,7 +105,7 @@ RSpec.describe AssignmentsMailer do
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
 
-    before { stub_const('CONFIG', { switchover_hour: 11 }) }
+    before { allow(Assignment).to receive(:switchover).and_return(11) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -149,7 +149,7 @@ RSpec.describe AssignmentsMailer do
     let(:roster) { assignment.roster }
     let(:user) { assignment.user }
 
-    before { stub_const('CONFIG', { switchover_hour: 12 }) }
+    before { allow(Assignment).to receive(:switchover).and_return(12) }
 
     it 'emails to the user' do
       expect(output.to).to eql Array(user.email)

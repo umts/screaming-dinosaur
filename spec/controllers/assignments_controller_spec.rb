@@ -248,12 +248,6 @@ RSpec.describe AssignmentsController do
         expect(Assignment).to have_received(:current)
       end
 
-      it 'includes the switchover hour as a variable' do
-        stub_const('CONFIG', { switchover_hour: 12 })
-        submit
-        expect(assigns.fetch(:switchover_hour)).to be 12
-      end
-
       it 'includes a variable of the fallback user' do
         fallback = create :user
         roster.update(fallback_user_id: fallback.id)

@@ -7,7 +7,7 @@ RSpec.describe Assignment do
                           end_date: Date.new(2017, 4, 11)
     end
 
-    before { stub_const('CONFIG', { switchover_hour: 14 }) }
+    before { allow(Assignment).to receive(:switchover).and_return(14) }
 
     describe 'effective_start_datetime' do
       it 'returns the start date, at the switchover hour' do
@@ -24,6 +24,12 @@ RSpec.describe Assignment do
     end
   end
 
+  describe '.switchover' do
+    subject(:call) { described_class.switchover }
+
+    it { is_expected.to eq(Rails.application.config.on_call.switchover_hour) }
+  end
+
   describe 'current' do
     subject(:call) { described_class.current }
 
@@ -37,7 +43,7 @@ RSpec.describe Assignment do
       create :assignment, start_date: date, end_date: date, roster: roster
     end
     let :switchover_time do
-      Date.new(2019, 11, 13) + CONFIG.fetch(:switchover_hour).hours
+      Date.new(2019, 11, 13) + described_class.switchover.hours
     end
 
     context 'when it is before the switchover hour' do
@@ -242,7 +248,7 @@ RSpec.describe Assignment do
              end_date: 1.week.since.to_date
     end
     let :switchover_time do
-      Time.zone.now.change(hour: CONFIG.fetch(:switchover_hour))
+      Time.zone.now.change(hour: described_class.switchover)
     end
 
     context 'when it is before 5pm' do
