@@ -2,6 +2,8 @@
 
 class User < ApplicationRecord
   has_paper_trail
+  has_secure_token :calendar_access_token
+
   has_many :assignments, dependent: :restrict_with_error
   has_many :memberships, dependent: :destroy
   has_many :rosters, through: :memberships
@@ -20,8 +22,8 @@ class User < ApplicationRecord
   validates :phone,
             format: { with: /\A\+1\d{10}\z/,
                       message: 'must be "+1" followed by 10 digits' }
-  before_save :generate_calendar_access_token,
-              unless: -> { calendar_access_token.present? }
+
+  before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
   before_save -> { assignments.future.destroy_all }, if: :being_deactivated?
 
   scope :active, -> { where active: true }
@@ -47,13 +49,7 @@ class User < ApplicationRecord
     memberships.find_by(roster: roster)
   end
 
-  def generate_calendar_access_token
-    loop do
-      self.calendar_access_token = SecureRandom.hex
-      break unless self.class
-                       .exists?(calendar_access_token: calendar_access_token)
-    end
-  end
+  private
 
   def being_deactivated?
     active_changed? && !active?
