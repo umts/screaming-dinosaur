@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2021_02_18_203357) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_14_144059) do
   create_table "assignments", charset: "utf8mb4", force: :cascade do |t|
     t.integer "user_id"
     t.date "start_date"
@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_02_18_203357) do
     t.boolean "change_notifications_enabled", default: true
     t.boolean "active", default: true
     t.string "calendar_access_token"
+    t.index ["calendar_access_token"], name: "index_users_on_calendar_access_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["phone"], name: "index_users_on_phone", unique: true
     t.index ["spire"], name: "index_users_on_spire", unique: true
