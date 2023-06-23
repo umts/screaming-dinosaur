@@ -55,7 +55,7 @@ class AssignmentsController < ApplicationController
       assignment.notify :owner, of: :new_assignment, by: @current_user
       redirect_to roster_assignments_path(@roster)
     else
-      flash.now[:danger] = assignment.errors.full_messages
+      flash.now[:errors] = assignment.errors.full_messages
       render 'new'
     end
   end
@@ -71,7 +71,7 @@ class AssignmentsController < ApplicationController
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster)
     else
-      flash.now[:danger] = assignment.errors.full_messages
+      flash.now[:errors] = assignment.errors.full_messages
       render 'edit'
     end
   end

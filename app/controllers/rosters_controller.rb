@@ -29,7 +29,7 @@ class RostersController < ApplicationController
       confirm_change(roster)
       redirect_to rosters_path
     else
-      flash.now[:danger] = roster.errors.full_messages
+      flash.now[:errors] = roster.errors.full_messages
       render 'new'
     end
   end
@@ -40,7 +40,7 @@ class RostersController < ApplicationController
       confirm_change(@roster)
       redirect_to rosters_path
     else
-      flash.now[:danger] = @roster.errors.full_messages
+      flash.now[:errors] = @roster.errors.full_messages
       render 'edit'
     end
   end

@@ -32,7 +32,7 @@ class UsersController < ApplicationController
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
     else
-      flash.now[:danger] = @user.errors.full_messages
+      flash.now[:errors] = @user.errors.full_messages
       render 'new'
     end
   end
@@ -49,7 +49,7 @@ class UsersController < ApplicationController
         redirect_to roster_assignments_path(@roster)
       end
     else
-      flash.now[:danger] = @user.errors.full_messages
+      flash.now[:errors] = @user.errors.full_messages
       render 'edit'
     end
   end
