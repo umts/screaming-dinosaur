@@ -29,7 +29,8 @@ class RostersController < ApplicationController
       confirm_change(roster)
       redirect_to rosters_path
     else
-      report_errors(roster, fallback_location: rosters_path)
+      flash.now[:danger] = roster.errors.full_messages
+      render 'new'
     end
   end
 
@@ -39,7 +40,8 @@ class RostersController < ApplicationController
       confirm_change(@roster)
       redirect_to rosters_path
     else
-      report_errors(@roster, fallback_location: rosters_path)
+      flash.now[:danger] = @roster.errors.full_messages
+      render 'edit'
     end
   end
 
