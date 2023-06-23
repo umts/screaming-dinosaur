@@ -40,6 +40,7 @@ class RostersController < ApplicationController
       confirm_change(@roster)
       redirect_to rosters_path
     else
+      @users = @roster.users
       flash.now[:errors] = @roster.errors.full_messages
       render 'edit'
     end
