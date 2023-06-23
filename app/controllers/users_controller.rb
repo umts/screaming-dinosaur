@@ -32,7 +32,8 @@ class UsersController < ApplicationController
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
     else
-      report_errors(@user, fallback_location: roster_users_path)
+      flash.now[:errors] = @user.errors.full_messages
+      render 'new'
     end
   end
 
@@ -48,7 +49,8 @@ class UsersController < ApplicationController
         redirect_to roster_assignments_path(@roster)
       end
     else
-      report_errors(@user, fallback_location: roster_assignments_path)
+      flash.now[:errors] = @user.errors.full_messages
+      render 'edit'
     end
   end
 
