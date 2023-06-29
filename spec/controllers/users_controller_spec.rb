@@ -39,7 +39,7 @@ RSpec.describe UsersController do
         end
 
         it 'redirects back' do
-          expect { submit }.to redirect_back
+          expect(submit).to render_template 'new'
         end
       end
     end
@@ -359,7 +359,7 @@ RSpec.describe UsersController do
         end
 
         it 'redirects back' do
-          expect { submit }.to redirect_back
+          expect(submit).to render_template 'edit'
         end
       end
     end
@@ -403,7 +403,7 @@ RSpec.describe UsersController do
         end
 
         it 'redirects back' do
-          expect { submit }.to redirect_back
+          expect(submit).to render_template 'edit'
         end
       end
 
@@ -420,7 +420,7 @@ RSpec.describe UsersController do
         end
 
         it 'redirects back' do
-          expect { submit }.to redirect_back
+          expect(submit).to render_template 'edit'
         end
 
         it 'shows errors' do
