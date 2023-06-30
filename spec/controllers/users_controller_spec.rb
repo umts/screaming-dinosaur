@@ -38,7 +38,7 @@ RSpec.describe UsersController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
+        it 'renders new' do
           expect(submit).to render_template 'new'
         end
       end
@@ -358,7 +358,7 @@ RSpec.describe UsersController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
+        it 'renders edit' do
           expect(submit).to render_template 'edit'
         end
       end
@@ -402,7 +402,7 @@ RSpec.describe UsersController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
+        it 'renders edit' do
           expect(submit).to render_template 'edit'
         end
       end
@@ -419,7 +419,7 @@ RSpec.describe UsersController do
           expect { submit }.not_to(change { user.membership_in roster })
         end
 
-        it 'redirects back' do
+        it 'renders edit' do
           expect(submit).to render_template 'edit'
         end
 
