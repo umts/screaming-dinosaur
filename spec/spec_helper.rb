@@ -18,8 +18,8 @@ Capybara.enable_aria_label = true
 
 # Temporary fix for change in chromedriver 115 download location.
 # After `selenium-webdriver` 4.11 is released, we can use just that
-# instead of `webdrivers`.
-Webdrivers::Chromedriver.required_version = "114.0.5735.90"
+# instead of `webdrivers`. This will break when Chrome 116 is released.
+Webdrivers::Chromedriver.required_version = '114.0.5735.90'
 
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
