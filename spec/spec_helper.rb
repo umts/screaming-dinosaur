@@ -16,6 +16,11 @@ Timecop.safe_mode = true
 Capybara.server = :puma, { Silent: true }
 Capybara.enable_aria_label = true
 
+# Temporary fix for change in chromedriver 115 download location.
+# After `selenium-webdriver` 4.11 is released, we can use just that
+# instead of `webdrivers`.
+Webdrivers::Chromedriver.required_version = "114.0.5735.90"
+
 RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.use_transactional_fixtures = true
