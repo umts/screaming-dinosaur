@@ -47,3 +47,6 @@ en:
       not_an_admin: 'Only roster admins may delete assignments.'
     generate_by_weekday_submit:
       success: "Assignments have been generated."
+  errors:
+    messages:
+      on_or_after_start_date: "must be on or after start date"

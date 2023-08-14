@@ -15,7 +15,8 @@ class Assignment < ApplicationRecord
     validates :roster, presence: true
     validates :user, presence: true
     validates :start_date, presence: true
-    validates :end_date, presence: true
+    validates :end_date, presence: true,
+                         comparison: { greater_than_or_equal_to: :start_date, message: :on_or_after_start_date }
     validates :start_weekday, presence: true, numericality: { in: 0...7 }
     validates :end_weekday, presence: true, numericality: { in: 0...7 }
 
