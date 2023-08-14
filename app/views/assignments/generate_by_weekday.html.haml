@@ -7,7 +7,7 @@
     .form-group
       = f.label :user_id
       = f.collection_select :user_id, @roster.users.active.order(:last_name), :id, :last_name,
-                            { include_blank: true }, class: 'custom-select'
+                            {}, required: true, class: 'custom-select'
     .form-row
       .form-group.col-md
         = f.label :start_date
