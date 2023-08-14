@@ -34,6 +34,13 @@ en:
     attributes:
       user:
         is_fallback: Fallback
+  activemodel:
+    errors:
+      models:
+        assignment/weekday_generator:
+          attributes:
+            end_date:
+              greater_than_or_equal_to: "must be on or after start date"
   assignments:
     update:
       not_an_admin: 'You may only edit assignments such that you become on call.
@@ -47,6 +54,3 @@ en:
       not_an_admin: 'Only roster admins may delete assignments.'
     generate_by_weekday_submit:
       success: "Assignments have been generated."
-  errors:
-    messages:
-      on_or_after_start_date: "must be on or after start date"
