@@ -1,0 +1,74 @@
+# frozen_string_literal: true
+
+class Assignment < ApplicationRecord
+  class WeekdayGenerator
+    include ActiveModel::Model
+    include ActiveModel::Attributes
+
+    attribute :roster_id, :integer
+    attribute :user_id, :integer
+    attribute :start_date, :date
+    attribute :end_date, :date
+    attribute :start_weekday, :integer
+    attribute :end_weekday, :integer
+
+    validates :roster, presence: true
+    validates :user, presence: true
+    validates :start_date, presence: true
+    validates :end_date, presence: true
+    validates :start_weekday, presence: true, numericality: { in: 0...7 }
+    validates :end_weekday, presence: true, numericality: { in: 0...7 }
+
+    def roster
+      @roster ||= Roster.find_by(id: roster_id)
+    end
+
+    def user
+      @user ||= User.find_by(id: user_id)
+    end
+
+    def generate
+      generate!
+      true
+    rescue ActiveModel::ValidationError, ActiveRecord::RecordInvalid
+      false
+    end
+
+    def generate!
+      validate!
+      ActiveRecord::Base.transaction do
+        date_ranges.each do |range|
+          roster.assignments.create! user: user, start_date: range.begin, end_date: range.end
+        end
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      errors.merge! e.record.errors
+      raise e
+    end
+
+    private
+
+    def date_ranges
+      Enumerator.new do |enum|
+        weeks.each do |sunday|
+          end_weekday_adjusted = end_weekday < start_weekday ? end_weekday + 7 : end_weekday
+          range_start = [start_date, sunday + start_weekday].max
+          range_end = [end_date, sunday + end_weekday_adjusted].min
+          next unless range_start <= range_end
+
+          enum.yield range_start..range_end
+        end
+      end
+    end
+
+    def weeks
+      Enumerator.new do |enum|
+        week = start_date.beginning_of_week(:sunday)
+        while week <= end_date.beginning_of_week(:sunday)
+          enum.yield week
+          week += 7
+        end
+      end
+    end
+  end
+end
