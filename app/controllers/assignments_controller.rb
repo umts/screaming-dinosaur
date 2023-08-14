@@ -43,6 +43,22 @@ class AssignmentsController < ApplicationController
     redirect_to roster_assignments_path(@roster, date: start_date)
   end
 
+  def generate_by_weekday
+    @generator = Assignment::WeekdayGenerator.new roster_id: @roster.id
+  end
+
+  def generate_by_weekday_submit
+    @generator = Assignment::WeekdayGenerator.new(roster_id: @roster.id,
+                                                  **generate_by_weekday_params)
+    if @generator.generate
+      flash[:message] = t('.success')
+      redirect_to roster_assignments_path(@roster, date: @generator.start_date)
+    else
+      flash.now[:errors] = @generator.errors.full_messages.to_sentence
+      render :generate_by_weekday
+    end
+  end
+
   def create
     ass_params = params.require(:assignment)
                        .permit :start_date, :end_date,
@@ -157,5 +173,9 @@ class AssignmentsController < ApplicationController
   def taking_ownership?
     new_user_id = params.require(:assignment).require(:user_id)
     new_user_id == @current_user.id.to_s
+  end
+
+  def generate_by_weekday_params
+    params.fetch(:assignment_weekday_generator, {}).permit!
   end
 end

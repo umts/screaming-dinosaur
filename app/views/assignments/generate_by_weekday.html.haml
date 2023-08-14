@@ -1,0 +1,27 @@
+%section.container.my-3
+  %h1 Generate by Weekday
+  %hr
+  = form_with model: @generator,
+              url: generate_by_weekday_submit_roster_assignments_path(@roster),
+              local: true do |f|
+    .form-group
+      = f.label :user_id
+      = f.collection_select :user_id, @roster.users.active.order(:last_name), :id, :last_name,
+                            { include_blank: true }, class: 'custom-select'
+    .form-row
+      .form-group.col-md
+        = f.label :start_date
+        = f.date_field :start_date, class: 'form-control'
+      .form-group.col-md
+        = f.label :end_date
+        = f.date_field :end_date, class: 'form-control'
+    .form-row
+      .form-group.col-md
+        = f.label :start_weekday
+        = f.collection_select :start_weekday, Date::DAYNAMES, ->(day) { Date::DAYNAMES.index(day) }, :itself,
+                              {}, required: true, class: 'custom-select'
+      .form-group.col-md
+        = f.label :end_weekday
+        = f.collection_select :end_weekday, Date::DAYNAMES, ->(day) { Date::DAYNAMES.index(day) }, :itself,
+                              {}, required: true, class: 'custom-select'
+    = f.submit 'Generate', class: 'btn btn-primary'
