@@ -2,7 +2,7 @@
   %h1 Generate by Weekday
   %hr
   = form_with model: @generator,
-              url: generate_by_weekday_submit_roster_assignments_path(@roster),
+              url: generate_by_weekday_roster_assignments_path(@roster),
               local: true do |f|
     .form-group
       = f.label :user_id
