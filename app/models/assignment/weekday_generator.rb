@@ -62,13 +62,7 @@ class Assignment < ApplicationRecord
     end
 
     def weeks
-      Enumerator.new do |enum|
-        week = start_date.beginning_of_week(:sunday)
-        while week <= end_date.beginning_of_week(:sunday)
-          enum.yield week
-          week += 7
-        end
-      end
+      (start_date.beginning_of_week(:sunday)..end_date.beginning_of_week(:sunday)).step(7)
     end
   end
 end
