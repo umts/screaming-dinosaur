@@ -36,6 +36,8 @@ en:
         is_fallback: Fallback
   activemodel:
     errors:
+      messages:
+        must_be_weekday: "must be a day of the week"
       models:
         assignment/weekday_generator:
           attributes:
