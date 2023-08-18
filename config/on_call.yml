@@ -5,4 +5,4 @@
 # while calling at 5:00 pm on Friday will forward to Bob.
 # Values can range from 0 (12:00 am) to 23 (11:00 pm).
 shared:
-  switchover_hour: 17
+  switchover_hour: 15
