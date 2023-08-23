@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 class Roster < ApplicationRecord
   has_paper_trail
   has_many :assignments, dependent: :destroy
@@ -75,5 +77,20 @@ class Roster < ApplicationRecord
       assignments.between(start_date.to_date, end_date.to_date).inject([]) do |dates, assignment|
         dates | (assignment.start_date..assignment.end_date).to_a
       end
+  end
+
+  def assignment_csv
+    CSV.generate headers: %w[roster first_name last_name start_date end_date created_at updated_at],
+                 write_headers: true do |csv|
+      assignments.sort_by(&:start_date).each do |assignment|
+        csv << { 'roster' => name,
+                 'first_name' => assignment.user.first_name,
+                 'last_name' => assignment.user.last_name,
+                 'start_date' => assignment.start_date.iso8601,
+                 'end_date' => assignment.end_date.iso8601,
+                 'created_at' => assignment.created_at.iso8601,
+                 'updated_at' => assignment.updated_at.iso8601 }
+      end
+    end
   end
 end

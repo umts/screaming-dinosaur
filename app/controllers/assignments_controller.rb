@@ -14,6 +14,7 @@ class AssignmentsController < ApplicationController
       format.html { index_html }
       format.ics { render_ics_feed }
       format.json { index_json }
+      format.csv { render csv: @roster.assignment_csv, filename: @roster.name }
     end
   end
 
