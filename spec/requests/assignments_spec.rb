@@ -20,7 +20,6 @@ RSpec.describe 'Assignments' do
     end
   end
 
-
   describe 'POST /rosters/:id/assignments/generate_by_weekday' do
     subject(:submit) { post "/rosters/#{roster.id}/assignments/generate_by_weekday", params: params }
 
