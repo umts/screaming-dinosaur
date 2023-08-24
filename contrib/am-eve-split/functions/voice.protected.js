@@ -1,24 +1,9 @@
 exports.handler = (context, event, callback) => {
+  const assets = Runtime.getAssets();
+  const redirect = require(assets['/redirect.js'].path);
+
   let twiml = new Twilio.twiml.VoiceResponse();
 
-  const now = new Date();
-  const formatOptions = {
-    hour: 'numeric',
-    hour12: false,
-    weekday: 'long',
-    timeZone: 'America/New_York',
-  };
-  const formatter = new Intl.DateTimeFormat('en-US', formatOptions);
-
-  const formattedDate = formatter.format(now).split(', ');
-  const day = formattedDate[0];
-  const hour = Number(formattedDate[1]);
-  const isWeekend = ['Sunday', 'Saturday'].includes(day);
-
-  if (hour >= context.SWITCHOVER_HOUR || hour < context.DAY_START_HOUR) {
-    twiml.redirect({method: 'GET'}, context.EVE_ROSTER_VOICE_URL);
-  } else {
-    twiml.redirect({method: 'GET'}, context.DAY_ROSTER_VOICE_URL);
-  }
+  redirect(twiml, context, 'voice');
   return callback(null, twiml);
 }
