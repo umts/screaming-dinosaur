@@ -44,12 +44,12 @@ RSpec.describe 'Assignments' do
 
       it 'responds with assignment data for the given roster' do
         call
-        row1 = [roster.name, user2.first_name, user2.last_name, assignment2.start_date.iso8601,
+        row1 = [roster.name, user2.email, user2.first_name, user2.last_name, assignment2.start_date.iso8601,
                 assignment2.end_date.iso8601, assignment2.created_at.iso8601, assignment2.updated_at.iso8601].join ','
-        row2 = [roster.name, user1.first_name, user1.last_name, assignment1.start_date.iso8601,
+        row2 = [roster.name, user1.email, user1.first_name, user1.last_name, assignment1.start_date.iso8601,
                 assignment1.end_date.iso8601, assignment1.created_at.iso8601, assignment1.updated_at.iso8601].join ','
         expect(response.body).to eq(<<~CSV)
-          roster,first_name,last_name,start_date,end_date,created_at,updated_at
+          roster,email,first_name,last_name,start_date,end_date,created_at,updated_at
           #{row1}
           #{row2}
         CSV

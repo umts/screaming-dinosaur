@@ -80,17 +80,24 @@ class Roster < ApplicationRecord
   end
 
   def assignment_csv
-    CSV.generate headers: %w[roster first_name last_name start_date end_date created_at updated_at],
+    CSV.generate headers: %w[roster email first_name last_name start_date end_date created_at updated_at],
                  write_headers: true do |csv|
       assignments.sort_by(&:start_date).each do |assignment|
-        csv << { 'roster' => name,
-                 'first_name' => assignment.user.first_name,
-                 'last_name' => assignment.user.last_name,
-                 'start_date' => assignment.start_date.iso8601,
-                 'end_date' => assignment.end_date.iso8601,
-                 'created_at' => assignment.created_at.iso8601,
-                 'updated_at' => assignment.updated_at.iso8601 }
+        csv << assignment_csv_row(assignment)
       end
     end
+  end
+
+  private
+
+  def assignment_csv_row(assignment)
+    { 'roster' => name,
+      'email' => assignment.user.email,
+      'first_name' => assignment.user.first_name,
+      'last_name' => assignment.user.last_name,
+      'start_date' => assignment.start_date.iso8601,
+      'end_date' => assignment.end_date.iso8601,
+      'created_at' => assignment.created_at.iso8601,
+      'updated_at' => assignment.updated_at.iso8601 }
   end
 end
