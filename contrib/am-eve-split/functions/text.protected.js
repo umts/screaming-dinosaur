@@ -15,10 +15,10 @@ exports.handler = (context, event, callback) => {
   const hour = Number(formattedDate[1]);
   const isWeekend = ['Sunday', 'Saturday'].includes(day);
 
-  if (hour >= context.switchover_hour || hour < context.day_start) {
-    twiml.redirect({method: 'GET'}, context.eve_roster_text_url);
+  if (hour >= context.SWITCHOVER_HOUR || hour < context.DAY_START_HOUR) {
+    twiml.redirect({method: 'GET'}, context.EVE_ROSTER_TEXT_URL);
   } else {
-    twiml.redirect({method: 'GET'}, context.day_roster_text_url);
+    twiml.redirect({method: 'GET'}, context.DAY_ROSTER_TEXT_URL);
   }
   return callback(null, twiml);
 }
