@@ -95,9 +95,9 @@ class Roster < ApplicationRecord
       'email' => assignment.user.email,
       'first_name' => assignment.user.first_name,
       'last_name' => assignment.user.last_name,
-      'start_date' => assignment.start_date.iso8601,
-      'end_date' => assignment.end_date.iso8601,
-      'created_at' => assignment.created_at.iso8601,
-      'updated_at' => assignment.updated_at.iso8601 }
+      'start_date' => assignment.start_date.to_fs(:db),
+      'end_date' => assignment.end_date.to_fs(:db),
+      'created_at' => assignment.created_at.to_fs(:db),
+      'updated_at' => assignment.updated_at.to_fs(:db) }
   end
 end
