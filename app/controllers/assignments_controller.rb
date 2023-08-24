@@ -55,7 +55,7 @@ class AssignmentsController < ApplicationController
       redirect_to roster_assignments_path(@roster, date: @generator.start_date)
     else
       flash.now[:errors] = @generator.errors.full_messages.to_sentence
-      render :generate_by_weekday
+      render :generate_by_weekday, status: :unprocessable_entity
     end
   end
 

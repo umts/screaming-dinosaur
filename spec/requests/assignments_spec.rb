@@ -60,5 +60,31 @@ RSpec.describe 'Assignments' do
         expect(attribute_sets).to contain_exactly(*attributes)
       end
     end
+
+    context 'with invalid generator params' do
+      let(:params) { {} }
+
+      it 'responds with an unprocessable entity status' do
+        submit
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'with invalid assignment params' do
+      let(:params) do
+        { assignment_weekday_generator: { user_id: user.id,
+                                          start_date: Date.current,
+                                          end_date: Date.current,
+                                          start_weekday: Date.current.wday,
+                                          end_weekday: Date.current.wday } }
+      end
+
+      before { create :assignment, roster: roster, user: user, start_date: Date.current, end_date: Date.current }
+
+      it 'responds with an unprocessable entity status' do
+        submit
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
   end
 end
