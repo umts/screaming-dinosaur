@@ -6,7 +6,7 @@
     %i.fas.fa-info-circle
     %span#clip-info.sr-only= calendar_instructions
 
-  .input-group
+  .input-group.mr-2
     - roster_name = @roster.name.parameterize
     - token = @current_user.calendar_access_token
     = text_field_tag :access_token,
@@ -19,3 +19,7 @@
         title: 'Click to copy link',
         aria: { label: 'Copy' } }
         %span.far.fa-clipboard
+
+  = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-outline-secondary' do
+    CSV Overview
+    %i.fas.fa-download
