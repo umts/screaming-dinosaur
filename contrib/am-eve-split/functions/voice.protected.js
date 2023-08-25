@@ -4,6 +4,6 @@ exports.handler = (context, event, callback) => {
 
   const twiml = new Twilio.twiml.VoiceResponse();
 
-  redirect(twiml, context, 'voice');
+  redirect(twiml, context, 'call');
   return callback(null, twiml);
 };
