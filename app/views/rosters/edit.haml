@@ -9,4 +9,7 @@
     = f.collection_select :fallback_user_id, @users, :id, :last_name,
       { include_blank: true }, class: 'form-control custom-select'
   .form-group
-    = f.submit 'Save', class: 'btn btn-primary'
+    = f.label :switchover_time
+    = f.time_field :switchover_time, class: 'form-control',
+                   value: @roster.switchover_time.to_fs(:time), required: true
+  = f.submit 'Save', class: 'btn btn-primary'

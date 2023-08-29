@@ -20,7 +20,6 @@ class RostersController < ApplicationController
   end
 
   def create
-    roster_params = params.require(:roster).permit(:name)
     roster = Roster.new roster_params
     # Current user becomes admin in new roster
     roster.users << @current_user
@@ -34,7 +33,6 @@ class RostersController < ApplicationController
   end
 
   def update
-    roster_params = params.require(:roster).permit(:name, :fallback_user_id)
     if @roster.update roster_params
       confirm_change(@roster)
       redirect_to rosters_path
@@ -55,5 +53,12 @@ class RostersController < ApplicationController
 
   def find_roster
     @roster = Roster.find params.require(:id)
+  end
+
+  def roster_params
+    params.require(:roster).permit(:name, :fallback_user_id, :switchover_time).tap do |p|
+      time = Time.zone.parse p.delete(:switchover_time).to_s
+      p[:switchover] = time && ((time.hour * 60) + time.min)
+    end
   end
 end
