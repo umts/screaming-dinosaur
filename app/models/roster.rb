@@ -67,6 +67,10 @@ class Roster < ApplicationRecord
     assignments.current.try(:user) || fallback_user
   end
 
+  def switchover_time
+    switchover.presence && Time.zone.now.midnight.in(switchover.minutes)
+  end
+
   def user_options
     as = admins.order(:last_name).map { |a| [a.full_name, a.id] }
     nas = non_admins.order(:last_name).map { |na| [na.full_name, na.id] }
