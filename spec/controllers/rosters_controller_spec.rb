@@ -3,7 +3,7 @@
 RSpec.describe RostersController do
   describe 'POST #create' do
     subject :submit do
-      post :create, params: { roster: { name: 'Operations' } }
+      post :create, params: { roster: { name: 'Operations', switchover_time: '00:00' } }
     end
 
     context 'when the current user is an admin' do
@@ -198,7 +198,7 @@ RSpec.describe RostersController do
 
     let(:roster) { create :roster }
     let(:user) { create :user }
-    let(:attributes) { { name: 'unique', fallback_user_id: user.id } }
+    let(:attributes) { { name: 'unique', fallback_user_id: user.id, switchover_time: '00:00' } }
 
     context 'when the current user is an admin in the roster' do
       before { when_current_user_is roster_admin(roster) }
