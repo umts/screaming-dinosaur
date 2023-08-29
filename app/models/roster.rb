@@ -21,6 +21,7 @@ class Roster < ApplicationRecord
                              inverse_of: 'fallback_rosters'
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
+  validates :switchover, numericality: { in: (0...(24 * 60)) }
 
   def fallback_call_twiml
     return if fallback_user.blank?
