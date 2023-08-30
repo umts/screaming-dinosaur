@@ -30,10 +30,13 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  activerecords:
-    attributes:
-      user:
-        is_fallback: Fallback
+  activerecord:
+    errors:
+      models:
+        roster:
+          attributes:
+            switchover:
+              not_a_number: 'is not a valid time'
   activemodel:
     errors:
       messages:

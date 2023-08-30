@@ -6,16 +6,15 @@ RSpec.describe AssignmentsMailer do
       described_class.changed_assignment assignment, recipient, changer
     end
 
+    let(:roster) { create :roster, switchover: 9 * 60 }
     let :assignment do
       create :assignment,
+             roster: roster,
              start_date: Date.new(2017, 4, 21),
              end_date: Date.new(2017, 4, 27)
     end
-    let(:roster) { assignment.roster }
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
-
-    before { allow(Assignment).to receive(:switchover).and_return(9) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -51,16 +50,15 @@ RSpec.describe AssignmentsMailer do
       described_class.deleted_assignment assignment, recipient, changer
     end
 
+    let(:roster) { create :roster, switchover: 10 * 60 }
     let :assignment do
       create :assignment,
+             roster: roster,
              start_date: Date.new(2017, 4, 21),
              end_date: Date.new(2017, 4, 27)
     end
-    let(:roster) { assignment.roster }
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
-
-    before { allow(Assignment).to receive(:switchover).and_return(10) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -96,16 +94,15 @@ RSpec.describe AssignmentsMailer do
       described_class.new_assignment assignment, recipient, changer
     end
 
+    let(:roster) { create :roster, switchover: 11 * 60 }
     let :assignment do
       create :assignment,
+             roster: roster,
              start_date: Date.new(2017, 4, 21),
              end_date: Date.new(2017, 4, 27)
     end
-    let(:roster) { assignment.roster }
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
-
-    before { allow(Assignment).to receive(:switchover).and_return(11) }
 
     it 'emails to the recipient' do
       expect(output.to).to eql Array(recipient.email)
@@ -141,15 +138,14 @@ RSpec.describe AssignmentsMailer do
       described_class.upcoming_reminder assignment
     end
 
+    let(:roster) { create :roster, switchover: 12 * 60 }
     let :assignment do
       create :assignment,
+             roster: roster,
              start_date: Date.new(2017, 4, 14),
              end_date: Date.new(2017, 4, 20)
     end
-    let(:roster) { assignment.roster }
     let(:user) { assignment.user }
-
-    before { allow(Assignment).to receive(:switchover).and_return(12) }
 
     it 'emails to the user' do
       expect(output.to).to eql Array(user.email)
