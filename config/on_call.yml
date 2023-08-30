@@ -1,8 +1,0 @@
-# The hour at which on-call switches.
-# If Alice is assigned to Thursday and Bob is assigned to Friday,
-# and the switchover hour is set to 17 (5:00 pm),
-# calling at 4:59 pm on Friday will forward to Alice,
-# while calling at 5:00 pm on Friday will forward to Bob.
-# Values can range from 0 (12:00 am) to 23 (11:00 pm).
-shared:
-  switchover_hour: 15

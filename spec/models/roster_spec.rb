@@ -229,4 +229,27 @@ RSpec.describe Roster do
       expect(call).to eq [Time.zone.today.to_date, 7.days.from_now.to_date]
     end
   end
+
+  describe '#switchover_time' do
+    subject(:call) { roster.switchover_time }
+
+    context 'with a blank switchover' do
+      let(:roster) { build :roster, switchover: nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'with a switchover' do
+      let(:switchover) { (12 * 60) + 34 } # 12:34 PM
+      let(:roster) { build :roster, switchover: switchover }
+
+      it 'is today' do
+        expect(call.to_date).to eq(Time.zone.today)
+      end
+
+      it 'is the correct time' do
+        expect(call.to_fs(:time)).to eq('12:34')
+      end
+    end
+  end
 end

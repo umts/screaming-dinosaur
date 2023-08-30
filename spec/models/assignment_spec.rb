@@ -2,12 +2,12 @@
 
 RSpec.describe Assignment do
   describe 'effective time methods' do
+    let(:roster) { create :roster, switchover: 14 * 60 }
     let :assignment do
       create :assignment, start_date: Date.new(2017, 4, 10),
-                          end_date: Date.new(2017, 4, 11)
+                          end_date: Date.new(2017, 4, 11),
+                          roster: roster
     end
-
-    before { allow(Assignment).to receive(:switchover).and_return(14) }
 
     describe 'effective_start_datetime' do
       it 'returns the start date, at the switchover hour' do
@@ -24,12 +24,6 @@ RSpec.describe Assignment do
     end
   end
 
-  describe '.switchover' do
-    subject(:call) { described_class.switchover }
-
-    it { is_expected.to eq(Rails.application.config.on_call.switchover_hour) }
-  end
-
   describe 'current' do
     subject(:call) { described_class.current }
 
@@ -43,7 +37,7 @@ RSpec.describe Assignment do
       create :assignment, start_date: date, end_date: date, roster: roster
     end
     let :switchover_time do
-      Date.new(2019, 11, 13) + described_class.switchover.hours
+      Date.new(2019, 11, 13) + roster.switchover.minutes
     end
 
     context 'when it is before the switchover hour' do
@@ -237,32 +231,32 @@ RSpec.describe Assignment do
   describe 'upcoming' do
     subject { described_class.upcoming }
 
+    let(:roster) { create :roster }
     let :assignment_today do
       create :assignment,
+             roster: roster,
              start_date: Time.zone.today,
              end_date: 1.week.since.to_date
     end
     let :assignment_tomorrow do
       create :assignment,
+             roster: roster,
              start_date: Date.tomorrow,
              end_date: 1.week.since.to_date
     end
-    let :switchover_time do
-      Time.zone.now.change(hour: described_class.switchover)
-    end
 
-    context 'when it is before 5pm' do
+    context 'when it is before the switchover' do
       around do |example|
-        Timecop.freeze(switchover_time - 1.minute) { example.run }
+        Timecop.freeze(roster.switchover_time - 1.minute) { example.run }
       end
 
       it { is_expected.to include assignment_today }
       it { is_expected.to include assignment_tomorrow }
     end
 
-    context 'when it is after 5pm' do
+    context 'when it is after the switchover' do
       around do |example|
-        Timecop.freeze(switchover_time + 1.minute) { example.run }
+        Timecop.freeze(roster.switchover_time + 1.minute) { example.run }
       end
 
       it { is_expected.not_to include assignment_today }

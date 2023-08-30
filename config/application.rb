@@ -12,7 +12,5 @@ module ScreamingDinosaur
     config.load_defaults 6.1
 
     config.time_zone = 'Eastern Time (US & Canada)'
-
-    config.on_call = config_for(:on_call)
   end
 end
