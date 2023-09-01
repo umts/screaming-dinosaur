@@ -25,32 +25,6 @@ class Roster < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :switchover, numericality: { in: (0...(24 * 60)) }
 
-  def fallback_call_twiml
-    return if fallback_user.blank?
-
-    <<~TWIML
-      <?xml version="1.0" encoding="UTF-8"?>
-      <Response>
-        <Say>There was an application error. You are being connected to
-        the backup on call contact.</Say>
-        <Dial>#{full_phone(fallback_user.phone)}</Dial>
-      </Response>
-    TWIML
-  end
-
-  def fallback_text_twiml
-    return if fallback_user.blank?
-
-    <<~TWIML
-      <?xml version="1.0" encoding="UTF-8"?>
-      <Response>
-        <Message to="{{From}}">There was an application error. Your
-        message was forwarded to the backup on call contact.</Message>
-        <Message to="#{full_phone(fallback_user.phone)}">{{Body}}</Message>
-      </Response>
-    TWIML
-  end
-
   def generate_assignments(user_ids, start_date, end_date, start_user_id)
     assignments = []
     user_ids.rotate! user_ids.index(start_user_id)
