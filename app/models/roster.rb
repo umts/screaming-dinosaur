@@ -3,6 +3,8 @@
 require 'csv'
 
 class Roster < ApplicationRecord
+  include PhoneHelper
+
   has_paper_trail
   has_many :assignments, dependent: :destroy
 
@@ -31,7 +33,7 @@ class Roster < ApplicationRecord
       <Response>
         <Say>There was an application error. You are being connected to
         the backup on call contact.</Say>
-        <Dial>#{fallback_user.phone}</Dial>
+        <Dial>#{full_phone(fallback_user.phone)}</Dial>
       </Response>
     TWIML
   end
@@ -44,7 +46,7 @@ class Roster < ApplicationRecord
       <Response>
         <Message to="{{From}}">There was an application error. Your
         message was forwarded to the backup on call contact.</Message>
-        <Message to="#{fallback_user.phone}">{{Body}}</Message>
+        <Message to="#{full_phone(fallback_user.phone)}">{{Body}}</Message>
       </Response>
     TWIML
   end
