@@ -22,7 +22,7 @@
         %td.align-middle= roster.switchover_time.strftime '%-I:%M %P'
         %td.align-middle= formatted_phone(roster.phone)
         - if @current_user.admin_in? roster
-          %td.align-middle= link_to 'Set Twilio Number', setup_roster_path(roster)
+          %td.align-middle= link_to 'Setup Twilio Number', setup_roster_path(roster)
           %td.align-middle= link_to 'Edit', edit_roster_url(roster)
           %td.align-middle= button_to 'Destroy', roster_path(roster), method: :delete, class: 'btn btn-danger'
         - else
