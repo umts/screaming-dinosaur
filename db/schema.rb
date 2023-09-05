@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_28_055929) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_05_201033) do
   create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.integer "user_id"
     t.date "start_date"
@@ -35,7 +35,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_28_055929) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "fallback_user_id"
     t.integer "switchover", default: 1020, null: false
+    t.string "slug"
     t.index ["name"], name: "index_rosters_on_name", unique: true
+    t.index ["slug"], name: "index_rosters_on_slug", unique: true
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
