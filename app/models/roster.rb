@@ -24,6 +24,7 @@ class Roster < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :switchover, numericality: { in: (0...(24 * 60)) }
+  validates :phone, phone: { allow_blank: true }
 
   def fallback_call_twiml
     return if fallback_user.blank?
