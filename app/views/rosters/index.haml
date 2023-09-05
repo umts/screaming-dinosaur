@@ -6,6 +6,7 @@
       %th Name
       %th Fallback
       %th Switchover
+      %th Number
       %th
       %th
       %th
@@ -19,6 +20,7 @@
           - else
             No fallback user!
         %td.align-middle= roster.switchover_time.strftime '%-I:%M %P'
+        %td.align-middle= formatted_phone(roster.phone)
         - if @current_user.admin_in? roster
           %td.align-middle= link_to 'Set Twilio Number', setup_roster_path(roster)
           %td.align-middle= link_to 'Edit', edit_roster_url(roster)
