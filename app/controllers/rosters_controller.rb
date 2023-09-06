@@ -3,7 +3,7 @@
 class RostersController < ApplicationController
   # The default scaffold method, not the generic one
   # we wrote in ApplicationController.
-  before_action :find_roster, only: %i[destroy edit setup update]
+  before_action :find_roster, only: %i[destroy edit setup show update]
   before_action :require_admin, except: %i[assignments]
   before_action :require_admin_in_roster, only: %i[destroy edit setup update]
 
@@ -13,6 +13,12 @@ class RostersController < ApplicationController
 
   def index
     @rosters = Roster.all
+  end
+
+  def show
+    respond_to do |format|
+      format.json { render layout: false }
+    end
   end
 
   def edit
