@@ -3,8 +3,6 @@
 require 'csv'
 
 class Roster < ApplicationRecord
-  include PhoneHelper
-
   has_paper_trail
   has_many :assignments, dependent: :destroy
 
