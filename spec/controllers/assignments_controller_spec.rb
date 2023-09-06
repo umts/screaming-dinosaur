@@ -134,10 +134,14 @@ RSpec.describe AssignmentsController do
     end
 
     context 'when you are an admin in roster' do
-      before { when_current_user_is roster_admin(roster) }
+      before do
+        friendly = Roster.friendly
+        allow(Roster).to receive(:friendly).and_return(friendly)
+        allow(friendly).to receive(:find).and_return(roster)
+        when_current_user_is roster_admin(roster)
+      end
 
       it 'calls Roster#generate_assignments with the given arguments' do
-        allow(Roster).to receive(:find_by).and_return(roster)
         allow(roster).to receive(:generate_assignments).and_return []
         submit
         expect(roster).to have_received(:generate_assignments)
@@ -145,7 +149,6 @@ RSpec.describe AssignmentsController do
       end
 
       it 'notifies the new assignment holders' do
-        allow(Roster).to receive(:find_by).and_return(roster)
         allow(roster).to receive(:generate_assignments).and_return [assignment]
         allow(assignment).to receive :notify
         submit
@@ -160,7 +163,7 @@ RSpec.describe AssignmentsController do
       it 'redirects to the calendar with the start date given' do
         submit
         expect(response)
-          .to redirect_to roster_assignments_path(date: Time.zone.today)
+          .to redirect_to roster_assignments_path(roster, date: Time.zone.today)
       end
 
       context 'when the starting user is not in the selected users' do

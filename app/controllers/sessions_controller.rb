@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
       @rosters = Roster.includes(:users)
     elsif request.post?
       session[:user_id] = params[:user_id]
-      redirect_to roster_assignments_path(roster_id: params[:roster_id])
+      redirect_to roster_assignments_path(Roster.find(params[:roster_id]))
     end
   end
 

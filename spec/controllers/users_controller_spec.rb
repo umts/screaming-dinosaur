@@ -22,7 +22,7 @@ RSpec.describe UsersController do
 
         it 'redirects to the index' do
           submit
-          expect(response).to redirect_to roster_users_path
+          expect(response).to redirect_to roster_users_path(roster)
         end
       end
 
@@ -336,7 +336,7 @@ RSpec.describe UsersController do
 
         it 'redirects to the index' do
           submit
-          expect(response).to redirect_to roster_users_path
+          expect(response).to redirect_to roster_users_path(roster)
         end
 
         it 'allows changing admin status in roster' do
