@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 class RostersController < ApplicationController
-  # The default scaffold method, not the generic one
-  # we wrote in ApplicationController.
+  skip_before_action :check_primary_account, :set_current_user, only: %i[show]
   before_action :find_roster, only: %i[destroy edit setup show update]
-  before_action :require_admin, except: %i[assignments]
+  before_action :require_admin, except: %i[assignments show]
   before_action :require_admin_in_roster, only: %i[destroy edit setup update]
 
   def assignments
