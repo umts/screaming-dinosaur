@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class RostersController < ApplicationController
-  skip_before_action :check_primary_account, :set_current_user, only: %i[show]
+  api_accessible only: :show
+
   before_action :find_roster, only: %i[destroy edit setup show update]
   before_action :require_admin, except: %i[assignments show]
   before_action :require_admin_in_roster, only: %i[destroy edit setup update]
