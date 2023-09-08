@@ -13,7 +13,10 @@
         %li
           Set the failure handler to a TwiML Bin containing
           .card.w-75
-            %pre.m-0.card-body= @roster.fallback_call_twiml
+            %pre.m-0.card-body
+              - xml = render template: 'twilio/call', formats: :xml,
+                             locals: { user: @roster.fallback_user, fallback: true }
+              = String.new(xml)
   %li
     Under Messaging:
     %ol
@@ -24,4 +27,7 @@
         %li
           Set the failure handler to a TwiML Bin containing
           .card.w-75
-            %pre.m-0.card-body= @roster.fallback_text_twiml
+            %pre.m-0.card-body
+              - xml = render template: 'twilio/text', formats: :xml,
+                             locals: { user: @roster.fallback_user, body: '{{Body}}', fallback: true }
+              = String.new(xml)
