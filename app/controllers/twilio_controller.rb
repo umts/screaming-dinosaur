@@ -7,14 +7,13 @@ class TwilioController < ApplicationController
 
   def call
     respond_to do |format|
-      format.xml { render 'call' }
+      format.xml { render 'call', locals: { user: @user } }
     end
   end
 
   def text
-    @body = params[:Body]
     respond_to do |format|
-      format.xml { render 'text' }
+      format.xml { render 'text', locals: { user: @user, body: params[:Body] } }
     end
   end
 
