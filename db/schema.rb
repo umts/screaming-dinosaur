@@ -36,6 +36,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_05_201033) do
     t.integer "fallback_user_id"
     t.integer "switchover", default: 1020, null: false
     t.string "slug"
+    t.string "phone"
     t.index ["name"], name: "index_rosters_on_name", unique: true
     t.index ["slug"], name: "index_rosters_on_slug", unique: true
   end
