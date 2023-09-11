@@ -8,6 +8,9 @@
     = f.label :name
     = f.text_field :name, class: 'form-control'
   .form-group
+    = f.label :phone
+    = f.phone_field :phone, class: 'form-control'
+  .form-group
     = f.label :switchover_time
     = f.time_field :switchover_time, class: 'form-control',
                    value: '17:00', required: true

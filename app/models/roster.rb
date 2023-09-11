@@ -22,6 +22,7 @@ class Roster < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :switchover, numericality: { in: (0...(24 * 60)) }
+  validates :phone, phone: { allow_blank: true }
 
   def generate_assignments(user_ids, start_date, end_date, start_user_id)
     assignments = []

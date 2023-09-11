@@ -1,8 +1,12 @@
 %h1.title Setup Twilio for #{@roster.name}
 
 %ol#twilio-instructions
-  %li= link_to 'Add a phone number',
-    'https://www.twilio.com/console/phone-numbers/incoming'
+  - if @roster.phone.present?
+    %li= link_to "Configure #{formatted_phone(@roster.phone)}",
+      'https://console.twilio.com/us1/develop/phone-numbers/manage/incoming'
+  - else
+    %li= link_to 'Add a phone number',
+      'https://console.twilio.com/us1/develop/phone-numbers/manage/search'
   %li
     Under Voice and Fax:
     %ol
