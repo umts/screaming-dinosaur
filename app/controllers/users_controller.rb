@@ -92,7 +92,7 @@ class UsersController < ApplicationController
   def parse_roster_ids(attrs)
     if attrs[:rosters].present?
       attrs[:rosters] = attrs[:rosters].filter_map do |roster_id|
-        Roster.find_by id: roster_id
+        Roster.friendly.find roster_id, allow_nil: true
       end
     end
     attrs

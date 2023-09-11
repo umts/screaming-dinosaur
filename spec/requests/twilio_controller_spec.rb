@@ -11,8 +11,7 @@ RSpec.describe TwilioController do
   let(:user_phone) { Phonelib.parse(user.phone).full_e164 }
 
   before do
-    allow(Roster).to receive(:find_by).and_return roster
-    allow(roster).to receive(:on_call_user).and_return user
+    create :assignment, start_date: Date.yesterday, end_date: Date.tomorrow, roster: roster, user: user
   end
 
   describe 'GET /rosters/:id/twilio/call.xml' do

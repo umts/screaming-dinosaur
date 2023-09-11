@@ -3,9 +3,12 @@
 require 'csv'
 
 class Roster < ApplicationRecord
-  has_paper_trail
-  has_many :assignments, dependent: :destroy
+  extend FriendlyId
 
+  has_paper_trail
+  friendly_id :name, use: :slugged
+
+  has_many :assignments, dependent: :destroy
   has_many :memberships, dependent: :destroy
   has_many :admin_memberships, -> { where(admin: true) },
            class_name: 'Membership', inverse_of: :roster

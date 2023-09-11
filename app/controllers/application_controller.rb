@@ -60,7 +60,7 @@ class ApplicationController < ActionController::Base
   # Finally, just go to the first roster (if they're a member of none).
   # rubocop:disable Naming/MemoizedInstanceVariableName
   def set_roster
-    @roster = Roster.find_by(id: params[:roster_id])
+    @roster = Roster.friendly.find(params[:roster_id], allow_nil: true)
     @roster ||= @current_user.rosters.first
     @roster ||= Roster.first
   end
