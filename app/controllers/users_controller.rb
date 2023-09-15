@@ -80,7 +80,7 @@ class UsersController < ApplicationController
       given_roster_ids = params[:roster_ids].map(&:to_i)
       params[:roster_ids] = (@user.rosters.map(&:id) || []).then do |roster_ids|
         roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && @current_user.admin_in?(roster_id) }
-        roster_ids | (given_roster_ids & @user.rosters.map(&:id).to_a)
+        roster_ids | (given_roster_ids & @user.rosters.map(&:id))
       end
     end
   end
