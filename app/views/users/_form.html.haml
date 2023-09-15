@@ -21,8 +21,8 @@
            placeholder: '+14135450056', class: 'form-control'
       .col-lg-6
         .form-group
-          = f.label :rosters
-          = f.select :rosters,
+          = f.label :roster_ids
+          = f.select :roster_ids,
            options_from_collection_for_select(Roster.all, :id, :name,
             selected: selected_rosters(@user, @roster)), {}, multiple: true, class: 'form-control'
         %div

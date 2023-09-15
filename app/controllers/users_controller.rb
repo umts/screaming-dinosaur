@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   WHITELISTED_ATTRIBUTES = [:first_name, :last_name, :spire, :email,
                             :phone, :active, :reminders_enabled,
                             :change_notifications_enabled,
-                            { rosters: [], membership: [:admin] }].freeze
+                            { roster_ids: [], membership: [:admin] }].freeze
 
   def index
     @fallback = @roster.fallback_user
