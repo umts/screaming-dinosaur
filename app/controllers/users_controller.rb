@@ -37,7 +37,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
     membership_params = user_params[:membership]
     if @user.update(user_params.except(:membership)) && update_membership(membership_params)
       confirm_change(@user)
@@ -73,6 +72,19 @@ class UsersController < ApplicationController
 
   private
 
+  def user_params
+    params.fetch(:user, {}).permit(
+      :first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
+      :change_notifications_enabled, roster_ids: [], membership: [:admin]
+    ).tap do |params|
+      given_roster_ids = params[:roster_ids].map(&:to_i)
+      params[:roster_ids] = (@user.rosters.map(&:id) || []).then do |roster_ids|
+        roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && @current_user.admin_in?(roster_id) }
+        roster_ids | (given_roster_ids & @user.rosters.map(&:id).to_a)
+      end
+    end
+  end
+
   def find_user
     @user = User.find params.require(:id)
   end
@@ -81,6 +93,8 @@ class UsersController < ApplicationController
     return true unless membership_params.present? && @current_user.admin_in?(@roster)
 
     membership = @user.membership_in @roster
+    return true if membership.nil?
+
     return true if membership.update membership_params
 
     @user.errors.merge! membership.errors
