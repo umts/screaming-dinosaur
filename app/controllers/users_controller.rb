@@ -26,8 +26,7 @@ class UsersController < ApplicationController
   def create
     user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
     membership_params = user_params[:membership]
-    user_params = parse_roster_ids(user_params.except(:membership))
-    @user = User.new(user_params)
+    @user = User.new(user_params.except(:membership))
     if @user.save && update_membership(membership_params)
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
@@ -40,8 +39,7 @@ class UsersController < ApplicationController
   def update
     user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
     membership_params = user_params[:membership]
-    user_params = parse_roster_ids(user_params.except(:membership))
-    if @user.update(user_params) && update_membership(membership_params)
+    if @user.update(user_params.except(:membership)) && update_membership(membership_params)
       confirm_change(@user)
       if @current_user.admin_in? @roster
         redirect_to roster_users_path(@roster)
@@ -87,15 +85,6 @@ class UsersController < ApplicationController
 
     @user.errors.merge! membership.errors
     false
-  end
-
-  def parse_roster_ids(attrs)
-    if attrs[:rosters].present?
-      attrs[:rosters] = attrs[:rosters].filter_map do |roster_id|
-        Roster.friendly.find roster_id, allow_nil: true
-      end
-    end
-    attrs
   end
 
   def require_admin_in_roster_or_self
