@@ -20,6 +20,19 @@
           = f.phone_field :phone,
            placeholder: '+14135450056', class: 'form-control'
       .col-lg-6
+        = field_set_tag nil, class: 'form-group' do
+          %legend.m-0 Rosters
+          = f.hidden_field :'roster_ids[]', value: '', id: nil
+          .list-group.list-group-form
+            - user_roster_options = @user.rosters | @current_user.memberships.where(admin: true).map(&:roster)
+            = f.collection_check_boxes :roster_ids, user_roster_options, :id, :name, include_hidden: false do |c|
+              - user_roster_permitted = @current_user.admin_in? c.object
+              = c.label class: ['m-0', 'list-group-item', user_roster_permitted ? 'list-group-item-action' : nil] do
+                .custom-checkbox.custom-control
+                  = c.check_box checked: @user.membership_in(c.object).present?,
+                                disabled: !user_roster_permitted,
+                                class: 'custom-control-input'
+                  = c.label class: 'custom-control-label'
         .form-group
           = f.label :roster_ids
           = f.select :roster_ids,
