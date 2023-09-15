@@ -34,24 +34,22 @@
                                 class: 'custom-control-input'
                   = c.label class: 'custom-control-label'
         .form-group
-          = f.label :roster_ids
-          = f.select :roster_ids,
-           options_from_collection_for_select(Roster.all, :id, :name,
-            selected: selected_rosters(@user, @roster)), {}, multiple: true, class: 'form-control'
-        %div
-          = f.check_box :reminders_enabled
-          = f.label :reminders_enabled,
-           'Receive email reminders of upcoming assignments?'
-        %div
-          = f.check_box :change_notifications_enabled
-          = f.label :change_notifications_enabled,
-           'Receive notifications when your assignments are changed?'
+          .custom-checkbox.custom-control
+            = f.check_box :reminders_enabled, class: 'custom-control-input'
+            = f.label :reminders_enabled,
+                      'Receive email reminders of upcoming assignments?', class: 'custom-control-label'
+        .form-group
+          .custom-checkbox.custom-control
+            = f.check_box :change_notifications_enabled, class: 'custom-control-input'
+            = f.label :change_notifications_enabled,
+                      'Receive notifications when your assignments are changed?', class: 'custom-control-label'
         - if @current_user.admin_in? @roster
           - membership = @user.membership_in @roster
           %div
             = f.fields_for membership || :membership do |g|
-              %div
-                = g.check_box :admin, disabled: membership&.admin? && @roster.admins.one?
-                = g.label :admin, "Admin in #{@roster.name}?"
+              .form-group
+                .custom-checkbox.custom-control
+                  = g.check_box :admin, disabled: membership&.admin? && @roster.admins.one?, class: 'custom-control-input'
+                  = g.label :admin, "Admin in #{@roster.name}?", class: 'custom-control-label'
     .text-center
       = f.submit 'Save', class: 'btn btn-primary btn-lg'
