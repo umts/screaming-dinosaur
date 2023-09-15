@@ -24,9 +24,9 @@ class UsersController < ApplicationController
   def edit; end
 
   def create
-    user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
-    membership_params = user_params[:membership]
-    @user = User.new(user_params.except(:membership))
+    create_user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
+    membership_params = create_user_params[:membership]
+    @user = User.new(create_user_params.except(:membership))
     if @user.save && update_membership(membership_params)
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
