@@ -31,7 +31,7 @@
                   = c.check_box checked: @user.membership_in(c.object).present?,
                                 disabled: !user_roster_permitted,
                                 class: 'custom-control-input'
-                  = c.label class: 'custom-control-label'
+                  .custom-control-label= c.text
         .form-group
           .custom-checkbox.custom-control
             = f.check_box :reminders_enabled, class: 'custom-control-input'
