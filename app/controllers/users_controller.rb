@@ -5,11 +5,6 @@ class UsersController < ApplicationController
   before_action :require_admin_in_roster_or_self, only: %i[edit update]
   before_action :require_admin_in_roster, except: %i[edit update]
 
-  WHITELISTED_ATTRIBUTES = [:first_name, :last_name, :spire, :email,
-                            :phone, :active, :reminders_enabled,
-                            :change_notifications_enabled,
-                            { roster_ids: [], membership: [:admin] }].freeze
-
   def index
     @fallback = @roster.fallback_user
     @active = !params[:active]
@@ -24,9 +19,8 @@ class UsersController < ApplicationController
   def edit; end
 
   def create
-    create_user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
-    membership_params = create_user_params[:membership]
-    @user = User.new(create_user_params.except(:membership))
+    @user = User.new(user_params.except(:membership))
+    membership_params = user_params[:membership]
     if @user.save && update_membership(membership_params)
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
@@ -77,10 +71,12 @@ class UsersController < ApplicationController
       :first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
       :change_notifications_enabled, roster_ids: [], membership: [:admin]
     ).tap do |params|
+      next if params[:roster_ids].blank?
+
       given_roster_ids = params[:roster_ids].map(&:to_i)
-      params[:roster_ids] = (@user.rosters.map(&:id) || []).then do |roster_ids|
+      params[:roster_ids] = (@user&.roster_ids || []).then do |roster_ids|
         roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && @current_user.admin_in?(roster_id) }
-        roster_ids | (given_roster_ids & @user.rosters.map(&:id))
+        roster_ids | (given_roster_ids & @current_user.memberships.where(admin: true).map(&:roster_id))
       end
     end
   end
