@@ -48,7 +48,9 @@
             = f.fields_for membership || :membership do |g|
               .form-group
                 .custom-checkbox.custom-control
-                  = g.check_box :admin, disabled: membership&.admin? && @roster.admins.one?, class: 'custom-control-input'
+                  = g.check_box :admin,
+                                disabled: membership&.admin? && @roster.admins.one?,
+                                class: 'custom-control-input'
                   = g.label :admin, "Admin in #{@roster.name}?", class: 'custom-control-label'
     .text-center
       = f.submit 'Save', class: 'btn btn-primary btn-lg'
