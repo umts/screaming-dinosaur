@@ -24,8 +24,7 @@
           %legend.m-0 Rosters
           = f.hidden_field :'roster_ids[]', value: '', id: nil
           .list-group.list-group-form
-            - user_roster_options = @user.rosters | @current_user.memberships.where(admin: true).map(&:roster)
-            = f.collection_check_boxes :roster_ids, user_roster_options, :id, :name, include_hidden: false do |c|
+            = f.collection_check_boxes :roster_ids, Roster.all.order(:name), :id, :name, include_hidden: false do |c|
               - user_roster_permitted = @current_user.admin_in? c.object
               = c.label class: ['m-0', 'list-group-item', user_roster_permitted ? 'list-group-item-action' : nil] do
                 .custom-checkbox.custom-control
