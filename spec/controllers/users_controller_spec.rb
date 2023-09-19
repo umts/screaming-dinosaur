@@ -7,14 +7,8 @@ RSpec.describe UsersController do
     let(:attributes) { attributes_for :user }
 
     let :submit do
-      post :create, params: {
-        user: attributes.merge({ roster_ids: [roster.id] }) do |k, o, n|
-          next unless k == :roster_ids
-
-          o.concat(n)
-        end,
-        roster_id: roster.id
-      }
+      attributes[:roster_ids] += roster.id
+      post :create, params: { user: attributes, roster_id: roster.id }
     end
 
     context 'when the current user is an admin in the roster' do
