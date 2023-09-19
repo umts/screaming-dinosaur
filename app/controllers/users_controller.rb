@@ -5,11 +5,6 @@ class UsersController < ApplicationController
   before_action :require_admin_in_roster_or_self, only: %i[edit update]
   before_action :require_admin_in_roster, except: %i[edit update]
 
-  WHITELISTED_ATTRIBUTES = [:first_name, :last_name, :spire, :email,
-                            :phone, :active, :reminders_enabled,
-                            :change_notifications_enabled,
-                            { rosters: [], membership: [:admin] }].freeze
-
   def index
     @fallback = @roster.fallback_user
     @active = !params[:active]
@@ -24,10 +19,8 @@ class UsersController < ApplicationController
   def edit; end
 
   def create
-    user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
+    @user = User.new(user_params.except(:membership))
     membership_params = user_params[:membership]
-    user_params = parse_roster_ids(user_params.except(:membership))
-    @user = User.new(user_params)
     if @user.save && update_membership(membership_params)
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
@@ -38,10 +31,8 @@ class UsersController < ApplicationController
   end
 
   def update
-    user_params = params.require(:user).permit(*WHITELISTED_ATTRIBUTES)
     membership_params = user_params[:membership]
-    user_params = parse_roster_ids(user_params.except(:membership))
-    if @user.update(user_params) && update_membership(membership_params)
+    if @user.update(user_params.except(:membership)) && update_membership(membership_params)
       confirm_change(@user)
       if @current_user.admin_in? @roster
         redirect_to roster_users_path(@roster)
@@ -75,6 +66,21 @@ class UsersController < ApplicationController
 
   private
 
+  def user_params
+    params.fetch(:user, {}).permit(
+      :first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
+      :change_notifications_enabled, roster_ids: [], membership: [:admin]
+    ).tap do |params|
+      next if params[:roster_ids].blank?
+
+      given_roster_ids = params[:roster_ids].map(&:to_i)
+      params[:roster_ids] = (@user&.roster_ids || []).then do |roster_ids|
+        roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && @current_user.admin_in?(roster_id) }
+        roster_ids | (given_roster_ids & @current_user.memberships.where(admin: true).map(&:roster_id))
+      end
+    end
+  end
+
   def find_user
     @user = User.find params.require(:id)
   end
@@ -83,19 +89,12 @@ class UsersController < ApplicationController
     return true unless membership_params.present? && @current_user.admin_in?(@roster)
 
     membership = @user.membership_in @roster
+    return true if membership.nil?
+
     return true if membership.update membership_params
 
     @user.errors.merge! membership.errors
     false
-  end
-
-  def parse_roster_ids(attrs)
-    if attrs[:rosters].present?
-      attrs[:rosters] = attrs[:rosters].filter_map do |roster_id|
-        Roster.friendly.find roster_id, allow_nil: true
-      end
-    end
-    attrs
   end
 
   def require_admin_in_roster_or_self
