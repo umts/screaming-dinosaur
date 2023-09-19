@@ -7,7 +7,7 @@ RSpec.describe UsersController do
     let(:attributes) { attributes_for :user }
 
     let :submit do
-      attributes[:roster_ids] += roster.id
+      attributes[:roster_ids] << roster.id
       post :create, params: { user: attributes, roster_id: roster.id }
     end
 
