@@ -5,6 +5,11 @@ class ApplicationController < ActionController::Base
 
   before_action :check_primary_account, :set_current_user, :set_roster, :set_paper_trail_whodunnit
 
+  def self.api_accessible(**options)
+    skip_before_action :check_primary_account, :set_current_user, **options
+    before_action :require_api_key_or_login, **options
+  end
+
   def confirm_change(object, message = nil)
     change = object.versions.where(whodunnit: @current_user).last
     flash[:change] = change.try(:id)
@@ -61,7 +66,7 @@ class ApplicationController < ActionController::Base
   # rubocop:disable Naming/MemoizedInstanceVariableName
   def set_roster
     @roster = Roster.friendly.find(params[:roster_id], allow_nil: true)
-    @roster ||= @current_user.rosters.first
+    @roster ||= @current_user&.rosters&.first
     @roster ||= Roster.first
   end
   # rubocop:enable Naming/MemoizedInstanceVariableName
@@ -72,5 +77,12 @@ class ApplicationController < ActionController::Base
     @primary_account = request.env['UMAPrimaryAccount']
     @uid = request.env['uid']
     render 'sessions/subsidiary', status: :unauthorized
+  end
+
+  def require_api_key_or_login
+    return if params[:api_key].present? && params[:api_key] == Rails.application.credentials.fetch(:api_key)
+
+    check_primary_account
+    set_current_user
   end
 end

@@ -1,5 +1,5 @@
 /config/database.yml
-/config/credentials/production.key
+/config/credentials/*.key
 /log
 /tmp
 

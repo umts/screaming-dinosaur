@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class RostersController < ApplicationController
-  # The default scaffold method, not the generic one
-  # we wrote in ApplicationController.
-  before_action :find_roster, only: %i[destroy edit setup update]
-  before_action :require_admin, except: %i[assignments]
+  api_accessible only: :show
+
+  before_action :find_roster, only: %i[destroy edit setup show update]
+  before_action :require_admin, except: %i[assignments show]
   before_action :require_admin_in_roster, only: %i[destroy edit setup update]
 
   def assignments
@@ -13,6 +13,12 @@ class RostersController < ApplicationController
 
   def index
     @rosters = Roster.all
+  end
+
+  def show
+    respond_to do |format|
+      format.json { render layout: false }
+    end
   end
 
   def edit

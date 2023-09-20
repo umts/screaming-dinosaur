@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   root 'rosters#assignments'
 
-  resources :rosters, except: %i[show] do
+  resources :rosters do
     member do
       get :setup
     end
