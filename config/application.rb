@@ -12,5 +12,6 @@ module ScreamingDinosaur
     config.load_defaults 6.1
 
     config.time_zone = 'Eastern Time (US & Canada)'
+    config.active_support.cache_format_version = 7.0
   end
 end
