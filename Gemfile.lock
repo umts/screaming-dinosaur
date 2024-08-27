@@ -258,7 +258,7 @@ GEM
     regexp_parser (2.8.1)
     request_store (1.5.1)
       rack (>= 1.4)
-    rexml (3.3.3)
+    rexml (3.3.6)
       strscan
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
