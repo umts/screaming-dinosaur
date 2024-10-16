@@ -176,7 +176,7 @@ GEM
     mini_portile2 (2.8.7)
     minitest (5.25.1)
     mysql2 (0.5.3)
-    net-http (0.2.2)
+    net-http (0.4.1)
       uri
     net-imap (0.4.12)
       date
@@ -352,7 +352,7 @@ GEM
     umts-custom-matchers (2.0.0)
       rspec-rails (>= 3.0, <= 6.0)
     unicode-display_width (2.3.0)
-    uri (0.12.2)
+    uri (0.13.1)
     websocket (1.2.9)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
