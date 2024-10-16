@@ -367,17 +367,17 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bcrypt_pbkdf (>= 1.0, < 2.0)
+  bcrypt_pbkdf
   better_errors
   binding_of_caller
-  capistrano (~> 3.14.1)
+  capistrano
   capistrano-bundler
   capistrano-passenger
   capistrano-pending
   capistrano-rails
   capistrano-yarn
   capybara
-  ed25519 (>= 1.2, < 2.0)
+  ed25519
   exception_notification
   factory_bot_rails
   friendly_id
@@ -386,7 +386,7 @@ DEPENDENCIES
   haml_lint
   icalendar
   jbuilder
-  listen (~> 3.0)
+  listen
   mysql2
   net-http
   paper_trail (~> 12.3)
