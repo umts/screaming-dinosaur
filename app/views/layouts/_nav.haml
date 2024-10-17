@@ -15,7 +15,7 @@
             %li.nav-item.dropdown
               = link_to 'Generate', '#', role: 'button',
                         id: 'navbar-generate-nav-link', class: 'nav-link dropdown-toggle',
-                        'data-toggle': 'dropdown', 'aria-expanded': 'false'
+                        'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'
               .dropdown-menu{ 'aria-labelledby': 'navbar-generate-nav-link' }
                 = link_to 'Rotation', rotation_generator_roster_assignments_path(@roster), class: 'dropdown-item'
                 = link_to 'By Weekday', generate_by_weekday_roster_assignments_path(@roster), class: 'dropdown-item'

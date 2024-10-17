@@ -1,14 +1,12 @@
-.form-inline.justify-content-center.my-4
-
+.justify-content-center.my-4
   .row.justify-content-center
-    .col-auto.align-self-center
-      %span{ data: { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions },
-        aria: { label: 'Calendar feed information' }, tabindex: 0 }
-        %i.fas.fa-info-circle
-        %span#clip-info.sr-only= calendar_instructions
-
-    .col-6
-      .input-group.me-2
+    .col
+      .input-group
+        .input-group-text
+          %span{ data: { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions },
+            aria: { label: 'Calendar feed information' }, tabindex: 0 }
+            %i.fas.fa-info-circle
+            %span#clip-info.sr-only= calendar_instructions
         - roster_name = @roster.name.parameterize
         - token = @current_user.calendar_access_token
         = text_field_tag :access_token,
@@ -19,6 +17,7 @@
           data: { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': 'Copy to clipboard' },
           aria: { label: 'Copy' } }
           %span.far.fa-clipboard
-  = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-outline-secondary' do
-    CSV Overview
-    %i.fas.fa-download
+    .col
+      = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-outline-secondary' do
+        CSV Overview
+        %i.fas.fa-download

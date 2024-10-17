@@ -3,7 +3,7 @@
 .row
   - @rosters.each do |roster|
     .col-sm-4
-      .card
+      .card.mb-3
         .card-body
           %h5.card-title= roster.name
           .card-text
@@ -11,6 +11,5 @@
               = hidden_field_tag :roster_id, roster.id
               .input-group
                 = select_tag :user_id,
-                  grouped_options_for_select(roster.user_options),
-                  class: 'form-select'
+                  grouped_options_for_select(roster.user_options), class: 'form-select'
                 = submit_tag 'Login', class: 'btn btn-success'

@@ -2,11 +2,11 @@
   = f.hidden_field :roster_id, value: @roster.id
   .row
     .col-lg
-      .form-group
+      .mb-3
         = f.label :user_id, class: 'form-label'
         - if @current_user.admin_in?(@roster)
           = f.collection_select :user_id, @users, :id, :last_name,
-            { selected: @assignment.user&.id || @current_user.id }, class: 'form-control custom-select'
+            { selected: @assignment.user&.id || @current_user.id }, class: 'form-select'
         - else
           = f.hidden_field :user_id, value: @current_user.id
           = f.text_field :user_name, value: @current_user.last_name, disabled: true, class: 'form-control'

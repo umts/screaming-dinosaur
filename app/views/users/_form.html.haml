@@ -21,7 +21,7 @@
            placeholder: '+14135450056', class: 'form-control'
       .col-lg
         = field_set_tag nil, class: 'mb-3' do
-          %legend.m-0 Rosters
+          %legend.float-none.m-0 Rosters
           = f.hidden_field :'roster_ids[]', value: '', id: nil
           .list-group
             = f.collection_check_boxes :roster_ids, Roster.all.order(:name), :id, :name, include_hidden: false do |c|
