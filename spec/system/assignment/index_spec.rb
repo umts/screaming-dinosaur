@@ -47,7 +47,7 @@ RSpec.describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: user, roster: roster
         visit roster_assignments_path(roster)
-        expect(find_all('.fc-event').map { |e| e['style'] })
+        expect(find_all('.fc-event').pluck('style'))
           .to all(match(bg_variable('bs-info')))
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe 'viewing the index' do
         create :assignment, start_date: 3.days.ago, end_date: 3.days.since,
                             user: roster_user(roster), roster: roster
         visit roster_assignments_path(roster)
-        expect(find_all('.fc-event').map { |e| e['style'] })
+        expect(find_all('.fc-event').pluck('style'))
           .to all(match(bg_variable('bs-secondary')))
       end
     end
@@ -65,8 +65,7 @@ RSpec.describe 'viewing the index' do
     context 'when clicking on an empty day' do
       let(:date) { Time.zone.today.change(day: 14) }
       let(:new_path) do
-        new_roster_assignment_path roster_id: roster.id,
-                                   date: date.to_fs(:db)
+        new_roster_assignment_path roster, date: date.to_fs(:db)
       end
 
       it 'sends you to create a new assignment' do

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby IO.read(File.expand_path('.ruby-version', __dir__)).strip
+ruby file: '.ruby-version'
 
+gem 'friendly_id'
 gem 'haml'
 gem 'haml-rails'
 gem 'icalendar'
@@ -10,9 +11,9 @@ gem 'jbuilder'
 gem 'mysql2'
 gem 'net-http'
 gem 'paper_trail', '~> 12.3'
-gem 'rails', '~> 7.0.4'
+gem 'phonelib'
+gem 'rails', '~> 7.0.8'
 gem 'sassc-rails'
-gem 'snappconfig'
 gem 'sprockets-rails'
 gem 'terser'
 gem 'whenever', require: false
@@ -22,18 +23,18 @@ group :production do
 end
 
 group :development do
-  gem 'bcrypt_pbkdf', '>= 1.0', '< 2.0', require: false
+  gem 'bcrypt_pbkdf', require: false
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'capistrano', '~> 3.14.1', require: false
+  gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-passenger', require: false
   gem 'capistrano-pending', require: false
   gem 'capistrano-rails', require: false
   gem 'capistrano-yarn', require: false
-  gem 'ed25519', '>= 1.2', '< 2.0', require: false
+  gem 'ed25519', require: false
   gem 'haml_lint', require: false
-  gem 'listen', '~> 3.0'
+  gem 'listen'
   gem 'rb-readline', require: false
   gem 'rubocop', require: false
   gem 'rubocop-performance', require: false
@@ -53,8 +54,8 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec-html-matchers'
+  gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'timecop'
   gem 'umts-custom-matchers'
-  gem 'webdrivers'
 end

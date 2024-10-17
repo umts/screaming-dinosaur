@@ -11,8 +11,4 @@ module ApplicationHelper
       link_to text, path, class: current_page?(path) ? 'nav-link active' : 'nav-link'
     end
   end
-
-  def switchover_time(hour)
-    Time.current.change(hour: hour).strftime('%-I:%M %P')
-  end
 end

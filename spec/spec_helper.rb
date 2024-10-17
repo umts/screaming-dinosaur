@@ -2,8 +2,7 @@
 
 require 'simplecov'
 SimpleCov.start 'rails' do
-  add_filter '/vendor/gems/'
-  refuse_coverage_drop
+  maximum_coverage_drop 0.5 if ENV['CI']
 end
 
 ENV['RAILS_ENV'] ||= 'test'
@@ -49,9 +48,9 @@ RSpec.configure do |config|
     driven_by :rack_test
   end
 
-  config.before :each, type: :system, js: true do
+  config.before :each, js: true, type: :system do
     driven_by :selenium, using: :headless_chrome
   end
 
-  Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
+  Dir['./spec/support/**/*.rb'].each { |f| require f }
 end

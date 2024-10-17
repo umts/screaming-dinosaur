@@ -5,20 +5,19 @@ class Assignment < ApplicationRecord
   belongs_to :user
   belongs_to :roster
 
-  validates :user, :start_date, :end_date, :roster,
-            presence: true
+  validates :start_date, :end_date, presence: true
   validate :overlaps_any?
   validate :user_in_roster?
 
   scope :future, -> { where 'start_date > ?', Time.zone.today }
 
   def effective_start_datetime
-    start_date + CONFIG[:switchover_hour].hours
+    start_date + roster.switchover.minutes
   end
 
   # Assignments effectively end at the switchover hour on the following day.
   def effective_end_datetime
-    end_date + 1.day + CONFIG[:switchover_hour].hours
+    end_date + 1.day + roster.switchover.minutes
   end
 
   def notify(receiver, of:, by:)
@@ -33,16 +32,23 @@ class Assignment < ApplicationRecord
 
   class << self
     def between(start_date, end_date)
-      where('start_date <= ? AND end_date >= ?', end_date, start_date)
+      where arel_table[:start_date].lteq(end_date).and(arel_table[:end_date].gteq(start_date))
     end
 
-    # The current assignment - this method accounts for the 5pm switchover hour.
+    # The current assignment - this method accounts for the switchover hour.
     # This should be called while scoped to a particular roster.
     def current
-      if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
-        on Date.yesterday
-      else on Time.zone.today
-      end
+      joins(:roster).on(effective_date)
+    end
+
+    def effective_date
+      switchover = Roster.arel_table[:switchover]
+      yesterday = Arel::Nodes.build_quoted(Date.yesterday)
+      today = Arel::Nodes.build_quoted(Time.zone.today)
+
+      # If it's after the roster's switchover, use "Today", otherwise it's still "Yesterday".
+      # e.g. IF(1020 >= `roster`.`switchover`, '2023-09-01', '2023-08-31')
+      Arel::Nodes::NamedFunction.new('IF', [minutes_since_midnight.gteq(switchover), today, yesterday])
     end
 
     def in(roster)
@@ -55,7 +61,8 @@ class Assignment < ApplicationRecord
       last = order(:end_date).last
       if last.present?
         last.end_date + 1.day
-      else 1.week.since.beginning_of_week(:friday).to_date
+      else
+        1.week.since.beginning_of_week(:friday).to_date
       end
     end
 
@@ -64,13 +71,8 @@ class Assignment < ApplicationRecord
       between(date, date).first
     end
 
-    # If it's before 5pm, return assignments that start today or after.
-    # It it's after 5pm, return assignments that start tomorrow or after.
     def upcoming
-      if Time.zone.now.hour < CONFIG.fetch(:switchover_hour)
-        where 'start_date >= ?', Time.zone.today
-      else where 'start_date > ?', Time.zone.today
-      end
+      joins(:roster).where arel_table[:start_date].gt(effective_date)
     end
 
     def send_reminders!

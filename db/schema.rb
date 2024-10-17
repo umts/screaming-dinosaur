@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2021_02_18_203357) do
-  create_table "assignments", charset: "utf8mb4", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2023_09_05_201033) do
+  create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.integer "user_id"
     t.date "start_date"
     t.date "end_date"
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.0].define(version: 2021_02_18_203357) do
     t.integer "roster_id"
   end
 
-  create_table "memberships", charset: "utf8mb4", force: :cascade do |t|
+  create_table "memberships", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.integer "roster_id"
     t.integer "user_id"
     t.boolean "admin", default: false
@@ -29,15 +29,19 @@ ActiveRecord::Schema[7.0].define(version: 2021_02_18_203357) do
     t.index ["user_id", "roster_id"], name: "index_memberships_on_user_id_and_roster_id", unique: true
   end
 
-  create_table "rosters", charset: "utf8mb4", force: :cascade do |t|
+  create_table "rosters", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "fallback_user_id"
+    t.integer "switchover", default: 1020, null: false
+    t.string "slug"
+    t.string "phone"
     t.index ["name"], name: "index_rosters_on_name", unique: true
+    t.index ["slug"], name: "index_rosters_on_slug", unique: true
   end
 
-  create_table "users", charset: "utf8mb4", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.string "spire"
@@ -49,12 +53,13 @@ ActiveRecord::Schema[7.0].define(version: 2021_02_18_203357) do
     t.boolean "change_notifications_enabled", default: true
     t.boolean "active", default: true
     t.string "calendar_access_token"
+    t.index ["calendar_access_token"], name: "index_users_on_calendar_access_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["phone"], name: "index_users_on_phone", unique: true
     t.index ["spire"], name: "index_users_on_spire", unique: true
   end
 
-  create_table "versions", charset: "utf8mb4", force: :cascade do |t|
+  create_table "versions", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.string "item_type", limit: 191, null: false
     t.integer "item_id", null: false
     t.string "event", null: false

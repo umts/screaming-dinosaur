@@ -127,17 +127,21 @@ RSpec.describe AssignmentsController do
 
     let(:user_ids) { Array.new(3) { roster_user(roster).id.to_s } }
     let(:starting_user_id) { user_ids[1] }
-    let(:assignment) { create(:assignment) }
+    let(:assignment) { create :assignment }
 
     before do
       when_current_user_is :whoever
     end
 
     context 'when you are an admin in roster' do
-      before { when_current_user_is roster_admin(roster) }
+      before do
+        friendly = Roster.friendly
+        allow(Roster).to receive(:friendly).and_return(friendly)
+        allow(friendly).to receive(:find).and_return(roster)
+        when_current_user_is roster_admin(roster)
+      end
 
       it 'calls Roster#generate_assignments with the given arguments' do
-        allow(Roster).to receive(:find_by).and_return(roster)
         allow(roster).to receive(:generate_assignments).and_return []
         submit
         expect(roster).to have_received(:generate_assignments)
@@ -145,7 +149,6 @@ RSpec.describe AssignmentsController do
       end
 
       it 'notifies the new assignment holders' do
-        allow(Roster).to receive(:find_by).and_return(roster)
         allow(roster).to receive(:generate_assignments).and_return [assignment]
         allow(assignment).to receive :notify
         submit
@@ -160,7 +163,7 @@ RSpec.describe AssignmentsController do
       it 'redirects to the calendar with the start date given' do
         submit
         expect(response)
-          .to redirect_to roster_assignments_path(date: Time.zone.today)
+          .to redirect_to roster_assignments_path(roster, date: Time.zone.today)
       end
 
       context 'when the starting user is not in the selected users' do
@@ -246,12 +249,6 @@ RSpec.describe AssignmentsController do
         allow(Assignment).to receive(:current)
         submit
         expect(Assignment).to have_received(:current)
-      end
-
-      it 'includes the switchover hour as a variable' do
-        stub_const('CONFIG', { switchover_hour: 12 })
-        submit
-        expect(assigns.fetch(:switchover_hour)).to be 12
       end
 
       it 'includes a variable of the fallback user' do
@@ -449,7 +446,7 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it ' redirects back' do
+        it 'redirects back' do
           expect { submit }.to redirect_back
         end
       end

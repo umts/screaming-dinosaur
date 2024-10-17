@@ -1,8 +1,12 @@
 %h1 Setup Twilio for #{@roster.name}
 
 %ol#twilio-instructions
-  %li= link_to 'Add a phone number',
-    'https://www.twilio.com/console/phone-numbers/incoming'
+  - if @roster.phone.present?
+    %li= link_to "Configure #{formatted_phone(@roster.phone)}",
+      'https://console.twilio.com/us1/develop/phone-numbers/manage/incoming'
+  - else
+    %li= link_to 'Add a phone number',
+      'https://console.twilio.com/us1/develop/phone-numbers/manage/search'
   %li
     Under Voice and Fax:
     %ol
@@ -14,7 +18,10 @@
           Set the failure handler to a TwiML Bin containing
           .card.w-75
             .card-body
-              %pre.m-0= @roster.fallback_call_twiml
+              %pre.m-0
+                - xml = render template: 'twilio/call', formats: :xml,
+                               locals: { user: @roster.fallback_user, fallback: true }
+                = String.new(xml)
   %li
     Under Messaging:
     %ol
@@ -26,4 +33,7 @@
           Set the failure handler to a TwiML Bin containing
           .card.w-75
             .card-body
-              %pre.m-0= @roster.fallback_text_twiml
+              %pre.m-0
+                - xml = render template: 'twilio/text', formats: :xml,
+                               locals: { user: @roster.fallback_user, body: '{{Body}}', fallback: true }
+                = String.new(xml)

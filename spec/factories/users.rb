@@ -6,7 +6,7 @@ FactoryBot.define do
     sequence(:last_name) { |n| "Last#{n}" }
     sequence(:spire) { |n| format('%08d@umass.edu', n) }
     sequence(:email) { |n| "user#{n}@umass.edu" }
-    sequence(:phone) { |n| format('+1%010d', n) }
-    rosters { [create(:roster)] }
+    sequence(:phone) { |n| format('+1413545%04d', n) }
+    roster_ids { [create(:roster).id] }
   end
 end

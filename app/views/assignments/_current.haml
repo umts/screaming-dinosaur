@@ -10,4 +10,4 @@
           .card-text #{@fallback_user.last_name} is the fallback.
   .card.mb-3
     .card-body
-      .card-text On-call switches at: #{switchover_time(@switchover_hour)}
+      .card-text On-call switches at: #{@roster.switchover_time.strftime('%-I:%M %P')}

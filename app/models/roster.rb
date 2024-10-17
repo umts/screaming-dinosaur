@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
-class Roster < ApplicationRecord
-  has_paper_trail
-  has_many :assignments, dependent: :destroy
+require 'csv'
 
+class Roster < ApplicationRecord
+  extend FriendlyId
+
+  has_paper_trail
+  friendly_id :name, use: :slugged
+
+  has_many :assignments, dependent: :destroy
   has_many :memberships, dependent: :destroy
   has_many :admin_memberships, -> { where(admin: true) },
            class_name: 'Membership', inverse_of: :roster
@@ -19,32 +24,8 @@ class Roster < ApplicationRecord
                              inverse_of: 'fallback_rosters'
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
-
-  def fallback_call_twiml
-    return if fallback_user.blank?
-
-    <<~TWIML
-      <?xml version="1.0" encoding="UTF-8"?>
-      <Response>
-        <Say>There was an application error. You are being connected to
-        the backup on call contact.</Say>
-        <Dial>#{fallback_user.phone}</Dial>
-      </Response>
-    TWIML
-  end
-
-  def fallback_text_twiml
-    return if fallback_user.blank?
-
-    <<~TWIML
-      <?xml version="1.0" encoding="UTF-8"?>
-      <Response>
-        <Message to="{{From}}">There was an application error. Your
-        message was forwarded to the backup on call contact.</Message>
-        <Message to="#{fallback_user.phone}">{{Body}}</Message>
-      </Response>
-    TWIML
-  end
+  validates :switchover, numericality: { in: (0...(24 * 60)) }
+  validates :phone, phone: { allow_blank: true }
 
   def generate_assignments(user_ids, start_date, end_date, start_user_id)
     assignments = []
@@ -64,9 +45,42 @@ class Roster < ApplicationRecord
     assignments.current.try(:user) || fallback_user
   end
 
+  def switchover_time
+    switchover.presence && Time.zone.now.midnight.in(switchover.minutes)
+  end
+
   def user_options
     as = admins.order(:last_name).map { |a| [a.full_name, a.id] }
     nas = non_admins.order(:last_name).map { |na| [na.full_name, na.id] }
     { 'Admins' => as, 'Non-Admins' => nas }
+  end
+
+  def uncovered_dates_between(start_date, end_date)
+    (start_date.to_date..end_date.to_date).to_a -
+      assignments.between(start_date.to_date, end_date.to_date).inject([]) do |dates, assignment|
+        dates | (assignment.start_date..assignment.end_date).to_a
+      end
+  end
+
+  def assignment_csv
+    CSV.generate headers: %w[roster email first_name last_name start_date end_date created_at updated_at],
+                 write_headers: true do |csv|
+      assignments.sort_by(&:start_date).each do |assignment|
+        csv << assignment_csv_row(assignment)
+      end
+    end
+  end
+
+  private
+
+  def assignment_csv_row(assignment)
+    { 'roster' => name,
+      'email' => assignment.user.email,
+      'first_name' => assignment.user.first_name,
+      'last_name' => assignment.user.last_name,
+      'start_date' => assignment.start_date.to_fs(:db),
+      'end_date' => assignment.end_date.to_fs(:db),
+      'created_at' => assignment.created_at.to_fs(:db),
+      'updated_at' => assignment.updated_at.to_fs(:db) }
   end
 end

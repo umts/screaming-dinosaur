@@ -5,7 +5,7 @@ lock '~> 3.14.1'
 
 set :application, 'screaming_dinosaur'
 set :repo_url, 'https://github.com/umts/screaming-dinosaur.git'
-set :branch, :master
+set :branch, :main
 set :deploy_to, "/srv/#{fetch :application}"
 
 set :log_level, :info
@@ -14,7 +14,7 @@ set :whenever_command, %i[sudo bundle exec whenever]
 
 append :linked_files,
        'config/database.yml',
-       'config/application.yml'
+       'config/credentials/production.key'
 
 append :linked_dirs, '.bundle', 'log'
 

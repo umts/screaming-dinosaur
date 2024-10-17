@@ -1,3 +1,5 @@
 !!! XML
 %Response
-  %Dial= @user.phone
+  - if local_assigns.has_key? :fallback
+    %Say There was an application error. You are being connected to the backup on call contact.
+  %Dial= full_phone(user.phone)

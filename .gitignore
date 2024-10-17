@@ -1,5 +1,5 @@
-/config/application.yml
 /config/database.yml
+/config/credentials/*.key
 /log
 /tmp
 
@@ -16,6 +16,3 @@ spec/examples.txt
 /.bundle
 /vendor/bundle
 /vendor/gems
-
-# Ignore application secrets.
-/config/application.secrets.yml

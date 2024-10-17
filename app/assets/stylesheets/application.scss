@@ -8,7 +8,9 @@ $light: #eee;
 $dark: #333;
 
 @import "bootstrap/scss/bootstrap";
+@import "@fullcalendar/common/main";
+@import "@fullcalendar/daygrid/main";
+@import "@fullcalendar/bootstrap/main";
 @import "font-awesome-custom";
-@import "fullcalendar/main";
 @import "assignments";
 @import "assignments/calendar";

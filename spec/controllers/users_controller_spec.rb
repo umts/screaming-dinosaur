@@ -7,6 +7,7 @@ RSpec.describe UsersController do
     let(:attributes) { attributes_for :user }
 
     let :submit do
+      attributes[:roster_ids] << roster.id
       post :create, params: { user: attributes, roster_id: roster.id }
     end
 
@@ -22,7 +23,7 @@ RSpec.describe UsersController do
 
         it 'redirects to the index' do
           submit
-          expect(response).to redirect_to roster_users_path
+          expect(response).to redirect_to roster_users_path(roster)
         end
       end
 
@@ -38,8 +39,8 @@ RSpec.describe UsersController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'renders new' do
+          expect(submit).to render_template 'new'
         end
       end
     end
@@ -318,7 +319,7 @@ RSpec.describe UsersController do
 
     let(:new_roster) { create :roster }
     let(:user) { roster_user(new_roster) }
-    let(:changes) { { phone: '+14135451451', rosters: [roster.id, new_roster.id] } }
+    let(:changes) { { phone: '+14135451451', roster_ids: [roster.id, new_roster.id] } }
 
     context 'when the current user is an admin in the roster' do
       before { when_current_user_is roster_admin(roster) }
@@ -336,7 +337,7 @@ RSpec.describe UsersController do
 
         it 'redirects to the index' do
           submit
-          expect(response).to redirect_to roster_users_path
+          expect(response).to redirect_to roster_users_path(roster)
         end
 
         it 'allows changing admin status in roster' do
@@ -350,7 +351,7 @@ RSpec.describe UsersController do
         before { changes[:phone] = 'not a valid phone number' }
 
         it 'does not update the user' do
-          expect { submit }.not_to change { user.reload.phone }
+          expect { submit }.not_to(change { user.reload.phone })
         end
 
         it 'shows errors' do
@@ -358,8 +359,8 @@ RSpec.describe UsersController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'renders edit' do
+          expect(submit).to render_template 'edit'
         end
       end
     end
@@ -394,7 +395,7 @@ RSpec.describe UsersController do
         before { changes[:phone] = 'not a valid phone number' }
 
         it 'does not update the user' do
-          expect { submit }.not_to change { user.reload.phone }
+          expect { submit }.not_to(change { user.reload.phone })
         end
 
         it 'shows errors' do
@@ -402,8 +403,8 @@ RSpec.describe UsersController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'renders edit' do
+          expect(submit).to render_template 'edit'
         end
       end
 
@@ -416,11 +417,11 @@ RSpec.describe UsersController do
         end
 
         it 'does not change their adminhood' do
-          expect { submit }.not_to change { user.membership_in roster }
+          expect { submit }.not_to(change { user.membership_in roster })
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'renders edit' do
+          expect(submit).to render_template 'edit'
         end
 
         it 'shows errors' do

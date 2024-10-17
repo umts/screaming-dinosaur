@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function() {
   // Enable bootstrap tooltips
   var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   tooltipTriggerList.forEach(function(tooltipTriggerNode) {

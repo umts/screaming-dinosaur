@@ -37,7 +37,7 @@ RSpec.describe 'ICS views' do
 
     def description(user, roster)
       "DESCRIPTION:#{user.first_name} #{user.last_name} " \
-      "is on call for #{roster.name}."
+        "is on call for #{roster.name}."
     end
 
     def assignment_dates(assignment)

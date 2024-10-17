@@ -94,7 +94,7 @@ RSpec.describe AssignmentsController do
         expect(Assignment.find_by(id: roster.id)).to be_nil
       end
 
-      it { is_expected.to redirect_to("/rosters/#{roster.id}/assignments") }
+      it { is_expected.to redirect_to("/rosters/#{roster.to_param}/assignments") }
 
       it 'sends a notification to the owner of the assignment' do
         allow(Assignment).to receive(:includes).and_return(Assignment)
@@ -117,7 +117,7 @@ RSpec.describe AssignmentsController do
         expect(flash[:errors]).to eq('Only roster admins may delete assignments.')
       end
 
-      it { is_expected.to redirect_to("/rosters/#{roster.id}/assignments/#{assignment.id}/edit") }
+      it { is_expected.to redirect_to("/rosters/#{roster.to_param}/assignments/#{assignment.to_param}/edit") }
     end
   end
 end

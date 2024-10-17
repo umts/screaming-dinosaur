@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   root 'rosters#assignments'
 
-  resources :rosters, except: %i[show] do
+  resources :rosters do
     member do
       get :setup
     end
@@ -15,6 +15,8 @@ Rails.application.routes.draw do
       collection do
         post :generate_rotation
         get  :rotation_generator
+        get :generate_by_weekday
+        post :generate_by_weekday, to: 'assignments#generate_by_weekday_submit'
       end
     end
 
