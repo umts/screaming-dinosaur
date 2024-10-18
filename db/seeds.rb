@@ -1,3 +1,5 @@
+exit unless Rails.env.development?
+
 # ROTATIONS
 it = FactoryBot.create :roster, name: 'Transit IT'
 ops = FactoryBot.create :roster, name: 'Transit Operations'
