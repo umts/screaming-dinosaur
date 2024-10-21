@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  attr_accessor :current_user
-
   before_action :check_primary_account, :set_current_user, :set_roster, :set_paper_trail_whodunnit
 
   def self.api_accessible(**options)
@@ -11,7 +9,7 @@ class ApplicationController < ActionController::Base
   end
 
   def confirm_change(object, message = nil)
-    change = object.versions.where(whodunnit: @current_user).last
+    change = object.versions.where(whodunnit: Current.user).last
     flash[:change] = change.try(:id)
     # If we know what change occurred, use it to write the message.
     # If we don't, try and infer from the current controller action.
@@ -40,20 +38,20 @@ class ApplicationController < ActionController::Base
   # 3. Admins of specifically the current roster
 
   def require_admin
-    render file: 'public/401.html', status: :unauthorized unless @current_user.admin?
+    render file: 'public/401.html', status: :unauthorized unless Current.user.admin?
   end
 
   def require_admin_in_roster
-    render file: 'public/401.html', status: :unauthorized unless @current_user.admin_in? @roster
+    render file: 'public/401.html', status: :unauthorized unless Current.user.admin_in? @roster
   end
 
   def set_current_user
     if session.key? :user_id
-      @current_user = User.find_by id: session[:user_id]
+      Current.user = User.find_by id: session[:user_id]
     else
-      @current_user = User.find_by spire: request.env['fcIdNumber']
-      if @current_user.present?
-        session[:user_id] = @current_user.id
+      Current.user = User.find_by spire: request.env['fcIdNumber']
+      if Current.user.present?
+        session[:user_id] = Current.user.id
       else
         redirect_to unauthenticated_session_path
       end
@@ -66,7 +64,7 @@ class ApplicationController < ActionController::Base
   # rubocop:disable Naming/MemoizedInstanceVariableName
   def set_roster
     @roster = Roster.friendly.find(params[:roster_id], allow_nil: true)
-    @roster ||= @current_user&.rosters&.first
+    @roster ||= Current.user&.rosters&.first
     @roster ||= Roster.first
   end
   # rubocop:enable Naming/MemoizedInstanceVariableName
