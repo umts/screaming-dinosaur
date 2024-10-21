@@ -37,7 +37,7 @@ RSpec.describe RostersController do
       let(:user) { create :user, last_name: 'Kanasis', rosters: [roster] }
 
       let! :assignment do
-        create :assignment, start_date: Date.yesterday, end_date: Date.tomorrow, roster: roster, user: user
+        create :assignment, start_date: Date.yesterday, end_date: Date.tomorrow, roster:, user:
       end
 
       it 'lists the on-call user' do

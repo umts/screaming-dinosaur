@@ -19,13 +19,13 @@ RSpec.describe User do
     let(:roster) { create :roster }
 
     context 'with admin membership in the roster' do
-      before { create :membership, roster: roster, user: user, admin: true }
+      before { create :membership, roster:, user:, admin: true }
 
       it('returns true') { expect(user).to be_admin_in(roster) }
     end
 
     context 'with non-admin membership in the roster' do
-      before { create :membership, roster: roster, user: user, admin: false }
+      before { create :membership, roster:, user:, admin: false }
 
       it('returns false') { expect(user).not_to be_admin_in(roster) }
     end
