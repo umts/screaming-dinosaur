@@ -2,22 +2,22 @@
 
 RSpec.describe 'Assignments' do
   shared_context 'when logged in as a roster admin' do
-    let(:admin) { create(:user).tap { |user| create :membership, roster: roster, user: user, admin: true } }
+    let(:admin) { create(:user).tap { |user| create :membership, roster:, user:, admin: true } }
 
     before { set_user admin }
   end
 
   describe 'GET /rosters/:id/assignments' do
-    subject(:call) { get "/rosters/#{roster.id}/assignments", headers: headers }
+    subject(:call) { get "/rosters/#{roster.id}/assignments", headers: }
 
     let(:roster) { create :roster }
-    let(:user1) { create(:user).tap { |user| create :membership, roster: roster, user: user } }
-    let(:user2) { create(:user).tap { |user| create :membership, roster: roster, user: user } }
+    let(:user1) { create(:user).tap { |user| create :membership, roster:, user: } }
+    let(:user2) { create(:user).tap { |user| create :membership, roster:, user: } }
     let!(:assignment1) do
-      create :assignment, roster: roster, user: user1, start_date: Date.current, end_date: 1.day.from_now
+      create :assignment, roster:, user: user1, start_date: Date.current, end_date: 1.day.from_now
     end
     let!(:assignment2) do
-      create :assignment, roster: roster, user: user2, start_date: 2.days.ago, end_date: 1.day.ago
+      create :assignment, roster:, user: user2, start_date: 2.days.ago, end_date: 1.day.ago
     end
 
     include_context 'when logged in as a roster admin'
@@ -61,10 +61,10 @@ RSpec.describe 'Assignments' do
   end
 
   describe 'POST /rosters/:id/assignments/generate_by_weekday' do
-    subject(:submit) { post "/rosters/#{roster.id}/assignments/generate_by_weekday", params: params }
+    subject(:submit) { post "/rosters/#{roster.id}/assignments/generate_by_weekday", params: }
 
     let(:roster) { create :roster }
-    let(:user) { create(:user).tap { |user| create :membership, roster: roster, user: user } }
+    let(:user) { create(:user).tap { |user| create :membership, roster:, user: } }
 
     include_context 'when logged in as a roster admin'
 
@@ -118,7 +118,7 @@ RSpec.describe 'Assignments' do
                                           end_weekday: Date.current.wday } }
       end
 
-      before { create :assignment, roster: roster, user: user, start_date: Date.current, end_date: Date.current }
+      before { create :assignment, roster:, user:, start_date: Date.current, end_date: Date.current }
 
       it 'responds with an unprocessable entity status' do
         submit

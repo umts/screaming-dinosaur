@@ -9,7 +9,7 @@ RSpec.describe ApplicationController do
       end
     end
 
-    subject(:submit) { get :index, params: params }
+    subject(:submit) { get :index, params: }
 
     let(:params) { {} }
 

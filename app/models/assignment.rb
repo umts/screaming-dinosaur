@@ -52,7 +52,7 @@ class Assignment < ApplicationRecord
     end
 
     def in(roster)
-      where roster: roster
+      where roster:
     end
 
     # Returns the day AFTER the last assignment ends.
