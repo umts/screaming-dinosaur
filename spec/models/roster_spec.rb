@@ -94,9 +94,9 @@ RSpec.describe Roster do
   describe 'on_call_user' do
     subject(:result) { roster.on_call_user }
 
-    let(:roster) { create :roster, fallback_user: fallback_user }
+    let(:roster) { create :roster, fallback_user: }
     let(:fallback_user) { create :user }
-    let(:assignment) { create :assignment, roster: roster }
+    let(:assignment) { create :assignment, roster: }
 
     context 'when there is a current assignment' do
       before do
@@ -137,11 +137,11 @@ RSpec.describe Roster do
   describe '#uncovered_dates_between' do
     subject(:call) { roster.uncovered_dates_between(start_date, end_date) }
 
-    let(:roster) { create(:roster) }
+    let(:roster) { create :roster }
     let(:start_date) { Time.zone.today }
     let(:end_date) { 1.week.from_now }
 
-    before { create(:assignment, roster: roster, start_date: 1.day.from_now, end_date: 6.days.from_now) }
+    before { create :assignment, roster:, start_date: 1.day.from_now, end_date: 6.days.from_now }
 
     it 'returns the dates with no assignments between the given start and end date' do
       expect(call).to eq [Time.zone.today.to_date, 7.days.from_now.to_date]
@@ -159,7 +159,7 @@ RSpec.describe Roster do
 
     context 'with a switchover' do
       let(:switchover) { (12 * 60) + 34 } # 12:34 PM
-      let(:roster) { build :roster, switchover: switchover }
+      let(:roster) { build :roster, switchover: }
 
       it 'is today' do
         expect(call.to_date).to eq(Time.zone.today)

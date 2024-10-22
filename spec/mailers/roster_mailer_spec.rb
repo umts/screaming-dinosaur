@@ -2,9 +2,9 @@
 
 RSpec.describe RosterMailer do
   describe 'open_dates_alert' do
-    subject(:email) { described_class.with(roster: roster, open_dates: open_dates).open_dates_alert }
+    subject(:email) { described_class.with(roster:, open_dates:).open_dates_alert }
 
-    let(:admin) { create(:user) }
+    let(:admin) { create :user }
     let(:roster) { admin.rosters.last }
     let(:open_dates) { Time.zone.today.to_date..6.days.from_now.to_date }
 
@@ -15,7 +15,7 @@ RSpec.describe RosterMailer do
     end
 
     it 'sends the email to the correct users' do
-      admin2 = create(:user, rosters: [roster])
+      admin2 = create :user, rosters: [roster]
       admin2.memberships.last.update(admin: true)
 
       expect(email.to).to eq [admin.email, admin2.email]
@@ -43,7 +43,7 @@ RSpec.describe RosterMailer do
     end
 
     context 'with a fallback user' do
-      let(:roster) { create(:roster, fallback_user: admin) }
+      let(:roster) { create :roster, fallback_user: admin }
 
       it 'includes the fallback user name' do
         expect(email.body.encoded).to have_text "The fallback user is #{roster.fallback_user.full_name}."
