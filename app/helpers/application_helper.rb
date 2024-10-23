@@ -8,7 +8,9 @@ module ApplicationHelper
 
   def nav_link_item(text, path)
     tag.li class: 'nav-item' do
-      link_to text, path, class: current_page?(path) ? 'nav-link active' : 'nav-link'
+      link_to_unless_current text, path, class: 'nav-link' do
+        tag.div text, class: 'nav-link active'
+      end
     end
   end
 end
