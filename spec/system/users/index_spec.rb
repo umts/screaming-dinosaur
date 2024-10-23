@@ -2,7 +2,7 @@
 
 RSpec.describe 'user index' do
   let(:roster) { create :roster }
-  let(:admin_membership) { create :membership, roster: roster, admin: true }
+  let(:admin_membership) { create :membership, roster:, admin: true }
   let(:admin) { admin_membership.user }
 
   context 'when deactivating a user', js: true do

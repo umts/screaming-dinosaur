@@ -2,7 +2,7 @@
 
 RSpec.describe 'editing an assignment' do
   let(:assignment) do
-    create(:assignment, start_date: start_date, end_date: end_date)
+    create :assignment, start_date:, end_date:
   end
   let(:start_date) { Date.new(2017, 3, 31) }
   let(:end_date) { Date.new(2017, 4, 6) }

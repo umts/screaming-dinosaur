@@ -96,7 +96,7 @@ RSpec.describe UsersController do
       end
 
       context 'with existing assignments' do
-        before { create :assignment, user: user, roster: roster }
+        before { create :assignment, user:, roster: }
 
         it 'redirects back' do
           expect { submit }.to redirect_back

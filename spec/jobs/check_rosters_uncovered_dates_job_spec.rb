@@ -3,12 +3,12 @@
 RSpec.describe CheckRostersUncoveredDatesJob do
   subject(:job) { described_class.perform_now }
 
-  let(:admin) { create(:user) }
+  let(:admin) { create :user }
   let(:roster) { admin.rosters.last }
 
   context 'with open assignments in the next two weeks' do
     before do
-      create(:assignment, roster: roster, user: admin, start_date: 1.week.from_now, end_date: 2.weeks.from_now)
+      create :assignment, roster:, user: admin, start_date: 1.week.from_now, end_date: 2.weeks.from_now
     end
 
     context 'with admins' do
@@ -29,7 +29,7 @@ RSpec.describe CheckRostersUncoveredDatesJob do
   context 'without open assignments in the next two weeks' do
     before do
       admin.memberships.last.update(admin: true)
-      create(:assignment, roster: roster, user: admin, start_date: Time.zone.today, end_date: 2.weeks.from_now)
+      create :assignment, roster:, user: admin, start_date: Time.zone.today, end_date: 2.weeks.from_now
     end
 
     it 'does not queue the email to be sent' do
