@@ -41,7 +41,7 @@ class AssignmentsController < ApplicationController
     end
     @roster.generate_assignments(user_ids, start_date,
                                  end_date, start_user).each do |assignment|
-      assignment.notify :owner, of: :new_assignment, by: @current_user
+      assignment.notify :owner, of: :new_assignment, by: Current.user
     end
     flash[:message] = 'Rotation has been generated.'
     redirect_to roster_assignments_path(@roster, date: start_date)
@@ -72,7 +72,7 @@ class AssignmentsController < ApplicationController
 
     if assignment.save
       confirm_change(assignment)
-      assignment.notify :owner, of: :new_assignment, by: @current_user
+      assignment.notify :owner, of: :new_assignment, by: Current.user
       redirect_to roster_assignments_path(@roster)
     else
       report_errors(assignment, fallback_location: roster_assignments_path)
@@ -99,8 +99,8 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
-    if @current_user.admin_in?(@roster)
-      @assignment.notify :owner, of: :deleted_assignment, by: @current_user
+    if Current.user.admin_in?(@roster)
+      @assignment.notify :owner, of: :deleted_assignment, by: Current.user
       @assignment.destroy
       confirm_change(@assignment)
       redirect_to roster_assignments_path(@roster)
@@ -134,9 +134,7 @@ class AssignmentsController < ApplicationController
   end
 
   def index_html
-    @assignments = @current_user.assignments.in(@roster)
-                                .upcoming
-                                .order :start_date
+    @assignments = Current.user.assignments.in(@roster).upcoming.order :start_date
     @current_assignment = @roster.assignments.current
     @fallback_user = @roster.fallback_user
   end
@@ -153,11 +151,10 @@ class AssignmentsController < ApplicationController
   # and telling the new owner that they're newly responsible now.
   def notify_appropriate_users
     if @assignment.user == @previous_owner
-      @assignment.notify :owner, of: :changed_assignment, by: @current_user
+      @assignment.notify :owner, of: :changed_assignment, by: Current.user
     else
-      @assignment.notify :owner, of: :new_assignment, by: @current_user
-      @assignment.notify @previous_owner, of: :deleted_assignment,
-                                          by: @current_user
+      @assignment.notify :owner, of: :new_assignment, by: Current.user
+      @assignment.notify @previous_owner, of: :deleted_assignment, by: Current.user
     end
   end
 
@@ -167,7 +164,7 @@ class AssignmentsController < ApplicationController
   end
 
   def require_taking_ownership
-    return true if @current_user.admin_in?(@roster) || taking_ownership?
+    return true if Current.user.admin_in?(@roster) || taking_ownership?
 
     flash[:errors] = t('.not_an_admin')
     redirect_back fallback_location: roster_assignments_path(@roster)
@@ -176,7 +173,7 @@ class AssignmentsController < ApplicationController
 
   def taking_ownership?
     new_user_id = params.require(:assignment).require(:user_id)
-    new_user_id == @current_user.id.to_s
+    new_user_id == Current.user&.id.to_s
   end
 
   def generate_by_weekday_params

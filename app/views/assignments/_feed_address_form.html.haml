@@ -8,7 +8,7 @@
             %i.fas.fa-info-circle
             %span#clip-info.sr-only= calendar_instructions
         - roster_name = @roster.name.parameterize
-        - token = @current_user.calendar_access_token
+        - token = Current.user.calendar_access_token
         = text_field_tag :access_token,
           feed_url(roster: roster_name, token: token, format: :ics),
           readonly: true, class: 'form-control copy-text',

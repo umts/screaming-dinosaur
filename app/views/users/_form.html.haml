@@ -25,7 +25,7 @@
           = f.hidden_field :'roster_ids[]', value: '', id: nil
           .list-group
             = f.collection_check_boxes :roster_ids, Roster.all.order(:name), :id, :name, include_hidden: false do |c|
-              - user_roster_permitted = @current_user.admin_in? c.object
+              - user_roster_permitted = Current.user.admin_in? c.object
               = c.label class: ['m-0', 'list-group-item', user_roster_permitted ? 'list-group-item-action' : nil] do
                 .form-check
                   = c.check_box checked: @user.membership_in(c.object).present?,
@@ -42,7 +42,7 @@
             = f.check_box :change_notifications_enabled, class: 'form-check-input'
             = f.label :change_notifications_enabled,
                       'Receive notifications when your assignments are changed?', class: 'form-check-label'
-        - if @current_user.admin_in? @roster
+        - if Current.user.admin_in? @roster
           - membership = @user.membership_in @roster
           = f.fields_for membership || :membership do |g|
             .mb-3

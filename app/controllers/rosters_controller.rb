@@ -28,7 +28,7 @@ class RostersController < ApplicationController
   def create
     roster = Roster.new roster_params
     # Current user becomes admin in new roster
-    roster.users << @current_user
+    roster.users << Current.user
     roster.memberships.first.update admin: true
     if roster.save
       confirm_change(roster)
