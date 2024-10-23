@@ -1,12 +1,11 @@
-%nav.navbar.navbar-dark.navbar-expand-md.bg-primary.mb-2
+%nav.navbar.navbar-expand-lg.navbar-dark.bg-primary.mb-2
   .container-fluid
-    .navbar-header
-      %button.navbar-toggler{ type: 'button',
-      data: { toggle: 'collapse', target: '#navCollapse' },
-      aria: { expanded: 'false', label: 'Toggle Navigation' } }
-        %span.fas.fa-bars
-    #navCollapse.collapse.navbar-collapse
-      %ul.navbar-nav.mr-auto
+    %button.navbar-toggler{ type: 'button',
+      'data-bs': { toggle: 'collapse', target: '#navCollapse' },
+      aria: { controlls: '#navCollapse', expanded: 'false', label: 'Toggle navigation' } }
+      %span.navbar-toggler-icon
+    #navCollapse.collapse.navbar-collapse.mb-2.mb-lg-0
+      %ul.navbar-nav.me-auto
         - rosters.each do |roster|
           = nav_link_item roster.name, roster_assignments_path(roster)
         - if Current.user&.admin?
@@ -16,14 +15,12 @@
             %li.nav-item.dropdown
               = link_to 'Generate', '#', role: 'button',
                         id: 'navbar-generate-nav-link', class: 'nav-link dropdown-toggle',
-                        'data-toggle': 'dropdown', 'aria-expanded': 'false'
+                        'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'
               .dropdown-menu{ 'aria-labelledby': 'navbar-generate-nav-link' }
                 = link_to 'Rotation', rotation_generator_roster_assignments_path(@roster), class: 'dropdown-item'
                 = link_to 'By Weekday', generate_by_weekday_roster_assignments_path(@roster), class: 'dropdown-item'
       %ul.navbar-nav
         - if Current.user.present?
-          %li.nav-item.navbar-text.mx-2
-            Logged in as #{Current.user.full_name}
-          = nav_link_item 'Edit Profile',
+          = nav_link_item Current.user.full_name,
             edit_roster_user_path(@roster, Current.user)
         = nav_link_item 'Logout', destroy_session_path

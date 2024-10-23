@@ -1,24 +1,23 @@
 = form_for @assignment, url: path do |f|
   = f.hidden_field :roster_id, value: @roster.id
   .row
-    .col-2.offset-3
-      .form-group
-        = f.label :user_id
+    .col-lg
+      .mb-3
+        = f.label :user_id, class: 'form-label'
         - if Current.user.admin_in?(@roster)
           = f.collection_select :user_id, @users, :id, :last_name,
-            { selected: @assignment.user&.id || Current.user&.id }, class: 'form-control custom-select'
+            { selected: @assignment.user&.id || Current.user.id }, class: 'form-select'
         - else
-          = f.hidden_field :user_id, value: Current.user&.id
-          = f.text_field :user_name, value: Current.user&.last_name, disabled: true, class: 'form-control'
-    .col-4
-      .form-group
-        = f.label :start_date
+          = f.hidden_field :user_id, value: Current.user.id
+          = f.text_field :user_name, value: Current.user.last_name, disabled: true, class: 'form-control'
+    .col-lg
+      .mb-3
+        = f.label :start_date, class: 'form-label'
         = f.date_field :start_date, value: f.object.start_date || @start_date,
           class: 'form-control'
-      .form-group
-        = f.label :end_date
+      .mb-3
+        = f.label :end_date, class: 'form-label'
         = f.date_field :end_date, value: f.object.end_date || @end_date,
           class: 'form-control'
-  .row
-    .col-2.offset-3
-      = f.submit 'Save', class: 'btn btn-secondary'
+  .text-center
+    = f.submit 'Save', class: 'btn btn-primary'
