@@ -4,12 +4,12 @@
     .col-2.offset-3
       .form-group
         = f.label :user_id
-        - if @current_user.admin_in?(@roster)
+        - if Current.user.admin_in?(@roster)
           = f.collection_select :user_id, @users, :id, :last_name,
-            { selected: @assignment.user&.id || @current_user.id }, class: 'form-control custom-select'
+            { selected: @assignment.user&.id || Current.user&.id }, class: 'form-control custom-select'
         - else
-          = f.hidden_field :user_id, value: @current_user.id
-          = f.text_field :user_name, value: @current_user.last_name, disabled: true, class: 'form-control'
+          = f.hidden_field :user_id, value: Current.user&.id
+          = f.text_field :user_name, value: Current.user&.last_name, disabled: true, class: 'form-control'
     .col-4
       .form-group
         = f.label :start_date

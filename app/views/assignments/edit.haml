@@ -1,6 +1,6 @@
 %h1.title Edit assignment
 .container-fluid
-  - if @current_user.admin_in?(@roster)
+  - if Current.user&.admin_in?(@roster)
     .row.mb-4
       .col
         = button_to 'Delete assignment',
