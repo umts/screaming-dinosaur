@@ -51,5 +51,4 @@
                               disabled: membership&.admin? && @roster.admins.one?,
                               class: 'form-check-input'
                 = g.label :admin, "Admin in #{@roster.name}?", class: 'form-check-label'
-    .text-center
-      = f.submit 'Save', class: 'btn btn-primary btn-lg'
+    = f.submit 'Save', class: 'btn btn-primary'
