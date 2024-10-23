@@ -34,7 +34,7 @@ class UsersController < ApplicationController
     membership_params = user_params[:membership]
     if @user.update(user_params.except(:membership)) && update_membership(membership_params)
       confirm_change(@user)
-      if @current_user.admin_in? @roster
+      if Current.user.admin_in? @roster
         redirect_to roster_users_path(@roster)
       else
         redirect_to roster_assignments_path(@roster)
@@ -75,8 +75,8 @@ class UsersController < ApplicationController
 
       given_roster_ids = params[:roster_ids].map(&:to_i)
       params[:roster_ids] = (@user&.roster_ids || []).then do |roster_ids|
-        roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && @current_user.admin_in?(roster_id) }
-        roster_ids | (given_roster_ids & @current_user.memberships.where(admin: true).map(&:roster_id))
+        roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && Current.user.admin_in?(roster_id) }
+        roster_ids | (given_roster_ids & Current.user.memberships.where(admin: true).map(&:roster_id))
       end
     end
   end
@@ -86,7 +86,7 @@ class UsersController < ApplicationController
   end
 
   def update_membership(membership_params)
-    return true unless membership_params.present? && @current_user.admin_in?(@roster)
+    return true unless membership_params.present? && Current.user.admin_in?(@roster)
 
     membership = @user.membership_in @roster
     return true if membership.nil?
@@ -98,7 +98,7 @@ class UsersController < ApplicationController
   end
 
   def require_admin_in_roster_or_self
-    return if @current_user == @user || @current_user.admin_in?(@roster)
+    return if Current.user == @user || Current.user.admin_in?(@roster)
 
     render file: 'public/401.html', status: :unauthorized
   end

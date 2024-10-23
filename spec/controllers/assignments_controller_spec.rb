@@ -217,11 +217,6 @@ RSpec.describe AssignmentsController do
 
       before { when_current_user_is user }
 
-      it 'assigns the correct current user' do
-        submit
-        expect(assigns.fetch(:current_user)).to eql user
-      end
-
       it 'populates assignments including upcoming assignments' do
         submit
         expect(assigns.fetch(:assignments)).to include new_assignment
@@ -265,11 +260,6 @@ RSpec.describe AssignmentsController do
         let(:user) { create :user }
 
         before { request.env['fcIdNumber'] = user.spire }
-
-        it 'assigns the correct current user' do
-          submit
-          expect(assigns.fetch(:current_user)).to eql user
-        end
 
         it 'renders the correct template' do
           submit
