@@ -5,12 +5,11 @@ RSpec.describe AssignmentsController do
     subject(:json) { JSON.parse(response.body) }
 
     let(:roster) { create :roster }
-    let!(:assignment) { create :assignment, roster: roster }
+    let!(:assignment) { create :assignment, roster: }
     let!(:own_assignment) do
-      create :assignment,
-             roster: roster,
-             start_date: 1.day.after(assignment.end_date),
-             end_date: 2.days.after(assignment.end_date)
+      create :assignment, roster:,
+                          start_date: 1.day.after(assignment.end_date),
+                          end_date: 2.days.after(assignment.end_date)
     end
 
     before do
@@ -76,7 +75,7 @@ RSpec.describe AssignmentsController do
     subject(:submit) { delete "/rosters/#{roster.id}/assignments/#{assignment.id}" }
 
     let(:roster) { create :roster }
-    let!(:assignment) { create :assignment, roster: roster }
+    let!(:assignment) { create :assignment, roster: }
     let(:roster_admin) { create :user, rosters: [roster] }
 
     context 'when the current user is an admin in the roster' do

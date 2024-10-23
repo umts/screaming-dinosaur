@@ -4,9 +4,8 @@ RSpec.describe Assignment do
   describe 'effective time methods' do
     let(:roster) { create :roster, switchover: 14 * 60 }
     let :assignment do
-      create :assignment, start_date: Date.new(2017, 4, 10),
-                          end_date: Date.new(2017, 4, 11),
-                          roster: roster
+      create :assignment, roster:,
+                          start_date: Date.new(2017, 4, 10), end_date: Date.new(2017, 4, 11)
     end
 
     describe 'effective_start_datetime' do
@@ -30,11 +29,11 @@ RSpec.describe Assignment do
     let(:roster) { create :roster }
     let! :yesterday do
       date = Date.new(2019, 11, 12)
-      create :assignment, start_date: date, end_date: date, roster: roster
+      create :assignment, start_date: date, end_date: date, roster:
     end
     let! :today do
       date = Date.new(2019, 11, 13)
-      create :assignment, start_date: date, end_date: date, roster: roster
+      create :assignment, start_date: date, end_date: date, roster:
     end
     let :switchover_time do
       Date.new(2019, 11, 13) + roster.switchover.minutes
@@ -201,10 +200,9 @@ RSpec.describe Assignment do
     let(:roster) { create :roster }
 
     before do
-      create :assignment,
-             start_date: Time.zone.today,
-             end_date: 6.days.from_now,
-             roster: roster
+      create :assignment, roster:,
+                          start_date: Time.zone.today,
+                          end_date: 6.days.from_now
     end
 
     context 'when creating assignments that do not overlap' do
@@ -233,16 +231,12 @@ RSpec.describe Assignment do
 
     let(:roster) { create :roster }
     let :assignment_today do
-      create :assignment,
-             roster: roster,
-             start_date: Time.zone.today,
-             end_date: 1.week.since.to_date
+      create :assignment, roster:,
+                          start_date: Time.zone.today, end_date: 1.week.since.to_date
     end
     let :assignment_tomorrow do
-      create :assignment,
-             roster: roster,
-             start_date: Date.tomorrow,
-             end_date: 1.week.since.to_date
+      create :assignment, roster:,
+                          start_date: Date.tomorrow, end_date: 1.week.since.to_date
     end
 
     context 'when it is before the switchover' do

@@ -42,7 +42,7 @@ class User < ApplicationRecord
   end
 
   def membership_in(roster)
-    memberships.find_by(roster: roster)
+    memberships.find_by(roster:)
   end
 
   private
