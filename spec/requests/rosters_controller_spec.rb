@@ -5,7 +5,7 @@ RSpec.describe RostersController do
     subject(:json) do
       when_current_user_is :anyone
       get "/rosters/#{roster.to_param}.json"
-      JSON.parse response.body
+      response.parsed_body
     end
 
     let(:roster) { create :roster }

@@ -382,8 +382,7 @@ RSpec.describe AssignmentsController do
 
       context 'when the owner is being changed' do
         before do
-          allow(Assignment).to receive(:includes).and_return(Assignment)
-          allow(Assignment).to receive(:find).and_return(assignment)
+          allow(Assignment).to receive_messages(includes: Assignment, find: assignment)
           allow(assignment).to receive(:notify)
         end
 
@@ -405,8 +404,7 @@ RSpec.describe AssignmentsController do
         let(:changes) { { user_id: assignment.user_id } }
 
         before do
-          allow(Assignment).to receive(:includes).and_return(Assignment)
-          allow(Assignment).to receive(:find).and_return(assignment)
+          allow(Assignment).to receive_messages(includes: Assignment, find: assignment)
           allow(assignment).to receive(:notify)
         end
 

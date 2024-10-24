@@ -18,7 +18,7 @@ RSpec.describe Membership do
     it 'prohibits demoting the sole admin' do
       membership = create :membership, admin: true
       membership.assign_attributes(admin: false)
-      expect(membership).to be_invalid
+      expect(membership).not_to be_valid
     end
   end
 end

@@ -4,7 +4,7 @@ RSpec.describe 'viewing the index' do
   let(:roster) { create :roster }
   let(:user) { roster_user(roster) }
 
-  context 'when interacting with the ICS feed URL', js: true do
+  context 'when interacting with the ICS feed URL', :js do
     before do
       set_current_user(user)
       visit root_path
@@ -12,22 +12,22 @@ RSpec.describe 'viewing the index' do
 
     it 'displays copy url info' do
       find("[aria-label='Calendar feed information']").click
-      expect(page).to have_selector '.tooltip',
-                                    text: 'Use this address to subscribe'
+      expect(page).to have_css '.tooltip',
+                               text: 'Use this address to subscribe'
     end
 
     it 'displays click to copy tooltip' do
       find('.copy-tooltip').hover
-      expect(page).to have_selector '.tooltip', text: 'Copy to clipboard'
+      expect(page).to have_css '.tooltip', text: 'Copy to clipboard'
     end
 
     it 'copys link on button press' do
       find('.copy-tooltip').click.hover
-      expect(page).to have_selector '.tooltip', text: 'Copied successfully!'
+      expect(page).to have_css '.tooltip', text: 'Copied successfully!'
     end
   end
 
-  describe 'when interacting with the calendar', js: true do
+  describe 'when interacting with the calendar', :js do
     def bg_variable(var)
       /background-color: *var\(--#{var}\)/
     end
@@ -39,7 +39,7 @@ RSpec.describe 'viewing the index' do
     it 'highlights today' do
       visit roster_assignments_path(roster)
       today = Time.zone.today.day
-      expect(page).to have_selector('td.fc-day-today', text: today)
+      expect(page).to have_css('td.fc-day-today', text: today)
     end
 
     context 'when the assignment belongs to the user' do

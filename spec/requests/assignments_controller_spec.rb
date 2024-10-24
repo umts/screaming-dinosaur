@@ -2,7 +2,7 @@
 
 RSpec.describe AssignmentsController do
   describe 'GET #index.json' do
-    subject(:json) { JSON.parse(response.body) }
+    subject(:json) { response.parsed_body }
 
     let(:roster) { create :roster }
     let!(:assignment) { create :assignment, roster: }
@@ -96,8 +96,7 @@ RSpec.describe AssignmentsController do
       it { is_expected.to redirect_to("/rosters/#{roster.to_param}/assignments") }
 
       it 'sends a notification to the owner of the assignment' do
-        allow(Assignment).to receive(:includes).and_return(Assignment)
-        allow(Assignment).to receive(:find).and_return(assignment)
+        allow(Assignment).to receive_messages(includes: Assignment, find: assignment)
         allow(assignment).to receive(:notify)
         submit
         expect(assignment).to have_received(:notify).with(:owner, of: :deleted_assignment, by: roster_admin)
