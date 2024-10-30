@@ -15,6 +15,6 @@ RSpec.describe 'generate rotation' do
     select(roster_user.last_name, from: 'Starting with')
     unselect(roster_user.last_name, from: 'Users')
     click_button 'Generate rotation'
-    expect(page).to have_selector '.alert.alert-danger', text: 'The starting user must be in the rotation.'
+    expect(page).to have_css '.alert.alert-danger', text: 'The starting user must be in the rotation.'
   end
 end
