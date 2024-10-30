@@ -10,6 +10,7 @@ require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'rack_session_access/capybara'
 require 'umts_custom_matchers'
+require 'paper_trail/frameworks/rspec'
 
 ActiveRecord::Migration.maintain_test_schema!
 Timecop.safe_mode = true

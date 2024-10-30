@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :check_primary_account, :set_current_user, :set_roster, :set_paper_trail_whodunnit
+  before_action :check_primary_account, :set_current_user, :set_roster
 
   def self.api_accessible(**options)
     skip_before_action :check_primary_account, :set_current_user, **options
