@@ -10,6 +10,7 @@ require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'rack_session_access/capybara'
 require 'umts_custom_matchers'
+require 'paper_trail/frameworks/rspec'
 
 ActiveRecord::Migration.maintain_test_schema!
 Timecop.safe_mode = true
@@ -48,7 +49,7 @@ RSpec.configure do |config|
     driven_by :rack_test
   end
 
-  config.before :each, js: true, type: :system do
+  config.before :each, :js, type: :system do
     driven_by :selenium, using: :headless_chrome
   end
 
