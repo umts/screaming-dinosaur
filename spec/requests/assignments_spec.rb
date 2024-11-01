@@ -96,7 +96,7 @@ RSpec.describe 'Assignments' do
         attribute_sets = Assignment.last(2).collect do |assignment|
           assignment.attributes.slice('roster_id', 'user_id', 'start_date', 'end_date').symbolize_keys
         end
-        expect(attribute_sets).to contain_exactly(*attributes)
+        expect(attribute_sets).to match_array(attributes)
       end
     end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :check_primary_account, :set_current_user, :set_roster, :set_paper_trail_whodunnit
+  before_action :check_primary_account, :set_current_user, :set_roster
 
   def self.api_accessible(**options)
     skip_before_action :check_primary_account, :set_current_user, **options
@@ -9,6 +9,8 @@ class ApplicationController < ActionController::Base
   end
 
   def confirm_change(object, message = nil)
+    # Rubocop can't tell wether we're redirecting after this or not.
+    # rubocop:disable Rails/ActionControllerFlashBeforeRender
     change = object.versions.where(whodunnit: Current.user).last
     flash[:change] = change.try(:id)
     # If we know what change occurred, use it to write the message.
@@ -25,6 +27,7 @@ class ApplicationController < ActionController::Base
                    end
     message ||= "#{object.class.name} has been #{action_taken}."
     flash[:message] = message
+    # rubocop:enable Rails/ActionControllerFlashBeforeRender
   end
 
   def report_errors(object, fallback_location:)
