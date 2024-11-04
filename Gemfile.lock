@@ -401,7 +401,7 @@ DEPENDENCIES
   listen
   mysql2
   net-http
-  paper_trail (~> 12.3)
+  paper_trail
   phonelib
   pry-byebug
   puma
