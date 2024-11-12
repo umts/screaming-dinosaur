@@ -37,14 +37,14 @@
   %tbody
     - @users.each do |user|
       %tr
-        %td.align-middle
+        %td
           = user.full_name
           - if user == @fallback
             (fallback)
-        %td.align-middle= user.spire
-        %td.align-middle= user.email
-        %td.align-middle= formatted_phone(user.phone)
-        %td.align-middle= link_to 'Edit', edit_roster_user_path(@roster, user)
+        %td= user.spire
+        %td= user.email
+        %td= formatted_phone(user.phone)
+        %td= link_to 'Edit', edit_roster_user_path(@roster, user)
         %td
           = form_for user, url: roster_user_path(@roster, user) do |f|
             - if user.active?
