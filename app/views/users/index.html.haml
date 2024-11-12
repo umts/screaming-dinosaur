@@ -1,10 +1,9 @@
 %h1 Users in #{@roster.name}
 
-- if @fallback.nil?
-  .card.bg-warning
-    .card-body
-      %h5.card-title No fallback user!
-      = link_to 'Select a fallback user', edit_roster_path(@roster)
+- if @fallback.blank?
+  .alert.alert-warning.pb-0
+    %p No fallback user!
+    %p= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
 
 .container-fluid.my-4
   .row
