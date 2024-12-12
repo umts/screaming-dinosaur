@@ -8,10 +8,8 @@ RSpec.describe AssignmentsMailer do
 
     let(:roster) { create :roster, switchover: 9 * 60 }
     let :assignment do
-      create :assignment,
-             roster: roster,
-             start_date: Date.new(2017, 4, 21),
-             end_date: Date.new(2017, 4, 27)
+      create :assignment, roster:,
+                          start_date: Date.new(2017, 4, 21), end_date: Date.new(2017, 4, 27)
     end
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
@@ -52,10 +50,8 @@ RSpec.describe AssignmentsMailer do
 
     let(:roster) { create :roster, switchover: 10 * 60 }
     let :assignment do
-      create :assignment,
-             roster: roster,
-             start_date: Date.new(2017, 4, 21),
-             end_date: Date.new(2017, 4, 27)
+      create :assignment, roster:,
+                          start_date: Date.new(2017, 4, 21), end_date: Date.new(2017, 4, 27)
     end
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
@@ -96,10 +92,8 @@ RSpec.describe AssignmentsMailer do
 
     let(:roster) { create :roster, switchover: 11 * 60 }
     let :assignment do
-      create :assignment,
-             roster: roster,
-             start_date: Date.new(2017, 4, 21),
-             end_date: Date.new(2017, 4, 27)
+      create :assignment, roster:,
+                          start_date: Date.new(2017, 4, 21), end_date: Date.new(2017, 4, 27)
     end
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
@@ -140,10 +134,8 @@ RSpec.describe AssignmentsMailer do
 
     let(:roster) { create :roster, switchover: 12 * 60 }
     let :assignment do
-      create :assignment,
-             roster: roster,
-             start_date: Date.new(2017, 4, 14),
-             end_date: Date.new(2017, 4, 20)
+      create :assignment, roster:,
+                          start_date: Date.new(2017, 4, 14), end_date: Date.new(2017, 4, 20)
     end
     let(:user) { assignment.user }
 

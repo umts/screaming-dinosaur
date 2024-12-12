@@ -3,7 +3,7 @@
 class ChangesController < ApplicationController
   def undo
     version = PaperTrail::Version.find params.require(:id)
-    original_user = version.whodunnit.to_i == @current_user.id
+    original_user = version.whodunnit.to_i == Current.user&.id
     head :unauthorized and return unless original_user
 
     # Reify only returns false when the thing didn't exist beforehand.

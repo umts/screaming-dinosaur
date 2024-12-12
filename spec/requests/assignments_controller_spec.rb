@@ -2,15 +2,14 @@
 
 RSpec.describe AssignmentsController do
   describe 'GET #index.json' do
-    subject(:json) { JSON.parse(response.body) }
+    subject(:json) { response.parsed_body }
 
     let(:roster) { create :roster }
-    let!(:assignment) { create :assignment, roster: roster }
+    let!(:assignment) { create :assignment, roster: }
     let!(:own_assignment) do
-      create :assignment,
-             roster: roster,
-             start_date: 1.day.after(assignment.end_date),
-             end_date: 2.days.after(assignment.end_date)
+      create :assignment, roster:,
+                          start_date: 1.day.after(assignment.end_date),
+                          end_date: 2.days.after(assignment.end_date)
     end
 
     before do
@@ -57,7 +56,7 @@ RSpec.describe AssignmentsController do
       end
 
       it 'has an event color' do
-        expect(assignment_object.fetch('color')).to eq('var(--secondary)')
+        expect(assignment_object.fetch('color')).to eq('var(--bs-secondary)')
       end
     end
 
@@ -67,7 +66,7 @@ RSpec.describe AssignmentsController do
       end
 
       it 'has an "owned" event color' do
-        expect(assignment_object.fetch('color')).to eq('var(--info)')
+        expect(assignment_object.fetch('color')).to eq('var(--bs-info)')
       end
     end
   end
@@ -76,7 +75,7 @@ RSpec.describe AssignmentsController do
     subject(:submit) { delete "/rosters/#{roster.id}/assignments/#{assignment.id}" }
 
     let(:roster) { create :roster }
-    let!(:assignment) { create :assignment, roster: roster }
+    let!(:assignment) { create :assignment, roster: }
     let(:roster_admin) { create :user, rosters: [roster] }
 
     context 'when the current user is an admin in the roster' do
@@ -97,8 +96,7 @@ RSpec.describe AssignmentsController do
       it { is_expected.to redirect_to("/rosters/#{roster.to_param}/assignments") }
 
       it 'sends a notification to the owner of the assignment' do
-        allow(Assignment).to receive(:includes).and_return(Assignment)
-        allow(Assignment).to receive(:find).and_return(assignment)
+        allow(Assignment).to receive_messages(includes: Assignment, find: assignment)
         allow(assignment).to receive(:notify)
         submit
         expect(assignment).to have_received(:notify).with(:owner, of: :deleted_assignment, by: roster_admin)

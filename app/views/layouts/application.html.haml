@@ -1,6 +1,8 @@
 !!!
-%html
+%html{lang: 'en'}
   %head
+    %meta{charset: 'utf-8'}
+    %meta{name: 'viewport', content: 'width=device-width, initial-scale=1'}
     %title #{@roster.try :name} On-Call
     = favicon_link_tag 'calendar-icon.png'
     = stylesheet_link_tag 'application.css', media: 'all'
@@ -8,7 +10,7 @@
     = csrf_meta_tags
   %body
     = render partial: 'layouts/nav',
-      locals: { rosters: @current_user&.rosters || Roster.none }
+      locals: { rosters: Current.user&.rosters || Roster.none }
     .container
       - if flash[:message].present?
         .alert.alert-success{ role: 'alert' }

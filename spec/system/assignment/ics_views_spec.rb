@@ -7,10 +7,8 @@ RSpec.describe 'ICS views' do
     let(:roster) { create :roster }
     let(:assignments) do
       Array.new(2) do |n|
-        create :assignment,
-               roster: roster,
-               start_date: n.weeks.from_now,
-               end_date: (n.weeks + 6.days).from_now
+        create :assignment, roster:,
+                            start_date: n.weeks.from_now, end_date: (n.weeks + 6.days).from_now
       end
     end
     let(:users) { assignments.map(&:user) }

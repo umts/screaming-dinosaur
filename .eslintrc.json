@@ -7,6 +7,8 @@
     "eslint:recommended"
   ],
   "globals": {
+    "bootstrap": "readonly",
+    "FullCalendar": "readonly"
   },
   "parserOptions": {
   },

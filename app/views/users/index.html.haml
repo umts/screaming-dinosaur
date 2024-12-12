@@ -1,29 +1,28 @@
-%h1.title Users in #{@roster.name}
+%h1 Users in #{@roster.name}
 
-- if @fallback.nil?
-  .card.bg-warning
-    .card-body
-      %h5.card-title No fallback user!
-      = link_to 'Select a fallback user', edit_roster_path(@roster)
+- if @fallback.blank?
+  .alert.alert-warning.pb-0
+    %p No fallback user!
+    %p= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
 
 .container-fluid.my-4
   .row
     .col-lg
       = link_to 'Add new user', new_roster_user_path
-    .col-lg.order-lg-last.text-right
-      - if @other_users.present?
-        = form_tag transfer_roster_users_path, class: 'form-inline' do
-          = label_tag :id, 'Add user from another roster:', class: 'mr-1'
-          .input-group
-            = select_tag :id,
-              options_from_collection_for_select(@other_users, :id, :last_name),
-              class: 'form-control form-control-sm custom-select custom-select-sm'
-            = submit_tag 'Add', class: 'btn btn-primary btn-sm input-group-append'
-    .col-lg.mt-4.mt-lg-0.text-center
+    .col-lg
       - if @active
         = link_to 'Inactive users', roster_users_path(active: false)
       - else
         = link_to 'Active users', roster_users_path
+    .col-lg
+      - if @other_users.present?
+        = form_tag transfer_roster_users_path do
+          = label_tag :id, 'Add user from another roster:', class: 'form-label'
+          .input-group
+            = select_tag :id,
+              options_from_collection_for_select(@other_users, :id, :last_name),
+              class: 'form-select form-select-sm'
+            = submit_tag 'Add', class: 'btn btn-primary btn-sm'
 
 %table.table
   %thead
@@ -38,14 +37,14 @@
   %tbody
     - @users.each do |user|
       %tr
-        %td.align-middle
+        %td
           = user.full_name
           - if user == @fallback
             (fallback)
-        %td.align-middle= user.spire
-        %td.align-middle= user.email
-        %td.align-middle= formatted_phone(user.phone)
-        %td.align-middle= link_to 'Edit', edit_roster_user_path(@roster, user)
+        %td= user.spire
+        %td= user.email
+        %td= formatted_phone(user.phone)
+        %td= link_to 'Edit', edit_roster_user_path(@roster, user)
         %td
           = form_for user, url: roster_user_path(@roster, user) do |f|
             - if user.active?

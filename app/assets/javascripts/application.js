@@ -12,9 +12,9 @@
 //
 //= require jquery
 //= require rails-ujs
-//= require popper.js/
+//= require @popperjs/core/dist/umd/popper
 //= require bootstrap
 //= require @fullcalendar/core/main.global.js
 //= require @fullcalendar/daygrid/main.global.js
-//= require @fullcalendar/bootstrap/main.global.js
+//= require @fullcalendar/bootstrap5/main.global.js
 //= require_tree .

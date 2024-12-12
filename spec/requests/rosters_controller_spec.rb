@@ -5,7 +5,7 @@ RSpec.describe RostersController do
     subject(:json) do
       when_current_user_is :anyone
       get "/rosters/#{roster.to_param}.json"
-      JSON.parse response.body
+      response.parsed_body
     end
 
     let(:roster) { create :roster }
@@ -37,7 +37,7 @@ RSpec.describe RostersController do
       let(:user) { create :user, last_name: 'Kanasis', rosters: [roster] }
 
       let! :assignment do
-        create :assignment, start_date: Date.yesterday, end_date: Date.tomorrow, roster: roster, user: user
+        create :assignment, start_date: Date.yesterday, end_date: Date.tomorrow, roster:, user:
       end
 
       it 'lists the on-call user' do

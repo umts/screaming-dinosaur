@@ -2,10 +2,10 @@
 
 RSpec.describe 'user index' do
   let(:roster) { create :roster }
-  let(:admin_membership) { create :membership, roster: roster, admin: true }
+  let(:admin_membership) { create :membership, roster:, admin: true }
   let(:admin) { admin_membership.user }
 
-  context 'when deactivating a user', js: true do
+  context 'when deactivating a user', :js do
     let(:alert) { accept_alert { click_button 'Deactivate' } }
 
     before do
@@ -20,12 +20,12 @@ RSpec.describe 'user index' do
 
     it 'deactivates a user' do
       alert
-      expect(page).not_to have_selector 'td', text: admin.first_name
+      expect(page).to have_no_css 'td', text: admin.first_name
     end
 
     it 'informs you of success' do
       alert
-      expect(page).to have_selector 'div', text: 'User has been updated.'
+      expect(page).to have_css 'div', text: 'User has been updated.'
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe 'user index' do
     end
 
     it 'has a title' do
-      expect(page).to have_selector 'h1', text: 'Users'
+      expect(page).to have_css 'h1', text: 'Users'
     end
 
     context 'when viewing active users' do
@@ -76,12 +76,12 @@ RSpec.describe 'user index' do
 
       it 'activates a user' do
         click_button 'Activate'
-        expect(page).to have_selector 'td', text: inactive_user.first_name
+        expect(page).to have_css 'td', text: inactive_user.first_name
       end
 
       it 'informs you of success' do
         click_button 'Activate'
-        expect(page).to have_selector 'div', text: 'User has been updated.'
+        expect(page).to have_css 'div', text: 'User has been updated.'
       end
     end
   end

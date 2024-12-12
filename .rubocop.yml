@@ -1,7 +1,10 @@
 require:
+  - rubocop-capybara
+  - rubocop-factory_bot
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-rspec_rails
 
 AllCops:
   Exclude:
@@ -71,7 +74,7 @@ RSpec/ExampleLength:
     - hash
     - heredoc
 
-RSpec/FactoryBot/ConsistentParenthesesStyle:
+FactoryBot/ConsistentParenthesesStyle:
   EnforcedStyle: omit_parentheses
 
 RSpec/MultipleMemoizedHelpers:

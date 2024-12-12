@@ -121,8 +121,8 @@ RSpec.describe AssignmentsController do
            params: { roster_id: roster.id,
                      start_date: Time.zone.today.to_fs(:db),
                      end_date: Date.tomorrow.to_fs(:db),
-                     user_ids: user_ids,
-                     starting_user_id: starting_user_id }
+                     user_ids:,
+                     starting_user_id: }
     end
 
     let(:user_ids) { Array.new(3) { roster_user(roster).id.to_s } }
@@ -207,26 +207,15 @@ RSpec.describe AssignmentsController do
     context 'with a user_id in session' do
       let(:user) { roster_user(roster) }
       let! :old_assignment do
-        create :assignment,
-               user: user,
-               roster: roster,
-               start_date: 1.month.ago.to_date,
-               end_date: 3.weeks.ago.to_date
+        create :assignment, user:, roster:,
+                            start_date: 1.month.ago.to_date, end_date: 3.weeks.ago.to_date
       end
       let! :new_assignment do
-        create :assignment,
-               user: user,
-               roster: roster,
-               start_date: 1.month.since.to_date,
-               end_date: 5.weeks.since.to_date
+        create :assignment, user:, roster:,
+                            start_date: 1.month.since.to_date, end_date: 5.weeks.since.to_date
       end
 
       before { when_current_user_is user }
-
-      it 'assigns the correct current user' do
-        submit
-        expect(assigns.fetch(:current_user)).to eql user
-      end
 
       it 'populates assignments including upcoming assignments' do
         submit
@@ -272,11 +261,6 @@ RSpec.describe AssignmentsController do
 
         before { request.env['fcIdNumber'] = user.spire }
 
-        it 'assigns the correct current user' do
-          submit
-          expect(assigns.fetch(:current_user)).to eql user
-        end
-
         it 'renders the correct template' do
           submit
           expect(response).to render_template :index
@@ -294,7 +278,7 @@ RSpec.describe AssignmentsController do
 
   describe 'GET #new' do
     subject :submit do
-      get :new, params: { roster_id: roster.id, date: date }
+      get :new, params: { roster_id: roster.id, date: }
     end
 
     let(:date) { Time.zone.today }
@@ -398,8 +382,7 @@ RSpec.describe AssignmentsController do
 
       context 'when the owner is being changed' do
         before do
-          allow(Assignment).to receive(:includes).and_return(Assignment)
-          allow(Assignment).to receive(:find).and_return(assignment)
+          allow(Assignment).to receive_messages(includes: Assignment, find: assignment)
           allow(assignment).to receive(:notify)
         end
 
@@ -421,8 +404,7 @@ RSpec.describe AssignmentsController do
         let(:changes) { { user_id: assignment.user_id } }
 
         before do
-          allow(Assignment).to receive(:includes).and_return(Assignment)
-          allow(Assignment).to receive(:find).and_return(assignment)
+          allow(Assignment).to receive_messages(includes: Assignment, find: assignment)
           allow(assignment).to receive(:notify)
         end
 

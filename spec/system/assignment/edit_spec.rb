@@ -2,7 +2,7 @@
 
 RSpec.describe 'editing an assignment' do
   let(:assignment) do
-    create(:assignment, start_date: start_date, end_date: end_date)
+    create :assignment, start_date:, end_date:
   end
   let(:start_date) { Date.new(2017, 3, 31) }
   let(:end_date) { Date.new(2017, 4, 6) }
@@ -62,7 +62,7 @@ RSpec.describe 'editing an assignment' do
 
   context 'when the current user is not an admin' do
     it 'does not allow them to delete the assignment' do
-      expect(page).not_to have_button 'Delete assignment'
+      expect(page).to have_no_button 'Delete assignment'
     end
   end
 end

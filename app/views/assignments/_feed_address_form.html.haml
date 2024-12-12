@@ -1,25 +1,23 @@
-.form-inline.justify-content-center.my-4
-
-  %span.mr-2{ data: { toggle: 'tooltip', placement: 'top' },
-    aria: { label: 'Calendar feed information' },
-    title: calendar_instructions, tabindex: 0 }
-    %i.fas.fa-info-circle
-    %span#clip-info.sr-only= calendar_instructions
-
-  .input-group.mr-2
-    - roster_name = @roster.name.parameterize
-    - token = @current_user.calendar_access_token
-    = text_field_tag :access_token,
-      feed_url(roster: roster_name, token: token, format: :ics),
-      readonly: true, class: 'form-control copy-text',
-      aria: { label: 'Calendar feed URL', described_by: 'clip-info' }
-    .input-group-append
-      .btn.btn-outline-secondary.copy-text-btn.copy-tooltip{
-        data: { toggle: 'tooltip', placement: 'top' },
-        title: 'Click to copy link',
-        aria: { label: 'Copy' } }
-        %span.far.fa-clipboard
-
-  = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-outline-secondary' do
-    CSV Overview
-    %i.fas.fa-download
+.justify-content-center.my-4
+  .row.justify-content-center
+    .col
+      .input-group
+        .input-group-text
+          %span{ data: { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions },
+            aria: { label: 'Calendar feed information' }, tabindex: 0 }
+            %i.fas.fa-info-circle
+            %span#clip-info.sr-only= calendar_instructions
+        - roster_name = @roster.name.parameterize
+        - token = Current.user.calendar_access_token
+        = text_field_tag :access_token,
+          feed_url(roster: roster_name, token: token, format: :ics),
+          readonly: true, class: 'form-control copy-text',
+          aria: { label: 'Calendar feed URL', described_by: 'clip-info' }
+        %button.btn.btn-outline-secondary.copy-tooltip{
+          data: { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': 'Copy to clipboard' },
+          aria: { label: 'Copy' } }
+          %span.far.fa-clipboard
+    .col
+      = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-outline-secondary' do
+        CSV Overview
+        %i.fas.fa-download
