@@ -9,7 +9,7 @@ if (user = @roster.on_call_user).present?
 else
   json.on_call nil
 end
-if (upcoming = @roster.assignments.upcoming).present?
+if (upcoming = @roster.assignments.upcoming.sort_by(&:start_date)).present?
   json.upcoming do
     json.extract! upcoming.first&.user, :last_name, :first_name
   end
