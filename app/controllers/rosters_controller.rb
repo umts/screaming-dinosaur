@@ -16,6 +16,7 @@ class RostersController < ApplicationController
   end
 
   def show
+    @upcoming = @roster.assignments.upcoming.order(:start_date)
     respond_to do |format|
       format.json { render layout: false }
     end
