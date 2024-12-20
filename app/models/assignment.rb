@@ -55,17 +55,6 @@ class Assignment < ApplicationRecord
       where roster:
     end
 
-    # Returns the day AFTER the last assignment ends.
-    # If there is no last assignment, returns the upcoming Friday.
-    def next_rotation_start_date
-      last = order(:end_date).last
-      if last.present?
-        last.end_date + 1.day
-      else
-        1.week.since.beginning_of_week(:friday).to_date
-      end
-    end
-
     # returns the assignment which takes place on a particular date
     def on(date)
       between(date, date).first
