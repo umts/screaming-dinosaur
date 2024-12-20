@@ -95,7 +95,7 @@ class AssignmentsController < ApplicationController
   end
 
   def rotation_generator
-    @start_date = Assignment.next_rotation_start_date
+    @start_date = @roster.next_rotation_start_date
   end
 
   def destroy
