@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     @fallback = @roster.fallback_user
     @active = !params[:active]
     @users = @roster.users.where active: @active
-    @other_users = User.all - @roster.users
+    @other_users = User.order(:last_name) - @roster.users
   end
 
   def new
