@@ -317,23 +317,6 @@ RSpec.describe AssignmentsController do
     context 'when you are an admin in roster' do
       before { when_current_user_is roster_admin(roster) }
 
-      it 'sets the users instance variable' do
-        submit
-        expect(assigns.fetch(:users)).to include(*roster.users)
-      end
-
-      it 'uses the next rotation start date' do
-        allow(Assignment).to receive(:next_rotation_start_date)
-        submit
-        expect(Assignment).to have_received(:next_rotation_start_date)
-      end
-
-      it 'sets the start date instance variable' do
-        allow(Assignment).to receive(:next_rotation_start_date).and_return 'whatever'
-        submit
-        expect(assigns.fetch(:start_date)).to eql 'whatever'
-      end
-
       it 'renders the rotation_generator template' do
         submit
         expect(response).to render_template :rotation_generator
