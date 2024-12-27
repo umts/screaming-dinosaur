@@ -99,18 +99,18 @@ RSpec.describe Roster do
 
     context 'with existing assignments' do
       before do
-        create :assignment, roster:, end_date: 1.weeks.from_now 
+        create :assignment, roster:, end_date: 1.week.from_now
       end
 
       it 'returns the day after the last assignment ends' do
-        expect(result).to eql 8.days.since.to_date
+        expect(result).to eq 8.days.since.to_date
       end
     end
 
     context 'with no existing assignments' do
       it 'returns the upcoming Friday' do
         Timecop.freeze Date.parse('Monday, May 8th, 2017') do
-          expect(result).to eql Date.parse('Friday, May 12th, 2017')
+          expect(result).to eq Date.parse('Friday, May 12th, 2017')
         end
       end
     end

@@ -78,7 +78,7 @@ class Roster < ApplicationRecord
     if last.present?
       last.end_date + 1.day
     else
-      1.week.since.beginning_of_week(:friday).to_date
+      Time.zone.today.next_occurring :friday
     end
   end
 

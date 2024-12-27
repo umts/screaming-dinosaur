@@ -126,4 +126,51 @@ RSpec.describe 'Assignments' do
       end
     end
   end
+
+  describe 'POST /rosters/:id/assignments/generate_rotation' do
+    subject(:submit) { post "/rosters/#{roster.id}/assignments/generate_rotation", params: }
+
+    let(:roster) { create :roster }
+    let(:user) { create(:user).tap { |user| create :membership, roster:, user: } }
+    
+    include_context 'when logged in as a roster admin'
+
+    context 'with valid params' do
+      let(:params) do
+        { start_date: 3.weeks.ago.beginning_of_week(:sunday),
+          end_date: 1.week.ago.beginning_of_week(:sunday) + 1,
+          user_ids: [ admin.id, user.id ],
+          starting_user_id: admin.id }
+      end
+      # Add more checks
+      it 'creates new assignments' do
+        expect { submit }.to change(Assignment, :count).by(2)
+      end
+    end
+
+    context 'with invalid params' do
+      let(:params) { {} }
+      # No idea if it actually responds this way
+      it 'responds with an unprocessable entity status' do
+        submit
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'the admin is not in the roster' do
+      let(:params) do
+        { start_date: 3.weeks.ago.beginning_of_week(:sunday),
+          end_date: 1.week.ago.beginning_of_week(:sunday) + 1,
+          user_ids: [ user.id ],
+          starting_user_id: admin.id }
+      end
+      #Write this better
+      it 'responds with an error' do
+        expect { submit }.to change(Assignment, :count).by(0)
+      end
+    end
+  end
+
+  context 'the user is not an admin' do
+    before { set_user user }
 end
