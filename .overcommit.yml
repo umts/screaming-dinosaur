@@ -1,0 +1,22 @@
+PreCommit:
+  ALL:
+    problem_on_unmodified_line: ignore
+    skip_if: ["test", "-f", ".git/MERGE_HEAD"]
+  EsLint:
+    enabled: true
+    required_executable: yarn
+    command: ["yarn", "run", "eslint"]
+  ForbiddenBranches:
+    enabled: true
+    branch_patterns: ["master", "main"]
+  RuboCop:
+    enabled: true
+    required_executable: bundle
+    command: ["bundle", "exec", "rubocop"]
+  Stylelint:
+    enabled: true
+    required_executable: yarn
+    command: ["yarn", "run", "stylelint"]
+CommitMsg:
+  ALL:
+    enabled: false
