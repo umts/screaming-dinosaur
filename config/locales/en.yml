@@ -42,6 +42,10 @@ en:
       messages:
         must_be_weekday: "must be a day of the week"
       models:
+        assignment:
+          attributes:
+            end_date:
+              greater_than_or_equal_to: "must be on or after start date"
         assignment/weekday_generator:
           attributes:
             end_date:
