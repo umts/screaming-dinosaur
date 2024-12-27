@@ -71,6 +71,17 @@ class Roster < ApplicationRecord
     end
   end
 
+  # Returns the day AFTER the last assignment ends.
+  # If there is no last assignment, returns the upcoming Friday.
+  def next_rotation_start_date
+    last = assignments.order(:end_date).last
+    if last.present?
+      last.end_date + 1.day
+    else
+      Time.zone.today.next_occurring :friday
+    end
+  end
+
   private
 
   def assignment_csv_row(assignment)
