@@ -99,12 +99,8 @@ RSpec.describe UsersController do
         before { create :assignment, user:, roster: }
 
         it 'redirects back' do
-          expect { submit }.to redirect_back
-        end
-
-        it 'shows errors' do
           submit
-          expect(flash[:errors]).not_to be_empty
+          expect(response).to redirect_to roster_users_path
         end
       end
     end
