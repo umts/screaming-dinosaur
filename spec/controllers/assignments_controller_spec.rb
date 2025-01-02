@@ -74,12 +74,12 @@ RSpec.describe AssignmentsController do
         end
 
         it 'gives errors' do
-          expect { submit }.to redirect_back
+          submit
+          expect(flash[:errors]).not_to be_empty
         end
 
         it 'redirects back' do
-          submit
-          expect(flash[:errors]).not_to be_empty
+          expect { submit }.to redirect_back
         end
       end
     end
@@ -174,8 +174,9 @@ RSpec.describe AssignmentsController do
       context 'when the end date is before the start date' do
         let(:end_date) { Date.yesterday.to_fs(:db) }
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects to the same page' do
+          submit
+          expect(response).to redirect_to rotation_generator_roster_assignments_path(roster)
         end
       end
 
@@ -187,8 +188,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects to the same page' do
+          submit
+          expect(response).to redirect_to rotation_generator_roster_assignments_path(roster)
         end
       end
     end
@@ -424,8 +426,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects to the same page' do
+          submit
+          expect(response).to redirect_to edit_roster_assignment_path(assignment.roster, assignment)
         end
       end
     end
@@ -453,8 +456,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects to the same page' do
+          submit
+          expect(response).to redirect_to edit_roster_assignment_path(assignment.roster, assignment)
         end
       end
     end

@@ -93,7 +93,8 @@ class AssignmentsController < ApplicationController
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster)
     else
-      report_errors(@assignment, fallback_location: roster_assignments_path)
+      flash[:errors] = @assignment.errors.full_messages
+      redirect_to edit_roster_assignment_path(@roster, @assignment)
     end
   end
 
