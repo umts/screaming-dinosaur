@@ -36,13 +36,11 @@ class AssignmentsController < ApplicationController
     start_user = params.require :starting_user_id
     if end_date.before? start_date
       flash[:errors] = 'The end date must be after the start date.'
-      redirect_back(fallback_location:
-                    roster_assignments_path(@roster)) and return
+      redirect_to rotation_generator_roster_assignments_path(@roster) and return
     end
     unless user_ids.include? start_user
       flash[:errors] = 'The starting user must be in the rotation.'
-      redirect_back(fallback_location:
-                    roster_assignments_path(@roster)) and return
+      redirect_to rotation_generator_roster_assignments_path(@roster) and return
     end
     @roster.generate_assignments(user_ids, start_date,
                                  end_date, start_user).each do |assignment|
@@ -172,7 +170,7 @@ class AssignmentsController < ApplicationController
     return true if Current.user.admin_in?(@roster) || taking_ownership?
 
     flash[:errors] = t('.not_an_admin')
-    redirect_back fallback_location: roster_assignments_path(@roster)
+    redirect_to roster_assignments_path(@roster)
     false
   end
 
