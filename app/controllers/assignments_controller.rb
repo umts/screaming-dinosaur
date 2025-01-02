@@ -34,6 +34,11 @@ class AssignmentsController < ApplicationController
     end_date = Date.parse params.require(:end_date)
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
+    if end_date.before? start_date
+      flash[:errors] = 'The end date must be after the start date.'
+      redirect_back(fallback_location:
+                    roster_assignments_path(@roster)) and return
+    end
     unless user_ids.include? start_user
       flash[:errors] = 'The starting user must be in the rotation.'
       redirect_back(fallback_location:

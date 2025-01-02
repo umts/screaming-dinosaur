@@ -118,16 +118,21 @@ RSpec.describe AssignmentsController do
   describe 'POST #generate_rotation' do
     subject :submit do
       post :generate_rotation,
-           params: { roster_id: roster.id,
-                     start_date: Time.zone.today.to_fs(:db),
-                     end_date: Date.tomorrow.to_fs(:db),
-                     user_ids:,
-                     starting_user_id: }
+           params: params
+    end
+
+    let :params do
+      { roster_id: roster.id,
+        start_date: Time.zone.today.to_fs(:db),
+        end_date:,
+        user_ids:,
+        starting_user_id: }
     end
 
     let(:user_ids) { Array.new(3) { roster_user(roster).id.to_s } }
     let(:starting_user_id) { user_ids[1] }
     let(:assignment) { create :assignment }
+    let(:end_date) { Date.tomorrow.to_fs(:db) }
 
     before do
       when_current_user_is :whoever
@@ -164,6 +169,14 @@ RSpec.describe AssignmentsController do
         submit
         expect(response)
           .to redirect_to roster_assignments_path(roster, date: Time.zone.today)
+      end
+
+      context 'when the end date is before the start date' do
+        let(:end_date) { Date.yesterday.to_fs(:db) }
+
+        it 'redirects back' do
+          expect { submit }.to redirect_back
+        end
       end
 
       context 'when the starting user is not in the selected users' do
