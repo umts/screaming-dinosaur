@@ -58,10 +58,10 @@ class UsersController < ApplicationController
   def destroy
     if @user.destroy
       confirm_change(@user)
-      redirect_to roster_users_path
     else
-      report_errors(@user, fallback_location: roster_users_path)
+      flash[:errors] = @user.errors.full_messages
     end
+    redirect_to roster_users_path
   end
 
   private
