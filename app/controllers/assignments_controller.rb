@@ -4,7 +4,7 @@ require 'assignments_ics'
 
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
-  before_action :set_roster_users, only: %i[edit new generate_rotation rotation_generator update]
+  before_action :set_roster_users, only: %i[edit new create generate_rotation rotation_generator update]
   before_action :require_admin_in_roster, only: %i[generate_rotation rotation_generator
                                                    generate_by_weekday generate_by_weekday_submit]
   skip_before_action :set_current_user, :set_roster, only: :feed
