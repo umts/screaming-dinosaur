@@ -73,7 +73,7 @@ class AssignmentsController < ApplicationController
                        .permit :start_date, :end_date,
                                :user_id, :roster_id
     assignment = Assignment.new ass_params
-    require_taking_ownership or return
+    require_taking_ownership(error_template: :new) or return
 
     if assignment.save
       confirm_change(assignment)
@@ -88,7 +88,7 @@ class AssignmentsController < ApplicationController
   def update
     ass_params = params.require(:assignment)
                        .permit :start_date, :end_date, :user_id
-    require_taking_ownership or return
+    require_taking_ownership(error_template: :edit) or return
 
     @previous_owner = @assignment.user
     if @assignment.update ass_params
@@ -170,11 +170,11 @@ class AssignmentsController < ApplicationController
     render plain: ics.output, content_type: 'text/calendar'
   end
 
-  def require_taking_ownership
+  def require_taking_ownership(error_template: nil)
     return true if Current.user.admin_in?(@roster) || taking_ownership?
 
-    flash[:errors] = t('.not_an_admin')
-    redirect_to roster_assignments_path(@roster)
+    flash.now[:errors] = t('.not_an_admin')
+    render error_template, status: :unprocessable_entity
     false
   end
 

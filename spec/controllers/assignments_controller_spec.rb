@@ -79,9 +79,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects' do
+        it 'rerenders the template' do
           submit
-          expect(response).to have_http_status(:found)
+          expect(response).to render_template :new
         end
       end
     end
@@ -460,7 +460,7 @@ RSpec.describe AssignmentsController do
 
         it 'redirects to the assignments page' do
           submit
-          expect(response).to redirect_to roster_assignments_path(assignment.roster)
+          expect(response).to render_template :edit
         end
       end
     end
