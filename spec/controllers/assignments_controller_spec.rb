@@ -51,8 +51,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'renders the new page again' do
+          submit
+          expect(response).to render_template :new
         end
       end
     end

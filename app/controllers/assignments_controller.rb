@@ -36,12 +36,12 @@ class AssignmentsController < ApplicationController
     start_user = params.require :starting_user_id
     if end_date.before? start_date
       flash.now[:errors] = t('.end_before_start')
-      rotation_generator
+      @start_date = start_date
       render :rotation_generator, status: :unprocessable_entity and return
     end
     unless user_ids.include? start_user
       flash.now[:errors] = t('.start_not_in')
-      rotation_generator
+      @start_date = start_date
       render :rotation_generator, status: :unprocessable_entity and return
     end
     @roster.generate_assignments(user_ids, start_date,
@@ -80,7 +80,8 @@ class AssignmentsController < ApplicationController
       assignment.notify :owner, of: :new_assignment, by: Current.user
       redirect_to roster_assignments_path(@roster)
     else
-      report_errors(assignment, fallback_location: roster_assignments_path)
+      flash.now[:errors] = assignment.errors.full_messages
+      render :new
     end
   end
 
