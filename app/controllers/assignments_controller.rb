@@ -70,15 +70,15 @@ class AssignmentsController < ApplicationController
     ass_params = params.require(:assignment)
                        .permit :start_date, :end_date,
                                :user_id, :roster_id
-    assignment = Assignment.new ass_params
+    @assignment = Assignment.new ass_params
     require_taking_ownership(error_template: :new) or return
 
-    if assignment.save
-      confirm_change(assignment)
-      assignment.notify :owner, of: :new_assignment, by: Current.user
+    if @assignment.save
+      confirm_change(@assignment)
+      @assignment.notify :owner, of: :new_assignment, by: Current.user
       redirect_to roster_assignments_path(@roster)
     else
-      flash.now[:errors] = assignment.errors.full_messages
+      flash.now[:errors] = @assignment.errors.full_messages
       render :new, status: :unprocessable_entity
     end
   end
