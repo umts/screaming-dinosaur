@@ -117,7 +117,7 @@ RSpec.describe AssignmentsController do
 
       it 'renders the edit page again' do
         submit
-        expect(response).to render_template :edit
+        expect(response).to redirect_to edit_roster_assignment_path(roster, assignment)
       end
     end
   end

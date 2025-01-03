@@ -112,8 +112,8 @@ class AssignmentsController < ApplicationController
       confirm_change(@assignment)
       redirect_to roster_assignments_path(@roster)
     else
-      flash.now[:errors] = t('.not_an_admin')
-      render :edit
+      flash[:errors] = t('.not_an_admin')
+      redirect_to edit_roster_assignment_path(@roster, @assignment)
     end
   end
 
