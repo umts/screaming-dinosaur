@@ -279,7 +279,8 @@ RSpec.describe UsersController do
         end
 
         it 'redirects back' do
-          expect { submit }.to redirect_back
+          submit
+          expect(response).to have_http_status :unprocessable_entity
         end
 
         it 'shows errors' do
