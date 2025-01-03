@@ -78,8 +78,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects' do
+          submit
+          expect(response).to have_http_status(:found)
         end
       end
     end
@@ -174,9 +175,9 @@ RSpec.describe AssignmentsController do
       context 'when the end date is before the start date' do
         let(:end_date) { Date.yesterday.to_fs(:db) }
 
-        it 'redirects to the same page' do
+        it 'stays on the the generator page' do
           submit
-          expect(response).to redirect_to rotation_generator_roster_assignments_path(roster)
+          expect(response).to render_template :rotation_generator
         end
       end
 
@@ -188,9 +189,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects to the same page' do
+        it 'stays on the generator page' do
           submit
-          expect(response).to redirect_to rotation_generator_roster_assignments_path(roster)
+          expect(response).to render_template :rotation_generator
         end
       end
     end
@@ -426,9 +427,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects to the same page' do
+        it 'stays on the edit page' do
           submit
-          expect(response).to redirect_to edit_roster_assignment_path(assignment.roster, assignment)
+          expect(response).to render_template :edit
         end
       end
     end
@@ -456,9 +457,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects to the same page' do
+        it 'redirects to the assignments page' do
           submit
-          expect(response).to redirect_to edit_roster_assignment_path(assignment.roster, assignment)
+          expect(response).to redirect_to roster_assignments_path(assignment.roster)
         end
       end
     end

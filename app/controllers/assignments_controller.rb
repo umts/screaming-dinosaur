@@ -4,7 +4,7 @@ require 'assignments_ics'
 
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
-  before_action :set_roster_users, only: %i[edit new rotation_generator]
+  before_action :set_roster_users, only: %i[edit new generate_rotation rotation_generator update]
   before_action :require_admin_in_roster, only: %i[generate_rotation rotation_generator
                                                    generate_by_weekday generate_by_weekday_submit]
   skip_before_action :set_current_user, :set_roster, only: :feed
@@ -35,12 +35,14 @@ class AssignmentsController < ApplicationController
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
     if end_date.before? start_date
-      flash[:errors] = 'The end date must be after the start date.'
-      redirect_to rotation_generator_roster_assignments_path(@roster) and return
+      flash.now[:errors] = t('.end_before_start')
+      rotation_generator
+      render :rotation_generator, status: :unprocessable_entity and return
     end
     unless user_ids.include? start_user
-      flash[:errors] = 'The starting user must be in the rotation.'
-      redirect_to rotation_generator_roster_assignments_path(@roster) and return
+      flash.now[:errors] = t('.start_not_in')
+      rotation_generator
+      render :rotation_generator, status: :unprocessable_entity and return
     end
     @roster.generate_assignments(user_ids, start_date,
                                  end_date, start_user).each do |assignment|
@@ -93,8 +95,8 @@ class AssignmentsController < ApplicationController
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster)
     else
-      flash[:errors] = @assignment.errors.full_messages
-      redirect_to edit_roster_assignment_path(@roster, @assignment)
+      flash.now[:errors] = @assignment.errors.full_messages
+      render :edit
     end
   end
 
@@ -109,8 +111,8 @@ class AssignmentsController < ApplicationController
       confirm_change(@assignment)
       redirect_to roster_assignments_path(@roster)
     else
-      flash[:errors] = t('.not_an_admin')
-      redirect_to edit_roster_assignment_path(@roster, @assignment)
+      flash.now[:errors] = t('.not_an_admin')
+      render :edit
     end
   end
 
