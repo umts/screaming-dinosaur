@@ -81,7 +81,7 @@ class AssignmentsController < ApplicationController
       redirect_to roster_assignments_path(@roster)
     else
       flash.now[:errors] = assignment.errors.full_messages
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -97,7 +97,7 @@ class AssignmentsController < ApplicationController
       redirect_to roster_assignments_path(@roster)
     else
       flash.now[:errors] = @assignment.errors.full_messages
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
