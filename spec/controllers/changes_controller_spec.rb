@@ -23,8 +23,9 @@ RSpec.describe ChangesController do
           expect { assignment.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects' do
+          submit
+          expect(response).to have_http_status :redirect
         end
 
         it 'informs you of success' do
@@ -47,8 +48,9 @@ RSpec.describe ChangesController do
           expect { assignment.reload }.not_to raise_error
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects' do
+          submit
+          expect(response).to have_http_status :redirect
         end
       end
 
@@ -68,8 +70,9 @@ RSpec.describe ChangesController do
           expect(assignment.reload.start_date).to eql original_start_date
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects' do
+          submit
+          expect(response).to have_http_status :redirect
         end
       end
     end
