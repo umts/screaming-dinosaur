@@ -48,8 +48,9 @@ RSpec.describe RostersController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'returns to the new template' do
+          submit
+          expect(response).to have_http_status :unprocessable_entity
         end
       end
     end
@@ -237,8 +238,9 @@ RSpec.describe RostersController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'and redirects back' do
-          expect { submit }.to redirect_back
+        it 'stays on the edit page' do
+          submit
+          expect(response).to have_http_status :unprocessable_entity
         end
       end
     end
