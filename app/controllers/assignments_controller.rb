@@ -30,26 +30,24 @@ class AssignmentsController < ApplicationController
   def edit; end
 
   def generate_rotation
-    start_date = Date.parse params.require(:start_date)
+    @start_date = Date.parse params.require(:start_date)
     end_date = Date.parse params.require(:end_date)
     user_ids = params.require :user_ids
     start_user = params.require :starting_user_id
-    if end_date.before? start_date
+    if end_date.before? @start_date
       flash.now[:errors] = t('.end_before_start')
-      @start_date = start_date
       render :rotation_generator, status: :unprocessable_entity and return
     end
     unless user_ids.include? start_user
       flash.now[:errors] = t('.start_not_in')
-      @start_date = start_date
       render :rotation_generator, status: :unprocessable_entity and return
     end
-    @roster.generate_assignments(user_ids, start_date,
+    @roster.generate_assignments(user_ids, @start_date,
                                  end_date, start_user).each do |assignment|
       assignment.notify :owner, of: :new_assignment, by: Current.user
     end
     flash[:message] = 'Rotation has been generated.'
-    redirect_to roster_assignments_path(@roster, date: start_date)
+    redirect_to roster_assignments_path(@roster, date: @start_date)
   end
 
   def generate_by_weekday
