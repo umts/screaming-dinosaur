@@ -41,7 +41,7 @@ class UsersController < ApplicationController
       end
     else
       flash.now[:errors] = @user.errors.full_messages
-      render 'edit'
+      render :edit
     end
   end
 
@@ -51,7 +51,8 @@ class UsersController < ApplicationController
       confirm_change(@user, "Added #{@user.full_name} to roster.")
       redirect_to roster_users_path(@roster)
     else
-      report_errors(@user, fallback_location: roster_users_path)
+      flash.now[:errors] = @user.errors.full_messages
+      render :index, status: :unprocessable_entity
     end
   end
 
