@@ -51,8 +51,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'renders the new page again' do
+          submit
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end
@@ -74,12 +75,13 @@ RSpec.describe AssignmentsController do
         end
 
         it 'gives errors' do
-          expect { submit }.to redirect_back
-        end
-
-        it 'redirects back' do
           submit
           expect(flash[:errors]).not_to be_empty
+        end
+
+        it 'renders the new page again' do
+          submit
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end
@@ -174,8 +176,9 @@ RSpec.describe AssignmentsController do
       context 'when the end date is before the start date' do
         let(:end_date) { Date.yesterday.to_fs(:db) }
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'stays on the the generator page' do
+          submit
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
 
@@ -187,8 +190,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'stays on the generator page' do
+          submit
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end
@@ -424,8 +428,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'stays on the edit page' do
+          submit
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end
@@ -453,8 +458,9 @@ RSpec.describe AssignmentsController do
           expect(flash[:errors]).not_to be_empty
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects to the assignments page' do
+          submit
+          expect(response).to have_http_status(:unprocessable_entity)
         end
       end
     end

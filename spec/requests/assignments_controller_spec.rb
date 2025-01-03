@@ -115,7 +115,10 @@ RSpec.describe AssignmentsController do
         expect(flash[:errors]).to eq('Only roster admins may delete assignments.')
       end
 
-      it { is_expected.to redirect_to("/rosters/#{roster.to_param}/assignments/#{assignment.to_param}/edit") }
+      it 'renders the edit page again' do
+        submit
+        expect(response).to redirect_to edit_roster_assignment_path(roster, assignment)
+      end
     end
   end
 end
