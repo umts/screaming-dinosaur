@@ -30,38 +30,34 @@ class AssignmentsController < ApplicationController
   def edit; end
 
   def generate_rotation
-    @start_date = Date.parse params.require(:start_date)
-    end_date = Date.parse params.require(:end_date)
-    user_ids = params.require :user_ids
-    start_user = params.require :starting_user_id
-    if end_date.before? @start_date
-      flash.now[:errors] = t('.end_before_start')
-      render :rotation_generator, status: :unprocessable_entity and return
+    @rotation_generator = Assignment::RotationGenerator.new roster_id: @roster.id
+  end
+
+  def generate_rotation_submit
+    @rotation_generator = Assignment::RotationGenerator.new(roster_id: @roster.id,
+                                                            **generate_rotation_params)
+    if @rotation_generator.generate
+      flash[:message] = t('.success')
+      redirect_to roster_assignments_path(@roster, date: @rotation_generator.start_date)
+    else
+      flash.now[:errors] = @rotation_generator.errors.full_messages.to_sentence
+      @start_date = @rotation_generator.start_date
+      render :rotation_generator, status: :unprocessable_entity
     end
-    unless user_ids.include? start_user
-      flash.now[:errors] = t('.start_not_in')
-      render :rotation_generator, status: :unprocessable_entity and return
-    end
-    @roster.generate_assignments(user_ids, @start_date,
-                                 end_date, start_user).each do |assignment|
-      assignment.notify :owner, of: :new_assignment, by: Current.user
-    end
-    flash[:message] = 'Rotation has been generated.'
-    redirect_to roster_assignments_path(@roster, date: @start_date)
   end
 
   def generate_by_weekday
-    @generator = Assignment::WeekdayGenerator.new roster_id: @roster.id
+    @weekday_generator = Assignment::WeekdayGenerator.new roster_id: @roster.id
   end
 
   def generate_by_weekday_submit
-    @generator = Assignment::WeekdayGenerator.new(roster_id: @roster.id,
+    @weekday_generator = Assignment::WeekdayGenerator.new(roster_id: @roster.id,
                                                   **generate_by_weekday_params)
-    if @generator.generate
+    if @weekday_generator.generate
       flash[:message] = t('.success')
-      redirect_to roster_assignments_path(@roster, date: @generator.start_date)
+      redirect_to roster_assignments_path(@roster, date: @weekday_generator.start_date)
     else
-      flash.now[:errors] = @generator.errors.full_messages.to_sentence
+      flash.now[:errors] = @weekday_generator.errors.full_messages.to_sentence
       render :generate_by_weekday, status: :unprocessable_entity
     end
   end
