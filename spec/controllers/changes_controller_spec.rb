@@ -6,9 +6,13 @@ RSpec.describe ChangesController do
   describe 'GET #undo', :versioning do
     let(:change_user) { create :user }
     let(:assignment) { create :assignment }
+    let(:redirect_target) { '/redirect_to_me' }
 
     context 'when the change is made by user' do
-      before { when_current_user_is change_user }
+      before do
+        when_current_user_is change_user
+        request.env['HTTP_REFERER'] = redirect_target
+      end
 
       context 'when the version is a "create" version' do
         subject(:submit) { get :undo, params: { id: version.id } }
@@ -23,8 +27,9 @@ RSpec.describe ChangesController do
           expect { assignment.reload }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects' do
+          submit
+          expect(response).to redirect_to redirect_target
         end
 
         it 'informs you of success' do
@@ -47,8 +52,9 @@ RSpec.describe ChangesController do
           expect { assignment.reload }.not_to raise_error
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects' do
+          submit
+          expect(response).to redirect_to redirect_target
         end
       end
 
@@ -68,8 +74,9 @@ RSpec.describe ChangesController do
           expect(assignment.reload.start_date).to eql original_start_date
         end
 
-        it 'redirects back' do
-          expect { submit }.to redirect_back
+        it 'redirects' do
+          submit
+          expect(response).to redirect_to redirect_target
         end
       end
     end
