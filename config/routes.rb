@@ -15,9 +15,12 @@ Rails.application.routes.draw do
       collection do
         post :generate_rotation
         get  :rotation_generator
-        get :generate_by_weekday
-        post :generate_by_weekday, to: 'assignments#generate_by_weekday_submit'
       end
+    end
+
+    namespace :assignments do
+      get :generate_by_weekday, to: 'weekday_generators#prompt'
+      post :generate_by_weekday, to: 'weekday_generators#perform'
     end
 
     resources :users, except: :show do

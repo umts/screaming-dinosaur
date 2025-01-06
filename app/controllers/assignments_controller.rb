@@ -5,8 +5,7 @@ require 'assignments_ics'
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
   before_action :set_roster_users, only: %i[edit new create generate_rotation rotation_generator update]
-  before_action :require_admin_in_roster, only: %i[generate_rotation rotation_generator
-                                                   generate_by_weekday generate_by_weekday_submit]
+  before_action :require_admin_in_roster, only: %i[generate_rotation rotation_generator]
   skip_before_action :set_current_user, :set_roster, only: :feed
 
   def index
@@ -48,22 +47,6 @@ class AssignmentsController < ApplicationController
     end
     flash[:message] = 'Rotation has been generated.'
     redirect_to roster_assignments_path(@roster, date: @start_date)
-  end
-
-  def generate_by_weekday
-    @generator = Assignment::WeekdayGenerator.new roster_id: @roster.id
-  end
-
-  def generate_by_weekday_submit
-    @generator = Assignment::WeekdayGenerator.new(roster_id: @roster.id,
-                                                  **generate_by_weekday_params)
-    if @generator.generate
-      flash[:message] = t('.success')
-      redirect_to roster_assignments_path(@roster, date: @generator.start_date)
-    else
-      flash.now[:errors] = @generator.errors.full_messages.to_sentence
-      render :generate_by_weekday, status: :unprocessable_entity
-    end
   end
 
   def create
@@ -179,9 +162,5 @@ class AssignmentsController < ApplicationController
   def taking_ownership?
     new_user_id = params.require(:assignment).require(:user_id)
     new_user_id == Current.user&.id.to_s
-  end
-
-  def generate_by_weekday_params
-    params.fetch(:assignment_weekday_generator, {}).permit!
   end
 end

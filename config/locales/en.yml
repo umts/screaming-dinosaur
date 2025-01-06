@@ -61,8 +61,9 @@ en:
                     Or, a roster administrator can perform this change for you.'
     destroy:
       not_an_admin: 'Only roster admins may delete assignments.'
-    generate_by_weekday_submit:
-      success: "Assignments have been generated."
     generate_rotation:
       end_before_start: 'The end date must be after the starting date.'
       start_not_in: 'The starting user must be in the rotation.'
+    weekday_generators:
+      perform:
+        success: "Assignments have been generated."
