@@ -19,8 +19,8 @@ Rails.application.routes.draw do
     end
 
     namespace :assignments do
-      get :rotation_generator, to 'rotation_generator#prompt'
-      post :generate_rotation, to 'rotation_generator#perform'
+      get :rotation_generator, to: 'rotation_generators#prompt'
+      post :generate_rotation, to: 'rotation_generators#perform'
     end
 
     resources :users, except: :show do

@@ -15,7 +15,7 @@ class Assignment < ApplicationRecord
     validates :user_ids, presence: true
     validates :start_user_id, presence: true, inclusion: { in: :user_ids }
     validates :start_date, presence: true
-    validates :end_date, presence, comparison: { greater_than_or_equal_to: :start_date }
+    validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
 
     def roster
       @roster ||= Roster.find_by(id: roster_id)

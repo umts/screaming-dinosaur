@@ -4,9 +4,8 @@ require 'assignments_ics'
 
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
-  before_action :set_roster_users, only: %i[edit new create generate_rotation rotation_generator update]
-  before_action :require_admin_in_roster, only: %i[generate_rotation rotation_generator
-                                                   generate_by_weekday generate_by_weekday_submit]
+  before_action :set_roster_users, only: %i[edit new create update]
+  before_action :require_admin_in_roster, only: %i[generate_by_weekday generate_by_weekday_submit]
   skip_before_action :set_current_user, :set_roster, only: :feed
 
   def index
@@ -76,10 +75,6 @@ class AssignmentsController < ApplicationController
       flash.now[:errors] = @assignment.errors.full_messages
       render :edit, status: :unprocessable_entity
     end
-  end
-
-  def rotation_generator
-    @start_date = @roster.next_rotation_start_date
   end
 
   def destroy
