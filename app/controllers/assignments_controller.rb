@@ -29,23 +29,6 @@ class AssignmentsController < ApplicationController
 
   def edit; end
 
-  def generate_rotation
-    @rotation_generator = Assignment::RotationGenerator.new roster_id: @roster.id
-  end
-
-  def generate_rotation_submit
-    @rotation_generator = Assignment::RotationGenerator.new(roster_id: @roster.id,
-                                                            **generate_rotation_params)
-    if @rotation_generator.generate
-      flash[:message] = t('.success')
-      redirect_to roster_assignments_path(@roster, date: @rotation_generator.start_date)
-    else
-      flash.now[:errors] = @rotation_generator.errors.full_messages.to_sentence
-      @start_date = @rotation_generator.start_date
-      render :rotation_generator, status: :unprocessable_entity
-    end
-  end
-
   def generate_by_weekday
     @weekday_generator = Assignment::WeekdayGenerator.new roster_id: @roster.id
   end
