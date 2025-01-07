@@ -13,12 +13,17 @@ class Assignment < ApplicationRecord
 
     validates :roster, presence: true
     validates :user_ids, presence: true
-    validates :starting_user_id, presence: true # , inclusion: { in: :user_ids }
+    validate :includes_start_user
     validates :start_date, presence: true
     validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
 
     def roster
       @roster ||= Roster.find_by(id: roster_id)
+    end
+
+    def includes_start_user
+      errors.add(:starting_user_id, 'is not included in the list') unless
+        user_ids.include? starting_user_id.to_s
     end
 
     def generate
