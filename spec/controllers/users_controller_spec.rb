@@ -280,7 +280,7 @@ RSpec.describe UsersController do
 
         it 'redirects back' do
           submit
-          expect(response).to have_http_status :unprocessable_entity
+          expect(response).to redirect_to roster_users_path(roster)
         end
 
         it 'shows errors' do

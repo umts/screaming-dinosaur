@@ -49,11 +49,10 @@ class UsersController < ApplicationController
     @user.rosters += [@roster]
     if @user.save
       confirm_change(@user, "Added #{@user.full_name} to roster.")
-      redirect_to roster_users_path(@roster)
     else
       flash[:errors] = @user.errors.full_messages
-      redirect_to roster_users_path(@roster), status: :unprocessable_entity
     end
+    redirect_to roster_users_path(@roster)
   end
 
   def destroy
