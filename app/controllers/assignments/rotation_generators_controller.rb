@@ -4,6 +4,7 @@ module Assignments
   class RotationGeneratorsController < ApplicationController
     before_action :require_admin_in_roster
     before_action :initialize_rotation_generator
+    before_action :initialize_form, only: %i[prompt]
 
     def prompt; end
 
@@ -22,6 +23,11 @@ module Assignments
 
     def initialize_rotation_generator
       @generator = Assignment::RotationGenerator.new(roster_id: @roster.id, **generate_rotation_params)
+    end
+
+    def initialize_form
+      @start_date = @generator.start_date
+      @users = @roster.users.active.order :last_name
     end
 
     def generate_rotation_params
