@@ -279,7 +279,8 @@ RSpec.describe UsersController do
         end
 
         it 'redirects back' do
-          expect { submit }.to redirect_back
+          submit
+          expect(response).to redirect_to roster_users_path(roster)
         end
 
         it 'shows errors' do
