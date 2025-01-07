@@ -4,7 +4,7 @@ module Assignments
   class RotationGeneratorsController < ApplicationController
     before_action :require_admin_in_roster
     before_action :initialize_rotation_generator
-    before_action :initialize_form, only: :prompt
+    before_action :initialize_form
 
     def prompt
     end
@@ -15,7 +15,7 @@ module Assignments
         redirect_to roster_assignments_path(@roster, date: @generator.start_date)
       else
         flash.now[:errors] = @generator.errors.full_messages.to_sentence
-        initialize_form
+        @generator.end_date = @generator.start_date + 3.months
         render :prompt, status: :unprocessable_entity
       end
     end
@@ -24,15 +24,16 @@ module Assignments
 
     def initialize_rotation_generator
       @generator = Assignment::RotationGenerator.new(roster_id: @roster.id, **generate_rotation_params)
+      @generator.start_date ||= @roster.next_rotation_start_date
+      @generator.end_date ||= @generator.start_date + 3.months
     end
 
     def initialize_form
-      @start_date = @roster.next_rotation_start_date
       @users = @roster.users.active.order :last_name
     end
 
     def generate_rotation_params
-      params.permit(:start_date, :end_date, :starting_user_id, :user_ids)
+      params.fetch(:assignment_rotation_generator, {}).permit!
     end
   end
 end
