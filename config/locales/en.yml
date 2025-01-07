@@ -64,5 +64,5 @@ en:
     generate_by_weekday_submit:
       success: "Assignments have been generated."
     generate_rotation:
-      end_before_start: 'The end date must be after the starting date.'
-      start_not_in: 'The starting user must be in the rotation.'
+      perform:
+        success: "Assignments have been generated."

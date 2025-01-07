@@ -1,7 +1,7 @@
 %h1 Generate rotation
 
 .container-fluid
-  = form_tag generate_rotation_roster_assignments_path(@roster) do
+  = form_tag roster_assignments_generate_rotation_path(@roster) do
     .row
       .col-lg
         .mb-3
@@ -13,12 +13,12 @@
         .mb-3
           = label_tag :starting_user_id, 'Starting with', class: 'form-label'
           = select_tag :starting_user_id,
-            options_from_collection_for_select(@users, :id, :last_name),
-             class: 'form-select'
+                       options_from_collection_for_select(@users, :id, :last_name),
+                       class: 'form-select'
       .col-lg
         .mb-3
           = label_tag :user_ids, 'Users', class: 'form-label'
           = select_tag :user_ids,
-           options_from_collection_for_select(@users, :id, :last_name,
-            @users.pluck(:id)), multiple: true, size: 10, class: 'form-select'
+                       options_from_collection_for_select(@users, :id, :last_name, @users.pluck(:id)),
+                       multiple: true, size: 10, class: 'form-select'
     = submit_tag 'Generate rotation', class: 'btn btn-primary'
