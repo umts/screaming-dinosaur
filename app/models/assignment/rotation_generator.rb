@@ -7,13 +7,13 @@ class Assignment < ApplicationRecord
 
     attribute :roster_id, :integer
     attribute :user_ids
-    attribute :start_user_id, :integer
+    attribute :starting_user_id, :integer
     attribute :start_date, :date
     attribute :end_date, :date
 
     validates :roster, presence: true
     validates :user_ids, presence: true
-    validates :start_user_id, presence: true, inclusion: { in: :user_ids }
+    validates :starting_user_id, presence: true # , inclusion: { in: :user_ids }
     validates :start_date, presence: true
     validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
 
@@ -30,7 +30,7 @@ class Assignment < ApplicationRecord
 
     def generate!
       validate!
-      user_ids.rotate! user_ids.index(start_user_id)
+      user_ids.rotate! user_ids.index(starting_user_id)
       ActiveRecord::Base.transaction do
         (start_date..end_date).each_slice(7).with_index do |week, i|
           send_notification Assignment.create!(
