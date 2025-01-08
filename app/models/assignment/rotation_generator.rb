@@ -26,8 +26,6 @@ class Assignment < ApplicationRecord
       false
     end
 
-    private
-
     def user_ids=(value)
       super(value&.map(&:to_i))
     end
@@ -35,6 +33,8 @@ class Assignment < ApplicationRecord
     def roster
       @roster ||= Roster.find_by(id: roster_id)
     end
+
+    private
 
     def includes_start_user
       return if user_ids.blank? || starting_user_id.blank?
