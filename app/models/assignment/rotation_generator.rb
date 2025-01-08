@@ -17,6 +17,15 @@ class Assignment < ApplicationRecord
     validates :start_date, presence: true
     validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
 
+    def generate
+      generate!
+      true
+    rescue ActiveModel::ValidationError, ActiveRecord::RecordInvalid
+      false
+    end
+
+    private
+
     def roster
       @roster ||= Roster.find_by(id: roster_id)
     end
@@ -26,13 +35,6 @@ class Assignment < ApplicationRecord
 
       errors.add(:starting_user_id, 'is not included in the list') unless
         user_ids.include? starting_user_id.to_s
-    end
-
-    def generate
-      generate!
-      true
-    rescue ActiveModel::ValidationError, ActiveRecord::RecordInvalid
-      false
     end
 
     def generate!
