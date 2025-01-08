@@ -7,8 +7,8 @@ RSpec.describe 'RotationGeneratorsController' do
     before { set_user admin }
   end
 
-  describe 'GET assignments/rotation_generator' do
-    subject(:call) { get "/rosters/#{roster.id}/assignments/rotation_generator" }
+  describe 'GET assignments/generate_rotation' do
+    subject(:call) { get "/rosters/#{roster.id}/assignments/generate_rotation" }
 
     let(:roster) { create :roster }
     let(:user1) { create(:user).tap { |user| create :membership, roster:, user: } }

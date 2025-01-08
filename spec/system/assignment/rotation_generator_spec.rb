@@ -8,7 +8,7 @@ RSpec.describe 'generate rotation' do
   before do
     roster_admin.membership_in(roster).update admin: true
     when_current_user_is roster_admin
-    visit roster_assignments_rotation_generator_path(roster)
+    visit roster_assignments_generate_rotation_path(roster)
   end
 
   it 'does not let you generate a rotation without the starting user' do

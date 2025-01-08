@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     end
 
     namespace :assignments do
-      get :rotation_generator, to: 'rotation_generators#prompt'
+      get :generate_rotation, to: 'rotation_generators#prompt'
       post :generate_rotation, to: 'rotation_generators#perform'
     end
 
