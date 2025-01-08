@@ -22,6 +22,8 @@ class Assignment < ApplicationRecord
     end
 
     def includes_start_user
+      return unless user_ids
+
       errors.add(:starting_user_id, 'is not included in the list') unless
         user_ids.include? starting_user_id.to_s
     end
@@ -35,7 +37,7 @@ class Assignment < ApplicationRecord
 
     def generate!
       validate!
-      user_ids.rotate! user_ids.index(starting_user_id)
+      user_ids.rotate! user_ids.index(starting_user_id.to_s)
       ActiveRecord::Base.transaction do
         (start_date..end_date).each_slice(7).with_index do |week, i|
           send_notification Assignment.create!(

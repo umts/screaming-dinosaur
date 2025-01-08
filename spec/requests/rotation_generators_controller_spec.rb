@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RotationGeneratorsController do
+RSpec.describe 'RotationGeneratorsController' do
   shared_context 'when logged in as a roster admin' do
     let(:admin) { create(:user).tap { |user| create :membership, roster:, user:, admin: true } }
 
