@@ -12,10 +12,12 @@ class Assignment < ApplicationRecord
     attribute :end_date, :date
 
     validates :roster, presence: true
-    validates :user_ids, presence: true, length: { minimum: 1 }
-    validate :includes_start_user
+    validates :user_ids, presence: true
+    validates :starting_user_id, presence: true
     validates :start_date, presence: true
     validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
+
+    validate :includes_start_user
 
     def generate
       generate!
@@ -26,20 +28,24 @@ class Assignment < ApplicationRecord
 
     private
 
+    def user_ids=(value)
+      super(value&.map(&:to_i))
+    end
+
     def roster
       @roster ||= Roster.find_by(id: roster_id)
     end
 
     def includes_start_user
-      return unless user_ids
+      return if user_ids.blank? || starting_user_id.blank?
+      return if user_ids.include? starting_user_id
 
-      errors.add(:starting_user_id, 'is not included in the list') unless
-        user_ids.include? starting_user_id.to_s
+      errors.add :starting_user_id, 'is not included in the list'
     end
 
     def generate!
       validate!
-      user_ids.rotate! user_ids.index(starting_user_id.to_s)
+      user_ids.rotate! user_ids.index(starting_user_id)
       ActiveRecord::Base.transaction do
         (start_date..end_date).each_slice(7).with_index do |week, i|
           send_notification Assignment.create!(
