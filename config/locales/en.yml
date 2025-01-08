@@ -67,6 +67,6 @@ en:
       not_an_admin: 'Only roster admins may delete assignments.'
     generate_by_weekday_submit:
       success: "Assignments have been generated."
-    generate_rotation:
+    rotation_generators:
       perform:
         success: "Assignments have been generated."
