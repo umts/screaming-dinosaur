@@ -9,7 +9,6 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'rack_session_access/capybara'
-require 'umts_custom_matchers'
 require 'paper_trail/frameworks/rspec'
 
 ActiveRecord::Migration.maintain_test_schema!
@@ -22,7 +21,6 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.include FactoryBot::Syntax::Methods
-  config.include UmtsCustomMatchers
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
