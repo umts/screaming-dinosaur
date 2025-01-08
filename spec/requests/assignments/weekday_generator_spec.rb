@@ -36,16 +36,6 @@ RSpec.describe 'Assignment Weekday Generators' do
                                           start_weekday: 2,
                                           end_weekday: 4 } }
       end
-      let(:attributes) do
-        [{ roster_id: roster.id,
-           user_id: user.id,
-           start_date: Date.current.beginning_of_week(:sunday) + 3,
-           end_date: Date.current.beginning_of_week(:sunday) + 4 },
-         { roster_id: roster.id,
-           user_id: user.id,
-           start_date: 1.week.from_now.to_date.beginning_of_week(:sunday) + 2,
-           end_date: 1.week.from_now.to_date.beginning_of_week(:sunday) + 3 }]
-      end
 
       it 'creates new assignments' do
         expect { submit }.to change(Assignment, :count).by(2)
@@ -53,10 +43,16 @@ RSpec.describe 'Assignment Weekday Generators' do
 
       it 'creates new assignments with the correct attributes' do
         submit
-        attribute_sets = Assignment.last(2).collect do |assignment|
-          assignment.attributes.slice('roster_id', 'user_id', 'start_date', 'end_date').symbolize_keys
-        end
-        expect(attribute_sets).to match_array(attributes)
+        expect(Assignment.last(2).collect(&:attributes)).to contain_exactly(
+          a_hash_including('roster_id' => roster.id,
+                           'user_id' => user.id,
+                           'start_date' => Date.current.beginning_of_week(:sunday) + 3,
+                           'end_date' => Date.current.beginning_of_week(:sunday) + 4),
+          a_hash_including('roster_id' => roster.id,
+                           'user_id' => user.id,
+                           'start_date' => 1.week.from_now.to_date.beginning_of_week(:sunday) + 2,
+                           'end_date' => 1.week.from_now.to_date.beginning_of_week(:sunday) + 3)
+        )
       end
     end
 
