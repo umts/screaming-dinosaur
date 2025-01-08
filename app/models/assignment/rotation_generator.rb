@@ -45,24 +45,25 @@ class Assignment < ApplicationRecord
 
     def generate!
       validate!
-      user_ids.rotate! user_ids.index(starting_user_id)
-      ActiveRecord::Base.transaction do
-        (start_date..end_date).each_slice(7).with_index do |week, i|
-          send_notification Assignment.create!(
-            roster: @roster,
-            start_date: week.first,
-            end_date: week.last,
-            user_id: user_ids[i % user_ids.size]
-          )
-        end
+      [].tap do |assignments|
+        ActiveRecord::Base.transaction { create_assignments_and_save!(assignments) }
+        assignments.each { |assignment| assignment.notify :owner, of: :new_assignment, by: Current.user }
       end
     rescue ActiveRecord::RecordInvalid => e
       errors.merge! e.record.errors
       raise e
     end
 
-    def send_notification(assignment)
-      assignment.notify :owner, of: :new_assignment, by: Current.user
+    def create_assignments_and_save!(output)
+      rotation = user_ids.rotate user_ids.index(starting_user_id)
+      (start_date..end_date).each_slice(7).with_index do |week, i|
+        output << Assignment.create!(
+          roster: @roster,
+          start_date: week.first,
+          end_date: week.last,
+          user_id: rotation[i % rotation.size]
+        )
+      end
     end
   end
 end
