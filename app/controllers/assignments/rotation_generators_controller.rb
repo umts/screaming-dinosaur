@@ -5,8 +5,7 @@ module Assignments
     before_action :require_admin_in_roster
     before_action :initialize_rotation_generator
 
-    def prompt
-    end
+    def prompt; end
 
     def perform
       if @generator.generate
@@ -27,7 +26,8 @@ module Assignments
     end
 
     def generate_rotation_params
-      params.fetch(:assignment_rotation_generator, {}).permit!
+      params.fetch(:assignment_rotation_generator, {})
+            .permit(:starting_user_id, :start_date, :end_date, user_ids: [])
     end
   end
 end
