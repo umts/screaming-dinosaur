@@ -22,20 +22,19 @@ class RostersController < ApplicationController
     end
   end
 
-  def edit
-    @users = @roster.users
-  end
+  def edit; end
 
   def create
-    roster = Roster.new roster_params
+    @roster = Roster.new roster_params
     # Current user becomes admin in new roster
-    roster.users << Current.user
-    roster.memberships.first.update admin: true
-    if roster.save
-      confirm_change(roster)
+    @roster.users << Current.user
+    @roster.memberships.first.update admin: true
+    if @roster.save
+      confirm_change(@roster)
       redirect_to rosters_path
     else
-      report_errors(roster, fallback_location: rosters_path)
+      flash.now[:errors] = @roster.errors.full_messages
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -44,7 +43,8 @@ class RostersController < ApplicationController
       confirm_change(@roster)
       redirect_to rosters_path
     else
-      report_errors(@roster, fallback_location: rosters_path)
+      flash.now[:errors] = @roster.errors.full_messages
+      render :edit, status: :unprocessable_entity
     end
   end
 

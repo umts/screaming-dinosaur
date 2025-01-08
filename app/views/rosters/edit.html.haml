@@ -9,7 +9,7 @@
     = f.phone_field :phone, class: 'form-control'
   .mb-3
     = f.label :fallback_user, class: 'form-label'
-    = f.collection_select :fallback_user_id, @users, :id, :last_name,
+    = f.collection_select :fallback_user_id, @roster.users, :id, :last_name,
       { include_blank: true }, class: 'form-select'
   .mb-3
     = f.label :switchover_time, class: 'form-label'
