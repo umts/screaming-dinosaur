@@ -30,11 +30,6 @@ class ApplicationController < ActionController::Base
     # rubocop:enable Rails/ActionControllerFlashBeforeRender
   end
 
-  def report_errors(object, fallback_location:)
-    flash[:errors] = object.errors.full_messages
-    redirect_back fallback_location:
-  end
-
   # There are three levels of access:
   # 1. Regular users
   # 2. Admins in general (of any roster)
