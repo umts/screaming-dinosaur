@@ -77,6 +77,20 @@ RSpec.describe 'RotationGeneratorsController' do
       end
     end
 
+    context 'when no users are selected' do
+      let(:params) do
+        { assignment_rotation_generator: { start_date: start_date,
+                                           end_date: 1.week.from_now.end_of_week(:sunday),
+                                           starting_user_id: user1.id,
+                                           user_ids: [] } }
+      end
+
+      it 'responds with an unprocessable entity status' do
+        submit
+        expect(response).to have_http_status :unprocessable_entity
+      end
+    end
+
     context 'when you are an admin but not in the roster' do
       let(:other_roster) { create :roster }
       let(:admin) { create(:user).tap { |user| create :membership, roster: other_roster, user:, admin: true } }

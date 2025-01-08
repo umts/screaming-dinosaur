@@ -12,7 +12,7 @@ class Assignment < ApplicationRecord
     attribute :end_date, :date
 
     validates :roster, presence: true
-    validates :user_ids, presence: true
+    validates :user_ids, presence: true, length: { minimum: 1 }
     validate :includes_start_user
     validates :start_date, presence: true
     validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
