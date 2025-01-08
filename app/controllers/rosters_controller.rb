@@ -4,7 +4,6 @@ class RostersController < ApplicationController
   api_accessible only: :show
 
   before_action :find_roster, only: %i[destroy edit setup show update]
-  before_action :find_users, only: %i[update]
   before_action :require_admin, except: %i[assignments show]
   before_action :require_admin_in_roster, only: %i[destroy edit setup update]
 
@@ -23,9 +22,7 @@ class RostersController < ApplicationController
     end
   end
 
-  def edit
-    @users = @roster.users
-  end
+  def edit; end
 
   def create
     @roster = Roster.new roster_params
@@ -63,10 +60,6 @@ class RostersController < ApplicationController
 
   def find_roster
     @roster = Roster.friendly.find params.require(:id)
-  end
-
-  def find_users
-    @users = @roster.users
   end
 
   def roster_params

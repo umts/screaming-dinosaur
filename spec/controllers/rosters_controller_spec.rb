@@ -125,7 +125,7 @@ RSpec.describe RostersController do
         user2 = roster_user roster
         user3 = roster_user roster
         submit
-        expect(assigns.fetch(:users)).to include user1, user2, user3
+        expect(assigns.fetch(:roster).users).to include user1, user2, user3
       end
 
       it 'renders the edit template' do
