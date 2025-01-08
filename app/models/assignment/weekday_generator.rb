@@ -19,19 +19,21 @@ class Assignment < ApplicationRecord
     validates :start_weekday, numericality: { in: 0...7, message: :must_be_weekday }
     validates :end_weekday, numericality: { in: 0...7, message: :must_be_weekday }
 
+    def generate
+      generate!
+      true
+    rescue ActiveModel::ValidationError, ActiveRecord::RecordInvalid
+      false
+    end
+
+    private
+
     def roster
       @roster ||= Roster.find_by(id: roster_id)
     end
 
     def user
       @user ||= User.find_by(id: user_id)
-    end
-
-    def generate
-      generate!
-      true
-    rescue ActiveModel::ValidationError, ActiveRecord::RecordInvalid
-      false
     end
 
     def generate!
@@ -45,8 +47,6 @@ class Assignment < ApplicationRecord
       errors.merge! e.record.errors
       raise e
     end
-
-    private
 
     def date_ranges
       Enumerator.new do |enum|
