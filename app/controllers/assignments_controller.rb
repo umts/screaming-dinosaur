@@ -29,17 +29,17 @@ class AssignmentsController < ApplicationController
   def edit; end
 
   def generate_by_weekday
-    @weekday_generator = Assignment::WeekdayGenerator.new roster_id: @roster.id
+    @generator = Assignment::WeekdayGenerator.new roster_id: @roster.id
   end
 
   def generate_by_weekday_submit
-    @weekday_generator = Assignment::WeekdayGenerator.new(roster_id: @roster.id,
+    @generator = Assignment::WeekdayGenerator.new(roster_id: @roster.id,
                                                   **generate_by_weekday_params)
-    if @weekday_generator.generate
+    if @generator.generate
       flash[:message] = t('.success')
-      redirect_to roster_assignments_path(@roster, date: @weekday_generator.start_date)
+      redirect_to roster_assignments_path(@roster, date: @generator.start_date)
     else
-      flash.now[:errors] = @weekday_generator.errors.full_messages.to_sentence
+      flash.now[:errors] = @generator.errors.full_messages.to_sentence
       render :generate_by_weekday, status: :unprocessable_entity
     end
   end
