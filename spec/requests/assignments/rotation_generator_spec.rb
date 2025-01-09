@@ -19,6 +19,15 @@ RSpec.describe 'Assignments Generate Rotation' do
       call
       expect(response).to be_successful
     end
+
+    context 'when logged in as a normal user' do
+      before { set_user user1 }
+
+      it 'responds with an unauthorized status' do
+        call
+        expect(response).to have_http_status :unauthorized
+      end
+    end
   end
 
   describe 'POST assignments/generate_rotation' do
