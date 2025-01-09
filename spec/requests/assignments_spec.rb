@@ -153,13 +153,36 @@ RSpec.describe 'Assignments' do
     context 'with valid params' do
       let(:params) do
         { assignment_rotation_generator: { start_date: start_date,
-                                           end_date: 1.week.from_now.end_of_week(:sunday),
+                                           end_date: start_date + 18.days,
                                            starting_user_id: user1.id,
-                                           user_ids: [user1.id, admin.id] } }
+                                           user_ids: [admin.id, user1.id] } }
+      end
+
+      let(:attributes) do
+        [{ roster_id: roster.id,
+           user_id: user1.id,
+           start_date: start_date + 2.weeks,
+           end_date: start_date + 2.weeks + 4.days },
+         { roster_id: roster.id,
+           user_id: admin.id,
+           start_date: start_date + 1.week,
+           end_date: start_date + 1.week + 6.days },
+         { roster_id: roster.id,
+           user_id: user1.id,
+           start_date: start_date,
+           end_date: start_date + 6.days }]
       end
 
       it 'creates new assignments' do
-        expect { submit }.to change(Assignment, :count).by(2)
+        expect { submit }.to change(Assignment, :count).by(3)
+      end
+
+      it 'creates new assignments with the right attributes' do
+        submit
+        attribute_sets = Assignment.last(3).collect do |assignment|
+          assignment.attributes.slice('roster_id', 'user_id', 'start_date', 'end_date').symbolize_keys
+        end
+        expect(attribute_sets).to match_array(attributes)
       end
 
       it 'redirects to the roster assignments page' do
@@ -182,6 +205,28 @@ RSpec.describe 'Assignments' do
       end
     end
 
+    context 'with a start date that interferes with another assignment' do
+      let(:other_params) do
+        { assignment_rotation_generator: { start_date: start_date,
+                                           end_date: start_date + 6.days,
+                                           starting_user_id: user1.id,
+                                           user_ids: [user1.id] } }
+      end
+      let(:params) do
+        { assignment_rotation_generator: { start_date: start_date,
+                                           end_date: start_date + 18.days,
+                                           starting_user_id: user1.id,
+                                           user_ids: [admin.id, user1.id] } }
+      end
+
+      before { post "/rosters/#{roster.id}/assignments/generate_rotation", params: other_params }
+
+      it 'responds with an unprocessable entity status' do
+        submit
+        expect(response).to have_http_status :unprocessable_entity
+      end
+    end
+
     context 'with the starting user not in the roster' do
       let(:mystery_user) { create :user }
       let(:params) do
@@ -193,7 +238,7 @@ RSpec.describe 'Assignments' do
 
       it 'responds with an unprocessable entity status' do
         submit
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status :unprocessable_entity
       end
     end
 
