@@ -15,9 +15,11 @@ RSpec.describe 'Assignments Generate Rotation' do
 
     include_context 'when logged in as a roster admin'
 
-    it 'responds successfully' do
-      call
-      expect(response).to be_successful
+    context 'when logged in as the roster admin' do
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
     end
 
     context 'when logged in as a normal user' do
