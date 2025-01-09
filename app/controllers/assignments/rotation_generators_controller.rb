@@ -20,9 +20,12 @@ module Assignments
     private
 
     def initialize_rotation_generator
-      @generator = Assignment::RotationGenerator.new(roster_id: @roster.id, **generate_rotation_params)
-      @generator.start_date ||= @roster.next_rotation_start_date
-      @generator.end_date ||= @generator.start_date + 3.months
+      default_start = @roster.next_rotation_start_date
+      @generator = Assignment::RotationGenerator.new(roster_id: @roster.id,
+                                                     start_date: default_start,
+                                                     end_date: default_start + 3.months,
+                                                     user_ids: @roster.users.active.collect(&:id),
+                                                     **generate_rotation_params)
     end
 
     def generate_rotation_params
