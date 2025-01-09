@@ -21,7 +21,7 @@
           = f.label :user_ids, 'Users', class: 'form-label'
           = f.select :user_ids,
                      options_from_collection_for_select(@roster.users.active.order(:last_name),
-                                                        :id, :last_name, @roster.users.pluck(:id)),
+                                                        :id, :last_name, @generator.user_ids),
                      { include_hidden: false },
-                     multiple: true, size: 10, class: 'form-select', selected: @roster.users.active
+                     multiple: true, size: 10, class: 'form-select'
     = f.submit 'Generate rotation', class: 'btn btn-primary'

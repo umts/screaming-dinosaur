@@ -24,7 +24,7 @@ module Assignments
       @generator = Assignment::RotationGenerator.new(roster_id: @roster.id,
                                                      start_date: default_start,
                                                      end_date: default_start + 3.months,
-                                                     user_ids: @roster.users.active.collect(&:id),
+                                                     user_ids: @roster.users.active.order(:last_name).pluck(:id),
                                                      **generate_rotation_params)
     end
 
