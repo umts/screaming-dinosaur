@@ -50,6 +50,8 @@ en:
           attributes:
             end_date:
               greater_than_or_equal_to: "must be on or after start date"
+            starting_user_id:
+              starting_not_included: "must be included in the list of selected users"
         assignment/weekday_generator:
           attributes:
             end_date:

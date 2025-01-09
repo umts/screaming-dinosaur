@@ -40,7 +40,7 @@ class Assignment < ApplicationRecord
       return if user_ids.blank? || starting_user_id.blank?
       return if user_ids.include? starting_user_id
 
-      errors.add :starting_user_id, 'is not included in the list'
+      errors.add :starting_user_id, :starting_not_included
     end
 
     def generate!
