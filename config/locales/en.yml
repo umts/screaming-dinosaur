@@ -30,6 +30,10 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  errors:
+    messages:
+      end_date_must_be_after_start: "must be on or after start date"
+      starting_user_must_be_included: "must be included in the list of selected users"
   activerecord:
     errors:
       models:
@@ -46,12 +50,6 @@ en:
           attributes:
             end_date:
               greater_than_or_equal_to: "must be on or after start date"
-        assignment/rotation_generator:
-          attributes:
-            end_date:
-              greater_than_or_equal_to: "must be on or after start date"
-            starting_user_id:
-              starting_not_included: "must be included in the list of selected users"
         assignment/weekday_generator:
           attributes:
             end_date:

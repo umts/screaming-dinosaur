@@ -15,7 +15,8 @@ class Assignment < ApplicationRecord
     validates :user_ids, presence: true
     validates :starting_user_id, presence: true
     validates :start_date, presence: true
-    validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
+    validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date,
+                                                       message: :end_date_must_be_after_start }
 
     validate :includes_start_user
 
@@ -40,7 +41,7 @@ class Assignment < ApplicationRecord
       return if user_ids.blank? || starting_user_id.blank?
       return if user_ids.include? starting_user_id
 
-      errors.add :starting_user_id, :starting_not_included
+      errors.add :starting_user_id, message: :starting_user_must_be_included
     end
 
     def generate!
