@@ -16,6 +16,7 @@ class Assignment < ApplicationRecord
     validates :starting_user_id, presence: true
     validates :start_date, presence: true
     validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date,
+                                                       if: -> { start_date.present? && end_date.present? },
                                                        message: :end_date_must_be_after_start }
 
     validate :includes_start_user
