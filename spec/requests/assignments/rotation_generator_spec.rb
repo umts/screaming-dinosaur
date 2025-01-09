@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'Assignments Generate Rotation' do
+RSpec.describe 'Assignments Rotation Generators' do
   shared_context 'when logged in as a roster admin' do
     let(:admin) { create(:user).tap { |user| create :membership, roster:, user:, admin: true } }
 
