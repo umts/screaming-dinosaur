@@ -445,6 +445,7 @@ DEPENDENCIES
   listen
   mysql2
   net-http
+  nokogiri
   overcommit
   paper_trail
   phonelib
