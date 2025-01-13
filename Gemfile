@@ -10,6 +10,8 @@ gem 'icalendar'
 gem 'jbuilder'
 gem 'mysql2'
 gem 'net-http'
+# TODO: remove when we have modern glibc
+gem 'nokogiri', force_ruby_platform: true
 gem 'paper_trail'
 gem 'phonelib'
 gem 'rails', '~> 7.1.5'
