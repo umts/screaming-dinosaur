@@ -4,9 +4,8 @@ require 'assignments_ics'
 
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
-  before_action :set_roster_users, only: %i[edit new create generate_rotation rotation_generator update]
-  before_action :require_admin_in_roster, only: %i[generate_rotation rotation_generator
-                                                   generate_by_weekday generate_by_weekday_submit]
+  before_action :set_roster_users, only: %i[edit new create update]
+  before_action :require_admin_in_roster, only: %i[generate_by_weekday generate_by_weekday_submit]
   skip_before_action :set_current_user, :set_roster, only: :feed
 
   def index
@@ -28,27 +27,6 @@ class AssignmentsController < ApplicationController
   end
 
   def edit; end
-
-  def generate_rotation
-    @start_date = Date.parse params.require(:start_date)
-    end_date = Date.parse params.require(:end_date)
-    user_ids = params.require :user_ids
-    start_user = params.require :starting_user_id
-    if end_date.before? @start_date
-      flash.now[:errors] = t('.end_before_start')
-      render :rotation_generator, status: :unprocessable_entity and return
-    end
-    unless user_ids.include? start_user
-      flash.now[:errors] = t('.start_not_in')
-      render :rotation_generator, status: :unprocessable_entity and return
-    end
-    @roster.generate_assignments(user_ids, @start_date,
-                                 end_date, start_user).each do |assignment|
-      assignment.notify :owner, of: :new_assignment, by: Current.user
-    end
-    flash[:message] = 'Rotation has been generated.'
-    redirect_to roster_assignments_path(@roster, date: @start_date)
-  end
 
   def generate_by_weekday
     @generator = Assignment::WeekdayGenerator.new roster_id: @roster.id
@@ -97,10 +75,6 @@ class AssignmentsController < ApplicationController
       flash.now[:errors] = @assignment.errors.full_messages
       render :edit, status: :unprocessable_entity
     end
-  end
-
-  def rotation_generator
-    @start_date = @roster.next_rotation_start_date
   end
 
   def destroy

@@ -17,7 +17,7 @@
                         id: 'navbar-generate-nav-link', class: 'nav-link dropdown-toggle',
                         'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'
               .dropdown-menu{ 'aria-labelledby': 'navbar-generate-nav-link' }
-                = link_to 'Rotation', rotation_generator_roster_assignments_path(@roster), class: 'dropdown-item'
+                = link_to 'Rotation', roster_assignments_generate_rotation_path(@roster), class: 'dropdown-item'
                 = link_to 'By Weekday', generate_by_weekday_roster_assignments_path(@roster), class: 'dropdown-item'
       %ul.navbar-nav
         - if Current.user.present?
