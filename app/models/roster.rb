@@ -27,20 +27,6 @@ class Roster < ApplicationRecord
   validates :switchover, numericality: { in: (0...(24 * 60)) }
   validates :phone, phone: { allow_blank: true }
 
-  def generate_assignments(user_ids, start_date, end_date, start_user_id)
-    assignments = []
-    user_ids.rotate! user_ids.index(start_user_id)
-    (start_date..end_date).each_slice(7).with_index do |week, i|
-      assignments << Assignment.create!(
-        roster: self,
-        start_date: week.first,
-        end_date: week.last,
-        user_id: user_ids[i % user_ids.size]
-      )
-    end
-    assignments
-  end
-
   def on_call_user
     assignments.current.try(:user) || fallback_user
   end
