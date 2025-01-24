@@ -35,8 +35,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_10_191961) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "fallback_user_id"
     t.integer "switchover", default: 1020, null: false
-    t.string "slug"
     t.string "phone"
+    t.string "slug"
     t.index ["name"], name: "index_rosters_on_name", unique: true
     t.index ["slug"], name: "index_rosters_on_slug", unique: true
   end
