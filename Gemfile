@@ -28,6 +28,7 @@ group :development do
   gem 'bcrypt_pbkdf', require: false
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'brakeman', require: false
   gem 'capistrano', require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano-passenger', require: false
