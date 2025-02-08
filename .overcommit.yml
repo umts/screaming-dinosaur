@@ -22,6 +22,11 @@ PreCommit:
     enabled: true
     required_executable: yarn
     command: ["yarn", "run", "stylelint"]
+PrePush:
+  Brakeman:
+    enabled: true
+    required_executable: bundle
+    command: ["bundle", "exec", "brakeman", "--no-pager"]
 CommitMsg:
   ALL:
     enabled: false
