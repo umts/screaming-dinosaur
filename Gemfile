@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 ruby file: '.ruby-version'
 
+gem 'csv'
 gem 'friendly_id'
 gem 'haml'
 gem 'haml-rails'
