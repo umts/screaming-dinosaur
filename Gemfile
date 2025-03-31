@@ -8,6 +8,7 @@ gem 'friendly_id'
 gem 'haml'
 gem 'haml-rails'
 gem 'icalendar'
+gem 'irb'
 gem 'jbuilder'
 gem 'mysql2'
 gem 'net-http'
@@ -51,8 +52,8 @@ group :development do
 end
 
 group :development, :test do
+  gem 'debug'
   gem 'factory_bot_rails'
-  gem 'pry-byebug'
   gem 'puma'
   gem 'rspec-rails'
 end
