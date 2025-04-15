@@ -7,8 +7,8 @@ class Assignment < ApplicationRecord
 
   validates :start_date, presence: true
   validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
-  validate :overlaps_any?
-  validate :user_in_roster?
+  validate :overlaps_none
+  validate :user_in_roster
 
   scope :future, -> { where 'start_date > ?', Time.zone.today }
 
@@ -74,24 +74,17 @@ class Assignment < ApplicationRecord
 
   private
 
-  def overlaps_any?
+  def overlaps_none
     # A non-new record always overlaps itself, so we exclude it from our query.
-    overlapping_assignments = if new_record?
-                                roster.assignments.where("
-                                  start_date <= ? AND end_date >= ?
-                                ", end_date, start_date)
-                              else
-                                roster.assignments.where("
-                                  start_date <= ? AND end_date >= ? AND id != ?
-                                ", end_date, start_date, id)
-                              end
-    return if overlapping_assignments.blank?
+    return if roster.assignments
+                    .where('`start_date` <= ? AND `end_date` >= ?', end_date, start_date)
+                    .excluding(self)
+                    .none?
 
-    errors.add :base,
-               'Overlaps with another assignment'
+    errors.add :base, 'Overlaps with another assignment'
   end
 
-  def user_in_roster?
+  def user_in_roster
     return if roster.users.include? user
 
     errors.add :base, 'User is not in this roster'

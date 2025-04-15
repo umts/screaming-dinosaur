@@ -41,6 +41,10 @@ en:
           attributes:
             switchover:
               not_a_number: 'is not a valid time'
+        user:
+          attributes:
+            spire:
+              invalid: 'must be 8 digits followed by @umass.edu'
   activemodel:
     errors:
       messages:

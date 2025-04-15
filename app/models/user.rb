@@ -15,8 +15,7 @@ class User < ApplicationRecord
   validates :first_name, :last_name, :spire, :email, :phone, :rosters, presence: true
   validates :spire, :email, :phone, uniqueness: { case_sensitive: false }
   validates :calendar_access_token, uniqueness: { case_sensitive: true }
-  validates :spire, format: { with: /\A\d{8}@umass.edu\z/,
-                              message: 'must be 8 digits followed by @umass.edu' }
+  validates :spire, format: { with: /\A\d{8}@umass.edu\z/ }
   validates :phone, phone: true
 
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
