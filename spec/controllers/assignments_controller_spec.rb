@@ -26,7 +26,7 @@ RSpec.describe AssignmentsController do
         end
 
         it 'sends an email to the new owner of the assignment' do
-          assignment = build :assignment
+          assignment = create :assignment
           allow(Assignment).to receive(:new).and_return(assignment)
           allow(assignment).to receive(:notify)
           submit
