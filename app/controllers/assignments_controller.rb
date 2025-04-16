@@ -28,10 +28,7 @@ class AssignmentsController < ApplicationController
   def edit; end
 
   def create
-    ass_params = params.require(:assignment)
-                       .permit :start_date, :end_date,
-                               :user_id, :roster_id
-    @assignment = Assignment.new ass_params
+    @assignment = Assignment.new assignment_params
     require_taking_ownership(error_template: :new) or return
 
     if @assignment.save
@@ -45,12 +42,10 @@ class AssignmentsController < ApplicationController
   end
 
   def update
-    ass_params = params.require(:assignment)
-                       .permit :start_date, :end_date, :user_id
     require_taking_ownership(error_template: :edit) or return
 
     @previous_owner = @assignment.user
-    if @assignment.update ass_params
+    if @assignment.update assignment_params.except(:roster_id)
       confirm_change(@assignment)
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster)
@@ -86,6 +81,10 @@ class AssignmentsController < ApplicationController
   end
 
   private
+
+  def assignment_params
+    params.require(:assignment).permit :start_date, :end_date, :user_id, :roster_id
+  end
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require(:id))

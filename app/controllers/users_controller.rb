@@ -34,11 +34,7 @@ class UsersController < ApplicationController
     membership_params = user_params[:membership]
     if @user.update(user_params.except(:membership)) && update_membership(membership_params)
       confirm_change(@user)
-      if Current.user.admin_in? @roster
-        redirect_to roster_users_path(@roster)
-      else
-        redirect_to roster_assignments_path(@roster)
-      end
+      redirect_to update_redirect_path
     else
       flash.now[:errors] = @user.errors.full_messages
       render :edit
@@ -67,17 +63,18 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.fetch(:user, {}).permit(
-      :first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
-      :change_notifications_enabled, roster_ids: [], membership: [:admin]
-    ).tap do |params|
-      next if params[:roster_ids].blank?
+    params.require(:user).permit(:first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
+                                 :change_notifications_enabled, roster_ids: [], membership: [:admin]).tap do |p|
+      next if p[:roster_ids].blank?
 
-      given_roster_ids = params[:roster_ids].map(&:to_i)
-      params[:roster_ids] = (@user&.roster_ids || []).then do |roster_ids|
-        roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && Current.user.admin_in?(roster_id) }
-        roster_ids | (given_roster_ids & Current.user.memberships.where(admin: true).map(&:roster_id))
-      end
+      p[:roster_ids] = new_roster_ids(p[:roster_ids].map(&:to_i))
+    end
+  end
+
+  def new_roster_ids(given_roster_ids)
+    (@user&.roster_ids || []).then do |roster_ids|
+      roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && Current.user.admin_in?(roster_id) }
+      roster_ids | (given_roster_ids & Current.user.memberships.where(admin: true).map(&:roster_id))
     end
   end
 
@@ -95,6 +92,10 @@ class UsersController < ApplicationController
 
     @user.errors.merge! membership.errors
     false
+  end
+
+  def update_redirect_path
+    Current.user.admin_in?(@roster) ? roster_users_path(@roster) : roster_assignments_path(@roster)
   end
 
   def require_admin_in_roster_or_self
