@@ -49,26 +49,22 @@ RSpec.describe 'Assignments Rotation Generators' do
                                            user_ids: [admin.id, user1.id] } }
       end
 
+      let(:expected_attributes) do
+        [a_hash_including('roster_id' => roster.id, 'user_id' => user1.id,
+                          'start_date' => start_date + 2.weeks, 'end_date' => start_date + 2.weeks + 4.days),
+         a_hash_including('roster_id' => roster.id, 'user_id' => admin.id,
+                          'start_date' => start_date + 1.week, 'end_date' => start_date + 1.week + 6.days),
+         a_hash_including('roster_id' => roster.id, 'user_id' => user1.id,
+                          'start_date' => start_date, 'end_date' => start_date + 6.days)]
+      end
+
       it 'creates new assignments' do
         expect { submit }.to change(Assignment, :count).by(3)
       end
 
       it 'creates new assignments with the right attributes' do
         submit
-        expect(Assignment.last(3).collect(&:attributes)).to contain_exactly(
-          a_hash_including('roster_id' => roster.id,
-                           'user_id' => user1.id,
-                           'start_date' => start_date + 2.weeks,
-                           'end_date' => start_date + 2.weeks + 4.days),
-          a_hash_including('roster_id' => roster.id,
-                           'user_id' => admin.id,
-                           'start_date' => start_date + 1.week,
-                           'end_date' => start_date + 1.week + 6.days),
-          a_hash_including('roster_id' => roster.id,
-                           'user_id' => user1.id,
-                           'start_date' => start_date,
-                           'end_date' => start_date + 6.days)
-        )
+        expect(Assignment.last(3).map(&:attributes)).to match_array(expected_attributes)
       end
 
       it 'redirects to the roster assignments page' do
