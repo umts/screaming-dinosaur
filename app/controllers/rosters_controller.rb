@@ -26,10 +26,9 @@ class RostersController < ApplicationController
 
   def create
     @roster = Roster.new roster_params
-    # Current user becomes admin in new roster
-    @roster.users << Current.user
-    @roster.memberships.first.update admin: true
     if @roster.save
+      # Current user becomes admin in new roster
+      @roster.memberships.create(user: Current.user, admin: true)
       confirm_change(@roster)
       redirect_to rosters_path
     else

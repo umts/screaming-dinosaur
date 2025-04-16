@@ -55,6 +55,7 @@ Metrics/ClassLength:
     - array
     - hash
     - heredoc
+  Max: 120
 
 Metrics/MethodLength:
   CountAsOne:
