@@ -3,28 +3,22 @@
 class ApplicationController < ActionController::Base
   before_action :check_primary_account, :set_current_user, :set_roster
 
-  def self.api_accessible(**options)
-    skip_before_action :check_primary_account, :set_current_user, **options
-    before_action :require_api_key_or_login, **options
+  def self.api_accessible(**)
+    skip_before_action(:check_primary_account, :set_current_user, **)
+    before_action(:require_api_key_or_login, **)
   end
 
   def confirm_change(object, message = nil)
-    # Rubocop can't tell wether we're redirecting after this or not.
+    # Rubocop can't tell whether we're redirecting after this or not.
     # rubocop:disable Rails/ActionControllerFlashBeforeRender
     change = object.versions.where(whodunnit: Current.user).last
     flash[:change] = change.try(:id)
+
     # If we know what change occurred, use it to write the message.
     # If we don't, try and infer from the current controller action.
     # Otherwise, just go with 'updated'.
-    event = if change.present? then change.event
-            else
-              params[:action] || 'update'
-            end
-    action_taken = case event
-                   when 'destroy' then 'deleted'
-                   else
-                     event.sub(/e?$/, 'ed')
-                   end
+    event = change.present? ? change.event : (params[:action] || 'update')
+    action_taken = event == 'destroy' ? 'deleted' : event.sub(/e?$/, 'ed')
     message ||= "#{object.class.name} has been #{action_taken}."
     flash[:message] = message
     # rubocop:enable Rails/ActionControllerFlashBeforeRender
