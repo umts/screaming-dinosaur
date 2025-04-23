@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe 'ICS views' do
-  shared_examples 'ics assignments feed' do
+  shared_examples 'an ics assignments feed' do
     subject(:lines) { page.html.split("\r\n") }
 
     let(:roster) { create :roster }
@@ -50,7 +50,7 @@ RSpec.describe 'ICS views' do
       visit roster_assignments_path(roster, format: 'ics')
     end
 
-    include_examples 'ics assignments feed'
+    it_behaves_like 'an ics assignments feed'
   end
 
   describe 'viewing the ics feed' do
@@ -59,6 +59,6 @@ RSpec.describe 'ICS views' do
       visit "feed/#{name}/#{users[0].calendar_access_token}.ics"
     end
 
-    include_examples 'ics assignments feed'
+    it_behaves_like 'an ics assignments feed'
   end
 end
