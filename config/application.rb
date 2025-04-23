@@ -22,5 +22,6 @@ module ScreamingDinosaur
     # in config/environments, which are processed later.
     #
     config.time_zone = "Eastern Time (US & Canada)"
+    config.active_storage.web_image_content_types = %w[image/png image/jpeg image/gif]
   end
 end
