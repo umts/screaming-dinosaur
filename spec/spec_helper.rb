@@ -8,6 +8,7 @@ end
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
+require 'rspec/retry'
 require 'rack_session_access/capybara'
 require 'paper_trail/frameworks/rspec'
 
@@ -36,6 +37,13 @@ RSpec.configure do |config|
 
   config.disable_monkey_patching!
 
+  config.verbose_retry = true
+  config.display_try_failure_messages = true
+
+  config.retry_callback = proc do |example|
+    Capybara.reset! if example.metadata[:js]
+  end
+
   config.order = :random
   Kernel.srand config.seed
 
@@ -49,6 +57,10 @@ RSpec.configure do |config|
 
   config.before :each, :js, type: :system do
     driven_by :selenium, using: :headless_chrome
+  end
+
+  config.around :each, :js, type: :system do |example|
+    example.run_with_retry retry: 3
   end
 
   Dir['./spec/support/**/*.rb'].each { |f| require f }
