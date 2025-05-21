@@ -63,6 +63,7 @@ group :test do
   gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec-html-matchers'
+  gem 'rspec-retry'
   gem 'selenium-webdriver'
   gem 'simplecov'
   gem 'timecop'
