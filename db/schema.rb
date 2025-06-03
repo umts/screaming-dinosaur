@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_10_191961) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_03_145306) do
   create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.integer "user_id"
     t.date "start_date"
@@ -53,6 +53,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_10_191961) do
     t.boolean "change_notifications_enabled", default: true
     t.boolean "active", default: true
     t.string "calendar_access_token"
+    t.string "shibboleth_eppn"
     t.index ["calendar_access_token"], name: "index_users_on_calendar_access_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["phone"], name: "index_users_on_phone", unique: true
@@ -69,5 +70,4 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_10_191961) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
     t.check_constraint "json_valid(`object`)", name: "object"
   end
-
 end
