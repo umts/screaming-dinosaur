@@ -44,6 +44,7 @@ class ApplicationController < ActionController::Base
       Current.user = User.find_by spire: request.env['fcIdNumber']
       if Current.user.present?
         session[:user_id] = Current.user.id
+        Current.user.update shibboleth_eppn: request.env['eppn'], validate: false if request.env['eppn'].present?
       else
         redirect_to unauthenticated_session_path
       end
