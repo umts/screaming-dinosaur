@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :check_primary_account, :set_current_user, :set_roster
+  before_action :check_primary_account, :set_current_user, :set_shibboleth_eppn, :set_roster
 
   def self.api_accessible(**)
     skip_before_action(:check_primary_account, :set_current_user, **)
@@ -44,11 +44,16 @@ class ApplicationController < ActionController::Base
       Current.user = User.find_by spire: request.env['fcIdNumber']
       if Current.user.present?
         session[:user_id] = Current.user.id
-        Current.user.update shibboleth_eppn: request.env['eppn'], validate: false if request.env['eppn'].present?
       else
         redirect_to unauthenticated_session_path
       end
     end
+  end
+
+  def set_shibboleth_eppn
+    return unless Current.user.present? && request.env['eppn'].present?
+
+    Current.user.update shibboleth_eppn: request.env['eppn']
   end
 
   # If there's one specified, go to that.
