@@ -82,6 +82,7 @@ class UsersController < ApplicationController
     @user = User.find params.require(:id)
   end
 
+  # rubocop:disable Naming/PredicateMethod
   def update_membership(membership_params)
     return true unless membership_params.present? && Current.user.admin_in?(@roster)
 
@@ -93,6 +94,7 @@ class UsersController < ApplicationController
     @user.errors.merge! membership.errors
     false
   end
+  # rubocop:enable Naming/PredicateMethod
 
   def update_redirect_path
     Current.user.admin_in?(@roster) ? roster_users_path(@roster) : roster_assignments_path(@roster)
