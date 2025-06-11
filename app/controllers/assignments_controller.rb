@@ -124,6 +124,7 @@ class AssignmentsController < ApplicationController
     render plain: ics.output, content_type: 'text/calendar'
   end
 
+  # rubocop:disable Naming/PredicateMethod
   def require_taking_ownership(error_template: nil)
     return true if Current.user.admin_in?(@roster) || taking_ownership?
 
@@ -131,6 +132,7 @@ class AssignmentsController < ApplicationController
     render error_template, status: :unprocessable_entity
     false
   end
+  # rubocop:enable Naming/PredicateMethod
 
   def taking_ownership?
     new_user_id = params.require(:assignment).require(:user_id)
