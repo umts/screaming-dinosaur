@@ -33,7 +33,9 @@ class Assignment < ApplicationRecord
     end
 
     def roster
-      @roster ||= Roster.find_by(id: roster_id)
+      return @roster if defined?(@roster)
+
+      @roster = Roster.find_by(id: roster_id)
     end
 
     private
