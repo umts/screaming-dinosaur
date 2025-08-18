@@ -10,9 +10,9 @@
   .mb-3
     = f.label :fallback_user, class: 'form-label'
     = f.collection_select :fallback_user_id, @roster.users, :id, :last_name,
-      { include_blank: true }, class: 'form-select'
+                          { include_blank: true }, class: 'form-select'
   .mb-3
     = f.label :switchover_time, class: 'form-label'
     = f.time_field :switchover_time, class: 'form-control',
-                   value: @roster.switchover_time.to_fs(:time), required: true
+                                     value: @roster.switchover_time.to_fs(:time), required: true
   = f.submit 'Save', class: 'btn btn-primary'
