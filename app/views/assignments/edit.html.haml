@@ -1,3 +1,9 @@
+:ruby
+  locals = { path: roster_assignment_path(@roster, @assignment),
+             roster: @roster,
+             assignment: @assignment,
+             users: @users }
+
 .container-fluid
   .row.align-items-center
     %h1.col-md Edit assignment
@@ -6,4 +12,4 @@
                   method: :delete, class: 'btn btn-danger', form_class: 'col-md-auto' do
         %i.fas.fa-trash-alt
         Delete assignment
-  = render partial: 'form', locals: { path: roster_assignment_path(@roster, @assignment) }
+  = render partial: 'form', locals: locals

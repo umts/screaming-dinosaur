@@ -7,7 +7,7 @@
           %span{ data: info_tooltip_data, aria: { label: 'Calendar feed information' }, tabindex: 0 }
             %i.fas.fa-info-circle
             %span#clip-info.sr-only= calendar_instructions
-        - roster_name = @roster.name.parameterize
+        - roster_name = roster.name.parameterize
         - token = Current.user.calendar_access_token
         = text_field_tag :access_token,
                          feed_url(roster: roster_name, token: token, format: :ics),
@@ -17,6 +17,6 @@
         %button.btn.btn-outline-secondary.copy-tooltip{ data: clipboard_tooltip_data, aria: { label: 'Copy' } }
           %span.far.fa-clipboard
     .col
-      = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-outline-secondary' do
+      = link_to roster_assignments_path(roster, format: :csv), class: 'btn btn-outline-secondary' do
         CSV Overview
         %i.fas.fa-download

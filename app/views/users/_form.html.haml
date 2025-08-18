@@ -1,4 +1,4 @@
-= form_for @user, url: path do |f|
+= form_for user, url: path do |f|
   .container-fluid
     .row
       .col-lg
@@ -25,7 +25,7 @@
               - user_roster_permitted = Current.user.admin_in? c.object
               = c.label class: ['m-0', 'list-group-item', user_roster_permitted ? 'list-group-item-action' : nil] do
                 .form-check
-                  = c.check_box checked: @user.membership_in(c.object).present?,
+                  = c.check_box checked: user.membership_in(c.object).present?,
                                 disabled: !user_roster_permitted,
                                 class: 'form-check-input'
                   .form-check-label= c.text
@@ -39,13 +39,13 @@
             = f.check_box :change_notifications_enabled, class: 'form-check-input'
             = f.label :change_notifications_enabled,
                       'Receive notifications when your assignments are changed?', class: 'form-check-label'
-        - if Current.user.admin_in? @roster
-          - membership = @user.membership_in @roster
+        - if Current.user.admin_in? roster
+          - membership = user.membership_in roster
           = f.fields_for membership || :membership do |g|
             .mb-3
               .form-check
                 = g.check_box :admin,
-                              disabled: membership&.admin? && @roster.admins.one?,
+                              disabled: membership&.admin? && roster.admins.one?,
                               class: 'form-check-input'
-                = g.label :admin, "Admin in #{@roster.name}?", class: 'form-check-label'
+                = g.label :admin, "Admin in #{roster.name}?", class: 'form-check-label'
     = f.submit 'Save', class: 'btn btn-primary'

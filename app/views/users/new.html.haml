@@ -1,2 +1,2 @@
 %h1 New user
-= render partial: 'form', locals: { path: roster_users_path(@roster) }
+= render partial: 'form', locals: { user: @user, roster: @roster, path: roster_users_path(@roster) }

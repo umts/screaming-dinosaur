@@ -10,15 +10,15 @@
           = nav_link_item roster.name, roster_assignments_path(roster)
         - if Current.user&.admin?
           = nav_link_item 'Manage Rosters', rosters_path
-          - if Current.user&.admin_in? @roster
-            = nav_link_item 'Manage Users', roster_users_path(@roster)
+          - if Current.user&.admin_in? roster
+            = nav_link_item 'Manage Users', roster_users_path(roster)
             %li.nav-item.dropdown
               = link_to 'Generate', '#',
                         role: 'button', id: 'navbar-generate-nav-link', class: 'nav-link dropdown-toggle',
                         'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'
               .dropdown-menu{ 'aria-labelledby': 'navbar-generate-nav-link' }
-                = link_to 'Rotation', roster_assignments_generate_rotation_path(@roster), class: 'dropdown-item'
-                = link_to 'By Weekday', roster_assignments_generate_by_weekday_path(@roster), class: 'dropdown-item'
+                = link_to 'Rotation', roster_assignments_generate_rotation_path(roster), class: 'dropdown-item'
+                = link_to 'By Weekday', roster_assignments_generate_by_weekday_path(roster), class: 'dropdown-item'
       %ul.navbar-nav
-        = nav_link_item Current.user.full_name, edit_roster_user_path(@roster, Current.user) if Current.user.present?
+        = nav_link_item Current.user.full_name, edit_roster_user_path(roster, Current.user) if Current.user.present?
         = nav_link_item 'Logout', destroy_session_path
