@@ -62,7 +62,7 @@ class RostersController < ApplicationController
   end
 
   def roster_params
-    params.require(:roster).permit(:name, :phone, :fallback_user_id, :switchover_time).tap do |p|
+    params.expect(roster: %i[name phone fallback_user_id switchover_time]).tap do |p|
       time = Time.zone.parse p.delete(:switchover_time).to_s
       p[:switchover] = time && ((time.hour * 60) + time.min)
     end
