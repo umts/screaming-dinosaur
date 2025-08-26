@@ -83,7 +83,7 @@ class AssignmentsController < ApplicationController
   private
 
   def assignment_params
-    params.require(:assignment).permit :start_date, :end_date, :user_id, :roster_id
+    params.expect assignment: %i[start_date end_date user_id roster_id]
   end
 
   def find_assignment

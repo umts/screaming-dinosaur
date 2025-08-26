@@ -63,8 +63,8 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
-                                 :change_notifications_enabled, roster_ids: [], membership: [:admin]).tap do |p|
+    params.expect(user: [:first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
+                         :change_notifications_enabled, { roster_ids: [], membership: [:admin] }]).tap do |p|
       next if p[:roster_ids].blank?
 
       p[:roster_ids] = new_roster_ids(p[:roster_ids].compact_blank.map(&:to_i))
