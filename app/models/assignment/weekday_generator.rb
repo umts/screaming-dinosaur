@@ -29,11 +29,15 @@ class Assignment < ApplicationRecord
     private
 
     def roster
-      @roster ||= Roster.find_by(id: roster_id)
+      return @roster if defined?(@roster)
+
+      @roster = Roster.find_by(id: roster_id)
     end
 
     def user
-      @user ||= User.find_by(id: user_id)
+      return @user if defined?(@user)
+
+      @user = User.find_by(id: user_id)
     end
 
     def generate!

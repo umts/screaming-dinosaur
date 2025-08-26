@@ -1,6 +1,6 @@
 !!! XML
 %Response
-  - if local_assigns.has_key? :fallback
+  - if local_assigns.key? :fallback
     %Message{ to: '{{From}}' }
       There was an application error. Your message was forwarded to the backup on call contact.
   %Message{ to: full_phone(user.phone) }= body

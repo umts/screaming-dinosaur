@@ -67,7 +67,7 @@ class UsersController < ApplicationController
                          :change_notifications_enabled, { roster_ids: [], membership: [:admin] }]).tap do |p|
       next if p[:roster_ids].blank?
 
-      p[:roster_ids] = new_roster_ids(p[:roster_ids].map(&:to_i))
+      p[:roster_ids] = new_roster_ids(p[:roster_ids].compact_blank.map(&:to_i))
     end
   end
 
