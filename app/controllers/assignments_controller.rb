@@ -13,7 +13,7 @@ class AssignmentsController < ApplicationController
       format.ics { render_ics_feed }
       format.json { index_json }
       format.csv do
-        @roster = Roster.preload(assignments: :user).find(params[:roster_id])
+        @roster = Roster.preload(assignments: :user).friendly.find(params[:roster_id])
         render csv: @roster.assignment_csv, filename: @roster.name
       end
     end
