@@ -20,9 +20,8 @@
       .col-lg
         = field_set_tag nil, class: 'mb-3' do
           %legend.float-none.m-0 Rosters
-          = f.hidden_field :'roster_ids[]', value: '', id: nil
           .list-group
-            = f.collection_check_boxes :roster_ids, Roster.order(:name), :id, :name, include_hidden: false do |c|
+            = f.collection_check_boxes :roster_ids, Roster.order(:name), :id, :name do |c|
               - user_roster_permitted = Current.user.admin_in? c.object
               = c.label class: ['m-0', 'list-group-item', user_roster_permitted ? 'list-group-item-action' : nil] do
                 .form-check
