@@ -1,6 +1,7 @@
 %h1.text-center #{@roster.name} On-Call
 
-= render partial: 'current'
-= render partial: 'your_assignments' if @assignments.present?
+= render partial: 'current',
+         locals: { current_assignment: @current_assignment, fallback_user: @fallback_user, roster: @roster }
+= render partial: 'your_assignments', locals: { assignments: @assignments } if @assignments.present?
 #calendar.mb-3
-= render partial: 'feed_address_form'
+= render partial: 'feed_address_form', locals: { roster: @roster }

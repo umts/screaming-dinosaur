@@ -1,14 +1,14 @@
-- if @current_assignment.present?
+- if current_assignment.present?
   .alert.alert-info
     Currently on call:
-    %strong= @current_assignment.user.last_name
+    %strong= current_assignment.user.last_name
 - else
   .alert.alert-danger
     No one is currently on call!
-    - if @fallback_user.present?
+    - if fallback_user.present?
       %hr
-      #{@fallback_user.last_name} is the fallback.
+      #{fallback_user.last_name} is the fallback.
 
 .card.mb-3
   .card-body
-    .card-text On-call switches at #{@roster.switchover_time.strftime('%-I:%M %P')}
+    .card-text On-call switches at #{roster.switchover_time.strftime('%-I:%M %P')}
