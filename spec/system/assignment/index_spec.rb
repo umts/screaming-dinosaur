@@ -38,7 +38,7 @@ RSpec.describe 'viewing the index' do
 
     it 'highlights today' do
       visit roster_assignments_path(roster)
-      today = Time.zone.today.day
+      today = Date.today.day # rubocop:disable Rails/Date
       expect(page).to have_css('td.fc-day-today', text: today)
     end
 
