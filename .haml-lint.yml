@@ -5,3 +5,6 @@ linters:
     max: 120
   TagName:
     exclude: 'app/views/twilio/*.xml.haml'
+
+exclude:
+  - 'vendor/**/*'
