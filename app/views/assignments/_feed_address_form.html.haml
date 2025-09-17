@@ -5,7 +5,7 @@
         .input-group-text
           - info_tooltip_data = { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions }
           %span{ data: info_tooltip_data, aria: { label: 'Calendar feed information' }, tabindex: 0 }
-            %i.fas.fa-info-circle
+            %i.fa-solid.fa-circle-info
             %span#clip-info.sr-only= calendar_instructions
         - roster_name = roster.name.parameterize
         - token = Current.user.calendar_access_token
@@ -15,8 +15,8 @@
                          aria: { label: 'Calendar feed URL', described_by: 'clip-info' }
         - clipboard_tooltip_data = { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': 'Copy to clipboard' }
         %button.btn.btn-outline-secondary.copy-tooltip{ data: clipboard_tooltip_data, aria: { label: 'Copy' } }
-          %span.far.fa-clipboard
+          %i.fa-regular.fa-clipboard
     .col
       = link_to roster_assignments_path(roster, format: :csv), class: 'btn btn-outline-secondary' do
         CSV Overview
-        %i.fas.fa-download
+        %i.fa-solid.fa-download
