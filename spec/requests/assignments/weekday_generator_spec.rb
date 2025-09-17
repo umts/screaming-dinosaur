@@ -61,7 +61,7 @@ RSpec.describe 'Assignment Weekday Generators' do
 
       it 'responds with an unprocessable entity status' do
         submit
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -78,7 +78,7 @@ RSpec.describe 'Assignment Weekday Generators' do
 
       it 'responds with an unprocessable entity status' do
         submit
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end

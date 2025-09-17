@@ -50,7 +50,7 @@ RSpec.describe RostersController do
 
         it 'returns to the new template' do
           submit
-          expect(response).to have_http_status :unprocessable_entity
+          expect(response).to have_http_status :unprocessable_content
         end
       end
     end
@@ -240,7 +240,7 @@ RSpec.describe RostersController do
 
         it 'stays on the edit page' do
           submit
-          expect(response).to have_http_status :unprocessable_entity
+          expect(response).to have_http_status :unprocessable_content
         end
       end
     end

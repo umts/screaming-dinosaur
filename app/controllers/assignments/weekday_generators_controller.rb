@@ -13,7 +13,7 @@ module Assignments
         redirect_to roster_assignments_path(@roster, date: @generator.start_date)
       else
         flash.now[:errors] = @generator.errors.full_messages.to_sentence
-        render :prompt, status: :unprocessable_entity
+        render :prompt, status: :unprocessable_content
       end
     end
 
