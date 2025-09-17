@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Roster do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe 'next_rotation_start_date' do
     subject(:result) { roster.next_rotation_start_date }
 
@@ -19,9 +21,8 @@ RSpec.describe Roster do
 
     context 'with no existing assignments' do
       it 'returns the upcoming Friday' do
-        Timecop.freeze Date.parse('Monday, May 8th, 2017') do
-          expect(result).to eq Date.parse('Friday, May 12th, 2017')
-        end
+        travel_to Date.parse('Monday, May 8th, 2017')
+        expect(result).to eq Date.parse('Friday, May 12th, 2017')
       end
     end
   end
