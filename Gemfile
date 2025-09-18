@@ -9,6 +9,7 @@ gem 'friendly_id'
 gem 'haml'
 gem 'haml-rails'
 gem 'icalendar'
+gem 'importmap-rails'
 gem 'irb'
 gem 'jbuilder'
 gem 'mysql2'
@@ -17,8 +18,8 @@ gem 'net-http'
 gem 'nokogiri', force_ruby_platform: true
 gem 'paper_trail'
 gem 'phonelib'
+gem 'propshaft'
 gem 'rails', '~> 8.0.2'
-gem 'sprockets-rails'
 gem 'terser'
 gem 'whenever', require: false
 
