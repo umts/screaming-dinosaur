@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const prompt = tooltip.dataset.bsTitle;
 
     tooltip.addEventListener('click', () => {
-      console.log('HI');
       Tooltip.getInstance(tooltip).dispose();
       navigator.clipboard.writeText(tooltip.dataset.content).then(() => {
         tooltip.dataset.bsTitle = tooltip.dataset.success;
