@@ -10,11 +10,11 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
-//= require rails-ujs
-//= require @popperjs/core/dist/umd/popper
-//= require bootstrap
-//= require @fullcalendar/core/main.global.js
-//= require @fullcalendar/daygrid/main.global.js
-//= require @fullcalendar/bootstrap5/main.global.js
-//= require_tree .
+// = require jquery
+// = require rails-ujs
+// = require @popperjs/core/dist/umd/popper
+// = require bootstrap
+// = require @fullcalendar/core/main.global.js
+// = require @fullcalendar/daygrid/main.global.js
+// = require @fullcalendar/bootstrap5/main.global.js
+// = require_tree .
