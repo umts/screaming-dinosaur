@@ -65,5 +65,4 @@ group :test do
   gem 'rspec-retry'
   gem 'selenium-webdriver'
   gem 'simplecov'
-  gem 'timecop'
 end

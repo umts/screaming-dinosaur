@@ -33,7 +33,7 @@ class RostersController < ApplicationController
       redirect_to rosters_path
     else
       flash.now[:errors] = @roster.errors.full_messages
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -43,7 +43,7 @@ class RostersController < ApplicationController
       redirect_to rosters_path
     else
       flash.now[:errors] = @roster.errors.full_messages
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

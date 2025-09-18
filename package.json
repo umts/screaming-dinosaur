@@ -4,7 +4,7 @@
     "@fullcalendar/bootstrap5": "^5.11.3",
     "@fullcalendar/core": "^5.11.3",
     "@fullcalendar/daygrid": "^5.11.3",
-    "@popperjs/core": "^2.11.6",
+    "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.2.3",
     "jquery": "^3.7.0"
   },

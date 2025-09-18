@@ -13,7 +13,6 @@ require 'rack_session_access/capybara'
 require 'paper_trail/frameworks/rspec'
 
 ActiveRecord::Migration.maintain_test_schema!
-Timecop.safe_mode = true
 Capybara.server = :puma, { Silent: true }
 Capybara.enable_aria_label = true
 
