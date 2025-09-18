@@ -11,10 +11,12 @@
   "devDependencies": {
     "eslint": "< 9",
     "eslint-config-google": "*",
-    "stylelint": "^15.10.1",
-    "stylelint-config-standard-scss": "^10.0.0"
+    "stylelint": "< 16",
+    "stylelint-config-standard": "< 35",
+    "stylelint-config-standard-scss": "< 12"
   },
   "scripts": {
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:css": "stylelint **/*.css **/*.scss"
   }
 }
