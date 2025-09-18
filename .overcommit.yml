@@ -4,8 +4,8 @@ PreCommit:
     skip_if: ["test", "-f", ".git/MERGE_HEAD"]
   EsLint:
     enabled: true
-    required_executable: yarn
-    command: ["yarn", "run", "eslint"]
+    required_executable: npx
+    command: ["npx", "eslint"]
   ForbiddenBranches:
     enabled: true
     branch_patterns: ["master", "main"]
@@ -20,8 +20,8 @@ PreCommit:
     command: ["bundle", "exec", "rubocop"]
   Stylelint:
     enabled: true
-    required_executable: yarn
-    command: ["yarn", "run", "stylelint"]
+    required_executable: npx
+    command: ["npx", "stylelint"]
 PrePush:
   Brakeman:
     enabled: true
