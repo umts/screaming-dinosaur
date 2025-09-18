@@ -1,3 +1,4 @@
+import '@rails/ujs';
 import {Tooltip} from 'bootstrap';
 import './calendar.js';
 import './copyTooltip.js';
