@@ -10,7 +10,7 @@
     "bootstrap": "^5.2.3",
     "jquery": "^3.7.0",
     "postcss": "*",
-    "postcss-cli": "< 11",
+    "postcss-cli": "< 12",
     "postcss-scss": "*"
   },
   "devDependencies": {
