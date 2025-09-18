@@ -10,7 +10,6 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-// = require jquery
 // = require rails-ujs
 // = require @popperjs/core/dist/umd/popper
 // = require bootstrap
@@ -18,3 +17,9 @@
 // = require @fullcalendar/daygrid/main.global.js
 // = require @fullcalendar/bootstrap5/main.global.js
 // = require_tree .
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipTriggerEl) => {
+    new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+});
