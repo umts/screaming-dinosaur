@@ -1,18 +1,10 @@
+/app/assets/builds/*
+!/app/assets/builds/.keep
 /config/database.yml
 /config/credentials/*.key
+/coverage/*
+!/coverage/.last_run.json
 /log
+/node_modules/
+/spec/examples.txt
 /tmp
-
-/coverage/index.html
-/coverage/.resultset.json
-/coverage/.resultset.json.lock
-/coverage/assets
-
-spec/examples.txt
-
-/node_modules
-
-## Environment normalisation:
-/.bundle
-/vendor/bundle
-/vendor/gems

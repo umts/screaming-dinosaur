@@ -37,6 +37,12 @@
         "curly": ["error", "multi-or-nest"],
         "max-len": ["error", { "code": 120 }]
       }
+    },
+    {
+      "files": ["*.config.js"],
+      "env": {
+        "node": true
+      }
     }
   ]
 }
