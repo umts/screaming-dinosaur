@@ -23,6 +23,7 @@
   "scripts": {
     "build:css": "postcss ./app/assets/stylesheets/application.scss -o ./app/assets/builds/application.css",
     "lint": "eslint .",
-    "lint:css": "stylelint **/*.css **/*.scss"
+    "lint:css": "stylelint **/*.css **/*.scss",
+    "build": "rollup -c --bundleConfigAsCjs rollup.config.js"
   }
 }
