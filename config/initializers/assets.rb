@@ -8,6 +8,8 @@ Rails.application.config.assets.version = "1.0"
 # Add node_modules folder to the asset load path.
 # Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.paths << Rails.root.join('node_modules/@fortawesome/fontawesome-free/webfonts')
+Rails.application.config.assets.paths << Rails.root.join('node_modules/@popperjs/core/dist/umd')
+Rails.application.config.assets.paths << Rails.root.join('node_modules/bootstrap/dist/js')
 Rails.application.config.assets.excluded_paths << Rails.root.join('app/assets/stylesheets')
 
 # Precompile additional assets.
