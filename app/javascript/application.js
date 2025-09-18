@@ -1,4 +1,7 @@
-// Entry point for the build script in your package.json
+import {Tooltip} from 'bootstrap';
 
-console.log('hello, world!');
-console.log('goodbye, world!');
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipTriggerEl) => {
+    new Tooltip(tooltipTriggerEl);
+  });
+});

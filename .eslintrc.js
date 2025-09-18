@@ -11,6 +11,9 @@ module.exports = {
     es6: true,
     jquery: true,
   },
+  parserOptions: {
+    sourceType: 'module',
+  },
   globals: {
     'bootstrap': 'readonly',
     'FullCalendar': 'readonly',
