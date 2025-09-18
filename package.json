@@ -9,9 +9,12 @@
     "jquery": "^3.7.0"
   },
   "devDependencies": {
-    "eslint": ">=5.16.0",
-    "eslint-config-google": "^0.14.0",
+    "eslint": "< 9",
+    "eslint-config-google": "*",
     "stylelint": "^15.10.1",
     "stylelint-config-standard-scss": "^10.0.0"
+  },
+  "scripts": {
+    "lint": "eslint ."
   }
 }
