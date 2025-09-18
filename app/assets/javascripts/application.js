@@ -18,3 +18,9 @@
 // = require @fullcalendar/daygrid/main.global.js
 // = require @fullcalendar/bootstrap5/main.global.js
 // = require_tree .
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipTriggerEl) => {
+    new bootstrap.Tooltip(tooltipTriggerEl);
+  });
+});
