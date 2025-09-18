@@ -36,7 +36,6 @@ group :development do
   gem 'capistrano-passenger', require: false
   gem 'capistrano-pending', require: false
   gem 'capistrano-rails', require: false
-  gem 'capistrano-yarn', require: false
   gem 'ed25519', require: false
   gem 'haml_lint', require: false
   gem 'listen'
@@ -66,5 +65,4 @@ group :test do
   gem 'rspec-retry'
   gem 'selenium-webdriver'
   gem 'simplecov'
-  gem 'timecop'
 end

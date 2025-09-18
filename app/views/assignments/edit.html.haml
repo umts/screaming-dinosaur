@@ -10,6 +10,6 @@
     - if Current.user.admin_in?(@roster)
       = button_to roster_assignment_path(@roster, @assignment),
                   method: :delete, class: 'btn btn-danger', form_class: 'col-md-auto' do
-        %i.fas.fa-trash-alt
+        %i.fa-solid.fa-trash-can
         Delete assignment
   = render partial: 'form', locals: locals

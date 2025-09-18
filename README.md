@@ -31,8 +31,8 @@ rubocop your_file.rb
 haml-lint your_file.html.haml
 ```
 ```bash
-yarn run eslint your_file.js
+npx eslint your_file.js
 ```
 ```bash
-yarn run stylelint your_file.scss
+npx stylelint your_file.scss
 ```
