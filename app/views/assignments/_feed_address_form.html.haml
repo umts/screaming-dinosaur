@@ -7,9 +7,10 @@
           %span{ data: info_tooltip_data, aria: { label: 'Calendar feed information' }, tabindex: 0 }
             %i.fa-solid.fa-circle-info
             %span#clip-info.sr-only= calendar_instructions
-        - roster_name = roster.name.parameterize
-        - token = Current.user.calendar_access_token
-        - url = feed_url(roster: roster_name, token: token, format: :ics)
+        :ruby
+          roster_name = roster.name.parameterize
+          token = Current.user.calendar_access_token
+          url = feed_url(roster: roster_name, token: token, format: :ics)
         = text_field_tag :access_token,
                          url,
                          readonly: true, class: 'form-control',
