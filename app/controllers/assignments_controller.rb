@@ -37,7 +37,7 @@ class AssignmentsController < ApplicationController
       redirect_to roster_assignments_path(@roster)
     else
       flash.now[:errors] = @assignment.errors.full_messages
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -51,7 +51,7 @@ class AssignmentsController < ApplicationController
       redirect_to roster_assignments_path(@roster)
     else
       flash.now[:errors] = @assignment.errors.full_messages
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -129,7 +129,7 @@ class AssignmentsController < ApplicationController
     return true if Current.user.admin_in?(@roster) || taking_ownership?
 
     flash.now[:errors] = t('.not_an_admin')
-    render error_template, status: :unprocessable_entity
+    render error_template, status: :unprocessable_content
     false
   end
   # rubocop:enable Naming/PredicateMethod

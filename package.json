@@ -5,22 +5,25 @@
     "@fullcalendar/bootstrap5": "^5.11.3",
     "@fullcalendar/core": "^5.11.3",
     "@fullcalendar/daygrid": "^5.11.3",
-    "@popperjs/core": "^2.11.6",
+    "@popperjs/core": "^2.11.8",
     "autoprefixer": "*",
     "bootstrap": "^5.2.3",
     "jquery": "^3.7.0",
     "postcss": "*",
-    "postcss-cli": "^10.1.0",
+    "postcss-cli": "< 11",
     "postcss-scss": "*"
   },
   "devDependencies": {
-    "eslint": ">=5.16.0",
-    "eslint-config-google": "^0.14.0",
+    "eslint": "< 9",
+    "eslint-config-google": "*",
     "run-pty": "*",
-    "stylelint": "^15.10.1",
-    "stylelint-config-standard-scss": "^10.0.0"
+    "stylelint": "< 16",
+    "stylelint-config-standard": "< 35",
+    "stylelint-config-standard-scss": "< 12"
   },
   "scripts": {
-    "build:css": "postcss ./app/assets/stylesheets/application.scss -o ./app/assets/builds/application.css"
+    "build:css": "postcss ./app/assets/stylesheets/application.scss -o ./app/assets/builds/application.css",
+    "lint": "eslint .",
+    "lint:css": "stylelint **/*.css **/*.scss"
   }
 }
