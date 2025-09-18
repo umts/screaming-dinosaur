@@ -1,6 +1,7 @@
 // TODO: Move to eslint.config.js when on eslint 9+.
 module.exports = {
   ignorePatterns: [
+    'app/assets/builds/*',
     'coverage/*',
     'node_modules/*',
     'public/assets/*',

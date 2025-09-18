@@ -10,7 +10,8 @@
     "bootstrap": "^5.2.3",
     "postcss": "*",
     "postcss-cli": "< 11",
-    "postcss-scss": "*"
+    "postcss-scss": "*",
+    "rollup": "< 4"
   },
   "devDependencies": {
     "eslint": "< 9",
@@ -21,9 +22,9 @@
     "stylelint-config-standard-scss": "< 12"
   },
   "scripts": {
+    "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -f esm -m",
     "build:css": "postcss ./app/assets/stylesheets/application.scss -o ./app/assets/builds/application.css",
     "lint": "eslint .",
-    "lint:css": "stylelint **/*.css **/*.scss",
-    "build": "rollup -c --bundleConfigAsCjs rollup.config.js"
+    "lint:css": "stylelint **/*.css **/*.scss"
   }
 }
