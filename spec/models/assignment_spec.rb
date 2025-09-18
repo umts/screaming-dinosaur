@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe Assignment do
+  include ActiveSupport::Testing::TimeHelpers
+
   describe 'effective time methods' do
     let(:roster) { create :roster, switchover: 14 * 60 }
     let :assignment do
@@ -41,28 +43,26 @@ RSpec.describe Assignment do
 
     context 'when it is before the switchover hour' do
       it "returns yesterday's assignment" do
-        Timecop.freeze(switchover_time - 1.minute) do
-          expect(call).to eq yesterday
-        end
+        travel_to 1.minute.before(switchover_time)
+        expect(call).to eq yesterday
       end
     end
 
     context 'when it is after the switchover hour' do
       it "returns today's assignment" do
-        Timecop.freeze(switchover_time + 1.minute) do
-          expect(call).to eq today
-        end
+        travel_to 1.minute.after(switchover_time)
+        expect(call).to eq today
       end
     end
 
     context 'with assignments in multiple rosters' do
+      before do
+        travel_to 1.minute.after(switchover_time)
+      end
+
       let! :new_assignment do
         # This new assignment will also belong to a new roster
         create :assignment, start_date: Time.zone.today, end_date: Time.zone.today
-      end
-
-      around do |example|
-        Timecop.freeze(switchover_time + 1.minute) { example.run }
       end
 
       it 'includes assignments in the current roster' do
@@ -218,8 +218,8 @@ RSpec.describe Assignment do
     end
 
     context 'when it is before the switchover' do
-      around do |example|
-        Timecop.freeze(roster.switchover_time - 1.minute) { example.run }
+      before do
+        travel_to 1.minute.before(roster.switchover_time)
       end
 
       it { is_expected.to include assignment_today }
@@ -227,8 +227,8 @@ RSpec.describe Assignment do
     end
 
     context 'when it is after the switchover' do
-      around do |example|
-        Timecop.freeze(roster.switchover_time + 1.minute) { example.run }
+      before do
+        travel_to 1.minute.after(roster.switchover_time)
       end
 
       it { is_expected.not_to include assignment_today }
