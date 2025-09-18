@@ -9,11 +9,17 @@
             %span#clip-info.sr-only= calendar_instructions
         - roster_name = roster.name.parameterize
         - token = Current.user.calendar_access_token
+        - url = feed_url(roster: roster_name, token: token, format: :ics)
         = text_field_tag :access_token,
-                         feed_url(roster: roster_name, token: token, format: :ics),
-                         readonly: true, class: 'form-control copy-text',
+                         url,
+                         readonly: true, class: 'form-control',
                          aria: { label: 'Calendar feed URL', described_by: 'clip-info' }
-        - clipboard_tooltip_data = { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': 'Copy to clipboard' }
+        - clipboard_tooltip_data = { 'bs-toggle': 'tooltip',
+                                     'bs-placement': 'top',
+                                     'bs-title': 'Copy to clipboard',
+                                     content: url,
+                                     success: 'Copied successfully!',
+                                     error: 'Unable to copy.' }
         %button.btn.btn-outline-secondary.copy-tooltip{ data: clipboard_tooltip_data, aria: { label: 'Copy' } }
           %i.fa-regular.fa-clipboard
     .col
