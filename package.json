@@ -9,7 +9,7 @@
     "jquery": "^3.7.0"
   },
   "devDependencies": {
-    "eslint": "< 9",
+    "eslint": "< 10",
     "eslint-config-google": "*",
     "stylelint": "< 16",
     "stylelint-config-standard": "< 35",
