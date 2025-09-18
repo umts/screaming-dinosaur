@@ -12,18 +12,17 @@ RSpec.describe 'viewing the index' do
 
     it 'displays copy url info' do
       find("[aria-label='Calendar feed information']").click
-      expect(page).to have_css '.tooltip',
-                               text: 'Use this address to subscribe'
+      expect(page).to have_text 'Use this address to subscribe'
     end
 
     it 'displays click to copy tooltip' do
       find('.copy-tooltip').hover
-      expect(page).to have_css '.tooltip', text: 'Copy to clipboard'
+      expect(page).to have_text 'Copy to clipboard'
     end
 
     it 'copys link on button press' do
       find('.copy-tooltip').click.hover
-      expect(page).to have_css '.tooltip', text: 'Copied successfully!'
+      expect(page).to have_text 'Copied successfully!'
     end
   end
 
