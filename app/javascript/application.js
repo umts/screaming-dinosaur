@@ -1,4 +1,5 @@
 import {Tooltip} from 'bootstrap';
+import './calendar.js';
 import './copyTooltip.js';
 
 document.addEventListener('DOMContentLoaded', () => {

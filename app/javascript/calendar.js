@@ -1,10 +1,15 @@
+import {Calendar} from '@fullcalendar/core';
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
+import dayGridPlugin from '@fullcalendar/daygrid';
+
 document.addEventListener('DOMContentLoaded', () => {
   const calendarContainer = document.querySelector('#calendar');
   if (!calendarContainer) {
     return;
   }
 
-  const calendar = new FullCalendar.Calendar(calendarContainer, {
+  const calendar = new Calendar(calendarContainer, {
+    plugins: [dayGridPlugin, bootstrap5Plugin],
     themeSystem: 'bootstrap5',
     buttonIcons: {
       prev: 'fa fa fa-chevron-left',

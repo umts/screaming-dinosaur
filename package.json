@@ -23,7 +23,7 @@
     "stylelint-config-standard-scss": "< 12"
   },
   "scripts": {
-    "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -f esm -m --plugin @rollup/plugin-node-resolve",
+    "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -c",
     "build:css": "postcss ./app/assets/stylesheets/application.scss -o ./app/assets/builds/application.css",
     "lint": "eslint .",
     "lint:css": "stylelint **/*.css **/*.scss"
