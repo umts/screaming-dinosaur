@@ -6,11 +6,14 @@ $warning: #c69214;
 $info: #71b2c9;
 $light: #eee;
 $dark: #333;
+$fa-font-path: "@fortawesome/fontawesome-free/webfonts";
 
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@import "@fortawesome/fontawesome-free/scss/regular";
+@import "@fortawesome/fontawesome-free/scss/solid";
 @import "bootstrap/scss/bootstrap";
 @import "@fullcalendar/common/main";
 @import "@fullcalendar/daygrid/main";
 @import "@fullcalendar/bootstrap5/main";
-@import "font-awesome-custom";
 @import "assignments";
 @import "assignments/calendar";
