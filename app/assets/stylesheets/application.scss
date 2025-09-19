@@ -1,19 +1,18 @@
-$primary: #881c1c;
-$secondary: #63666a;
-$success: #76881d;
-$danger: #a8431e;
-$warning: #c69214;
-$info: #71b2c9;
-$light: #eee;
-$dark: #333;
-$fa-font-path: "";
-
-@import "@fortawesome/fontawesome-free/scss/fontawesome";
-@import "@fortawesome/fontawesome-free/scss/regular";
-@import "@fortawesome/fontawesome-free/scss/solid";
-@import "bootstrap/scss/bootstrap";
-@import "@fullcalendar/common/main";
-@import "@fullcalendar/daygrid/main";
-@import "@fullcalendar/bootstrap5/main";
-@import "assignments";
-@import "assignments/calendar";
+@use "@fortawesome/fontawesome-free/scss/fontawesome";
+@use "@fortawesome/fontawesome-free/scss/regular" as fontawesome-regular with ($fa-font-path: "");
+@use "@fortawesome/fontawesome-free/scss/solid" as fontawesome-solid with ($fa-font-path: "");
+@use "@fullcalendar/common/main" as fullcalendar;
+@use "@fullcalendar/daygrid/main" as fullcalendar-daygrid;
+@use "@fullcalendar/bootstrap5/main" as fullcalendar-bootstrap5;
+@use "bootstrap/scss/bootstrap" with (
+  $primary: #881c1c,
+  $secondary: #63666a,
+  $success: #76881d,
+  $danger: #a8431e,
+  $warning: #c69214,
+  $info: #71b2c9,
+  $light: #eee,
+  $dark: #333,
+);
+@use "assignments";
+@use "assignments/calendar";
