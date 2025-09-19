@@ -8,7 +8,6 @@
     "@popperjs/core": "^2.11.8",
     "autoprefixer": "*",
     "bootstrap": "^5.2.3",
-    "jquery": "^3.7.0",
     "postcss": "*",
     "postcss-cli": "< 11",
     "postcss-scss": "*"
