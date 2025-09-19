@@ -17,8 +17,10 @@
     "rollup": "< 4"
   },
   "devDependencies": {
+    "@eslint/js": "< 9",
     "eslint": "< 9",
     "eslint-config-google": "*",
+    "globals": "*",
     "run-pty": "*",
     "stylelint": "< 16",
     "stylelint-config-standard": "< 35",
