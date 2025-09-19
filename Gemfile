@@ -11,6 +11,7 @@ gem 'haml-rails'
 gem 'icalendar'
 gem 'irb'
 gem 'jbuilder'
+gem 'jsbundling-rails'
 gem 'mysql2'
 gem 'net-http'
 # TODO: remove when we have modern glibc
