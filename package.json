@@ -13,7 +13,7 @@
     "postcss-scss": "*"
   },
   "devDependencies": {
-    "eslint": "< 9",
+    "eslint": "< 10",
     "eslint-config-google": "*",
     "run-pty": "*",
     "stylelint": "< 16",
