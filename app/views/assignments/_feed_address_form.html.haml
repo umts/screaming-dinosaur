@@ -6,7 +6,7 @@
           - info_tooltip_data = { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions }
           %span{ data: info_tooltip_data, aria: { label: 'Calendar feed information' }, tabindex: 0 }
             %i.fa-solid.fa-circle-info
-            %span#clip-info.sr-only= calendar_instructions
+            %span#clip-info.visually-hidden= calendar_instructions
         :ruby
           roster_name = roster.name.parameterize
           token = Current.user.calendar_access_token
