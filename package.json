@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dependencies": {
     "@rails/ujs": "*",
     "@rollup/plugin-node-resolve": "*",
