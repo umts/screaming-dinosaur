@@ -5,9 +5,6 @@
 @use "@fortawesome/fontawesome-free/scss/solid" as fontawesome-solid with (
   $fa-font-path: "@fortawesome/fontawesome-free/webfonts"
 );
-@use "@fullcalendar/common/main" as fullcalendar;
-@use "@fullcalendar/daygrid/main" as fullcalendar-daygrid;
-@use "@fullcalendar/bootstrap5/main" as fullcalendar-bootstrap5;
 @use "bootstrap/scss/bootstrap" with (
   $primary: #881c1c,
   $secondary: #63666a,
