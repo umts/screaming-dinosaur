@@ -13,9 +13,9 @@
 // = require rails-ujs
 // = require @popperjs/core/dist/umd/popper
 // = require bootstrap
-// = require @fullcalendar/core/main.global.js
-// = require @fullcalendar/daygrid/main.global.js
-// = require @fullcalendar/bootstrap5/main.global.js
+// = require @fullcalendar/core/index.global.js
+// = require @fullcalendar/daygrid/index.global.js
+// = require @fullcalendar/bootstrap5/index.global.js
 // = require_tree .
 
 document.addEventListener('DOMContentLoaded', () => {
