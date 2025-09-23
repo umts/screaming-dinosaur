@@ -1,6 +1,7 @@
+@use "@fortawesome/fontawesome-free/scss/variables" with ($font-path: "");
 @use "@fortawesome/fontawesome-free/scss/fontawesome";
-@use "@fortawesome/fontawesome-free/scss/regular" as fontawesome-regular with ($fa-font-path: "");
-@use "@fortawesome/fontawesome-free/scss/solid" as fontawesome-solid with ($fa-font-path: "");
+@use "@fortawesome/fontawesome-free/scss/regular" as fontawesome-regular;
+@use "@fortawesome/fontawesome-free/scss/solid" as fontawesome-solid;
 @use "bootstrap/scss/bootstrap" with (
   $primary: #881c1c,
   $secondary: #63666a,
