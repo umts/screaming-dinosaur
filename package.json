@@ -3,7 +3,7 @@
     "@rails/ujs": "*",
     "@rollup/plugin-node-resolve": "*",
     "@csstools/postcss-sass": "*",
-    "@fortawesome/fontawesome-free": "^7.0.1",
+    "@fortawesome/fontawesome-free": "*",
     "@fullcalendar/bootstrap5": "^5.11.3",
     "@fullcalendar/core": "^5.11.3",
     "@fullcalendar/daygrid": "^5.11.3",
