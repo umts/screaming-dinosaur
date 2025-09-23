@@ -1,5 +1,6 @@
 module.exports = {
   ignoreFiles: [
+    'app/assets/builds/*',
     'coverage/**/*',
     'node_modules/**/*',
     'public/assets/**/*',

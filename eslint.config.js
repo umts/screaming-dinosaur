@@ -22,13 +22,9 @@ module.exports = [
     },
   },
   {
-    files: ['app/assets/javascripts/**/*.js'],
+    files: ['app/javascript/**/*.js'],
     languageOptions: {
-      globals: {
-        ...globals.browser,
-        'bootstrap': 'readonly',
-        'FullCalendar': 'readonly',
-      },
+      globals: {...globals.browser},
     },
   },
   {

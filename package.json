@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@rails/ujs": "*",
+    "@rollup/plugin-node-resolve": "*",
     "@csstools/postcss-sass": "*",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@fullcalendar/bootstrap5": "^5.11.3",
@@ -7,10 +9,11 @@
     "@fullcalendar/daygrid": "^5.11.3",
     "@popperjs/core": "^2.11.8",
     "autoprefixer": "*",
-    "bootstrap": "^5.2.3",
+    "bootstrap": "^5.3.8",
     "postcss": "*",
     "postcss-cli": "< 11",
-    "postcss-scss": "*"
+    "postcss-scss": "*",
+    "rollup": "< 4"
   },
   "devDependencies": {
     "@eslint/js": "< 9",
@@ -23,6 +26,7 @@
     "stylelint-config-standard-scss": "< 12"
   },
   "scripts": {
+    "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -c",
     "build:css": "postcss ./app/assets/stylesheets/application.scss -o ./app/assets/builds/application.css",
     "lint": "eslint .",
     "lint:css": "stylelint **/*.css **/*.scss"
