@@ -20,7 +20,6 @@ gem 'paper_trail'
 gem 'phonelib'
 gem 'propshaft'
 gem 'rails', '~> 8.0.2'
-gem 'terser'
 gem 'whenever', require: false
 
 group :production do
