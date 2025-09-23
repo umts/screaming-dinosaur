@@ -12,7 +12,6 @@ gem 'icalendar'
 gem 'irb'
 gem 'jbuilder'
 gem 'jsbundling-rails'
-gem 'mysql2'
 gem 'net-http'
 # TODO: remove when we have modern glibc
 gem 'nokogiri', force_ruby_platform: true
@@ -20,6 +19,7 @@ gem 'paper_trail'
 gem 'phonelib'
 gem 'propshaft'
 gem 'rails', '~> 8.0.2'
+gem 'trilogy'
 gem 'whenever', require: false
 
 group :production do
