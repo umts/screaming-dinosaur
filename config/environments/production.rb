@@ -20,7 +20,7 @@ Rails.application.configure do
   config.public_file_server.enabled = false
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :terser
+  # config.assets.js_compressor = :terser
   # config.assets.css_compressor = :sass
 
   # Cache assets for far-future expiry since they are all digest stamped.
