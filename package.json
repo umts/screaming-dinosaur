@@ -9,7 +9,7 @@
     "@fullcalendar/daygrid": "^5.11.3",
     "@popperjs/core": "^2.11.8",
     "autoprefixer": "*",
-    "bootstrap": "^5.2.3",
+    "bootstrap": "^5.3.8",
     "postcss": "*",
     "postcss-cli": "< 11",
     "postcss-scss": "*",
