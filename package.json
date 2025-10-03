@@ -13,7 +13,7 @@
     "postcss": "*",
     "postcss-cli": "< 11",
     "postcss-scss": "*",
-    "rollup": "< 4"
+    "rollup": "< 5"
   },
   "devDependencies": {
     "@eslint/js": "< 9",
