@@ -13,7 +13,7 @@ class ChangesController < ApplicationController
       @version.item.destroy
       flash[:message] = t('.create', item: @version.item_type)
     end
-    redirect_back fallback_location: '/public/404.html'
+    redirect_back_or_to '/public/404.html'
   end
 
   private
