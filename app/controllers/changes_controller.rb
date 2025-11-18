@@ -13,7 +13,9 @@ class ChangesController < ApplicationController
       @version.item.destroy
       flash[:message] = t('.create', item: @version.item_type)
     end
-    redirect_back_or_to '/public/404.html'
+    redirect_to request.referer and return if request.referer.present?
+
+    raise ActionController::RoutingError, 'No referer found'
   end
 
   private
