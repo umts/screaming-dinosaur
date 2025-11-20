@@ -5,6 +5,7 @@ const globals = require('globals');
 module.exports = [
   {
     ignores: [
+      '.bundle/*',
       'app/assets/builds/*',
       'coverage/*',
       'node_modules/*',
