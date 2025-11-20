@@ -7,4 +7,5 @@ linters:
     exclude: 'app/views/twilio/*.xml.haml'
 
 exclude:
+  - '.bundle/**/*'
   - 'vendor/**/*'
