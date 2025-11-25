@@ -238,7 +238,7 @@ GEM
     parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
-    phonelib (0.10.13)
+    phonelib (0.10.14)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
@@ -578,7 +578,7 @@ CHECKSUMS
   paper_trail (17.0.0) sha256=1c2842061d3874ca7015908e821e2aa14f9b982af2acb2a7974713bf79021c85
   parallel (1.27.0) sha256=4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130
   parser (3.3.10.0) sha256=ce3587fa5cc55a88c4ba5b2b37621b3329aadf5728f9eafa36bbd121462aabd6
-  phonelib (0.10.13) sha256=7e686da6f5958a6bc95afe40dbf18c0f067c623cb7efd69aa042ffbadc5871f9
+  phonelib (0.10.14) sha256=4efa635c806ecdb24e7406645493e33583e87d148f108271b87e8380e4f16ffb
   pp (0.6.3) sha256=2951d514450b93ccfeb1df7d021cae0da16e0a7f95ee1e2273719669d0ab9df6
   prettyprint (0.2.0) sha256=2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193
   prism (1.6.0) sha256=bfc0281a81718c4872346bc858dc84abd3a60cae78336c65ad35c8fbff641c6b
