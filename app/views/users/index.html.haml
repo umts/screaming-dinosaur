@@ -52,9 +52,9 @@
                             method: :patch,
                             params: { user: { active: false } },
                             data: { confirm: 'Deactivating user will delete all upcoming assignments.' },
-                            class: 'btn btn-sm' do
-                  .fa-solid.fa-stop
-                  .d-none.d-xl-inline Deactivate
+                            class: 'btn btn-sm text-nowrap' do
+                  %i.fa-solid.fa-user-xmark
+                  %span.d-none.d-xl-inline Deactivate
               - else
                 = button_to roster_user_path(@roster, user),
                             method: :patch,
