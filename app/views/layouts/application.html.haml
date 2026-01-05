@@ -10,7 +10,7 @@
     = csrf_meta_tags
   %body
     = render partial: 'layouts/nav', locals: { roster: @roster, rosters: Current.user&.rosters || Roster.none }
-    .container
+    .container.my-3
       - if flash[:message].present?
         .alert.alert-success{ role: 'alert' }
           = flash[:message]
