@@ -43,9 +43,9 @@
             %td= user.email
             %td= formatted_phone(user.phone)
             %td
-              = link_to edit_roster_user_path(@roster, user), class: 'btn btn-sm' do
-                .fa-solid.fa-edit
-                .d-none.d-xl-inline Edit
+              = link_to edit_roster_user_path(@roster, user), class: 'btn btn-sm text-nowrap' do
+                %i.fa-solid.fa-edit
+                %span.d-none.d-xl-inline Edit
             %td
               - if user.active?
                 = button_to roster_user_path(@roster, user),
