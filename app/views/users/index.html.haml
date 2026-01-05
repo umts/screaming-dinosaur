@@ -34,7 +34,7 @@
           %th.column-compact
       %tbody
         - @users.each do |user|
-          %tr.align-middle
+          %tr
             %td
               = user.full_name
               - if user == @fallback
