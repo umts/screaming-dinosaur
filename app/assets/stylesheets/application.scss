@@ -14,3 +14,7 @@
 );
 @use "assignments";
 @use "assignments/calendar";
+
+.column-compact {
+  max-width: 1px;
+}
