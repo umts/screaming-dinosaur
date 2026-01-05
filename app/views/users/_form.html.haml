@@ -20,7 +20,7 @@
       .col-lg
         = field_set_tag nil, class: 'mb-3' do
           %legend.float-none.m-0 Rosters
-          .list-group
+          .list-group.list-group-flush
             = f.collection_check_boxes :roster_ids, Roster.order(:name), :id, :name do |c|
               - user_roster_permitted = Current.user.admin_in? c.object
               = c.label class: ['m-0', 'list-group-item', user_roster_permitted ? 'list-group-item-action' : nil] do
