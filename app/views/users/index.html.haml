@@ -51,7 +51,7 @@
                 = button_to roster_user_path(@roster, user),
                             method: :patch,
                             params: { user: { active: false } },
-                            data: { confirm:'Deactivating user will delete all upcoming assignments.' },
+                            data: { confirm: 'Deactivating user will delete all upcoming assignments.' },
                             class: 'btn btn-sm' do
                   .fa-solid.fa-stop
                   .d-none.d-xl-inline Deactivate

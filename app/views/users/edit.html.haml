@@ -1,2 +1,2 @@
-= render layout: 'layouts/section', locals: { heading: "Edit user"} do
+= render layout: 'layouts/section', locals: { heading: 'Edit user' } do
   = render partial: 'form', locals: { user: @user, roster: @roster, path: roster_user_path(@roster, @user) }
