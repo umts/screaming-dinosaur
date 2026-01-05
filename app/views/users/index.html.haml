@@ -59,9 +59,9 @@
                 = button_to roster_user_path(@roster, user),
                             method: :patch,
                             params: { user: { active: true } },
-                            class: 'btn btn-sm' do
-                  .fa-solid.fa-play
-                  .d-none.d-xl-inline Activate
+                            class: 'btn btn-sm text-nowrap' do
+                  %i.fa-solid.fa-user-plus
+                  %span.d-none.d-xl-inline Activate
 
             %td
               = button_to roster_user_path(@roster, user), method: :delete, class: 'btn btn-sm' do
