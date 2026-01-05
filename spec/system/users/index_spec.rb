@@ -61,7 +61,7 @@ RSpec.describe 'user index' do
 
       before do
         create :membership, roster: roster, user: inactive_user
-        click_link 'Inactive users'
+        click_link 'Inactive'
       end
 
       it 'shows active users button' do
