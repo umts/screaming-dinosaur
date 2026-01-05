@@ -3,27 +3,9 @@
     .alert.alert-warning
       %div No fallback user!
       %div= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
-      %p No fallback user!
-      %p= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
   %ul.nav.nav-pills.nav-fill.mb-3
     %li.nav-item= link_to 'Active', roster_users_path, class: ['nav-link', @active ? 'active' : nil]
     %li.nav-item= link_to 'Inactive', roster_users_path(active: false), class: ['nav-link', @active ? nil : 'active']
-    - if @active
-      = link_to 'Switch to inactive users', roster_users_path(active: false)
-    - else
-      = link_to 'Switch to active users', roster_users_path
-  - if @other_users.present?
-    .row.align-middle
-      .col-lg-6
-        = form_tag transfer_roster_users_path do
-          .form-group.d-flex
-            .text-nowrap.mx-3.d-none.d-sm-inline
-              = label_tag :id, 'Add user from another roster: ', class: 'form-label align-middle d-sm-inline d-none'
-            .input-group
-              = select_tag :id,
-                           options_from_collection_for_select(@other_users, :id, :last_name),
-                           class: 'form-select form-select-sm'
-              = submit_tag 'Add', class: 'btn btn-primary btn-sm'
 
   .table-responsive
     %table.table.table-striped.table-hover
@@ -47,7 +29,7 @@
             %td= user.email
             %td= formatted_phone(user.phone)
             %td
-              = link_to edit_roster_user_path(@roster, user), class: 'btn btn-sm text-nowrap' do
+              = link_to edit_roster_user_path(@roster, user), class: 'btn btn-sm text-nowrap lh-1' do
                 %i.fa-solid.fa-edit
                 %span.d-none.d-xl-inline Edit
             %td
@@ -56,18 +38,25 @@
                             method: :patch,
                             params: { user: { active: false } },
                             data: { confirm: 'Deactivating user will delete all upcoming assignments.' },
-                            class: 'btn btn-sm text-nowrap' do
+                            class: 'btn btn-sm text-nowrap lh-1' do
                   %i.fa-solid.fa-user-xmark
                   %span.d-none.d-xl-inline Deactivate
               - else
                 = button_to roster_user_path(@roster, user),
                             method: :patch,
                             params: { user: { active: true } },
-                            class: 'btn btn-sm text-nowrap' do
+                            class: 'btn btn-sm text-nowrap lh-1' do
                   %i.fa-solid.fa-user-plus
                   %span.d-none.d-xl-inline Activate
 
             %td
-              = button_to roster_user_path(@roster, user), method: :delete, class: 'btn btn-sm' do
-                .fa-solid.fa-trash
-                .d-none.d-xl-inline Delete
+              = button_to roster_user_path(@roster, user), method: :delete, class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-trash.lh-1
+                %span.d-none.d-xl-inline.lh-1 Delete
+
+  - if @other_users.present?
+    = form_with url: transfer_roster_users_path do |f|
+      .input-group
+        = f.label :id, 'Add user', class: 'input-group-text'
+        = f.collection_select :id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
+        = f.submit 'Add', class: 'btn btn-secondary'
