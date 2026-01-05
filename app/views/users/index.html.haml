@@ -3,7 +3,9 @@
     .alert.alert-warning.pb-0
       %p No fallback user!
       %p= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
-  .alert.alert-light
+  %ul.nav.nav-pills.nav-fill.mb-3
+    %li.nav-item= link_to 'Active', roster_users_path, class: ['nav-link', @active ? 'active' : nil]
+    %li.nav-item= link_to 'Inactive', roster_users_path(active: false), class: ['nav-link', @active ? nil : 'active']
     - if @active
       = link_to 'Switch to inactive users', roster_users_path(active: false)
     - else
