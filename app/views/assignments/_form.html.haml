@@ -2,8 +2,8 @@
   - start_date = f.object.start_date || local_assigns[:start_date]
   - end_date = f.object.end_date || local_assigns[:end_date]
   = f.hidden_field :roster_id, value: roster.id
-  .row
-    .col-lg
+  .row.row-cols-1.row-cols-md-2
+    .col
       .mb-3
         = f.label :user_id, class: 'form-label'
         - if Current.user.admin_in?(roster)
@@ -12,7 +12,7 @@
         - else
           = f.hidden_field :user_id, value: Current.user.id
           = f.text_field :user_name, value: Current.user.last_name, disabled: true, class: 'form-control'
-    .col-lg
+    .col
       .mb-3
         = f.label :start_date, class: 'form-label'
         = f.date_field :start_date, value: start_date, class: 'form-control'
