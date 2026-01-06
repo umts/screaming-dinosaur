@@ -46,7 +46,7 @@ RSpec.describe 'user index' do
 
     context 'when viewing active users' do
       it 'shows inactive users button' do
-        expect(page).to have_link 'Inactive users'
+        expect(page).to have_link 'Inactive'
       end
 
       it 'shows deactivate user button on users' do
@@ -61,11 +61,11 @@ RSpec.describe 'user index' do
 
       before do
         create :membership, roster: roster, user: inactive_user
-        click_link 'Inactive users'
+        click_link 'Inactive'
       end
 
       it 'shows active users button' do
-        expect(page).to have_link 'Active users'
+        expect(page).to have_link 'Active'
       end
 
       it 'shows activate user button on users' do
