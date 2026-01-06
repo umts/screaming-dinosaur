@@ -5,7 +5,5 @@
              roster: @roster,
              assignment: @assignment,
              users: @users }
-
-%h1 New assignment
-.container-fluid
+= render layout: 'layouts/section', locals: { heading: 'New assignment' } do
   = render partial: 'form', locals: locals
