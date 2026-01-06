@@ -1,35 +1,43 @@
-.row.align-items-center
-  %h1.col-md Rosters
-  = link_to new_roster_path, class: 'col-md-auto btn btn-success' do
-    %i.fa-solid.fa-plus
-    New Roster
-
-%table.table
-  %thead
-    %tr
-      %th Name
-      %th Fallback
-      %th Switchover
-      %th Phone
-      %th
-      %th
-      %th
-  %tbody
-    - @rosters.each do |roster|
+= render layout: 'layouts/section', locals: { heading: 'Rosters', creatable: new_roster_path } do
+  %table.table
+    %thead
       %tr
-        %td= roster.name
-        %td
-          - if roster.fallback_user.present?
-            = roster.fallback_user.last_name
+        %th Name
+        %th Fallback
+        %th Switchover
+        %th Phone
+        %th.column-compact
+        %th.column-compact
+        %th.column-compact
+    %tbody
+      - @rosters.each do |roster|
+        %tr
+          %td= roster.name
+          %td
+            - if roster.fallback_user.present?
+              = roster.fallback_user.last_name
+            - else
+              No fallback user!
+          %td= roster.switchover_time.strftime '%-I:%M %P'
+          %td= formatted_phone(roster.phone)
+          - if Current.user.admin_in? roster
+            %td
+              = button_to 'Setup Twilio Number',
+                          setup_roster_path(roster),
+                          method: :get,
+                          class: 'btn btn-link btn-sm text-nowrap lh-1'
+            %td
+              = link_to edit_roster_url(roster), class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-edit
+                %span.d-none.d-xl-inline Edit
+            %td
+              = button_to roster_path(roster),
+                          method: :delete,
+                          data: { confirm: 'Deleting roster will remove all assignments and members.' },
+                          class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-trash
+                %span.d-none.d-xl-inline Delete
           - else
-            No fallback user!
-        %td= roster.switchover_time.strftime '%-I:%M %P'
-        %td= formatted_phone(roster.phone)
-        - if Current.user.admin_in? roster
-          %td= link_to 'Setup Twilio Number', setup_roster_path(roster)
-          %td= link_to 'Edit', edit_roster_url(roster)
-          %td= button_to 'Destroy', roster_path(roster), method: :delete, class: 'btn btn-danger'
-        - else
-          %td
-          %td
-          %td
+            %td
+            %td
+            %td
