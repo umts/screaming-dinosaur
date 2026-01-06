@@ -1,4 +1,4 @@
-= form_with url: path do |f|
+= form_with model: [roster, user] do |f|
   .mb-3
     = f.label :first_name, class: 'form-label'
     = f.text_field :first_name, class: 'form-control'
@@ -15,9 +15,10 @@
     = f.label :phone, class: 'form-label'
     = f.phone_field :phone, placeholder: '+14135450056', class: 'form-control'
   = field_set_tag nil, class: 'mb-3' do
-    %legend.float-none.m-0 Rosters
-    .list-group.list-group-flush
-      = f.collection_check_boxes :roster_ids, Roster.order(:name), :id, :name do |c|
+    %legend.legend-label Rosters
+    = f.collection_check_boxes :roster_ids, [], :id, :name # hidden field outside list group to fix border rounding
+    .list-group
+      = f.collection_check_boxes :roster_ids, Roster.order(:name), :id, :name, { include_hidden: false } do |c|
         - user_roster_permitted = Current.user.admin_in? c.object
         = c.label class: ['m-0', 'list-group-item', user_roster_permitted ? 'list-group-item-action' : nil] do
           .form-check
@@ -34,7 +35,7 @@
     .form-check
       = f.check_box :change_notifications_enabled, class: 'form-check-input'
       = f.label :change_notifications_enabled,
-                'Receive notifications when your assignments are changed?', class: 'form-check-label'
+                'Receive notifications when assignments are changed?', class: 'form-check-label'
   - if Current.user.admin_in? roster
     - membership = user.membership_in roster
     = f.fields_for membership || :membership do |g|
