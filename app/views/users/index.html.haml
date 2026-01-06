@@ -1,57 +1,62 @@
-%h1 Users in #{@roster.name}
+= render layout: 'layouts/section', locals: { heading: "Users in #{@roster.name}", creatable: new_roster_user_path } do
+  - if @fallback.blank?
+    .alert.alert-warning
+      %div No fallback user!
+      %div= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
+  %ul.nav.nav-pills.nav-fill.mb-3
+    %li.nav-item= link_to 'Active', roster_users_path, class: ['nav-link', @active ? 'active' : nil]
+    %li.nav-item= link_to 'Inactive', roster_users_path(active: false), class: ['nav-link', @active ? nil : 'active']
 
-- if @fallback.blank?
-  .alert.alert-warning.pb-0
-    %p No fallback user!
-    %p= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
+  .table-responsive
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th Name
+          %th SPIRE
+          %th Email
+          %th Phone
+          %th.column-compact
+          %th.column-compact
+          %th.column-compact
+      %tbody
+        - @users.each do |user|
+          %tr
+            %td
+              = user.full_name
+              - if user == @fallback
+                (fallback)
+            %td= user.spire
+            %td= user.email
+            %td= formatted_phone(user.phone)
+            %td
+              = link_to edit_roster_user_path(@roster, user), class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-edit
+                %span.d-none.d-xl-inline Edit
+            %td
+              - if user.active?
+                = button_to roster_user_path(@roster, user),
+                            method: :patch,
+                            params: { user: { active: false } },
+                            data: { confirm: 'Deactivating user will delete all upcoming assignments.' },
+                            class: 'btn btn-sm text-nowrap lh-1' do
+                  %i.fa-solid.fa-user-xmark
+                  %span.d-none.d-xl-inline Deactivate
+              - else
+                = button_to roster_user_path(@roster, user),
+                            method: :patch,
+                            params: { user: { active: true } },
+                            class: 'btn btn-sm text-nowrap lh-1' do
+                  %i.fa-solid.fa-user-plus
+                  %span.d-none.d-xl-inline Activate
 
-.container-fluid.my-4
-  .row
-    .col-lg
-      = link_to 'Add new user', new_roster_user_path
-    .col-lg
-      - if @active
-        = link_to 'Inactive users', roster_users_path(active: false)
-      - else
-        = link_to 'Active users', roster_users_path
-    .col-lg
-      - if @other_users.present?
-        = form_tag transfer_roster_users_path do
-          = label_tag :id, 'Add user from another roster:', class: 'form-label'
-          .input-group
-            = select_tag :id,
-                         options_from_collection_for_select(@other_users, :id, :last_name),
-                         class: 'form-select form-select-sm'
-            = submit_tag 'Add', class: 'btn btn-primary btn-sm'
+            %td
+              = button_to roster_user_path(@roster, user), method: :delete, class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-trash.lh-1
+                %span.d-none.d-xl-inline.lh-1 Delete
 
-%table.table
-  %thead
-    %tr
-      %th Name
-      %th SPIRE
-      %th Email
-      %th Phone
-      %th
-      %th
-      %th
-  %tbody
-    - @users.each do |user|
-      %tr
-        %td
-          = user.full_name
-          - if user == @fallback
-            (fallback)
-        %td= user.spire
-        %td= user.email
-        %td= formatted_phone(user.phone)
-        %td= link_to 'Edit', edit_roster_user_path(@roster, user)
-        %td
-          = form_for user, url: roster_user_path(@roster, user) do |f|
-            - if user.active?
-              = f.hidden_field :active, value: false
-              - confirm = 'Deactivating user will delete all upcoming assignments.'
-              = f.submit 'Deactivate', class: 'btn btn-warning', data: { confirm: }
-            - else
-              = f.hidden_field :active, value: true
-              = f.submit 'Activate', class: 'btn btn-success'
-        %td= button_to 'Destroy', roster_user_path(@roster, user), method: :delete, class: 'btn btn-danger'
+  - if @other_users.present?
+    = form_with url: transfer_roster_users_path do |f|
+      .input-group
+        = f.label :id, 'Add user', class: 'input-group-text'
+        = f.collection_select :id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
+        = f.submit 'Add', class: 'btn btn-secondary'
