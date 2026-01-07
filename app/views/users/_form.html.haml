@@ -14,18 +14,19 @@
   .mb-3
     = f.label :phone, class: 'form-label'
     = f.phone_field :phone, placeholder: '+14135450056', class: 'form-control'
-  = field_set_tag nil, class: 'mb-3' do
-    %legend.legend-label Rosters
-    = f.collection_check_boxes :roster_ids, [], :id, :name # hidden field outside list group to fix border rounding
-    .list-group
-      = f.collection_check_boxes :roster_ids, Roster.order(:name), :id, :name, { include_hidden: false } do |c|
-        - user_roster_permitted = Current.user.admin_in? c.object
-        = c.label class: ['m-0', 'list-group-item', user_roster_permitted ? 'list-group-item-action' : nil] do
-          .form-check
-            = c.check_box checked: user.membership_in(c.object).present?,
-                          disabled: !user_roster_permitted,
-                          class: 'form-check-input'
-            .form-check-label= c.text
+  .mb-3
+    .input_group
+    - memberships = Roster.all.map { |roster| Membership.find_or_initialize_by(user:, roster:) }
+    = f.fields_for :memberships, memberships do |g|
+      = g.hidden_field :id
+      = g.hidden_field :roster_id
+      %div
+        - admin_in_roster = g.object.user.admin_in? g.object.roster
+        = g.check_box :_destroy, { checked: g.object.persisted?,
+                                   class: 'form-check-input',
+                                   disabled: !admin_in_roster }, 'false', 'true'
+        = g.check_box :admin, { checked: admin_in_roster, disabled: !admin_in_roster, class: 'form-check-input' }
+        = g.label :_destroy, g.object.roster.name
   .mb-3
     .form-check
       = f.check_box :reminders_enabled, class: 'form-check-input'
@@ -36,13 +37,4 @@
       = f.check_box :change_notifications_enabled, class: 'form-check-input'
       = f.label :change_notifications_enabled,
                 'Receive notifications when assignments are changed?', class: 'form-check-label'
-  - if Current.user.admin_in? roster
-    - membership = user.membership_in roster
-    = f.fields_for membership || :membership do |g|
-      .mb-3
-        .form-check
-          = g.check_box :admin,
-                        disabled: membership&.admin? && roster.admins.one?,
-                        class: 'form-check-input'
-          = g.label :admin, "Admin in #{roster.name}?", class: 'form-check-label'
   = f.submit 'Save', class: 'btn btn-primary'

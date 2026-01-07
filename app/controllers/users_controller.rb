@@ -31,8 +31,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    membership_params = user_params[:membership]
-    if @user.update(user_params.except(:membership)) && update_membership(membership_params)
+    if @user.update(user_params)
       confirm_change(@user)
       redirect_to update_redirect_path
     else
@@ -63,11 +62,13 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.expect(user: [:first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
-                         :change_notifications_enabled, { roster_ids: [], membership: [:admin] }]).tap do |p|
-      next if p[:roster_ids].blank?
-
-      p[:roster_ids] = new_roster_ids(p[:roster_ids].compact_blank.map(&:to_i))
+    params.fetch(:user, {}).permit(
+      :first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled, :change_notifications_enabled,
+      memberships_attributes: %i[_destroy id roster_id admin]
+    ).tap do |p|
+      p[:memberships_attributes].select! do |_, values|
+        @user.admin_in? Roster.find(values[:roster_id])
+      end
     end
   end
 
@@ -81,20 +82,6 @@ class UsersController < ApplicationController
   def find_user
     @user = User.find params.require(:id)
   end
-
-  # rubocop:disable Naming/PredicateMethod
-  def update_membership(membership_params)
-    return true unless membership_params.present? && Current.user.admin_in?(@roster)
-
-    membership = @user.membership_in @roster
-    return true if membership.nil?
-
-    return true if membership.update membership_params
-
-    @user.errors.merge! membership.errors
-    false
-  end
-  # rubocop:enable Naming/PredicateMethod
 
   def update_redirect_path
     Current.user.admin_in?(@roster) ? roster_users_path(@roster) : roster_assignments_path(@roster)

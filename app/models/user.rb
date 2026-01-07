@@ -12,11 +12,13 @@ class User < ApplicationRecord
                               inverse_of: 'fallback_user',
                               dependent: :nullify
 
-  validates :first_name, :last_name, :spire, :email, :phone, :rosters, presence: true
+  validates :first_name, :last_name, :spire, :email, :phone, presence: true
   validates :spire, :email, :phone, uniqueness: { case_sensitive: false }
   validates :calendar_access_token, uniqueness: { case_sensitive: true }
   validates :spire, format: { with: /\A\d{8}@umass.edu\z/, message: :spire_must_be_8_digits_with_umass }
   validates :phone, phone: true
+
+  accepts_nested_attributes_for :memberships, allow_destroy: true
 
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
   before_save -> { assignments.future.destroy_all }, if: :being_deactivated?
