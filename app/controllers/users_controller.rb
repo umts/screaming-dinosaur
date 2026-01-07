@@ -19,9 +19,8 @@ class UsersController < ApplicationController
   def edit; end
 
   def create
-    @user = User.new(user_params.except(:membership))
-    membership_params = user_params[:membership]
-    if @user.save && update_membership(membership_params)
+    @user = User.new(user_params)
+    if @user.save
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
     else
@@ -67,7 +66,7 @@ class UsersController < ApplicationController
       memberships_attributes: %i[_destroy id roster_id admin]
     ).tap do |p|
       p[:memberships_attributes]&.select! do |_, values|
-        @user.admin_in? Roster.find(values[:roster_id])
+        Current.user.admin_in? Roster.find(values[:roster_id])
       end
     end
   end
