@@ -1,14 +1,13 @@
-%h1 Development login
-%h2 Login as:
-.row
-  - @rosters.each do |roster|
-    .col-sm-4
-      .card.mb-3
-        .card-body
-          %h5.card-title= roster.name
-          .card-text
-            = form_tag sessions_dev_login_path do
-              = hidden_field_tag :roster_id, roster.id
-              .input-group
-                = select_tag :user_id, grouped_options_for_select(roster.user_options), class: 'form-select'
-                = submit_tag 'Login', class: 'btn btn-success'
+= render layout: 'layouts/section', locals: { heading: 'Development login' } do
+  .row
+    - @rosters.each do |roster|
+      .col-md-6
+        .card.mb-3
+          .card-body
+            %h5.card-title= roster.name
+            .card-text
+              = form_tag sessions_dev_login_path do
+                = hidden_field_tag :roster_id, roster.id
+                .input-group
+                  = select_tag :user_id, grouped_options_for_select(roster.user_options), class: 'form-select'
+                  = submit_tag 'Login', class: 'btn btn-primary'
