@@ -56,7 +56,7 @@ class UsersController < ApplicationController
     else
       flash[:errors] = @user.errors.full_messages
     end
-    redirect_to roster_users_path
+    redirect_to roster_users_path(params[:roster_id])
   end
 
   private
@@ -66,7 +66,7 @@ class UsersController < ApplicationController
       :first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled, :change_notifications_enabled,
       memberships_attributes: %i[_destroy id roster_id admin]
     ).tap do |p|
-      p[:memberships_attributes].select! do |_, values|
+      p[:memberships_attributes]&.select! do |_, values|
         @user.admin_in? Roster.find(values[:roster_id])
       end
     end
