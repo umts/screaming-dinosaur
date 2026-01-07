@@ -1,11 +1,9 @@
 = render layout: 'layouts/section', locals: { heading: 'Welcome to the website for UMass Transit On-Call.' } do
-  %h2 Subsidiary account:
   %p
     You are attempting to login with #{@uid}, which is a role subsidiary account
     belonging to #{@primary_account}. Role subsidiary accounts cannot be used to
     access this site. Please login with your primary NetID. If you need
     assistance, contact
-    = succeed '.' do
-      = mail_to 'transit-it@admin.umass.edu'
+    = mail_to 'transit-it@admin.umass.edu'
 
   = link_to 'Logout', destroy_session_path

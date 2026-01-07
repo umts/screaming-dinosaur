@@ -1,8 +1,7 @@
 = render layout: 'layouts/section', locals: { heading: 'Development login' } do
-  %h2 Login as:
   .row
     - @rosters.each do |roster|
-      .col-sm-4
+      .col-md-6
         .card.mb-3
           .card-body
             %h5.card-title= roster.name
