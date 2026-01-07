@@ -1,5 +1,5 @@
 = render layout: 'layouts/section', locals: { heading: 'Rosters', creatable: new_roster_path } do
-  %table.table
+  %table.table.table-striped.table-hover
     %thead
       %tr
         %th Name
@@ -22,10 +22,9 @@
           %td= formatted_phone(roster.phone)
           - if Current.user.admin_in? roster
             %td
-              = button_to 'Setup Twilio Number',
-                          setup_roster_path(roster),
-                          method: :get,
-                          class: 'btn btn-link btn-sm text-nowrap lh-1'
+              = link_to setup_roster_path(roster), class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-gear
+                Twilio Setup
             %td
               = link_to edit_roster_url(roster), class: 'btn btn-sm text-nowrap lh-1' do
                 %i.fa-solid.fa-edit
