@@ -16,7 +16,9 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-  def edit; end
+  def edit
+    Rails.logger.debug { "Current user memberships: #{Current.user.memberships.pluck(:roster_id, :admin).inspect}" }
+  end
 
   def create
     @user = User.new(user_params)

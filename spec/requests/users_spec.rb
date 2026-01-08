@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Users' do
+  shared_context 'when you are the roster admin' do
+    let(:admin) { create(:user).tap { |user| create :membership, roster: roster, user:, admin: true } }
+
+    before { set_user admin }
+  end
+
   describe 'GET /rosters/:id/users' do
     subject(:call) { get "/rosters/#{roster.id}/users" }
 
@@ -15,9 +21,7 @@ RSpec.describe 'Users' do
       end
     end
 
-    context 'when you are a roster admin' do
-      before { when_current_user_is create(:membership, roster:, admin: true).user }
-
+    include_context 'when you are the roster admin' do
       it 'responds successfully' do
         call
         expect(response).to be_successful
@@ -39,9 +43,7 @@ RSpec.describe 'Users' do
       end
     end
 
-    context 'when you are a roster admin' do
-      before { when_current_user_is create(:membership, roster:, admin: true).user }
-
+    include_context 'when you are the roster admin' do
       it 'responds successfully' do
         call
         expect(response).to be_successful
@@ -69,8 +71,7 @@ RSpec.describe 'Users' do
       end
     end
 
-    context 'when you are a roster admin' do
-      before { when_current_user_is create(:membership, roster:, admin: true).user }
+    include_context 'when you are the roster admin' do
 
       context 'with invalid attributes' do
         let(:attributes) { { phone: 'not a phone number' } }
@@ -120,22 +121,22 @@ RSpec.describe 'Users' do
   end
 
   describe 'GET /users/:id/edit' do
-    subject(:call) { get "/users/#{edit_user.id}/edit" }
+    subject(:call) { get "/users/#{user.id}/edit" }
 
     let(:roster) { create :roster }
-    let(:edit_user) { create(:membership, roster:).user }
+    let(:user) { create(:membership, roster: roster).user }
+    # let(:edit_user) { create(:membership, roster:).user }
 
-    context 'when you are not a roster admin' do
-      before { when_current_user_is create(:membership, roster:, admin: false).user }
+    # context 'when you are not a roster admin' do
+    #   before { when_current_user_is create(:membership, roster:, admin: false).user }
+    #
+    #   it 'responds with an unauthorized status code' do
+    #     call
+    #     expect(response).to have_http_status(:unauthorized)
+    #   end
+    # end
 
-      it 'responds with an unauthorized status code' do
-        call
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context 'when you are a roster admin' do
-      before { when_current_user_is create(:membership, roster:, admin: true).user }
+    include_context 'when you are the roster admin' do
 
       it 'responds successfully' do
         call
@@ -144,7 +145,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when you are the user themselves' do
-      before { when_current_user_is edit_user }
+      before { when_current_user_is user }
 
       it 'responds successfully' do
         call
@@ -154,13 +155,13 @@ RSpec.describe 'Users' do
   end
 
   describe 'PATCH /users/:id' do
-    subject(:submit) { patch "/users/#{user.id}", params: { user: attributes, id: user.id } }
+    subject(:submit) { patch "/users/#{edit_user.id}", params: { user: attributes, id: edit_user.id } }
 
     let(:user) { create :user }
     let(:roster) { create :roster }
+    let(:edit_user) { create(:membership, roster:).user }
 
-    context 'when you are a roster admin' do
-      before { when_current_user_is create(:membership, roster:, user:, admin: true).user }
+    include_context 'when you are the roster admin' do
 
       context 'with valid attributes' do
         let(:attributes) { user_attributes.merge(memberships_attributes) }
@@ -199,6 +200,16 @@ RSpec.describe 'Users' do
           submit
           expect(response).to have_http_status(:unprocessable_content)
         end
+      end
+    end
+    context 'when you are not a roster admin' do
+      before { when_current_user_is create(:membership, roster:, admin: false).user }
+
+      let(:attributes) { nil }
+
+      it 'responds with an unauthorized status code' do
+        submit
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
