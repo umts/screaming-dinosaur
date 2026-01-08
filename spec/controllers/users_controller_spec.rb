@@ -404,7 +404,7 @@ RSpec.describe UsersController do
         end
       end
 
-      context 'when the current user is the only roster admin and remiving their adminship' do
+      context 'when the current user is the only roster admin and removing their adminship' do
         let(:user) { roster_admin(roster) }
 
         before do

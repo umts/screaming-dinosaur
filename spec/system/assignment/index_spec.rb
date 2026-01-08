@@ -81,7 +81,7 @@ RSpec.describe 'viewing the index' do
         3.times { click_on 'Next month' }
 
         # Go anywhere else
-        visit edit_roster_user_path(roster, user)
+        visit edit_user_path(user)
       end
 
       it 'stores the last viewed month' do
