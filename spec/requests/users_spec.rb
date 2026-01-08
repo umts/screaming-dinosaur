@@ -2,7 +2,16 @@
 
 RSpec.describe 'Users' do
   shared_context 'when you are the roster admin' do
-    let(:admin) { create(:user).tap { |user| create :membership, roster: roster, user:, admin: true } }
+    let(:admin) do
+      admin = User.new(first_name: 'Bobo',
+                       last_name: 'Test',
+                       email: 'why@umass.edu',
+                       phone: '413-454-7890',
+                       spire: '87654321@umass.edu')
+      admin.memberships.build(roster: roster, admin: true)
+      admin.save!
+      admin
+    end
 
     before { set_user admin }
   end
@@ -55,6 +64,7 @@ RSpec.describe 'Users' do
     subject(:submit) { post "/rosters/#{roster.id}/users", params: { user: attributes } }
 
     let(:roster) { create :roster }
+    let(:user) { create user }
 
     context 'when you are not a roster admin' do
       let(:attributes) { nil }
@@ -72,7 +82,6 @@ RSpec.describe 'Users' do
     end
 
     include_context 'when you are the roster admin' do
-
       context 'with invalid attributes' do
         let(:attributes) { { phone: 'not a phone number' } }
 
@@ -127,16 +136,17 @@ RSpec.describe 'Users' do
     let(:user) { create(:membership, roster: roster).user }
     # let(:edit_user) { create(:membership, roster:).user }
 
-    # context 'when you are not a roster admin' do
-    #   before { when_current_user_is create(:membership, roster:, admin: false).user }
-    #
-    #   it 'responds with an unauthorized status code' do
-    #     call
-    #     expect(response).to have_http_status(:unauthorized)
-    #   end
-    # end
+    context 'when you are not a roster admin' do
+      before { when_current_user_is create(:membership, roster:, admin: false).user }
 
-    include_context 'when you are the roster admin' do
+      it 'responds with an unauthorized status code' do
+        call
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'when you are a roster admin' do
+      include_context 'when you are the roster admin'
 
       it 'responds successfully' do
         call
@@ -155,13 +165,17 @@ RSpec.describe 'Users' do
   end
 
   describe 'PATCH /users/:id' do
-    subject(:submit) { patch "/users/#{edit_user.id}", params: { user: attributes, id: edit_user.id } }
+    subject(:submit) { patch "/users/#{user.id}", params: { user: attributes, roster_id: roster.id } }
 
     let(:user) { create :user }
-    let(:roster) { create :roster }
-    let(:edit_user) { create(:membership, roster:).user }
+    let(:roster) { user.rosters.first }
+    let(:roster2) { create :roster, name: 'Second Roster' }
+    let(:second_membership_id) { Membership.create(user:, roster: roster2).id }
 
-    include_context 'when you are the roster admin' do
+    context 'when you are a roster admin' do
+      before { roster.update(name: 'First Roster') }
+
+      include_context 'when you are the roster admin'
 
       context 'with valid attributes' do
         let(:attributes) { user_attributes.merge(memberships_attributes) }
@@ -176,20 +190,23 @@ RSpec.describe 'Users' do
             change_notifications_enabled: true }
         end
         let(:memberships_attributes) do
-          { memberships_attributes: { '0': { id: Membership.last.id, roster_id: roster.id, _destroy: false } } }
+          { memberships_attributes: { '0': { id: user.memberships.first.id, roster_id: roster.id, _destroy: false },
+                                      '1': { id: second_membership_id, roster_id: roster2.id, _destroy: true } } }
         end
 
-        it 'responds successfully' do
+        it 'redirects to the roster index' do
           submit
           expect(response).to redirect_to(roster_users_path(roster))
         end
 
-        it 'does not create new user' do
-          expect { submit }.not_to change(User, :count)
+        it 'keeps a membership' do
+          submit
+          expect(user.rosters).to include(roster)
         end
 
-        it 'does not create new membership' do
-          expect { submit }.not_to change(Membership, :count)
+        it 'removes a membership' do
+          submit
+          expect(user.rosters).not_to include(roster_2)
         end
       end
 
@@ -202,6 +219,7 @@ RSpec.describe 'Users' do
         end
       end
     end
+
     context 'when you are not a roster admin' do
       before { when_current_user_is create(:membership, roster:, admin: false).user }
 

@@ -16,9 +16,7 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-  def edit
-    Rails.logger.debug { "Current user memberships: #{Current.user.memberships.pluck(:roster_id, :admin).inspect}" }
-  end
+  def edit; end
 
   def create
     @user = User.new(user_params)
@@ -35,7 +33,7 @@ class UsersController < ApplicationController
   def update
     if @user.update(user_params)
       confirm_change(@user)
-      redirect_to update_redirect_path
+      redirect_to roster_users_path(@roster)
     else
       flash.now[:errors] = @user.errors.full_messages
       render :edit, status: :unprocessable_content
@@ -90,7 +88,7 @@ class UsersController < ApplicationController
   end
 
   def require_admin_in_roster_or_self
-    return if Current.user == @user || Current.user.admin_in?(@roster)
+    return if Current.user == @user || Current.user.admin?
 
     render file: 'public/401.html', status: :unauthorized
   end
