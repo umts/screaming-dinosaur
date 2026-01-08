@@ -20,12 +20,13 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.rosters += [@roster]
     if @user.save
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
     else
       flash.now[:errors] = @user.errors.full_messages
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
