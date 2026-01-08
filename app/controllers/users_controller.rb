@@ -36,7 +36,7 @@ class UsersController < ApplicationController
       redirect_to update_redirect_path
     else
       flash.now[:errors] = @user.errors.full_messages
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 

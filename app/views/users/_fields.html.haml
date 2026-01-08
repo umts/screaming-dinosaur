@@ -28,16 +28,12 @@
                                        class: 'form-check-input',
                                        disabled: !admin_in_roster }, 'false', 'true'
             .form-check-label= g.label :_destroy, g.object.roster.name
-  %legend.legend-label
-    Admin in
-    = f.fields_for :memberships, memberships do |g|
-      = g.hidden_field :id
-      = g.hidden_field :roster_id
-      .list-group
-        - admin_in_roster = Current.user.admin_in? g.object.roster
-        .form-check
-          = g.check_box :admin, { checked: false, disabled: !admin_in_roster, class: 'form-check-input' }
-          .form-check-label= g.label :_destroy, g.object.roster.name
+        .list-group
+          - admin_in_roster = Current.user.admin_in? g.object.roster
+          .form-check
+            = g.check_box :admin, { checked: false, disabled: !admin_in_roster, class: 'form-check-input' }
+            .form-check-label= g.label :_destroy, "Admin in #{g.object.roster.name}"
+
 .mb-3
   .form-check
     = f.check_box :reminders_enabled, class: 'form-check-input'
