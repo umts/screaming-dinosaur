@@ -12,6 +12,7 @@ gem 'icalendar'
 gem 'irb'
 gem 'jbuilder'
 gem 'jsbundling-rails'
+gem 'maintenance_tasks'
 gem 'net-http'
 # TODO: remove when we have modern glibc
 gem 'nokogiri', force_ruby_platform: true
