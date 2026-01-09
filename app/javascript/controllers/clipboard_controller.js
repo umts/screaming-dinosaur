@@ -6,9 +6,11 @@ export default class extends Controller {
   copy() {
     navigator.clipboard.writeText(this.sourceTarget.innerText).then(() => {
       this.indicatorTarget.classList.remove('fa-clipboard');
+      this.indicatorTarget.classList.add('fa-solid');
       this.indicatorTarget.classList.add('fa-check');
     }).catch(() => {
       this.indicatorTarget.classList.remove('fa-clipboard');
+      this.indicatorTarget.classList.add('fa-solid');
       this.indicatorTarget.classList.add('fa-xmark');
     });
   }
@@ -16,6 +18,7 @@ export default class extends Controller {
   reset() {
     this.indicatorTarget.classList.remove('fa-check');
     this.indicatorTarget.classList.remove('fa-xmark');
+    this.indicatorTarget.classList.remove('fa-solid');
     this.indicatorTarget.classList.add('fa-clipboard');
   }
 }
