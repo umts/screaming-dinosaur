@@ -1,29 +1,18 @@
-.justify-content-center.my-4
-  .row.justify-content-center
-    .col
-      .input-group
-        .input-group-text
-          - info_tooltip_data = { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions }
-          %span{ data: info_tooltip_data, aria: { label: 'Calendar feed information' }, tabindex: 0 }
-            %i.fa-solid.fa-circle-info
-            %span#clip-info.visually-hidden= calendar_instructions
-        :ruby
-          roster_name = roster.name.parameterize
-          token = Current.user.calendar_access_token
-          url = feed_url(roster: roster_name, token: token, format: :ics)
-        = text_field_tag :access_token,
-                         url,
-                         readonly: true, class: 'form-control',
-                         aria: { label: 'Calendar feed URL', described_by: 'clip-info' }
-        - clipboard_tooltip_data = { 'bs-toggle': 'tooltip',
-                                     'bs-placement': 'top',
-                                     'bs-title': 'Copy to clipboard',
-                                     content: url,
-                                     success: 'Copied successfully!',
-                                     error: 'Unable to copy.' }
-        %button.btn.btn-outline-secondary.copy-tooltip{ data: clipboard_tooltip_data, aria: { label: 'Copy' } }
-          %i.fa-regular.fa-clipboard
-    .col
-      = link_to roster_assignments_path(roster, format: :csv), class: 'btn btn-outline-secondary' do
-        CSV Overview
-        %i.fa-solid.fa-download
+.d-flex.gap-3
+  .flex-grow-1
+    .input-group{ 'data-controller': 'clipboard' }
+      .input-group-text
+        - info_tooltip_data = { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions }
+        %span{ data: info_tooltip_data, aria: { label: 'Calendar feed information' }, tabindex: 0 }
+          %i.fa-solid.fa-circle-info
+          %span#clip-info.visually-hidden= calendar_instructions
+      .form-control
+        .text-nowrap.overflow-hidden{ 'data-clipboard-target': 'source' }
+          = feed_url(roster: roster.name.parameterize, token: Current.user.calendar_access_token, format: :ics)
+      = button_tag type: 'button', class: 'btn btn-outline-secondary', 'data-action': 'clipboard#copy' do
+        %i.fa-fw.fa-regular.fa-clipboard
+        Copy
+  .flex-grow-0
+    = link_to roster_assignments_path(roster, format: :csv), class: 'btn btn-outline-secondary text-nowrap' do
+      %i.fa-solid.fa-download
+      CSV Overview

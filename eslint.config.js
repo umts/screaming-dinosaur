@@ -21,6 +21,7 @@ module.exports = [
       ...js.configs.recommended.rules,
       ...googleConfig.rules,
       'max-len': ['error', {code: 120}],
+      'require-jsdoc': 'off',
     },
   },
   {
