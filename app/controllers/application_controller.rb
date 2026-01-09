@@ -2,10 +2,12 @@
 
 class ApplicationController < ActionController::Base
   before_action :set_current_user
+  before_action :set_roster
+
+  authorize :user, through: -> { Current.user }
+  verify_authorized
 
   protected
-
-  def current_user = Current.user
 
   def confirm_change(object, message = nil)
     # Rubocop can't tell whether we're redirecting after this or not.
@@ -35,7 +37,15 @@ class ApplicationController < ActionController::Base
     # :nocov:
   end
 
+  def set_roster
+    @roster = Roster.friendly.find(params[:roster_id], allow_nil: true) || Current.user&.rosters&.first || Roster.first
+  end
+
   def shibboleth_spire = request.env['fcIdNumber']
 
   def shibboleth_primary_account? = request.env['UMAPrimaryAccount'] == request.env['uid']
+
+  class << self
+    def api_accessible(**); end
+  end
 end

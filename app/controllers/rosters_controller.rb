@@ -8,6 +8,7 @@ class RostersController < ApplicationController
   before_action :require_admin_in_roster, only: %i[destroy edit setup update]
 
   def assignments
+    authorize!
     redirect_to roster_assignments_path(@roster)
   end
 
