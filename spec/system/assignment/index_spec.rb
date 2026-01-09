@@ -15,14 +15,13 @@ RSpec.describe 'viewing the index' do
       expect(page).to have_text 'Use this address to subscribe'
     end
 
-    it 'displays click to copy tooltip' do
-      find('.copy-tooltip').hover
-      expect(page).to have_text 'Copy to clipboard'
+    it 'displays button to copy ics' do
+      expect(page).to have_css('button > i.fa-clipboard')
     end
 
     it 'copys link on button press' do
-      find('.copy-tooltip').click.hover
-      expect(page).to have_text 'Copied successfully!'
+      click_button 'Copy'
+      expect(page).to have_css('button > i.fa-check')
     end
   end
 
