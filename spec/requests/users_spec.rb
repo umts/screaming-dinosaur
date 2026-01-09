@@ -218,7 +218,7 @@ RSpec.describe 'Users' do
 
         it 'updates the user attributes' do
           submit
-          expect(user).to have_attributes(user_attributes)
+          expect(user.reload).to have_attributes(user_attributes)
         end
 
         it 'removes admin status' do
