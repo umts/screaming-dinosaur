@@ -9,8 +9,9 @@
       .form-control
         .text-nowrap.overflow-hidden{ 'data-clipboard-target': 'source' }
           = feed_url(roster: roster.name.parameterize, token: Current.user.calendar_access_token, format: :ics)
+      -# TODO: Attach reset action to hover (mouseenter?).
       = button_tag type: 'button', class: 'btn btn-outline-secondary', 'data-action': 'clipboard#copy' do
-        %i.fa-fw.fa-regular.fa-clipboard
+        %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'indicator' }
         Copy
   .flex-grow-0
     = link_to roster_assignments_path(roster, format: :csv), class: 'btn btn-outline-secondary text-nowrap' do
