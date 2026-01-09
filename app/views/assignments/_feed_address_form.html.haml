@@ -10,7 +10,9 @@
         .text-nowrap.overflow-hidden{ 'data-clipboard-target': 'source' }
           = feed_url(roster: roster.name.parameterize, token: Current.user.calendar_access_token, format: :ics)
       -# TODO: Attach reset action to hover (mouseenter?).
-      = button_tag type: 'button', class: 'btn btn-outline-secondary', 'data-action': 'clipboard#copy' do
+      = button_tag type: 'button',
+                   class: 'btn btn-outline-secondary',
+                   'data-action': 'clipboard#copy mouseover->clipboard#reset' do
         %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'indicator' }
         Copy
   .flex-grow-0

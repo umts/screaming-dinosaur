@@ -25,3 +25,7 @@
   float: none;
   margin-bottom: bootstrap.$form-label-margin-bottom;
 }
+
+.no-pointer-events {
+  pointer-events: none;
+}
