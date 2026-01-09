@@ -31,8 +31,10 @@
         .list-group
           - admin_in_roster = Current.user.admin_in? g.object.roster
           .form-check
-            = g.check_box :admin, { checked: false, disabled: !admin_in_roster, class: 'form-check-input' }
-            .form-check-label= g.label :_destroy, "Admin in #{g.object.roster.name}"
+            = g.check_box :admin, { checked: false,
+                                    disabled: !admin_in_roster || g.object.roster.admins.one?,
+                                    class: 'form-check-input' }
+            .form-check-label= g.label :admin, "Admin in #{g.object.roster.name}"
 
 .mb-3
   .form-check

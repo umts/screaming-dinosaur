@@ -10,7 +10,7 @@ RSpec.describe 'user editing' do
     context 'when they are the only admin' do
       it 'is prohibitted to make yourself a non-admin' do
         visit edit_user_path(user)
-        expect(page).to have_field(id: /user_memberships_attributes_\d+_admin/, type: 'checkbox', disabled: true)
+        expect(page).to have_field("Admin in #{roster.name}", disabled: true)
       end
     end
 
@@ -19,10 +19,7 @@ RSpec.describe 'user editing' do
 
       it 'is allowed to make yourself a non-admin' do
         visit edit_user_path(user)
-        expect(page).to have_field(id: /user_memberships_attributes_\d+_admin/, type: 'checkbox', disabled: false)
-
-        # expect(page).to have_field(name: "user[memberships_attributes][#{roster.id}][admin]",
-        #                            type: 'checkbox', disabled: false)
+        expect(page).to have_field("Admin in #{roster.name}", disabled: false)
       end
     end
   end
