@@ -39,7 +39,7 @@ RSpec.describe 'Users' do
   end
 
   describe 'GET /rosters/:id/users/new' do
-    subject(:call) { get "/rosters/#{roster.id}/users" }
+    subject(:call) { get "/rosters/#{roster.id}/users/new" }
 
     let(:roster) { create :roster }
 

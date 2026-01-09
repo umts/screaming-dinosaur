@@ -33,7 +33,7 @@ class UsersController < ApplicationController
   def update
     if @user.update(user_params)
       confirm_change(@user)
-      redirect_to roster_users_path(@roster)
+      redirect_to update_redirect_path
     else
       flash.now[:errors] = @user.errors.full_messages
       render :edit, status: :unprocessable_content
@@ -69,13 +69,6 @@ class UsersController < ApplicationController
       p[:memberships_attributes]&.select! do |_, values|
         Current.user.admin_in? Roster.find(values[:roster_id])
       end
-    end
-  end
-
-  def new_roster_ids(given_roster_ids)
-    (@user&.roster_ids || []).then do |roster_ids|
-      roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && Current.user.admin_in?(roster_id) }
-      roster_ids | (given_roster_ids & Current.user.memberships.where(admin: true).map(&:roster_id))
     end
   end
 
