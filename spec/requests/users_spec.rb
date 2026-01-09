@@ -165,20 +165,21 @@ RSpec.describe 'Users' do
   end
 
   describe 'PATCH /users/:id' do
-    subject(:submit) { patch "/users/#{user.id}", params: { user: attributes, roster_id: roster.id } }
+    subject(:submit) { patch "/users/#{user.id}", params: { user: attributes } }
 
     let(:user) { create :user }
     let(:roster) { user.rosters.first }
     let(:roster2) { create :roster, name: 'Second Roster' }
     let(:roster_third) { create :roster, name: 'Third Roster' }
-    let(:second_membership_id) { Membership.create(user:, roster: roster2).id }
-    let(:third_membership_id) { Membership.create(user:, roster: roster_third, admin: true).id }
+    let(:second_membership_id) { Membership.create(user: user, roster: roster2).id }
+    let(:third_membership_id) { Membership.create(user: user, roster: roster_third, admin: true).id }
 
     context 'when you are a roster admin' do
       include_context 'when you are the roster admin'
 
       before do
         roster.update(name: 'First Roster')
+        user.update(first_name: 'TESTSUBJECT')
         admin.memberships.create(roster: roster_third, admin: true)
       end
 
@@ -191,7 +192,7 @@ RSpec.describe 'Users' do
             email: 'bobo@test.com',
             phone: '(413) 586-1021',
             active: true,
-            reminders_enabled: true,
+            reminders_enabled: false,
             change_notifications_enabled: true }
         end
         let(:memberships_attributes) do
@@ -213,6 +214,11 @@ RSpec.describe 'Users' do
         it 'removes a membership' do
           submit
           expect(user.rosters).not_to include(roster2)
+        end
+
+        it 'updates the user attributes' do
+          submit
+          expect(user).to have_attributes(user_attributes)
         end
 
         it 'removes admin status' do
