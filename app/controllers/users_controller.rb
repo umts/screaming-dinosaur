@@ -56,7 +56,7 @@ class UsersController < ApplicationController
     else
       flash[:errors] = @user.errors.full_messages
     end
-    redirect_to roster_users_path(params[:roster_id])
+    redirect_to roster_users_path(@roster)
   end
 
   private

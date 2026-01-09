@@ -170,12 +170,17 @@ RSpec.describe 'Users' do
     let(:user) { create :user }
     let(:roster) { user.rosters.first }
     let(:roster2) { create :roster, name: 'Second Roster' }
+    let(:roster_third) { create :roster, name: 'Third Roster' }
     let(:second_membership_id) { Membership.create(user:, roster: roster2).id }
+    let(:third_membership_id) { Membership.create(user:, roster: roster_third, admin: true).id }
 
     context 'when you are a roster admin' do
-      before { roster.update(name: 'First Roster') }
-
       include_context 'when you are the roster admin'
+
+      before do
+        roster.update(name: 'First Roster')
+        admin.memberships.create(roster: roster_third, admin: true)
+      end
 
       context 'with valid attributes' do
         let(:attributes) { user_attributes.merge(memberships_attributes) }
@@ -191,7 +196,8 @@ RSpec.describe 'Users' do
         end
         let(:memberships_attributes) do
           { memberships_attributes: { '0': { id: user.memberships.first.id, roster_id: roster.id, _destroy: false },
-                                      '1': { id: second_membership_id, roster_id: roster2.id, _destroy: true } } }
+                                      '1': { id: second_membership_id, roster_id: roster2.id, _destroy: true },
+                                      '2': { id: third_membership_id, roster_id: roster_third.id, admin: false } } }
         end
 
         it 'redirects to the roster index' do
@@ -206,7 +212,12 @@ RSpec.describe 'Users' do
 
         it 'removes a membership' do
           submit
-          expect(user.rosters).not_to include(roster_2)
+          expect(user.rosters).not_to include(roster2)
+        end
+
+        it 'removes admin status' do
+          submit
+          expect(user.memberships.find(third_membership_id)).to have_attributes(admin: false)
         end
       end
 
@@ -233,10 +244,61 @@ RSpec.describe 'Users' do
   end
 
   describe 'DELETE /users/:id' do
-    return
+    subject(:call) { delete "/users/#{user.id}", params: { roster_id: roster.id } }
+
+    let(:user) { create :user }
+    let(:roster) { user.rosters.first }
+
+    context 'when you are not a roster admin' do
+      before { set_user create(:membership, roster:, admin: false).user }
+
+      it 'responds with an unauthorized status code' do
+        call
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'when you are a roster admin' do
+      include_context 'when you are the roster admin'
+      it 'redirect to the roster index' do
+        call
+        expect(response).to redirect_to(roster_users_path(roster))
+      end
+
+      it 'deletes the user' do
+        expect { call }.to change(User, :count).by(-1)
+      end
+    end
   end
 
   describe 'POST /rosters/:id/users/transfer' do
-    return
+    subject(:call) { post "/rosters/#{roster.slug}/users/transfer", params: { id: user.id } }
+
+    let(:user) { create :user }
+    let(:roster) { create :roster }
+
+    context 'when you are not a roster admin' do
+      before { set_user create(:membership, roster:, admin: false).user }
+
+      it 'responds with an unauthorized status code' do
+        call
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'when you are a roster admin' do
+      include_context 'when you are the roster admin'
+
+      before { user.memberships.delete_all }
+
+      it 'responds successfully' do
+        expect { call }.to change(roster.users, :count).by(1)
+      end
+
+      it 'adds the user to the roster' do
+        call
+        expect(roster.users).to include(user)
+      end
+    end
   end
 end
