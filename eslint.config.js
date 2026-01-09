@@ -7,6 +7,7 @@ module.exports = [
     ignores: [
       '.bundle/*',
       'app/assets/builds/*',
+      'app/javascript/controllers/index.js',
       'coverage/*',
       'node_modules/*',
       'public/assets/*',
