@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def current_user = Current.user
+
   def confirm_change(object, message = nil)
     # Rubocop can't tell whether we're redirecting after this or not.
     # rubocop:disable Rails/ActionControllerFlashBeforeRender
