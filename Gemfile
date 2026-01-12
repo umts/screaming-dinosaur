@@ -18,7 +18,8 @@ gem 'nokogiri', force_ruby_platform: true
 gem 'paper_trail'
 gem 'phonelib'
 gem 'propshaft'
-gem 'rails', '~> 8.1.1'
+gem 'rails', '~> 8.1.2'
+gem 'stimulus-rails'
 gem 'trilogy'
 gem 'whenever', require: false
 
