@@ -1,9 +1,8 @@
-%h1 Login failure
-%p
-  You have successfully logged into the UMass system, but you are not
-  authorized to access this particular application. If you believe
-  you are receiving this message in error, please contact
-  = succeed '.' do
+= render layout: 'layouts/section', locals: { heading: 'Login failure' } do
+  %p
+    You have successfully logged into the UMass system, but you are not
+    authorized to access this particular application. If you believe
+    you are receiving this message in error, please contact
     = mail_to 'transit-it@admin.umass.edu'
-%p
-  = link_to 'Logout', destroy_session_path
+  %p
+    = link_to 'Logout', destroy_session_path

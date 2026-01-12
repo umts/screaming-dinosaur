@@ -7,6 +7,7 @@ module.exports = [
     ignores: [
       '.bundle/*',
       'app/assets/builds/*',
+      'app/javascript/controllers/index.js',
       'coverage/*',
       'node_modules/*',
       'public/assets/*',
@@ -20,6 +21,7 @@ module.exports = [
       ...js.configs.recommended.rules,
       ...googleConfig.rules,
       'max-len': ['error', {code: 120}],
+      'require-jsdoc': 'off',
     },
   },
   {

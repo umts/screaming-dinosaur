@@ -14,3 +14,14 @@
 );
 @use "assignments";
 @use "assignments/calendar";
+
+.column-compact {
+  width: 1px;
+}
+
+.legend-label {
+  display: inline-block;
+  font-size: inherit;
+  float: none;
+  margin-bottom: bootstrap.$form-label-margin-bottom;
+}
