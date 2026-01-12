@@ -24,6 +24,10 @@ class RostersController < ApplicationController
     end
   end
 
+  def new
+    authorize!
+  end
+
   def edit; end
 
   def create
