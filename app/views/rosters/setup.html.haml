@@ -17,9 +17,21 @@
       - if @roster.fallback_user.present?
         %li
           Set the failure handler to a TwiML Bin containing
-          .card.w-75
+          .card.w-75{ 'data-controller': 'clipboard' }
+            .card-header
+              .d-flex.align-end
+                .flex-grow-1
+                  %strong Failure handler
+                .d-flex
+                  = button_tag type: 'button',
+                               class: 'btn btn-sm lh-1',
+                               'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
+                    %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
+                    %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
+                    %i.fa-fw.fa-solid.fa-xmark{ hidden: true, 'data-clipboard-target': 'errorIndicator' }
+                    Copy
             .card-body
-              %pre.m-0
+              %pre.m-0{ 'data-clipboard-target': 'source' }
                 - xml = render template: 'twilio/call', formats: :xml,
                                locals: { user: @roster.fallback_user, fallback: true }
                 = String.new(xml)
@@ -32,9 +44,21 @@
       - if @roster.fallback_user.present?
         %li
           Set the failure handler to a TwiML Bin containing
-          .card.w-75
+          .card.w-75{ 'data-controller': 'clipboard' }
+            .card-header
+              .d-flex.align-end
+                .flex-grow-1
+                  %strong Failure handler
+                .d-flex
+                  = button_tag type: 'button',
+                               class: 'btn btn-sm lh-1',
+                               'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
+                    %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
+                    %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
+                    %i.fa-fw.fa-solid.fa-xmark{ hidden: true, 'data-clipboard-target': 'errorIndicator' }
+                    Copy
             .card-body
-              %pre.m-0
+              %pre.m-0{ 'data-clipboard-target': 'source' }
                 - xml = render template: 'twilio/text', formats: :xml,
                                locals: { user: @roster.fallback_user, body: '{{Body}}', fallback: true }
                 = String.new(xml)
