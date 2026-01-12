@@ -60,6 +60,7 @@ class RostersController < ApplicationController
   def setup; end
 
   def destroy
+    authorize! @roster
     @roster.destroy
     confirm_change(@roster, 'Roster and any assignments have been deleted.')
     redirect_to rosters_path

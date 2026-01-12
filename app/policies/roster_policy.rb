@@ -9,5 +9,7 @@ class RosterPolicy < ApplicationPolicy
   def edit? = user&.admin_in?(record)
   alias update? edit?
 
+  def destroy? = user&.admin_in?(record)
+
   def assignments? = user.present?
 end

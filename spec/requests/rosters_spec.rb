@@ -171,6 +171,35 @@ RSpec.describe 'Rosters' do
     end
   end
 
+  describe 'DELETE /rosters/:id' do
+    subject(:submit) { delete "/rosters/#{roster.id}" }
+
+    let!(:roster) { create :roster }
+
+    context 'when logged in as an admin for a different roster' do
+      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as an admin for the given roster' do
+      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+
+      it 'redirects to all rosters' do
+        submit
+        expect(response).to redirect_to(rosters_path)
+      end
+
+      it 'destroys the given roster' do
+        submit
+        expect(Roster.find_by(id: roster.id)).to be_nil
+      end
+    end
+  end
+
   describe 'GET /rosters/assignments' do
     subject(:call) { get '/rosters/assignments' }
 
