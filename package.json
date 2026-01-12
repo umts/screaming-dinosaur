@@ -7,6 +7,7 @@
     "@fullcalendar/bootstrap5": "*",
     "@fullcalendar/core": "*",
     "@fullcalendar/daygrid": "*",
+    "@hotwired/stimulus": "*",
     "@popperjs/core": "^2.11.8",
     "autoprefixer": "*",
     "bootstrap": "^5.3.8",

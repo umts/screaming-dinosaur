@@ -1,7 +1,7 @@
 import Rails from '@rails/ujs';
 import {Tooltip} from 'bootstrap';
 import './calendar.js';
-import './copyTooltip.js';
+import './controllers/index.js';
 
 Rails.start();
 
