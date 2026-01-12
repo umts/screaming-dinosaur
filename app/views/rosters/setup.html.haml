@@ -26,7 +26,9 @@
                   = button_tag type: 'button',
                                class: 'btn btn-sm lh-1',
                                'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
-                    %i.fa-fw.fa-regular.fa-clipboard.lh-1{ 'data-clipboard-target': 'indicator' }
+                    %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
+                    %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
+                    %i.fa-fw.fa-solid.fa-xmark{ hidden: true, 'data-clipboard-target': 'errorIndicator' }
                     Copy
             .card-body
               %pre.m-0{ 'data-clipboard-target': 'source' }
@@ -51,7 +53,9 @@
                   = button_tag type: 'button',
                                class: 'btn btn-sm lh-1',
                                'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
-                    %i.fa-fw.fa-regular.fa-clipboard.lh-1{ 'data-clipboard-target': 'indicator' }
+                    %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
+                    %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
+                    %i.fa-fw.fa-solid.fa-xmark{ hidden: true, 'data-clipboard-target': 'errorIndicator' }
                     Copy
             .card-body
               %pre.m-0{ 'data-clipboard-target': 'source' }

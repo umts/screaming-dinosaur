@@ -1,24 +1,30 @@
 import {Controller} from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static targets = ['source', 'indicator'];
+  static targets = ['source', 'promptIndicator', 'successIndicator', 'errorIndicator'];
 
   copy() {
     navigator.clipboard.writeText(this.sourceTarget.innerText).then(() => {
-      this.indicatorTarget.classList.remove('fa-clipboard');
-      this.indicatorTarget.classList.add('fa-solid');
-      this.indicatorTarget.classList.add('fa-check');
+      this.#hideIndicators();
+      this.successIndicatorTargets.forEach((target) => target.hidden = false);
     }).catch(() => {
-      this.indicatorTarget.classList.remove('fa-clipboard');
-      this.indicatorTarget.classList.add('fa-solid');
-      this.indicatorTarget.classList.add('fa-xmark');
+      this.#hideIndicators();
+      this.errorIndicatorTargets.forEach((target) => target.hidden = false);
     });
   }
 
   reset() {
-    this.indicatorTarget.classList.remove('fa-check');
-    this.indicatorTarget.classList.remove('fa-xmark');
-    this.indicatorTarget.classList.remove('fa-solid');
-    this.indicatorTarget.classList.add('fa-clipboard');
+    this.#hideIndicators();
+    this.promptIndicatorTargets.forEach((target) => target.hidden = false);
+  }
+
+  #hideIndicators() {
+    [
+      ...this.promptIndicatorTargets,
+      ...this.successIndicatorTargets,
+      ...this.errorIndicatorTargets,
+    ].forEach((target) => {
+      target.hidden = true;
+    });
   }
 }
