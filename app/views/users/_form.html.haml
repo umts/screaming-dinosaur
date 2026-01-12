@@ -36,7 +36,7 @@
       = f.check_box :change_notifications_enabled, class: 'form-check-input'
       = f.label :change_notifications_enabled,
                 'Receive notifications when assignments are changed?', class: 'form-check-label'
-  - if Current.user.admin_in? roster
+  - if allowed_to? :update?, context: { roster: }
     - membership = user.membership_in roster
     = f.fields_for membership || :membership do |g|
       .mb-3

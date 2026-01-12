@@ -2,10 +2,11 @@
 
 class UsersController < ApplicationController
   before_action :find_user, except: %i[create index new]
-  before_action :require_admin_in_roster_or_self, only: %i[edit update]
-  before_action :require_admin_in_roster, except: %i[edit update]
+  # before_action :require_admin_in_roster_or_self, only: %i[edit update]
+  # before_action :require_admin_in_roster, except: %i[edit update]
 
   def index
+    authorize! context: { roster: @roster }
     @fallback = @roster.fallback_user
     @active = !params[:active]
     @users = @roster.users.where active: @active
@@ -13,12 +14,16 @@ class UsersController < ApplicationController
   end
 
   def new
+    authorize! context: { roster: @roster }
     @user = User.new
   end
 
-  def edit; end
+  def edit
+    authorize! @user, context: { roster: @roster }
+  end
 
   def create
+    authorize! context: { roster: @roster }
     @user = User.new(user_params.except(:membership))
     membership_params = user_params[:membership]
     if @user.save && update_membership(membership_params)
@@ -31,17 +36,19 @@ class UsersController < ApplicationController
   end
 
   def update
+    authorize! @user, context: { roster: @roster }
     membership_params = user_params[:membership]
     if @user.update(user_params.except(:membership)) && update_membership(membership_params)
       confirm_change(@user)
       redirect_to update_redirect_path
     else
       flash.now[:errors] = @user.errors.full_messages
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 
   def transfer
+    authorize! context: { roster: @roster }
     @user.rosters += [@roster]
     if @user.save
       confirm_change(@user, "Added #{@user.full_name} to roster.")
@@ -52,12 +59,13 @@ class UsersController < ApplicationController
   end
 
   def destroy
+    authorize! context: { roster: @roster }
     if @user.destroy
       confirm_change(@user)
     else
       flash[:errors] = @user.errors.full_messages
     end
-    redirect_to roster_users_path
+    redirect_to roster_users_path(@roster)
   end
 
   private
@@ -84,7 +92,7 @@ class UsersController < ApplicationController
 
   # rubocop:disable Naming/PredicateMethod
   def update_membership(membership_params)
-    return true unless membership_params.present? && Current.user.admin_in?(@roster)
+    return true unless membership_params.present? && allowed_to?(:update?, @user, context: { roster: @roster })
 
     membership = @user.membership_in @roster
     return true if membership.nil?
@@ -97,7 +105,7 @@ class UsersController < ApplicationController
   # rubocop:enable Naming/PredicateMethod
 
   def update_redirect_path
-    Current.user.admin_in?(@roster) ? roster_users_path(@roster) : roster_assignments_path(@roster)
+    allowed_to?(:index?, context: { roster: @roster }) ? roster_users_path(@roster) : roster_assignments_path(@roster)
   end
 
   def require_admin_in_roster_or_self
