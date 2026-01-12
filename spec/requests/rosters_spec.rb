@@ -1,6 +1,28 @@
 # frozen_string_literal: true
 
-RSpec.describe RostersController do
+RSpec.describe 'Rosters' do
+  describe 'GET /rosters' do
+    subject(:call) { get '/rosters' }
+
+    context 'when logged in as a user' do
+      before { login_as create(:user) }
+
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a roster admin' do
+      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+    end
+  end
+
   describe 'GET /rosters/assignments' do
     subject(:call) { get '/rosters/assignments' }
 

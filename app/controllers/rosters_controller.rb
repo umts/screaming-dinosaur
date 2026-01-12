@@ -4,8 +4,8 @@ class RostersController < ApplicationController
   api_accessible only: :show
 
   before_action :find_roster, only: %i[destroy edit setup show update]
-  before_action :require_admin, except: %i[assignments show]
-  before_action :require_admin_in_roster, only: %i[destroy edit setup update]
+  # before_action :require_admin, except: %i[assignments show]
+  # before_action :require_admin_in_roster, only: %i[destroy edit setup update]
 
   def assignments
     authorize!
@@ -13,6 +13,7 @@ class RostersController < ApplicationController
   end
 
   def index
+    authorize!
     @rosters = Roster.all
   end
 
