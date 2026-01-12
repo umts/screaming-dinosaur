@@ -28,7 +28,9 @@ class RostersController < ApplicationController
     authorize!
   end
 
-  def edit; end
+  def edit
+    authorize! @roster
+  end
 
   def create
     @roster = Roster.new roster_params

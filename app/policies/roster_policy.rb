@@ -5,5 +5,7 @@ class RosterPolicy < ApplicationPolicy
 
   def new? = user&.admin?
 
+  def edit? = user&.admin_in?(record)
+
   def assignments? = user.present?
 end
