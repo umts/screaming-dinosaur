@@ -224,6 +224,30 @@ RSpec.describe 'Rosters' do
     end
   end
 
+  describe 'GET /rosters/:id/setup' do
+    subject(:call) { get "/rosters/#{roster.id}/setup" }
+
+    let!(:roster) { create :roster }
+
+    context 'when logged in as an admin for a different roster' do
+      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as an admin for the given roster' do
+      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+    end
+  end
+
   describe 'JSON #index' do
     subject(:json) do
       when_current_user_is :anyone

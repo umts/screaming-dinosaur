@@ -12,4 +12,6 @@ class RosterPolicy < ApplicationPolicy
   def destroy? = user&.admin_in?(record)
 
   def assignments? = user.present?
+
+  def setup? = user&.admin_in?(record)
 end

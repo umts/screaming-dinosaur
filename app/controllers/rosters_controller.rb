@@ -7,11 +7,6 @@ class RostersController < ApplicationController
   # before_action :require_admin, except: %i[assignments show]
   # before_action :require_admin_in_roster, only: %i[destroy edit setup update]
 
-  def assignments
-    authorize!
-    redirect_to roster_assignments_path(@roster)
-  end
-
   def index
     authorize!
     @rosters = Roster.all
@@ -57,13 +52,20 @@ class RostersController < ApplicationController
     end
   end
 
-  def setup; end
-
   def destroy
     authorize! @roster
     @roster.destroy
     confirm_change(@roster, 'Roster and any assignments have been deleted.')
     redirect_to rosters_path
+  end
+
+  def assignments
+    authorize!
+    redirect_to roster_assignments_path(@roster)
+  end
+
+  def setup
+    authorize! @roster
   end
 
   private
