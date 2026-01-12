@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_06_03_145306) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_12_150633) do
   create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.date "end_date"
@@ -43,6 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_06_03_145306) do
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.boolean "active", default: true
+    t.boolean "admin", default: false, null: false
     t.string "calendar_access_token"
     t.boolean "change_notifications_enabled", default: true
     t.datetime "created_at", precision: nil, null: false
