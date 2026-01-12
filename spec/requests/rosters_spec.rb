@@ -69,6 +69,108 @@ RSpec.describe 'Rosters' do
     end
   end
 
+  describe 'POST /rosters' do
+    subject(:submit) { post '/rosters', params: { roster: attributes } }
+
+    context 'when logged in as a normal user' do
+      let(:attributes) { nil }
+
+      before { login_as create(:user) }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a roster admin' do
+      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+
+      context 'with valid attributes' do
+        let(:attributes) { { name: 'Test Roster', phone: '14135451451', switchover_time: '13:15' } }
+
+        it 'redirects to all rosters' do
+          submit
+          expect(response).to redirect_to(rosters_path)
+        end
+
+        it 'creates a roster' do
+          expect { submit }.to change(Roster, :count).by(1)
+        end
+
+        it 'creates a roster with the given attributes' do
+          submit
+          expect(Roster.last).to have_attributes(
+            attributes.except(:switchover_time).merge(switchover: (13.hours + 15.minutes).in_minutes)
+          )
+        end
+      end
+
+      context 'with invalid attributes' do
+        let(:attributes) { { name: nil, phone: nil, switchover_time: nil } }
+
+        it 'responds with an unprocessable entity status' do
+          submit
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it 'does not create a roster' do
+          expect { submit }.not_to change(Roster, :count)
+        end
+      end
+    end
+  end
+
+  describe 'PATCH /rosters/:id' do
+    subject(:submit) { patch "/rosters/#{roster.id}", params: { roster: attributes } }
+
+    let!(:roster) { create :roster }
+
+    context 'when logged in as an admin for a different roster' do
+      let(:attributes) { nil }
+
+      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as an admin for the given roster' do
+      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+
+      context 'with valid attributes' do
+        let(:attributes) { { name: 'Test Roster', phone: '14135451451', switchover_time: '13:15' } }
+
+        it 'redirects to all rosters' do
+          submit
+          expect(response).to redirect_to(rosters_path)
+        end
+
+        it 'updates the roster with the given attributes' do
+          submit
+          expect(roster.reload).to have_attributes(
+            attributes.except(:switchover_time).merge(switchover: (13.hours + 15.minutes).in_minutes)
+          )
+        end
+      end
+
+      context 'with invalid attributes' do
+        let(:attributes) { { name: nil, phone: nil, switchover_time: nil } }
+
+        it 'responds with an unprocessable entity status' do
+          submit
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it 'does not update the roster' do
+          expect { submit }.not_to(change { roster.reload.attributes })
+        end
+      end
+    end
+  end
+
   describe 'GET /rosters/assignments' do
     subject(:call) { get '/rosters/assignments' }
 

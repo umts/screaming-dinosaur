@@ -33,6 +33,7 @@ class RostersController < ApplicationController
   end
 
   def create
+    authorize!
     @roster = Roster.new roster_params
     if @roster.save
       # Current user becomes admin in new roster
@@ -46,6 +47,7 @@ class RostersController < ApplicationController
   end
 
   def update
+    authorize! @roster
     if @roster.update roster_params
       confirm_change(@roster)
       redirect_to rosters_path
