@@ -8,6 +8,29 @@ RSpec.describe 'Assignments' do
   end
 
   describe 'GET /rosters/:id/assignments' do
+    subject(:call) { get "/rosters/#{roster.id}/assignments" }
+
+    let(:roster) { create :roster }
+
+    context 'when not logged in' do
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a user' do
+      before { login_as create(:user) }
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+    end
+  end
+
+  # TODO: Merge with above.
+  describe 'GET /rosters/:id/assignments CSV' do
     subject(:call) { get "/rosters/#{roster.id}/assignments", headers: }
 
     let(:roster) { create :roster }

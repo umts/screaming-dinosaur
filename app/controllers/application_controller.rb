@@ -7,6 +7,11 @@ class ApplicationController < ActionController::Base
   authorize :user, through: -> { Current.user }
   verify_authorized
 
+  rescue_from ActionPolicy::Unauthorized do
+    # TODO: Implement further.
+    head :forbidden
+  end
+
   protected
 
   def confirm_change(object, message = nil)

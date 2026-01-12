@@ -8,7 +8,7 @@ class AssignmentsController < ApplicationController
   skip_before_action :set_current_user, :set_roster, only: :feed
 
   def index
-    authorize! context: { roster: @roster }
+    authorize!
     respond_to do |format|
       format.html { index_html }
       format.ics { render_ics_feed }

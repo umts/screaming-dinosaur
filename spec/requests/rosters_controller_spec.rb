@@ -1,7 +1,31 @@
 # frozen_string_literal: true
 
 RSpec.describe RostersController do
-  describe '#index' do
+  describe 'GET /rosters/assignments' do
+    subject(:call) { get '/rosters/assignments' }
+
+    let(:roster) { create :roster }
+
+    context 'when not logged in' do
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a user' do
+      let(:roster) { create :roster }
+
+      before { login_as create(:user, rosters: [roster]) }
+
+      it 'redirects to the primary roster of the user' do
+        call
+        expect(response).to redirect_to(roster_assignments_path(roster))
+      end
+    end
+  end
+
+  describe 'JSON #index' do
     subject(:json) do
       when_current_user_is :anyone
       get "/rosters/#{roster.to_param}.json"
