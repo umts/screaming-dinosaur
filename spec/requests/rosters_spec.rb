@@ -23,6 +23,40 @@ RSpec.describe 'Rosters' do
     end
   end
 
+  describe 'GET /rosters/:id' do
+    subject(:call) { get "/rosters/#{roster.id}", headers: { 'ACCEPT' => 'application/json' }, params: params }
+
+    let(:roster) { create :roster }
+    let(:params) { nil }
+
+    context 'when not logged in' do
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a user' do
+      before { login_as create(:user) }
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+    end
+
+    context 'with an api key' do
+      let(:params) { { api_key: 'test api key' } }
+
+      before { allow(Rails.application).to receive(:credentials).and_return({ api_key: 'test api key' }) }
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+    end
+  end
+
   describe 'GET /rosters/new' do
     subject(:call) { get '/rosters/new' }
 

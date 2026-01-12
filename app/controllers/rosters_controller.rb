@@ -13,6 +13,7 @@ class RostersController < ApplicationController
   end
 
   def show
+    authorize! @roster, context: { api_key: params[:api_key] }
     @upcoming = @roster.assignments.upcoming.order(:start_date)
     respond_to do |format|
       format.json { render layout: false }

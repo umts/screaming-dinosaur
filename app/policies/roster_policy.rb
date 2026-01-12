@@ -3,6 +3,8 @@
 class RosterPolicy < ApplicationPolicy
   def index? = user&.admin?
 
+  def show? = user.present? || valid_api_key?
+
   def new? = user&.admin?
   alias create? new?
 
