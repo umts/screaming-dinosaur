@@ -164,23 +164,32 @@ RSpec.describe 'Users' do
     end
   end
 
+  #
+  # Admin
+  # User
+  # Other_Amin
   describe 'PATCH /users/:id' do
     subject(:submit) { patch "/users/#{user.id}", params: { user: attributes } }
 
-    let(:user) { create :user }
-    let(:roster) { user.rosters.first }
-    let(:roster2) { create :roster, name: 'Second Roster' }
-    let(:roster_third) { create :roster, name: 'Third Roster' }
-    let(:second_membership_id) { Membership.create(user: user, roster: roster2).id }
-    let(:third_membership_id) { Membership.create(user: user, roster: roster_third, admin: true).id }
+    let(:rosters) { create_list :roster, 3 }
+    let(:user) do
+      create :user do |user|
+        user.rosters.delete_all
+        user.memberships.delete_all
+        user.memberships.create!(roster: rosters[0])
+        user.memberships.create!(roster: rosters[1])
+        user.memberships.create!(roster: rosters[2], admin: true)
+      end
+    end
+
+    let(:roster) { rosters.first }
 
     context 'when you are a roster admin' do
       include_context 'when you are the roster admin'
 
       before do
-        roster.update(name: 'First Roster')
-        user.update(first_name: 'TESTSUBJECT')
-        admin.memberships.create(roster: roster_third, admin: true)
+        admin.memberships.create!(roster: rosters[1], admin: true)
+        admin.memberships.create!(roster: rosters[2], admin: true)
       end
 
       context 'with valid attributes' do
@@ -196,9 +205,9 @@ RSpec.describe 'Users' do
             change_notifications_enabled: true }
         end
         let(:memberships_attributes) do
-          { memberships_attributes: { '0': { id: user.memberships.first.id, roster_id: roster.id, _destroy: false },
-                                      '1': { id: second_membership_id, roster_id: roster2.id, _destroy: true },
-                                      '2': { id: third_membership_id, roster_id: roster_third.id, admin: false } } }
+          { memberships_attributes: { '0': { id: user.memberships[0].id, roster_id: rosters[0].id, _destroy: false },
+                                      '1': { id: user.memberships[1].id, roster_id: rosters[1].id, _destroy: true },
+                                      '2': { id: user.memberships[2].id, roster_id: rosters[2].id, admin: false } } }
         end
 
         it 'redirects to the roster index' do
@@ -208,12 +217,12 @@ RSpec.describe 'Users' do
 
         it 'keeps a membership' do
           submit
-          expect(user.rosters).to include(roster)
+          expect(user.memberships.reload).to include(have_attributes(roster:, user:))
         end
 
         it 'removes a membership' do
           submit
-          expect(user.rosters).not_to include(roster2)
+          expect(user.memberships.reload).not_to include(have_attributes(roster: rosters[1], user:))
         end
 
         it 'updates the user attributes' do
@@ -223,7 +232,8 @@ RSpec.describe 'Users' do
 
         it 'removes admin status' do
           submit
-          expect(user.memberships.find(third_membership_id)).to have_attributes(admin: false)
+          user.memberships.reload
+          expect(user.memberships.find_by(roster: rosters[2])).to have_attributes(admin: false)
         end
       end
 
