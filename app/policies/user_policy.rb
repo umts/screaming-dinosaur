@@ -5,12 +5,10 @@ class UserPolicy < ApplicationPolicy
   def index? = user.present?
 
   def new? = user&.admin_in? roster
-
-  def create? = user&.admin_in? roster
+  alias create? new?
 
   def edit? = (user&.admin_in? roster) || (user == record)
-
-  def update? = (user&.admin_in? roster) || (user == record)
+  alias update? edit?
 
   def transfer? = user&.admin_in? roster
 

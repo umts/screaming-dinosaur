@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe UsersController do
+RSpec.describe 'Users' do
   describe 'GET /rosters/:id/users' do
     subject(:call) { get "/rosters/#{roster.id}/users" }
 
@@ -56,12 +56,13 @@ RSpec.describe UsersController do
   end
 
   describe 'POST /rosters/:id/users' do
-    subject(:submit) { post "/rosters/#{roster.id}/users", params: { user: attributes } }
+    subject(:submit) { post "/rosters/#{roster.id}/users", params: }
 
     let(:roster) { create :roster }
-    let(:attributes) { attributes_for :user }
 
     context 'when not logged in' do
+      let(:params) { nil }
+
       it 'responds with a forbidden status' do
         submit
         expect(response).to have_http_status(:forbidden)
@@ -69,15 +70,29 @@ RSpec.describe UsersController do
     end
 
     context 'when logged in as a roster admin' do
-      let(:roster) { create :roster }
+      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
 
-      before do
-        login_as Membership.create(user: (create :user), roster: roster, admin: true).user
+      context 'with valid attributes' do
+        let(:attributes) { attributes_for :user }
+        let(:params) { { user: attributes.merge(roster_ids: [roster.id]), roster_id: roster.id } }
+
+        it 'responds successfully' do
+          submit
+          expect(response).to redirect_to(roster_users_path(roster))
+        end
+
+        it 'creates a user' do
+          expect { submit }.to change(User, :count).by(1)
+        end
       end
 
-      it 'responds successfully' do
-        submit
-        expect(response).to be_successful
+      context 'with invalid attributes' do
+        let(:params) { { user: (attributes_for :user) } }
+
+        it 'response with unprocessable content' do
+          submit
+          expect(response).to have_http_status(:unprocessable_content)
+        end
       end
     end
   end
@@ -88,7 +103,7 @@ RSpec.describe UsersController do
     let(:user) { create :user }
     let(:roster) { user.rosters.first }
 
-    context 'when not logged in' do
+    context 'when logged in as another user' do
       it 'responds with a forbidden status' do
         call
         expect(response).to have_http_status(:forbidden)
@@ -97,7 +112,7 @@ RSpec.describe UsersController do
 
     context 'when logged in as a roster admin' do
       before do
-        login_as Membership.create(user: (create :user), roster: roster, admin: true).user
+        login_as create(:user, memberships: [build(:membership, roster:, admin: true)])
       end
 
       it 'responds successfully' do
@@ -132,7 +147,7 @@ RSpec.describe UsersController do
       end
     end
 
-    context 'when logged in as a roster admin' do
+    context 'when logged in as the roster admin' do
       before do
         login_as Membership.create(user: (create :user), roster: roster, admin: true).user
       end
@@ -151,6 +166,17 @@ RSpec.describe UsersController do
           submit
           expect(response).to have_http_status(:unprocessable_content)
         end
+      end
+    end
+
+    context 'when logged in a different roster admin' do
+      before do
+        login_as Membership.create(user: (create :user), roster: (create :roster), admin: true).user
+      end
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
       end
     end
 

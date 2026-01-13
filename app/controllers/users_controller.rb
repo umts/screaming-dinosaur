@@ -31,7 +31,7 @@ class UsersController < ApplicationController
       redirect_to roster_users_path(@roster)
     else
       flash.now[:errors] = @user.errors.full_messages
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
