@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AssignmentPolicy < ApplicationPolicy
+  authorize :roster, optional: true
+
   def index? = user.present?
 
   def new? = user.present?
@@ -12,6 +14,8 @@ class AssignmentPolicy < ApplicationPolicy
   def update? = user.present? && (user&.admin_in?(record.roster) || not_assigning_someone_else?)
 
   def destroy? = user&.admin_in?(record.roster)
+
+  def feed? = user&.member_of?(roster)
 
   private
 

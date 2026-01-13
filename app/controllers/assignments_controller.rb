@@ -5,7 +5,7 @@ require 'assignments_ics'
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
   before_action :set_roster_users, only: %i[edit new create update]
-  skip_before_action :set_current_user, :set_roster, only: :feed
+  before_action :allow_calendar_token_access, only: :feed
 
   def index
     authorize!
@@ -63,16 +63,10 @@ class AssignmentsController < ApplicationController
   end
 
   def feed
-    user = User.find_by(calendar_access_token: params[:token])
     roster = params[:roster].titleize.downcase
     @roster = Roster.where('lower(name) = ?', roster).first
-    if user.nil?
-      render file: 'public/404.html', layout: false, status: :not_found
-    elsif params[:format] == 'ics' && user.rosters.include?(@roster)
-      render_ics_feed
-    else
-      render file: 'public/401.html', layout: false, status: :unauthorized
-    end
+    authorize! context: { roster: @roster }
+    render_ics_feed
   end
 
   private
@@ -88,6 +82,10 @@ class AssignmentsController < ApplicationController
 
   def set_roster_users
     @users = @roster.users.active.order :last_name
+  end
+
+  def allow_calendar_token_access
+    Current.user ||= User.find_by(calendar_access_token: params[:token])
   end
 
   def index_html
