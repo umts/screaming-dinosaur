@@ -3,8 +3,6 @@
 class ChangesController < ApplicationController
   before_action :find_version
 
-  def implicit_authorization_target = self.class.controller_path.to_sym
-
   def undo
     authorize! context: { user_id: @version.whodunnit.to_i }
     # Reify only returns false when the thing didn't exist beforehand.
