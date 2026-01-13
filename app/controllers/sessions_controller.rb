@@ -21,4 +21,16 @@ class SessionsController < ApplicationController
       redirect_to '/Shibboleth.sso/Logout?return=https://webauth.umass.edu/saml2/idp/SingleLogoutService.php'
     end
   end
+
+  # route not defined in production
+  def dev_login
+    if request.get?
+      @rosters = Roster.includes(:users)
+    elsif request.post?
+      session[:user_id] = params[:user_id]
+      redirect_to root_path
+    end
+  end
+
+  def unauthenticated; end
 end

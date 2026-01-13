@@ -1,0 +1,10 @@
+= render layout: 'layouts/section', locals: { heading: 'On-Call Home' } do
+  - rosters = Current.user.rosters.filter { |roster| roster.assignments&.current&.user == Current.user }.map(&:name)
+  - if rosters.any?
+    .alert.alert-info
+      You are currently on call for:
+      %strong= rosters.join(', ')
+  - Current.user.rosters.each do |roster|
+    .card.mb-3
+      .card-body
+        = link_to roster.name, roster_assignments_path(roster)
