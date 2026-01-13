@@ -72,7 +72,7 @@ en:
     weekday_generators:
       perform:
         success: "Assignments have been generated."
-  changes:
+  versions:
     undo:
       change: "Change has been reverted."
       create: "%{item} has been deleted."

@@ -11,6 +11,10 @@ class User < ApplicationRecord
                               foreign_key: :fallback_user_id,
                               inverse_of: 'fallback_user',
                               dependent: :nullify
+  has_many :authored_versions, dependent: :restrict_with_error,
+                               class_name: 'Version',
+                               foreign_key: :whodunnit,
+                               inverse_of: :author
 
   validates :first_name, :last_name, :spire, :email, :phone, :rosters, presence: true
   validates :spire, :email, :phone, uniqueness: { case_sensitive: false }
