@@ -6,7 +6,9 @@ RSpec.describe 'Users' do
 
     let(:roster) { create :roster }
 
-    context 'when not logged in' do
+    context 'when logged in as a roster member' do
+      before { login_as Membership.create(user: (create :user), roster: roster, admin: false).user }
+
       it 'responds with a forbidden status' do
         call
         expect(response).to have_http_status(:forbidden)
@@ -16,11 +18,7 @@ RSpec.describe 'Users' do
     context 'when logged in as a roster admin' do
       let(:roster) { create :roster }
 
-      before do
-        login_as(create(:user, rosters: [roster]).tap do |u|
-          u.memberships.last.admin = true
-        end)
-      end
+      before { login_as Membership.create(user: (create :user), roster: roster, admin: true).user }
 
       it 'responds successfully' do
         call
@@ -34,7 +32,9 @@ RSpec.describe 'Users' do
 
     let(:roster) { create :roster }
 
-    context 'when not logged in' do
+    context 'when logged in as a roster member' do
+      before { login_as Membership.create(user: (create :user), roster: roster, admin: false).user }
+
       it 'responds with a forbidden status' do
         call
         expect(response).to have_http_status(:forbidden)
@@ -60,7 +60,9 @@ RSpec.describe 'Users' do
 
     let(:roster) { create :roster }
 
-    context 'when not logged in' do
+    context 'when logged in as a roster member' do
+      before { login_as Membership.create(user: (create :user), roster: roster, admin: false).user }
+
       let(:params) { nil }
 
       it 'responds with a forbidden status' do
@@ -188,7 +190,7 @@ RSpec.describe 'Users' do
       context 'with valid attributes' do
         it 'responds successfully' do
           submit
-          expect(response).to redirect_to(roster_users_path(roster))
+          expect(response).to redirect_to(roster_assignments_path(roster))
         end
       end
 
