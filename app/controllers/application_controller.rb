@@ -51,8 +51,4 @@ class ApplicationController < ActionController::Base
   def shibboleth_spire = request.env['fcIdNumber']
 
   def shibboleth_primary_account? = request.env['UMAPrimaryAccount'] == request.env['uid']
-
-  class << self
-    def api_accessible(**); end
-  end
 end
