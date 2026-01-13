@@ -13,10 +13,7 @@ class AssignmentsController < ApplicationController
       format.html { index_html }
       format.ics { render_ics_feed }
       format.json { index_json }
-      format.csv do
-        @roster = Roster.preload(assignments: :user).friendly.find(params[:roster_id])
-        render csv: @roster.assignment_csv, filename: @roster.name
-      end
+      format.csv { index_csv }
     end
   end
 
@@ -106,6 +103,11 @@ class AssignmentsController < ApplicationController
     end_date = Date.parse(params[:end_date])
     @assignments = @roster.assignments.between(start_date, end_date)
     render layout: false
+  end
+
+  def index_csv
+    @roster = Roster.preload(assignments: :user).friendly.find(params[:roster_id])
+    render csv: @roster.assignment_csv, filename: @roster.name
   end
 
   # If the user's being changed, we effectively inform of the change
