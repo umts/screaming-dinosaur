@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SessionPolicy < ApplicationPolicy
-  if Rails.env.local?
+  if Rails.env.development?
     def create? = true
   end
 
