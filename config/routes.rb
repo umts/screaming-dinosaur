@@ -30,8 +30,11 @@ Rails.application.routes.draw do
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
-
-  get 'changes/:id/undo', to: 'changes#undo', as: :undo_change
+  resources :versions do
+    member do
+      get 'undo'
+    end
+  end
 
   unless Rails.env.production?
     get  'sessions/dev_login', to: 'sessions#dev_login', as: :dev_login

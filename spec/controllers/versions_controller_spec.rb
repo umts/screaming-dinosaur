@@ -2,7 +2,7 @@
 
 require 'paper_trail/frameworks/rspec'
 
-RSpec.describe ChangesController do
+RSpec.describe VersionsController do
   describe 'GET #undo', :versioning do
     let(:change_user) { create :user }
     let(:assignment) { create :assignment }

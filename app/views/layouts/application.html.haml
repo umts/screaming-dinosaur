@@ -15,7 +15,7 @@
         .alert.alert-success{ role: 'alert' }
           = flash[:message]
           - if flash[:change].present?
-            (#{link_to 'undo', undo_change_path(flash[:change])})
+            (#{link_to 'undo', undo_version_path(flash[:change])})
       - if flash[:errors].present?
         .alert.alert-danger{ role: 'alert' }
           - if flash[:errors].is_a? Array
