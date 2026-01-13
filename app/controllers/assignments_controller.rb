@@ -18,12 +18,15 @@ class AssignmentsController < ApplicationController
   end
 
   def new
+    authorize!
     @start_date = Date.parse params.require(:date)
     @end_date = @start_date + 6.days
     @assignment = Assignment.new
   end
 
-  def edit; end
+  def edit
+    authorize!
+  end
 
   def create
     @assignment = Assignment.new assignment_params
