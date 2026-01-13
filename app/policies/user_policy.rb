@@ -2,7 +2,8 @@
 
 class UserPolicy < ApplicationPolicy
   authorize :roster
-  def index? = user.present?
+
+  def index? = user&.admin_in? roster
 
   def new? = user&.admin_in? roster
   alias create? new?
