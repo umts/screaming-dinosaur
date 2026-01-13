@@ -11,6 +11,8 @@ class AssignmentPolicy < ApplicationPolicy
 
   def update? = user.present? && (user&.admin_in?(record.roster) || not_assigning_someone_else?)
 
+  def destroy? = user&.admin_in?(record.roster)
+
   private
 
   def not_assigning_someone_else?

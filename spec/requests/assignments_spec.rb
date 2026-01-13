@@ -232,4 +232,34 @@ RSpec.describe 'Assignments' do
       end
     end
   end
+
+  describe 'DELETE /rosters/:id/assignments/:id' do
+    subject(:submit) { delete "/rosters/#{roster.id}/assignments/#{assignment.id}" }
+
+    let(:roster) { create :roster }
+    let(:assignment) { create :assignment, roster: }
+
+    context 'when logged in as an admin in another roster' do
+      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as an admin in the roster' do
+      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+
+      it 'redirects to all assignments' do
+        submit
+        expect(response).to redirect_to(roster_assignments_path(roster))
+      end
+
+      it 'destroys the assignment' do
+        submit
+        expect(Assignment.find_by(id: assignment.id)).to be_nil
+      end
+    end
+  end
 end

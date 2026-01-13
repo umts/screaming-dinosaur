@@ -55,15 +55,11 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
-    if Current.user.admin_in?(@roster)
-      @assignment.notify :owner, of: :deleted_assignment, by: Current.user
-      @assignment.destroy
-      confirm_change(@assignment)
-      redirect_to roster_assignments_path(@roster)
-    else
-      flash[:errors] = t('.not_an_admin')
-      redirect_to edit_roster_assignment_path(@roster, @assignment)
-    end
+    authorize! @assignment
+    @assignment.notify :owner, of: :deleted_assignment, by: Current.user
+    @assignment.destroy
+    confirm_change(@assignment)
+    redirect_to roster_assignments_path(@roster)
   end
 
   def feed
@@ -127,20 +123,5 @@ class AssignmentsController < ApplicationController
   def render_ics_feed
     ics = AssignmentsIcs.new(@roster.assignments)
     render plain: ics.output, content_type: 'text/calendar'
-  end
-
-  # rubocop:disable Naming/PredicateMethod
-  def require_taking_ownership(error_template: nil)
-    return true if Current.user.admin_in?(@roster) || taking_ownership?
-
-    flash.now[:errors] = t('.not_an_admin')
-    render error_template, status: :unprocessable_content
-    false
-  end
-  # rubocop:enable Naming/PredicateMethod
-
-  def taking_ownership?
-    new_user_id = params.require(:assignment).require(:user_id)
-    new_user_id == Current.user&.id.to_s
   end
 end
