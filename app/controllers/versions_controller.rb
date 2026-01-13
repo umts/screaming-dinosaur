@@ -4,7 +4,7 @@ class VersionsController < ApplicationController
   before_action :find_version
 
   def undo
-    authorize! context: { user_id: @version.whodunnit.to_i }
+    authorize! @version
     # Reify only returns false when the thing didn't exist beforehand.
     if @version.reify
       @version.reify.save!
