@@ -14,6 +14,8 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def implicit_authorization_target = self.class.controller_path.to_sym
+
   def confirm_change(object, message = nil)
     # Rubocop can't tell whether we're redirecting after this or not.
     # rubocop:disable Rails/ActionControllerFlashBeforeRender
