@@ -107,10 +107,4 @@ class UsersController < ApplicationController
   def update_redirect_path
     allowed_to?(:index?, context: { roster: @roster }) ? roster_users_path(@roster) : roster_assignments_path(@roster)
   end
-
-  def require_admin_in_roster_or_self
-    return if Current.user == @user || Current.user.admin_in?(@roster)
-
-    render file: 'public/401.html', status: :unauthorized
-  end
 end
