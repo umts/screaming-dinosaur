@@ -5,5 +5,18 @@ class AssignmentPolicy < ApplicationPolicy
 
   def new? = user.present?
 
+  def create? = user.present? && (user&.admin_in?(record.roster) || not_assigning_someone_else?)
+
   def edit? = user.present?
+
+  def update? = user.present? && (user&.admin_in?(record.roster) || not_assigning_someone_else?)
+
+  private
+
+  def not_assigning_someone_else?
+    return true if user&.admin_in?(record.roster)
+    return true unless record.user_changed?
+
+    record.user == user
+  end
 end

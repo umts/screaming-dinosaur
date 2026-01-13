@@ -29,9 +29,8 @@ class AssignmentsController < ApplicationController
   end
 
   def create
-    @assignment = Assignment.new assignment_params
-    require_taking_ownership(error_template: :new) or return
-
+    @assignment = @roster.assignments.new assignment_params
+    authorize! @assignment
     if @assignment.save
       confirm_change(@assignment)
       @assignment.notify :owner, of: :new_assignment, by: Current.user
@@ -43,9 +42,8 @@ class AssignmentsController < ApplicationController
   end
 
   def update
-    require_taking_ownership(error_template: :edit) or return
-
-    @previous_owner = @assignment.user
+    @assignment.assign_attributes assignment_params
+    authorize! @assignment
     if @assignment.update assignment_params.except(:roster_id)
       confirm_change(@assignment)
       notify_appropriate_users
@@ -89,6 +87,7 @@ class AssignmentsController < ApplicationController
 
   def find_assignment
     @assignment = Assignment.includes(:user).find(params.require(:id))
+    @previous_owner = @assignment.user
   end
 
   def set_roster_users

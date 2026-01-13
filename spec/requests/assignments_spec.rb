@@ -101,4 +101,135 @@ RSpec.describe 'Assignments' do
       end
     end
   end
+
+  describe 'POST /rosters/:id/assignments' do
+    subject(:submit) { post "/rosters/#{roster.id}/assignments", params: { assignment: attributes } }
+
+    let(:roster) { create :roster }
+
+    context 'when not logged in' do
+      let(:attributes) { { user_id: create(:user).id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a normal user and assigning yourself' do
+      let(:user) { create :user, memberships: [build(:membership, roster:)] }
+      let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      before { login_as user }
+
+      it 'redirects to all assignments' do
+        submit
+        expect(response).to redirect_to roster_assignments_path(roster)
+      end
+
+      it 'creates a new assignment' do
+        expect { submit }.to change(Assignment, :count).by(1)
+      end
+
+      it 'creates a new assignment with the given attributes' do
+        submit
+        expect(Assignment.last).to have_attributes(attributes.merge('roster_id' => roster.id))
+      end
+    end
+
+    context 'when logged in as a normal user and assigning someone else' do
+      let(:user) { create :user }
+      let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      before { login_as create(:user) }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a roster admin and assigning someone else' do
+      let(:user) { create :user, memberships: [build(:membership, roster:)] }
+      let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+
+      it 'redirects to all assignments' do
+        submit
+        expect(response).to redirect_to roster_assignments_path(roster)
+      end
+
+      it 'creates a new assignment' do
+        expect { submit }.to change(Assignment, :count).by(1)
+      end
+
+      it 'creates a new assignment with the given attributes' do
+        submit
+        expect(Assignment.last).to have_attributes(attributes.merge('roster_id' => roster.id))
+      end
+    end
+  end
+
+  describe 'PATCH /rosters/:id/assignments/:id' do
+    subject(:submit) { patch "/rosters/#{roster.id}/assignments/#{assignment.id}", params: { assignment: attributes } }
+
+    let(:roster) { create :roster }
+    let!(:assignment) { create(:assignment, roster:) }
+
+    context 'when not logged in' do
+      let(:attributes) { { user_id: create(:user).id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a normal user and assigning yourself' do
+      let(:user) { create :user, memberships: [build(:membership, roster:)] }
+      let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      before { login_as user }
+
+      it 'redirects to all assignments' do
+        submit
+        expect(response).to redirect_to roster_assignments_path(roster)
+      end
+
+      it 'updates the assignment with the given attributes' do
+        submit
+        expect(assignment.reload).to have_attributes(attributes.merge('roster_id' => roster.id))
+      end
+    end
+
+    context 'when logged in as a normal user and assigning someone else' do
+      let(:user) { create :user }
+      let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      before { login_as create(:user) }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a roster admin and assigning someone else' do
+      let(:user) { create :user, memberships: [build(:membership, roster:)] }
+      let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+
+      it 'redirects to all assignments' do
+        submit
+        expect(response).to redirect_to roster_assignments_path(roster)
+      end
+
+      it 'updates the assignment with the given attributes' do
+        submit
+        expect(assignment.reload).to have_attributes(attributes.merge('roster_id' => roster.id))
+      end
+    end
+  end
 end
