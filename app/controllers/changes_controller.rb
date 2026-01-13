@@ -2,9 +2,9 @@
 
 class ChangesController < ApplicationController
   before_action :find_version
+  before_action :require_original_user
 
   def undo
-    authorize! context: { user_id: @version.whodunnit.to_i }
     # Reify only returns false when the thing didn't exist beforehand.
     if @version.reify
       @version.reify.save!
@@ -20,5 +20,11 @@ class ChangesController < ApplicationController
 
   def find_version
     @version = PaperTrail::Version.find params.require(:id)
+  end
+
+  def require_original_user
+    return if @version.whodunnit.to_i == Current.user&.id
+
+    head :unauthorized
   end
 end
