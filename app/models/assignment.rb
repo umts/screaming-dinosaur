@@ -11,6 +11,14 @@ class Assignment < ApplicationRecord
   validate :user_in_roster
 
   scope :future, -> { where 'start_date > ?', Time.zone.today }
+  scope :at, lambda { |time|
+    where(start_date: nil..(time - 1.day))
+      .where(end_date: time..nil)
+      .or(where(start_date: time.at_midnight)
+            .where(rosters: { switchover: ...minutes_since_midnight }))
+      .or(where(end_date: time.at_midnight - 1.day)
+            .where(rosters: { switchover: minutes_since_midnight... })).joins(:roster)
+  }
 
   def effective_start_datetime
     start_date + roster.switchover.minutes
