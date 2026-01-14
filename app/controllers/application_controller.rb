@@ -7,10 +7,10 @@ class ApplicationController < ActionController::Base
   authorize :user, through: -> { Current.user }
   verify_authorized
 
-  rescue_from ActionPolicy::Unauthorized do
+  rescue_from ActionPolicy::Unauthorized do |exception|
     render 'application/development_login', status: :unauthorized and next if unauthorized?
 
-    render file: Rails.public_path.join('403.html'), layout: false, status: :forbidden
+    raise exception
   end
 
   protected
