@@ -1,4 +1,4 @@
-= render layout: 'layouts/section', locals: { heading: 'On-Call Home' } do
+= render layout: 'layouts/section', locals: { heading: 'On-Call Dashboard' } do
   - rosters = Current.user.rosters.filter { |roster| roster.assignments&.current&.user == Current.user }.map(&:name)
   - if rosters.any?
     .alert.alert-info

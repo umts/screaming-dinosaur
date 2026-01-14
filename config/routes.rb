@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  root 'application#home'
+  root 'dashboard#index'
 
   post :login, to: 'sessions#create' if Rails.env.development?
   post :logout, to: 'sessions#destroy'
