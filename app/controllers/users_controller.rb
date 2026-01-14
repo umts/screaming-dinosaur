@@ -19,25 +19,24 @@ class UsersController < ApplicationController
   def edit; end
 
   def create
-    @user = User.new(user_params.except(:membership))
-    membership_params = user_params[:membership]
-    if @user.save && update_membership(membership_params)
+    @user = User.new(user_params)
+    @user.rosters += [@roster]
+    if @user.save
       confirm_change(@user)
       redirect_to roster_users_path(@roster)
     else
       flash.now[:errors] = @user.errors.full_messages
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
   def update
-    membership_params = user_params[:membership]
-    if @user.update(user_params.except(:membership)) && update_membership(membership_params)
+    if @user.update(user_params)
       confirm_change(@user)
       redirect_to update_redirect_path
     else
       flash.now[:errors] = @user.errors.full_messages
-      render :edit
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -57,24 +56,19 @@ class UsersController < ApplicationController
     else
       flash[:errors] = @user.errors.full_messages
     end
-    redirect_to roster_users_path
+    redirect_to roster_users_path(@roster)
   end
 
   private
 
   def user_params
-    params.expect(user: [:first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
-                         :change_notifications_enabled, { roster_ids: [], membership: [:admin] }]).tap do |p|
-      next if p[:roster_ids].blank?
-
-      p[:roster_ids] = new_roster_ids(p[:roster_ids].compact_blank.map(&:to_i))
-    end
-  end
-
-  def new_roster_ids(given_roster_ids)
-    (@user&.roster_ids || []).then do |roster_ids|
-      roster_ids.reject! { |roster_id| !roster_id.in?(given_roster_ids) && Current.user.admin_in?(roster_id) }
-      roster_ids | (given_roster_ids & Current.user.memberships.where(admin: true).map(&:roster_id))
+    params.fetch(:user, {}).permit(
+      :first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled, :change_notifications_enabled,
+      memberships_attributes: %i[_destroy id roster_id admin]
+    ).tap do |p|
+      p[:memberships_attributes]&.select! do |_, values|
+        Current.user.admin_in? Roster.find(values[:roster_id])
+      end
     end
   end
 
@@ -82,26 +76,12 @@ class UsersController < ApplicationController
     @user = User.find params.require(:id)
   end
 
-  # rubocop:disable Naming/PredicateMethod
-  def update_membership(membership_params)
-    return true unless membership_params.present? && Current.user.admin_in?(@roster)
-
-    membership = @user.membership_in @roster
-    return true if membership.nil?
-
-    return true if membership.update membership_params
-
-    @user.errors.merge! membership.errors
-    false
-  end
-  # rubocop:enable Naming/PredicateMethod
-
   def update_redirect_path
     Current.user.admin_in?(@roster) ? roster_users_path(@roster) : roster_assignments_path(@roster)
   end
 
   def require_admin_in_roster_or_self
-    return if Current.user == @user || Current.user.admin_in?(@roster)
+    return if Current.user == @user || Current.user.admin?
 
     render file: 'public/401.html', status: :unauthorized
   end

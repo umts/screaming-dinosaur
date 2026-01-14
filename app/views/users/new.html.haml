@@ -1,2 +1,3 @@
 = render layout: 'layouts/section', locals: { heading: 'New user', closeable: roster_users_path(@roster) } do
-  = render partial: 'form', locals: { user: @user, roster: @roster, path: roster_users_path(@roster) }
+  = form_with model: [@roster, @user] do |f|
+    = render partial: 'fields', locals: { f:, user: @user, path: roster_users_path(@roster) }

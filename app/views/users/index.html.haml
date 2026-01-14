@@ -24,17 +24,17 @@
             %td
               = user.full_name
               - if user == @fallback
-                (fallback)
+                ( fallback )
             %td= user.spire
             %td= user.email
             %td= formatted_phone(user.phone)
             %td
-              = link_to edit_roster_user_path(@roster, user), class: 'btn btn-sm text-nowrap lh-1' do
+              = link_to edit_user_path(user), class: 'btn btn-sm text-nowrap lh-1' do
                 %i.fa-solid.fa-edit
                 %span.d-none.d-xl-inline Edit
             %td
               - if user.active?
-                = button_to roster_user_path(@roster, user),
+                = button_to user_path(user),
                             method: :patch,
                             params: { user: { active: false } },
                             data: { confirm: 'Deactivating user will delete all upcoming assignments.' },
@@ -42,7 +42,7 @@
                   %i.fa-solid.fa-user-xmark
                   %span.d-none.d-xl-inline Deactivate
               - else
-                = button_to roster_user_path(@roster, user),
+                = button_to user_path(user),
                             method: :patch,
                             params: { user: { active: true } },
                             class: 'btn btn-sm text-nowrap lh-1' do
@@ -50,7 +50,10 @@
                   %span.d-none.d-xl-inline Activate
 
             %td
-              = button_to roster_user_path(@roster, user), method: :delete, class: 'btn btn-sm text-nowrap lh-1' do
+              = button_to user_path(user),
+                          method: :delete,
+                          params: { roster_id: @roster.id },
+                          class: 'btn btn-sm text-nowrap lh-1' do
                 %i.fa-solid.fa-trash.lh-1
                 %span.d-none.d-xl-inline.lh-1 Delete
 
