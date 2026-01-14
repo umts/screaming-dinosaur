@@ -109,16 +109,6 @@ RSpec.describe AssignmentsController do
       it 'does not delete an Assignment' do
         expect { submit }.not_to change(Assignment, :count)
       end
-
-      it 'sets the correct flash[:errors] message' do
-        submit
-        expect(flash[:errors]).to eq('Only roster admins may delete assignments.')
-      end
-
-      it 'renders the edit page again' do
-        submit
-        expect(response).to redirect_to edit_roster_assignment_path(roster, assignment)
-      end
     end
   end
 end

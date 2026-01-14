@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
   def set_current_user
     if Rails.env.local? && session[:user_id].present?
       Current.user = User.active.find_by id: session[:user_id]
-    # :nocov:
+      # :nocov:
     elsif shibboleth_spire.present? && shibboleth_primary_account?
       Current.user = User.active.find_by spire: shibboleth_spire
     end
