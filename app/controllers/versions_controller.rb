@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ChangesController < ApplicationController
+class VersionsController < ApplicationController
   before_action :find_version
   before_action :require_original_user
 
@@ -19,7 +19,7 @@ class ChangesController < ApplicationController
   private
 
   def find_version
-    @version = PaperTrail::Version.find params.require(:id)
+    @version = Version.find params.require(:id)
   end
 
   def require_original_user
