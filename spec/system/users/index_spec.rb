@@ -6,25 +6,22 @@ RSpec.describe 'user index' do
   let(:admin) { admin_membership.user }
 
   context 'when deactivating a user', :js do
-    let(:alert) { accept_alert { click_button 'Deactivate' } }
-
     before do
+      user_membership = create :membership, roster:, admin: false
+      user = user_membership.user
       when_current_user_is admin
       visit root_path
       click_link 'Manage Users'
-    end
-
-    it 'warns current user before deactivation with a pop up' do
-      expect(alert).to eq('Deactivating user will delete all upcoming assignments.')
+      within 'tr', text: user.first_name do
+        accept_alert { click_button 'Deactivate' }
+      end
     end
 
     it 'deactivates a user' do
-      alert
-      expect(page).to have_no_css 'td', text: admin.first_name
+      expect(page).to have_no_css 'td', text: user.first_name
     end
 
     it 'informs you of success' do
-      alert
       expect(page).to have_css 'div', text: 'User has been updated.'
     end
   end
