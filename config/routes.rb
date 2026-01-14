@@ -7,6 +7,9 @@ Rails.application.routes.draw do
     member do
       get :setup
     end
+    
+    resources :memberships, only: %i[create destroy update]
+
     collection do
       get :assignments
     end
@@ -37,7 +40,7 @@ Rails.application.routes.draw do
   end
 
   unless Rails.env.production?
-    get  'sessions/dev_login', to: 'sessions#dev_login', as: :dev_login
+    get 'sessions/dev_login', to: 'sessions#dev_login', as: :dev_login
     post 'sessions/dev_login', to: 'sessions#dev_login'
   end
 
@@ -45,4 +48,5 @@ Rails.application.routes.draw do
   get 'sessions/destroy', to: 'sessions#destroy', as: :destroy_session
 
   get 'feed/:roster/:token' => 'assignments#feed', as: :feed
+
 end

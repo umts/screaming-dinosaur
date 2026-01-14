@@ -18,6 +18,8 @@
           %th.column-compact
           %th.column-compact
           %th.column-compact
+          %th.column-compact
+          %th.column-compact
       %tbody
         - @users.each do |user|
           %tr
@@ -53,10 +55,27 @@
               = button_to roster_user_path(@roster, user), method: :delete, class: 'btn btn-sm text-nowrap lh-1' do
                 %i.fa-solid.fa-trash.lh-1
                 %span.d-none.d-xl-inline.lh-1 Delete
-
+            %td
+              = button_to roster_membership_path(@roster, (user.membership_in @roster)),
+                          method: :delete,
+                          class: 'btn btn-sm text-nowrap lh-1',
+                          disabled: (user.admin_in? @roster) && @roster.admins.one? do
+                %i.fa-solid.fa-xmark.lh-1
+                %span.d-none.d-xl-inline.lh-1 Remove
+            %td
+              = button_to roster_membership_path(@roster, (user.membership_in @roster)),
+                          method: :patch,
+                          params: { admin: !(user.admin_in? @roster) },
+                          class: 'btn btn-sm text-nowrap lh-1' do
+                - if user.admin_in? @roster
+                  %i.fa-solid.fa-person-falling.lh-1
+                  %span.d-none.d-xl-inline.lh-1 Demote
+                - else
+                  %i.fa-solid.fa-user-tie.lh-1
+                  %span.d-none.d-xl-inline.lh-1 Promote
   - if @other_users.present?
-    = form_with url: transfer_roster_users_path do |f|
+    = form_with url: roster_memberships_path do |f|
       .input-group
-        = f.label :id, 'Add user', class: 'input-group-text'
-        = f.collection_select :id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
+        = f.label :user_id, 'Add user', class: 'input-group-text'
+        = f.collection_select :user_id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
         = f.submit 'Add', class: 'btn btn-secondary'
