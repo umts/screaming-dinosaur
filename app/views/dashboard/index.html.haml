@@ -1,9 +1,16 @@
 = render layout: 'layouts/section', locals: { heading: 'On-Call Dashboard' } do
-  - rosters = Current.user.assignments.includes(:roster).at(Time.current).collect(&:roster).map(&:name)
+  :ruby
+    active_assignments = Assignment.includes(:roster, :user).at(Time.current)
+    rosters = active_assignments.select { |assignment| assignment.user == Current.user }.collect(&:roster)
+    fallbacks = Roster.where(fallback_user: Current.user) - active_assignments.collect(&:roster)
   - if rosters.any?
     .alert.alert-info
       You are currently on call for:
-      %strong= rosters.join(', ')
+      %strong= rosters.map(&:name).join(', ')
+  - if fallbacks.any?
+    .alert.alert-danger
+      You are currently the fallback on call for:
+      %strong= fallbacks.map(&:name).join(', ')
   - Current.user.rosters.each do |roster|
     .card.mb-3
       .card-body
