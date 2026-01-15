@@ -41,16 +41,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def transfer
-    @user.rosters += [@roster]
-    if @user.save
-      confirm_change(@user, "Added #{@user.full_name} to roster.")
-    else
-      flash[:errors] = @user.errors.full_messages
-    end
-    redirect_to roster_users_path(@roster)
-  end
-
   def destroy
     if @user.destroy
       confirm_change(@user)
@@ -94,6 +84,7 @@ class UsersController < ApplicationController
     @user.errors.merge! membership.errors
     false
   end
+
   # rubocop:enable Naming/PredicateMethod
 
   def update_redirect_path

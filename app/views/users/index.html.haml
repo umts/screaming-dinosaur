@@ -66,7 +66,8 @@
               = button_to roster_membership_path(@roster, (user.membership_in @roster)),
                           method: :patch,
                           params: { admin: !(user.admin_in? @roster) },
-                          class: 'btn btn-sm text-nowrap lh-1' do
+                          class: 'btn btn-sm text-nowrap lh-1',
+                          disabled: (user.admin_in? @roster) && @roster.admins.one? do
                 - if user.admin_in? @roster
                   %i.fa-solid.fa-person-falling.lh-1
                   %span.d-none.d-xl-inline.lh-1 Demote
