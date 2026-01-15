@@ -7,9 +7,10 @@ class ApplicationController < ActionController::Base
   authorize :user, through: -> { Current.user }
   verify_authorized
 
-  rescue_from ActionPolicy::Unauthorized do
-    # TODO: Implement further.
-    head :forbidden
+  rescue_from ActionPolicy::Unauthorized do |exception|
+    render 'application/development_login', status: :unauthorized and next if unauthorized?
+
+    raise exception
   end
 
   protected
@@ -51,4 +52,6 @@ class ApplicationController < ActionController::Base
   def shibboleth_spire = request.env['fcIdNumber']
 
   def shibboleth_primary_account? = request.env['UMAPrimaryAccount'] == request.env['uid']
+
+  def unauthorized? = session[:user_id].nil? && Rails.env.development?
 end
