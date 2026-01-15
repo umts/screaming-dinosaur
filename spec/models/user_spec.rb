@@ -52,4 +52,18 @@ RSpec.describe User do
       expect(user.assignments).to be_empty
     end
   end
+
+  describe 'preventing admin self-deactivation' do
+    let(:roster) { create :roster }
+    let(:admin_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
+
+    before { Current.user = admin_user }
+    after { Current.user = nil }
+
+    it 'prevents admins from deactivating themselves' do
+      admin_user.active = false
+      expect(admin_user).not_to be_valid
+      expect(admin_user.errors[:active]).to include('cannot be deactivated while you are an admin')
+    end
+  end
 end
