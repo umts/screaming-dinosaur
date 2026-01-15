@@ -1,12 +1,21 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :check_primary_account, :set_current_user, :set_shibboleth_eppn, :set_roster
+  before_action :set_current_user
+  before_action :set_roster
 
-  def self.api_accessible(**)
-    skip_before_action(:check_primary_account, :set_current_user, **)
-    before_action(:require_api_key_or_login, **)
+  authorize :user, through: -> { Current.user }
+  verify_authorized
+
+  rescue_from ActionPolicy::Unauthorized do |exception|
+    render 'application/development_login', status: :unauthorized and next if unauthorized?
+
+    raise exception
   end
+
+  protected
+
+  def implicit_authorization_target = self.class.controller_path.to_sym
 
   def confirm_change(object, message = nil)
     # Rubocop can't tell whether we're redirecting after this or not.
@@ -24,61 +33,25 @@ class ApplicationController < ActionController::Base
     # rubocop:enable Rails/ActionControllerFlashBeforeRender
   end
 
-  # There are three levels of access:
-  # 1. Regular users
-  # 2. Admins in general (of any roster)
-  # 3. Admins of specifically the current roster
-
-  def require_admin
-    render file: 'public/401.html', status: :unauthorized unless Current.user.admin?
-  end
-
-  def require_admin_in_roster
-    render file: 'public/401.html', status: :unauthorized unless Current.user.admin_in? @roster
-  end
+  private
 
   def set_current_user
-    if session.key? :user_id
-      Current.user = User.find_by id: session[:user_id]
-    else
-      Current.user = User.find_by spire: request.env['fcIdNumber']
-      if Current.user.present?
-        session[:user_id] = Current.user.id
-      else
-        redirect_to unauthenticated_session_path
-      end
+    if Rails.env.local? && session[:user_id].present?
+      Current.user = User.active.find_by id: session[:user_id]
+      # :nocov:
+    elsif shibboleth_spire.present? && shibboleth_primary_account?
+      Current.user = User.active.find_by spire: shibboleth_spire
     end
+    # :nocov:
   end
 
-  def set_shibboleth_eppn
-    return unless Current.user.present? && request.env['eppn'].present?
-
-    Current.user.update shibboleth_eppn: request.env['eppn']
-  end
-
-  # If there's one specified, go to that.
-  # Otherwise, go to the first roster of which the current user is a member.
-  # Finally, just go to the first roster (if they're a member of none).
-  # rubocop:disable Naming/MemoizedInstanceVariableName
   def set_roster
-    @roster = Roster.friendly.find(params[:roster_id], allow_nil: true)
-    @roster ||= Current.user&.rosters&.first
-    @roster ||= Roster.first
-  end
-  # rubocop:enable Naming/MemoizedInstanceVariableName
-
-  def check_primary_account
-    return if request.env['UMAPrimaryAccount'] == request.env['uid']
-
-    @primary_account = request.env['UMAPrimaryAccount']
-    @uid = request.env['uid']
-    render 'sessions/subsidiary', status: :unauthorized
+    @roster = Roster.friendly.find(params[:roster_id], allow_nil: true) || Current.user&.rosters&.first || Roster.first
   end
 
-  def require_api_key_or_login
-    return if params[:api_key].present? && params[:api_key] == Rails.application.credentials.fetch(:api_key)
+  def shibboleth_spire = request.env['fcIdNumber']
 
-    check_primary_account
-    set_current_user
-  end
+  def shibboleth_primary_account? = request.env['UMAPrimaryAccount'] == request.env['uid']
+
+  def unauthorized? = session[:user_id].nil? && Rails.env.development?
 end

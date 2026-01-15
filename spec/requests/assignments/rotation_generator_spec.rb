@@ -25,9 +25,9 @@ RSpec.describe 'Assignments Rotation Generators' do
     context 'when logged in as a normal user' do
       before { set_user user1 }
 
-      it 'responds with an unauthorized status' do
+      it 'responds with an forbidden status' do
         call
-        expect(response).to have_http_status :unauthorized
+        expect(response).to have_http_status :forbidden
       end
     end
   end
@@ -150,9 +150,9 @@ RSpec.describe 'Assignments Rotation Generators' do
 
       before { set_user admin }
 
-      it 'responds with an unauthorized status' do
+      it 'responds with an forbidden status' do
         submit
-        expect(response).to have_http_status :unauthorized
+        expect(response).to have_http_status :forbidden
       end
     end
 
@@ -166,9 +166,9 @@ RSpec.describe 'Assignments Rotation Generators' do
                                            user_ids: [user1.id] } }
       end
 
-      it 'responds with an unauthorized status' do
+      it 'responds with an forbbiden status' do
         submit
-        expect(response).to have_http_status :unauthorized
+        expect(response).to have_http_status :forbidden
       end
     end
   end

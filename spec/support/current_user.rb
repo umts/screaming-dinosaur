@@ -24,4 +24,5 @@ def set_user(user)
     assign :current_user, user
   end
 end
+alias login_as set_user
 # rubocop:enable Naming/AccessorMethodName

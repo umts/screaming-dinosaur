@@ -4,7 +4,7 @@ json.extract! @roster, :id, :name, :slug, :phone
 if (user = @roster.on_call_user).present?
   json.on_call do
     json.extract! user, :last_name, :first_name
-    json.until @roster.assignments.current&.effective_end_datetime
+    json.until @roster.assignments.current&.effective_end_datetime&.iso8601
   end
 else
   json.on_call nil
