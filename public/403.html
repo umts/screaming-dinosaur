@@ -4,7 +4,7 @@
 
   <head>
 
-    <title>Access Denied (401 Unauthorized)</title>
+    <title>Access denied (403 Forbidden)</title>
 
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, width=device-width">
@@ -35,10 +35,48 @@
         font-weight: 400;
         letter-spacing: -0.0025em;
         line-height: 1.4;
-        min-height: 100vh;
+        min-height: 100dvh;
         place-items: center;
         text-rendering: optimizeLegibility;
         -webkit-text-size-adjust: 100%;
+      }
+
+      #error-title {
+        position: relative;
+        display: grid;
+        place-items: center;
+      }
+
+      #error-description {
+        position: absolute;
+        grid-area: 1 / 1;
+        color: #d30001;
+        font-size: clamp(1rem, 2.5vw, 2rem);
+        font-weight: bolder;
+      }
+
+      #error-id {
+        position: relative;
+        grid-area: 1 / 1;
+        color: #f0eff0;
+        font-size: clamp(2rem, 10vw, 10rem);
+        font-weight: bolder;
+        line-height: 1;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background: #101010;
+          color: #e0e0e0;
+        }
+
+        #error-description {
+          color: #FF6161;
+        }
+
+        #error-id {
+          color: #2c2c2c;
+        }
       }
 
       a {
@@ -83,13 +121,11 @@
       }
 
       main article br {
-
         display: none;
 
         @media(min-width: 48em) {
           display: inline;
         }
-
       }
 
     </style>
@@ -98,11 +134,17 @@
 
   <body>
 
-    <!-- This file lives in public/401.html -->
+    <!-- This file lives in public/400.html -->
 
     <main>
+      <header>
+        <div id="error-title">
+          <div id="error-id">403</div>
+          <div id="error-description">Forbidden</div>
+        </div>
+      </header>
       <article>
-        <p><strong>You do not have permission to access this page.</strong> If you believe you should have access, please contact the site administrator.</p>
+        <p><strong>Access denied.</strong> Please contact an administrator if you believe this is incorrect.</p>
       </article>
     </main>
 

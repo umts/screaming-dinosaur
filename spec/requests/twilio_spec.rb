@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe TwilioController do
+RSpec.describe 'Twilio' do
   subject(:xml) do
     call
     Nokogiri::XML response.body

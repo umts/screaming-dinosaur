@@ -19,6 +19,8 @@
               .dropdown-menu{ 'aria-labelledby': 'navbar-generate-nav-link' }
                 = link_to 'Rotation', roster_assignments_generate_rotation_path(roster), class: 'dropdown-item'
                 = link_to 'By Weekday', roster_assignments_generate_by_weekday_path(roster), class: 'dropdown-item'
-      %ul.navbar-nav
-        = nav_link_item Current.user.full_name, edit_roster_user_path(roster, Current.user) if Current.user.present?
-        = nav_link_item 'Logout', destroy_session_path
+      - if Current.user.present?
+        %ul.navbar-nav
+          = nav_link_item Current.user.full_name, edit_roster_user_path(roster, Current.user) if roster.persisted?
+          %li.nav-item
+            = button_to 'Logout', logout_path, class: 'nav-link'

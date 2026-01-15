@@ -2,20 +2,19 @@
 
 require 'paper_trail/frameworks/rspec'
 
-RSpec.describe VersionsController do
-  describe 'GET #undo', :versioning do
+RSpec.describe 'Versions' do
+  describe 'GET /versions/:id/undo', :versioning do
     let(:change_user) { create :user }
     let(:assignment) { create :assignment }
     let(:redirect_target) { '/redirect_to_me' }
 
     context 'when the change is made by user' do
       before do
-        when_current_user_is change_user
-        request.env['HTTP_REFERER'] = redirect_target
+        login_as change_user
       end
 
       context 'when the version is a "create" version' do
-        subject(:submit) { get :undo, params: { id: version.id } }
+        subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
         let! :version do
           PaperTrail.request.whodunnit = change_user.id.to_s
@@ -39,7 +38,7 @@ RSpec.describe VersionsController do
       end
 
       context 'when the version is a "destroy" version' do
-        subject(:submit) { get :undo, params: { id: version.id } }
+        subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
         let! :version do
           PaperTrail.request.whodunnit = change_user.id.to_s
@@ -59,7 +58,7 @@ RSpec.describe VersionsController do
       end
 
       context 'when the version is an "update" version' do
-        subject(:submit) { get :undo, params: { id: version.id } }
+        subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
         let!(:original_start_date) { assignment.start_date }
         let! :version do
@@ -82,15 +81,15 @@ RSpec.describe VersionsController do
     end
 
     context 'when the change is not made by current user' do
-      subject(:submit) { get :undo, params: { id: version.id } }
+      subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
       before { when_current_user_is :whoever }
 
       let!(:version) { assignment.versions.last }
 
-      it 'returns a 401' do
+      it 'returns a 403' do
         submit
-        expect(response).to have_http_status :unauthorized
+        expect(response).to have_http_status :forbidden
       end
     end
   end

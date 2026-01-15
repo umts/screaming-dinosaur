@@ -2,16 +2,17 @@
 
 class TwilioController < ApplicationController
   before_action :set_on_call_user
-  skip_before_action :set_current_user
   layout false
 
   def call
+    authorize!
     respond_to do |format|
       format.xml { render 'call', locals: { user: @user } }
     end
   end
 
   def text
+    authorize!
     respond_to do |format|
       format.xml { render 'text', locals: { user: @user, body: params[:Body] } }
     end
