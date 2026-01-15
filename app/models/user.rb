@@ -25,6 +25,8 @@ class User < ApplicationRecord
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
   before_save -> { assignments.future.destroy_all }, if: :being_deactivated?
 
+  after_commit :notify_fallback_number_changed, if: :saved_change_to_phone?
+
   scope :active, -> { where active: true }
   scope :inactive, -> { where active: false }
 
@@ -52,5 +54,13 @@ class User < ApplicationRecord
 
   def being_deactivated?
     active_changed? && !active?
+  end
+
+  def notify_fallback_number_changed
+    fallback_rosters.each do |roster|
+      next if roster.admins.empty?
+
+      RosterMailer.with(roster:).fallback_number_changed.deliver_now
+    end
   end
 end

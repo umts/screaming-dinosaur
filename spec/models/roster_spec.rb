@@ -106,4 +106,37 @@ RSpec.describe Roster do
       end
     end
   end
+
+  describe 'fallback_user_id change notification' do
+    let(:roster) { create :roster }
+    let(:admin) { create :user }
+    let(:old_fallback_user) { create :user }
+    let(:new_fallback_user) { create :user }
+
+    before do
+      admin.memberships.create(roster:, admin: true)
+      roster.update(fallback_user: old_fallback_user)
+      ActionMailer::Base.deliveries.clear
+    end
+
+    it 'sends notification when fallback_user_id changes' do
+      expect do
+        roster.update(fallback_user: new_fallback_user)
+      end.to change { ActionMailer::Base.deliveries.size }.by 1
+    end
+
+    it 'does not send notification when fallback_user_id does not change' do
+      expect do
+        roster.update(name: 'New Name')
+      end.not_to(change { ActionMailer::Base.deliveries.size })
+    end
+
+    it 'does not send notification when roster has no admins' do
+      roster_without_admins = create :roster, fallback_user: old_fallback_user
+
+      expect do
+        roster_without_admins.update(fallback_user: new_fallback_user)
+      end.not_to(change { ActionMailer::Base.deliveries.size })
+    end
+  end
 end

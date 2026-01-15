@@ -50,4 +50,33 @@ RSpec.describe RosterMailer do
       end
     end
   end
+
+  describe 'fallback_number_changed' do
+    subject(:email) { described_class.with(roster:).fallback_number_changed }
+
+    let(:admin) { create :user }
+    let(:roster) { create :roster, fallback_user: create(:user) }
+
+    before { admin.memberships.create(roster:, admin: true) }
+
+    it 'queues the email to be sent' do
+      expect { email.deliver_now }.to change { ActionMailer::Base.deliveries.size }.by 1
+    end
+
+    it 'sends the email to the correct users' do
+      admin2 = create :user
+      admin2.memberships.create(roster:, admin: true)
+
+      expect(email.to).to eq [admin.email, admin2.email]
+    end
+
+    it 'has the correct subject' do
+      expect(email.subject).to eq "Fallback number changed for #{roster.name} On-Call"
+    end
+
+    it 'includes the update twilio link' do
+      expect(email.body.encoded).to include 'update twilio'
+      expect(email.body.encoded).to include roster_setup_path(roster)
+    end
+  end
 end
