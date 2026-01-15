@@ -3,10 +3,10 @@
 class MembershipsController < ApplicationController
   before_action :set_roster
   before_action :set_membership, except: :create
-  before_action :require_admin_in_roster
 
   def create
     @membership = Membership.new(user_id: params[:user_id], roster: @roster)
+    authorize! @membership
     if @membership.save
       confirm_change(@membership.user, "Added #{@membership.user.full_name} to roster.")
     else
@@ -16,6 +16,7 @@ class MembershipsController < ApplicationController
   end
 
   def update
+    authorize! @membership
     if @membership.update(admin: params[:admin])
       if @membership.admin
         confirm_change(@membership.user, "Made #{@membership.user.full_name} a roster admin.")
@@ -29,6 +30,7 @@ class MembershipsController < ApplicationController
   end
 
   def destroy
+    authorize! @membership
     if @membership.admin && @roster.admins.one?
       flash[:error] = "Cannot remove #{@membership.user.full_name}, they are the last admin of roster"
       redirect_to roster_users_path(@roster)
