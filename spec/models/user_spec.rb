@@ -63,6 +63,11 @@ RSpec.describe User do
     it 'prevents admins from deactivating themselves' do
       admin_user.active = false
       expect(admin_user).not_to be_valid
+    end
+
+    it 'adds error message when admin tries to deactivate themselves' do
+      admin_user.active = false
+      admin_user.valid?
       expect(admin_user.errors[:active]).to include('cannot be deactivated while you are an admin')
     end
   end
