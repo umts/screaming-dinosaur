@@ -232,13 +232,28 @@ RSpec.describe 'Users' do
         login_as Membership.create(user: (create :user), roster: roster, admin: true).user
       end
 
-      it 'redirect to the roster index' do
-        call
-        expect(response).to redirect_to(roster_users_path(roster))
+      context 'when user has no assignments' do
+        it 'redirects to the roster index' do
+          call
+          expect(response).to redirect_to(roster_users_path(roster))
+        end
+
+        it 'deletes the user' do
+          expect { call }.to change(User, :count).by(-1)
+        end
       end
 
-      it 'deletes the user' do
-        expect { call }.to change(User, :count).by(-1)
+      context 'when user has assignments' do
+        before { create(:assignment, user:, roster:) }
+
+        it 'redirects to the roster index' do
+          call
+          expect(response).to redirect_to(roster_users_path(roster))
+        end
+
+        it 'does not delete a user' do
+          expect { call }.not_to change(User, :count)
+        end
       end
     end
   end

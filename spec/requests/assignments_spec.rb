@@ -169,6 +169,18 @@ RSpec.describe 'Assignments' do
         expect(Assignment.last).to have_attributes(attributes.merge('roster_id' => roster.id))
       end
     end
+
+    context 'when logged in as a normal user and passing invalid attributes' do
+      let(:user) { create :user, memberships: [build(:membership, roster:)] }
+      let(:attributes) { { user_id: user.id, start_date: Date.tomorrow, end_date: Date.current } }
+
+      before { login_as user }
+
+      it 'responds with an unprocessable content status' do
+        submit
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
   end
 
   describe 'PATCH /rosters/:id/assignments/:id' do
@@ -229,6 +241,18 @@ RSpec.describe 'Assignments' do
       it 'updates the assignment with the given attributes' do
         submit
         expect(assignment.reload).to have_attributes(attributes.merge('roster_id' => roster.id))
+      end
+    end
+
+    context 'when logged in as a normal user and passing invalid attributes' do
+      let(:user) { create :user, memberships: [build(:membership, roster:)] }
+      let(:attributes) { { user_id: user.id, start_date: Date.tomorrow, end_date: Date.current } }
+
+      before { login_as user }
+
+      it 'responds with an unprocessable content status' do
+        submit
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end

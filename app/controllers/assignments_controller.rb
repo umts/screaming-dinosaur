@@ -44,7 +44,7 @@ class AssignmentsController < ApplicationController
   def update
     @assignment.assign_attributes assignment_params
     authorize! @assignment
-    if @assignment.update assignment_params.except(:roster_id)
+    if @assignment.save
       confirm_change(@assignment)
       notify_appropriate_users
       redirect_to roster_assignments_path(@roster)
@@ -72,7 +72,7 @@ class AssignmentsController < ApplicationController
   private
 
   def assignment_params
-    params.expect assignment: %i[start_date end_date user_id roster_id]
+    params.expect assignment: %i[start_date end_date user_id]
   end
 
   def find_assignment
