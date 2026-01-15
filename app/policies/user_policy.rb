@@ -12,4 +12,6 @@ class UserPolicy < ApplicationPolicy
   alias update? edit?
 
   def transfer? = user&.admin_in? roster
+
+  def destroy? = user&.admin_in? roster
 end
