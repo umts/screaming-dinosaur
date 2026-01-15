@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-MaintenanceTasks.parent_controller = 'MaintenanceTasks::Base'
+MaintenanceTasks.parent_controller = 'MaintenanceTasksController'

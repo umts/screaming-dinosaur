@@ -2,7 +2,5 @@
 
 class MaintenanceTaskPolicy < ApplicationPolicy
   def manage? = user&.admin
-  alias index? manage?
-  alias new? manage?
-  alias create? manage?
+  alias_rule :index?, :new?, :create?, to: :manage?
 end

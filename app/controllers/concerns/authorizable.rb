@@ -9,9 +9,9 @@ module Authorizable
     before_action :set_current_user
     verify_authorized
     rescue_from ActionPolicy::Unauthorized do |exception|
-      render 'application/development_login', status: :unauthorized and next if unauthorized?
+      raise exception unless unauthorized?
 
-      raise exception
+      render 'application/development_login', layout: 'layouts/application', status: :unauthorized
     end
   end
 
