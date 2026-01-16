@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class DashboardPolicy < ApplicationPolicy
-  def index? = true
+  def index? = user.present?
 end
