@@ -6,7 +6,7 @@ class Assignment < ApplicationRecord
   belongs_to :roster
 
   after_destroy_commit do
-    notify_user user, :deleted_assignment
+    notify_user :deleted_assignment
   end
   after_update_commit :notify_appropriate_users
   after_create_commit do
