@@ -1,21 +1,11 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  before_action :set_current_user
+  include Authorizable
+
   before_action :set_roster
 
-  authorize :user, through: -> { Current.user }
-  verify_authorized
-
-  rescue_from ActionPolicy::Unauthorized do |exception|
-    render 'application/development_login', status: :unauthorized and next if unauthorized?
-
-    raise exception
-  end
-
   protected
-
-  def implicit_authorization_target = self.class.controller_path.to_sym
 
   def confirm_change(object, message = nil)
     # Rubocop can't tell whether we're redirecting after this or not.
@@ -35,23 +25,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def set_current_user
-    if Rails.env.local? && session[:user_id].present?
-      Current.user = User.active.find_by id: session[:user_id]
-      # :nocov:
-    elsif shibboleth_spire.present? && shibboleth_primary_account?
-      Current.user = User.active.find_by spire: shibboleth_spire
-    end
-    # :nocov:
-  end
-
   def set_roster
     @roster = Roster.friendly.find(params[:roster_id], allow_nil: true) || Current.user&.rosters&.first || Roster.first
   end
-
-  def shibboleth_spire = request.env['fcIdNumber']
-
-  def shibboleth_primary_account? = request.env['UMAPrimaryAccount'] == request.env['uid']
-
-  def unauthorized? = session[:user_id].nil? && Rails.env.development?
 end
