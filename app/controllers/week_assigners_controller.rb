@@ -12,10 +12,9 @@ class WeekAssignersController < ApplicationController
     @assigner.assign_attributes(week_assigner_params)
     authorize! @assigner
     if @assigner.perform
-      flash[:message] = t('.success')
-      redirect_to roster_assignments_path(@assigner.roster, date: @assigner.start_date)
+      redirect_to roster_assignments_path(@assigner.roster, date: @assigner.start_date), notice: t('.success')
     else
-      flash.now[:errors] = @assigner.errors.full_messages.to_sentence
+      flash.now[:alert] = @assigner.errors.full_messages.to_sentence
       render :prompt, status: :unprocessable_content
     end
   end
