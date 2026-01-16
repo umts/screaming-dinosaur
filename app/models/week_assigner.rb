@@ -20,8 +20,8 @@ class WeekAssigner
 
   validate :includes_start_user
 
-  def generate
-    generate!
+  def perform
+    perform!
     true
   rescue ActiveModel::ValidationError, ActiveRecord::RecordInvalid
     false
@@ -46,7 +46,7 @@ class WeekAssigner
     errors.add :starting_user_id, message: :starting_user_must_be_included
   end
 
-  def generate!
+  def perform!
     validate!
     [].tap do |assignments|
       ActiveRecord::Base.transaction { create_assignments_and_save!(assignments) }

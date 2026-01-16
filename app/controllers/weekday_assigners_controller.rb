@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 class WeekdayAssignersController < ApplicationController
+  skip_before_action :set_roster
   before_action :initialize_weekday_assigner
 
   def prompt
-    authorize! context: { roster: @roster }
+    authorize! @assigner
   end
 
   def perform
-    authorize! context: { roster: @roster }
-    if @assigner.generate
+    @assigner.assign_attributes(weekday_assigner_params)
+    authorize! @assigner
+    if @assigner.perform
       flash[:message] = t('.success')
-      redirect_to roster_assignments_path(@roster, date: @assigner.start_date)
+      redirect_to roster_assignments_path(@assigner.roster, date: @assigner.start_date)
     else
       flash.now[:errors] = @assigner.errors.full_messages.to_sentence
       render :prompt, status: :unprocessable_content
@@ -21,11 +23,11 @@ class WeekdayAssignersController < ApplicationController
   private
 
   def initialize_weekday_assigner
-    @assigner = WeekdayAssigner.new(roster_id: @roster.id, **generate_by_weekday_params)
+    roster = Roster.friendly.find(params[:roster_id])
+    @assigner = WeekdayAssigner.new(roster_id: roster.id)
   end
 
-  def generate_by_weekday_params
-    params.fetch(:weekday_assigner, {})
-          .permit(:user_id, :start_date, :end_date, :start_weekday, :end_weekday)
+  def weekday_assigner_params
+    params.expect(weekday_assigner: %i[user_id start_date end_date start_weekday end_weekday])
   end
 end

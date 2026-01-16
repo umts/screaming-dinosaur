@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
 class WeekAssignersController < ApplicationController
+  skip_before_action :set_roster
   before_action :initialize_week_assigner
 
   def prompt
-    authorize! context: { roster: @roster }
+    authorize! @assigner
   end
 
   def perform
-    authorize! context: { roster: @roster }
-    if @assigner.generate
+    @assigner.assign_attributes(week_assigner_params)
+    authorize! @assigner
+    if @assigner.perform
       flash[:message] = t('.success')
-      redirect_to roster_assignments_path(@roster, date: @assigner.start_date)
+      redirect_to roster_assignments_path(@assigner.roster, date: @assigner.start_date)
     else
       flash.now[:errors] = @assigner.errors.full_messages.to_sentence
       render :prompt, status: :unprocessable_content
@@ -21,16 +23,15 @@ class WeekAssignersController < ApplicationController
   private
 
   def initialize_week_assigner
-    default_start = @roster.next_rotation_start_date
-    @assigner = WeekAssigner.new(roster_id: @roster.id,
+    roster = Roster.friendly.find(params[:roster_id])
+    default_start = roster.next_rotation_start_date
+    @assigner = WeekAssigner.new(roster_id: roster.id,
                                  start_date: default_start,
                                  end_date: default_start + 3.months,
-                                 user_ids: @roster.users.active.pluck(:id),
-                                 **week_assigner_params)
+                                 user_ids: roster.users.active.pluck(:id))
   end
 
   def week_assigner_params
-    params.fetch(:week_assigner, {})
-          .permit(:starting_user_id, :start_date, :end_date, user_ids: [])
+    params.expect(week_assigner: [:starting_user_id, :start_date, :end_date, { user_ids: [] }])
   end
 end

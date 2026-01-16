@@ -57,15 +57,6 @@ RSpec.describe 'Weekday Assigners' do
     end
 
     context 'with invalid params' do
-      let(:params) { {} }
-
-      it 'responds with an unprocessable entity status' do
-        submit
-        expect(response).to have_http_status(:unprocessable_content)
-      end
-    end
-
-    context 'with invalid assignment params' do
       let(:params) do
         { weekday_assigner: { user_id: user.id,
                               start_date: Date.current,

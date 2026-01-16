@@ -18,14 +18,12 @@ class WeekdayAssigner
   validates :start_weekday, numericality: { in: 0...7, message: :must_be_weekday }
   validates :end_weekday, numericality: { in: 0...7, message: :must_be_weekday }
 
-  def generate
-    generate!
+  def perform
+    perform!
     true
   rescue ActiveModel::ValidationError, ActiveRecord::RecordInvalid
     false
   end
-
-  private
 
   def roster
     return @roster if defined?(@roster)
@@ -33,13 +31,15 @@ class WeekdayAssigner
     @roster = Roster.find_by(id: roster_id)
   end
 
+  private
+
   def user
     return @user if defined?(@user)
 
     @user = User.find_by(id: user_id)
   end
 
-  def generate!
+  def perform!
     validate!
     ActiveRecord::Base.transaction do
       date_ranges.each do |range|
