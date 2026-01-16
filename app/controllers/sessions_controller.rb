@@ -21,6 +21,4 @@ class SessionsController < ApplicationController
       redirect_to '/Shibboleth.sso/Logout?return=https://webauth.umass.edu/saml2/idp/SingleLogoutService.php'
     end
   end
-
-  def unauthenticated; end
 end
