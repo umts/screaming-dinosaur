@@ -5,6 +5,14 @@ class Assignment < ApplicationRecord
   belongs_to :user
   belongs_to :roster
 
+  after_destroy_commit do
+    notify_user user, :deleted_assignment
+  end
+  after_update_commit :notify_appropriate_users
+  after_create_commit do
+    notify_user :new_assignment
+  end
+
   validates :start_date, presence: true
   validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
   validate :overlaps_none
@@ -19,16 +27,6 @@ class Assignment < ApplicationRecord
   # Assignments effectively end at the switchover hour on the following day.
   def effective_end_datetime
     end_date + 1.day + roster.switchover.minutes
-  end
-
-  def notify(receiver, of:, by:)
-    receiver = user if receiver == :owner
-    mailer_method = of
-    changer = by
-    return unless receiver != changer && receiver.change_notifications_enabled?
-
-    mail = AssignmentsMailer.send mailer_method, self, receiver, changer
-    mail.deliver_now
   end
 
   class << self
@@ -82,6 +80,25 @@ class Assignment < ApplicationRecord
                     .none?
 
     errors.add :base, 'Overlaps with another assignment'
+  end
+
+  def notify_user(mailer_method, receiver = user)
+    return unless receiver != Current.user && receiver.change_notifications_enabled?
+
+    mail = AssignmentsMailer.send mailer_method, self, receiver, Current.user
+    mail.deliver_now
+  end
+
+  # If the user's being changed, we effectively inform of the change
+  # by telling the previous owner they're not responsible anymore,
+  # and telling the new owner that they're newly responsible now.
+  def notify_appropriate_users
+    if user_id == user_id_before_last_save
+      notify_user :changed_assignment
+    else
+      notify_user :new_assignment
+      notify_user :deleted_assignment, User.find(user_id_before_last_save)
+    end
   end
 
   def user_in_roster

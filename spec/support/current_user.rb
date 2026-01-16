@@ -9,10 +9,12 @@ def when_current_user_is(user)
     end
   set_user(current_user)
 end
+
 alias set_current_user when_current_user_is
 
 # rubocop:disable Naming/AccessorMethodName
 def set_user(user)
+  Current.user ||= user
   case self.class.metadata[:type]
   when :controller
     session[:user_id] = user.id
@@ -24,5 +26,6 @@ def set_user(user)
     assign :current_user, user
   end
 end
+
 alias login_as set_user
 # rubocop:enable Naming/AccessorMethodName

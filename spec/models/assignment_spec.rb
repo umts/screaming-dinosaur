@@ -76,44 +76,43 @@ RSpec.describe Assignment do
   end
 
   describe 'notify' do
-    subject(:submit) { assignment.notify(recipient, of: change_type, by: changer) }
+    subject(:destroy) { assignment.destroy }
 
+    let(:update) { assignment.update(start_date: Date.new(7, 7, 7)) }
     let(:assignment) { create :assignment }
     let(:recipient) { assignment.user }
-    let(:change_type) { :changed_assignment }
     let(:changer) { create :user }
+
+    let(:new) { create :assignment }
 
     before do
       %i[changed_assignment new_assignment deleted_assignment].each do |method|
         allow(AssignmentsMailer).to receive(method).and_call_original
       end
+      login_as changer
     end
 
     context 'when the changer is the recipient' do
-      let(:changer) { recipient }
+      before { login_as recipient }
 
       it 'does not send an email' do
-        submit
+        update
         expect(AssignmentsMailer).not_to have_received(:changed_assignment)
       end
     end
 
     context 'when the changer is not the recipient' do
       context 'when the change type is "create"' do
-        let(:change_type) { :new_assignment }
-
         it 'sends the new_assignment mail' do
-          submit
+          new
           expect(AssignmentsMailer).to have_received(:new_assignment)
             .with(assignment, recipient, changer)
         end
       end
 
       context 'when the change type is "destroy"' do
-        let(:change_type) { :deleted_assignment }
-
         it 'sends the deleted_assignment mail' do
-          submit
+          destroy
           expect(AssignmentsMailer).to have_received(:deleted_assignment)
             .with(assignment, recipient, changer)
         end
@@ -121,7 +120,7 @@ RSpec.describe Assignment do
 
       context 'when the change type is "update"' do
         it 'sends the changed_assignment mail' do
-          submit
+          update
           expect(AssignmentsMailer).to have_received(:changed_assignment)
             .with(assignment, recipient, changer)
         end
@@ -132,27 +131,19 @@ RSpec.describe Assignment do
       let(:recipient) { :owner }
 
       it 'sends to the assignment owner' do
-        submit
+        update
         expect(AssignmentsMailer).to have_received(:changed_assignment)
           .with(assignment, assignment.user, changer)
       end
     end
 
-    context 'when the recipient is another user' do
-      let(:recipient) { create :user }
-
-      it 'sends to the recipient, not the owner' do
-        submit
-        expect(AssignmentsMailer).to have_received(:changed_assignment)
-          .with(assignment, recipient, changer)
-      end
-    end
-
     context 'when change notifications are disabled' do
-      before { recipient.update change_notifications_enabled: false }
+      # rubocop:disable Rails/SkipsModelValidations
+      before { recipient.update_column :change_notifications_enabled, false }
+      # rubocop:enable Rails/SkipsModelValidations
 
       it 'does not send notifications' do
-        submit
+        update
         expect(AssignmentsMailer).not_to have_received(:changed_assignment)
       end
     end
