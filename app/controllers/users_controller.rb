@@ -45,11 +45,10 @@ class UsersController < ApplicationController
     end
   end
 
-  def transfer
+  def destroy
     authorize! context: { roster: @roster }
-    @user.rosters += [@roster]
-    if @user.save
-      confirm_change(@user, "Added #{@user.full_name} to roster.")
+    if @user.destroy
+      confirm_change(@user)
     else
       flash[:errors] = @user.errors.full_messages
     end

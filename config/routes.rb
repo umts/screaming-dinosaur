@@ -10,6 +10,9 @@ Rails.application.routes.draw do
     member do
       get :setup
     end
+    
+    resources :memberships, only: %i[create destroy update]
+
     collection do
       get :assignments
     end
@@ -40,4 +43,5 @@ Rails.application.routes.draw do
   end
 
   get 'feed/:roster/:token' => 'assignments#feed', as: :feed
+
 end
