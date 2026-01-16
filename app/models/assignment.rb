@@ -11,6 +11,7 @@ class Assignment < ApplicationRecord
   validate :user_in_roster
 
   scope :future, -> { where 'start_date > ?', Time.zone.today }
+  scope :at, ->(time) { joins(:roster).where(start_time_node.lteq(time)).where(end_time_node.gt(time)) }
 
   def effective_start_datetime
     start_date + roster.switchover.minutes
@@ -52,6 +53,15 @@ class Assignment < ApplicationRecord
       Arel::Nodes::NamedFunction.new('IF', [minutes_since_midnight.gteq(switchover), today, yesterday])
     end
 
+    def start_time_node = time_node(:start_date)
+
+    def end_time_node
+      Arel::Nodes::NamedFunction.new 'TIMESTAMPADD',
+                                     [Arel::Nodes::SqlLiteral.new('DAY'),
+                                      Arel::Nodes::SqlLiteral.new('1'),
+                                      time_node(:end_date)]
+    end
+
     def in(roster)
       where roster:
     end
@@ -69,6 +79,15 @@ class Assignment < ApplicationRecord
       where(start_date: Date.tomorrow).find_each do |assignment|
         AssignmentsMailer.upcoming_reminder(assignment).deliver_now
       end
+    end
+
+    private
+
+    def time_node(column)
+      Arel::Nodes::NamedFunction.new 'TIMESTAMPADD',
+                                     [Arel::Nodes::SqlLiteral.new('MINUTE'),
+                                      Roster.arel_table[:switchover],
+                                      arel_table[column]]
     end
   end
 

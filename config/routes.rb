@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  root 'rosters#assignments'
+  root 'dashboard#index'
 
   post :login, to: 'sessions#create' if Rails.env.development?
   post :logout, to: 'sessions#destroy'
@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       post :generate_rotation, to: 'rotation_generators#perform'
     end
 
-    resources :users, except: :show do
+    resources :users, except: %i[show destroy] do
       collection do
         post :transfer
         get :inactive
