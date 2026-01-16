@@ -1,8 +1,8 @@
 %h1 Generate rotation
 
 .container-fluid
-  = form_with model: @generator,
-              url: roster_assignments_generate_rotation_path(@roster),
+  = form_with model: @assigner,
+              url: roster_assign_weeks_path(@roster),
               local: true do |f|
     .row
       .col-lg
@@ -21,7 +21,7 @@
           = f.label :user_ids, 'Users', class: 'form-label'
           = f.select :user_ids,
                      options_from_collection_for_select(@roster.users.active.order(:last_name),
-                                                        :id, :last_name, @generator.user_ids),
+                                                        :id, :last_name, @assigner.user_ids),
                      { include_hidden: false },
                      multiple: true, size: 10, class: 'form-select'
     = f.submit 'Generate rotation', class: 'btn btn-primary'
