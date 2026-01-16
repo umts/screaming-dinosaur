@@ -89,7 +89,6 @@ class UsersController < ApplicationController
     @user.errors.merge! membership.errors
     false
   end
-
   # rubocop:enable Naming/PredicateMethod
 
   def update_redirect_path

@@ -19,7 +19,6 @@
           %th.column-compact
           %th.column-compact
           %th.column-compact
-          %th.column-compact
       %tbody
         - @users.each do |user|
           %tr
@@ -50,11 +49,6 @@
                             class: 'btn btn-sm text-nowrap lh-1' do
                   %i.fa-solid.fa-user-plus
                   %span.d-none.d-xl-inline Activate
-
-            %td
-              = button_to roster_user_path(@roster, user), method: :delete, class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-trash.lh-1
-                %span.d-none.d-xl-inline.lh-1 Delete
             %td
               = button_to roster_membership_path(@roster, (user.membership_in @roster)),
                           method: :delete,

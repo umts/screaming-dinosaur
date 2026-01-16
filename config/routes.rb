@@ -27,7 +27,7 @@ Rails.application.routes.draw do
       post :generate_rotation, to: 'rotation_generators#perform'
     end
 
-    resources :users, except: :show do
+    resources :users, except: %i[show destroy] do
       collection do
         post :transfer
         get :inactive
