@@ -1,9 +1,7 @@
-%section.container.my-3
-  %h1 Generate by Weekday
-  %hr
-  = form_with model: @assigner,
-              url: roster_assign_weekdays_path(@assigner.roster),
-              local: true do |f|
+= render layout: 'layouts/section',
+         locals: { heading: 'Assign Weekdays',
+                   closeable: allowed_to?(:index?, Assignment) && roster_assignments_path(@assigner.roster) } do
+  = form_with model: @assigner, url: roster_assign_weekdays_path(@assigner.roster) do |f|
     .mb-3
       = f.label :user_id, class: 'form-label'
       = f.collection_select :user_id, @assigner.roster.users.active.order(:last_name), :id, :last_name,
@@ -24,4 +22,4 @@
         = f.label :end_weekday, class: 'form-label'
         = f.collection_select :end_weekday, Date::DAYNAMES, ->(day) { Date::DAYNAMES.index(day) }, :itself,
                               {}, required: true, class: 'form-select'
-    = f.submit 'Generate', class: 'btn btn-primary'
+    = f.submit 'Generate', class: 'btn btn-primary w-100'
