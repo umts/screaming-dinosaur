@@ -1,6 +1,4 @@
-%section.container.my-3
-  %h1 Generate by Weekday
-  %hr
+= render layout: 'layouts/section', locals: { heading: 'Generate by Weekday' } do
   = form_with model: @generator,
               url: roster_assignments_generate_by_weekday_path(@roster),
               local: true do |f|
