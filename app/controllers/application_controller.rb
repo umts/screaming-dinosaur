@@ -13,17 +13,6 @@ class ApplicationController < ActionController::Base
     raise exception
   end
 
-  def home
-    return unless Current.user.rosters.one?
-
-    redirect_to roster_assignments_path(Current.user.rosters.first)
-  end
-
-  def self.api_accessible(**)
-    skip_before_action(:check_primary_account, :set_current_user, **)
-    before_action(:require_api_key_or_login, **)
-  end
-
   protected
 
   def implicit_authorization_target = self.class.controller_path.to_sym
