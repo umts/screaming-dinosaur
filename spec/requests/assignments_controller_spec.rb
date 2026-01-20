@@ -96,7 +96,7 @@ RSpec.describe AssignmentsController do
       it { is_expected.to redirect_to("/rosters/#{roster.to_param}/assignments") }
 
       it 'sends a notification to the owner of the assignment' do
-        expect { submit }.to change(ActionMailer::Base.deliveries, :count).by(1)
+        expect { submit }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
       end
     end
 

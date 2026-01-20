@@ -75,49 +75,35 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'notify' do
+  describe 'save' do
+    subject(:save) { assignment.save }
+
     let(:assignment) { create :assignment }
-    let(:update) { assignment.update(start_date: Date.new(7, 7, 7)) }
     let(:recipient) { assignment.user }
-    let(:changer) { create :user }
 
     before do
-      login_as changer
+      login_as create(:user)
     end
 
     context 'when the changer is the recipient' do
       before { login_as recipient }
 
       it 'does not send an email' do
-        expect { update }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
+        expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
       end
     end
 
     context 'when the changer is not the recipient' do
-      context 'when the change type is "create"' do
+      context 'when creating a new assignment' do
         it 'sends the new_assignment mail' do
           expect { create :assignment }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
         end
       end
 
-      context 'when the change type is "destroy"' do
-        it 'sends the deleted_assignment mail' do
-          expect { assignment.destroy }.not_to raise_error # have_enqueued_email(AssignmentsMailer, :deleted_assignment)
-        end
-      end
-
-      context 'when the change type is "update"' do
+      context 'when updating an assignment' do
         it 'sends the changed_assignment mail' do
-          expect { update }.to have_enqueued_email(AssignmentsMailer, :changed_assignment)
+          expect { save }.to have_enqueued_email(AssignmentsMailer, :changed_assignment)
         end
-      end
-    end
-
-    context 'when the recipient is `:owner`' do
-      let(:recipient) { :owner }
-
-      it 'sends to the assignment owner' do
-        expect { update }.to have_enqueued_email(AssignmentsMailer, :changed_assignment)
       end
     end
 
@@ -125,8 +111,18 @@ RSpec.describe Assignment do
       before { recipient.update change_notifications_enabled: false }
 
       it 'does not send notifications' do
-        expect { update }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
+        expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
       end
+    end
+  end
+
+  describe 'destroy' do
+    subject(:destroy) { assignment.destroy }
+
+    let(:assignment) { create :assignment }
+
+    it 'sends the deleted_assignment mail' do
+      expect { destroy }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
     end
   end
 
@@ -218,12 +214,16 @@ RSpec.describe Assignment do
 
     it 'sends reminders about assignments starting tomorrow' do
       call
-      expect(AssignmentsMailer).to have_received(:upcoming_reminder).with(assignment_tomorrow)
+      expect(AssignmentsMailer).to have_received(:upcoming_reminder)
+        .with(assignment_tomorrow.roster,
+              assignment_tomorrow.effective_start_datetime, any_args)
     end
 
     it 'does not send reminders about assignments starting today' do
       call
-      expect(AssignmentsMailer).not_to have_received(:upcoming_reminder).with(assignment_today)
+      expect(AssignmentsMailer).not_to have_received(:upcoming_reminder)
+        .with(assignment_today.roster,
+              assignment_today.effective_start_datetime, any_args)
     end
   end
 end

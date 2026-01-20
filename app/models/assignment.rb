@@ -61,7 +61,8 @@ class Assignment < ApplicationRecord
 
     def send_reminders!
       where(start_date: Date.tomorrow).find_each do |assignment|
-        AssignmentsMailer.upcoming_reminder(assignment).deliver_now
+        AssignmentsMailer.upcoming_reminder(assignment.roster, assignment.effective_start_datetime,
+                                            assignment.effective_end_datetime, assignment.user).deliver_now
       end
     end
   end
@@ -81,14 +82,16 @@ class Assignment < ApplicationRecord
   def notify_user_of_destroy
     return unless user != Current.user && user.change_notifications_enabled?
 
-    mail = AssignmentsMailer.deleted_assignment(self, user, Current.user)
+    mail = AssignmentsMailer.deleted_assignment(roster, effective_start_datetime,
+                                                effective_end_datetime, user, Current.user)
     mail.deliver_later
   end
 
   def notify_user_of_create
     return unless user != Current.user && user.change_notifications_enabled?
 
-    AssignmentsMailer.new_assignment(self, user, Current.user).deliver_later
+    AssignmentsMailer.new_assignment(roster, effective_start_datetime, effective_end_datetime, user,
+                                     Current.user).deliver_later
   end
 
   # If the user's being changed, we effectively inform of the change
@@ -98,12 +101,14 @@ class Assignment < ApplicationRecord
     if user_id == user_id_before_last_save
       return unless user != Current.user && user.change_notifications_enabled?
 
-      AssignmentsMailer.changed_assignment(self, user, Current.user).deliver_later
+      AssignmentsMailer.changed_assignment(roster, effective_start_datetime, effective_end_datetime,
+                                           user, Current.user).deliver_later
     else
       notify_user_of_create
       return unless user != Current.user && user.change_notifications_enabled?
 
-      AssignmentsMailer.deleted_assignment(self, User.find(user_id_before_last_save), Current.user).deliver_later
+      AssignmentsMailer.deleted_assignment(roster, effective_start_datetime, effective_end_datetime,
+                                           User.find(user_id_before_last_save), Current.user).deliver_later
     end
   end
 
