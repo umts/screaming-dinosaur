@@ -12,7 +12,7 @@
     .alert.alert-danger
       You are currently the fallback on call for:
       %strong= fallbacks.map(&:name).join(', ')
-  - Current.user.rosters.each do |roster|
+  - @rosters.each do |roster|
     .card.mb-3
       .card-body
         - unless roster.assignments.current

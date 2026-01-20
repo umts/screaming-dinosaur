@@ -5,7 +5,7 @@ class RostersController < ApplicationController
 
   def index
     authorize!
-    @rosters = Roster.all
+    @rosters = Current.user&.admin ? Roster.all : Current.user.rosters
   end
 
   def show
