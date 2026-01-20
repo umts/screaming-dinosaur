@@ -21,7 +21,7 @@ class User < ApplicationRecord
   validates :calendar_access_token, uniqueness: { case_sensitive: true }
   validates :spire, format: { with: /\A\d{8}@umass.edu\z/, message: :spire_must_be_8_digits_with_umass }
   validates :phone, phone: true
-  validate :prevent_admin_self_deactivation, if: :being_deactivated?
+  validate :prevent_self_deactivation, if: :being_deactivated?
 
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
   before_save -> { assignments.future.destroy_all }, if: :being_deactivated?
@@ -57,9 +57,9 @@ class User < ApplicationRecord
     active_changed? && !active?
   end
 
-  def prevent_admin_self_deactivation
-    return unless Current.user == self && admin?
+  def prevent_self_deactivation
+    return unless Current.user == self
 
-    errors.add(:active, 'cannot be deactivated while you are an admin')
+    errors.add :base, message: :may_not_deactivate_self
   end
 end
