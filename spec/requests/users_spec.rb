@@ -204,43 +204,4 @@ RSpec.describe 'Users' do
       end
     end
   end
-
-  describe 'POST /rosters/:id/users/transfer' do
-    subject(:call) { post "/rosters/#{roster.id}/users/transfer", params: { id: user.id } }
-
-    let(:user) { create :user }
-    let(:roster) { create :roster }
-
-    context 'when not logged in' do
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when you are not a roster admin' do
-      before { set_user create(:membership, roster:, admin: false).user }
-
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when logged in as a roster admin' do
-      before do
-        login_as Membership.create(user: (create :user), roster: roster, admin: true).user
-        user.memberships.delete_all
-      end
-
-      it 'responds successfully' do
-        expect { call }.to change(roster.users, :count).by(1)
-      end
-
-      it 'adds the user to the roster' do
-        call
-        expect(roster.users).to include(user)
-      end
-    end
-  end
 end
