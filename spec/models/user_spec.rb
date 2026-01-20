@@ -53,7 +53,7 @@ RSpec.describe User do
     end
   end
 
-  describe 'preventing admin self-deactivation' do
+  describe '#valid?' do
     let(:roster) { create :roster }
     let(:admin_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
