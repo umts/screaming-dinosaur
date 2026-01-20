@@ -53,22 +53,24 @@ RSpec.describe User do
     end
   end
 
-  describe 'preventing self-deactivation' do
-    let(:roster) { create :roster }
-    let(:user) { create :user, memberships: [build(:membership, roster:, admin: false)] }
+  describe '#valid?' do
+    subject(:call) { user.valid? }
 
-    before { Current.user = user }
-    after { Current.user = nil }
+    context 'when logged in as the subject and attempting deactivation' do
+      around { |example| Current.set(user:) { example.run } }
 
-    it 'prevents users from deactivating themselves' do
-      user.active = false
-      expect(user).not_to be_valid
-    end
+      let(:user) { create :user }
 
-    it 'adds error message when user tries to deactivate themselves' do
-      user.active = false
-      user.valid?
-      expect(user.errors[:base]).to include('You may not deactivate yourself')
+      before { user.active = false }
+
+      it 'does not allow you to deactivate yourself' do
+        expect(call).to be(false)
+      end
+
+      it 'adds a helpful error message' do
+        call
+        expect(user.errors[:base]).to include('You may not deactivate yourself')
+      end
     end
   end
 end
