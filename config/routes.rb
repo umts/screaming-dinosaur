@@ -10,9 +10,6 @@ Rails.application.routes.draw do
     member do
       get :setup
     end
-    
-    resources :memberships, only: %i[create destroy update]
-
     collection do
       get :assignments
     end
@@ -27,15 +24,18 @@ Rails.application.routes.draw do
       post :generate_rotation, to: 'rotation_generators#perform'
     end
 
+    resources :memberships, only: %i[create destroy update], shallow: true
+
     resources :users, except: %i[show destroy] do
       collection do
-        post :transfer
         get :inactive
       end
     end
+
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
+
   resources :versions do
     member do
       get 'undo'
@@ -43,5 +43,4 @@ Rails.application.routes.draw do
   end
 
   get 'feed/:roster/:token' => 'assignments#feed', as: :feed
-
 end
