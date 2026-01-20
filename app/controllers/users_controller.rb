@@ -56,16 +56,6 @@ class UsersController < ApplicationController
     redirect_to roster_users_path(@roster)
   end
 
-  def destroy
-    authorize! context: { roster: @roster }
-    if @user.destroy
-      confirm_change(@user)
-    else
-      flash[:errors] = @user.errors.full_messages
-    end
-    redirect_to roster_users_path(@roster)
-  end
-
   private
 
   def user_params

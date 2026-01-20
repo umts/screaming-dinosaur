@@ -205,59 +205,6 @@ RSpec.describe 'Users' do
     end
   end
 
-  describe 'DELETE /rosters/:id/users/:user_id' do
-    subject(:call) { delete "/rosters/#{roster.id}/users/#{user.id}" }
-
-    let(:user) { create :user }
-    let(:roster) { user.rosters.first }
-
-    context 'when not logged in' do
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when you are not a roster admin' do
-      before { set_user create(:membership, roster:, admin: false).user }
-
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when logged in as a roster admin' do
-      before do
-        login_as Membership.create(user: (create :user), roster: roster, admin: true).user
-      end
-
-      context 'when user has no assignments' do
-        it 'redirects to the roster index' do
-          call
-          expect(response).to redirect_to(roster_users_path(roster))
-        end
-
-        it 'deletes the user' do
-          expect { call }.to change(User, :count).by(-1)
-        end
-      end
-
-      context 'when user has assignments' do
-        before { create(:assignment, user:, roster:) }
-
-        it 'redirects to the roster index' do
-          call
-          expect(response).to redirect_to(roster_users_path(roster))
-        end
-
-        it 'does not delete a user' do
-          expect { call }.not_to change(User, :count)
-        end
-      end
-    end
-  end
-
   describe 'POST /rosters/:id/users/transfer' do
     subject(:call) { post "/rosters/#{roster.id}/users/transfer", params: { id: user.id } }
 
