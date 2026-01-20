@@ -22,15 +22,18 @@ Rails.application.routes.draw do
     get :assign_weekdays, to: 'weekday_assigners#prompt'
     post :assign_weekdays, to: 'weekday_assigners#perform'
 
+    resources :memberships, only: %i[create destroy update], shallow: true
+
     resources :users, except: %i[show destroy] do
       collection do
-        post :transfer
         get :inactive
       end
     end
+
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
+
   resources :versions do
     member do
       get 'undo'
