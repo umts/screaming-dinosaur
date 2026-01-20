@@ -1,4 +1,5 @@
-= render layout: 'layouts/section', locals: { heading: 'On-Call Dashboard', creatable: new_roster_path } do
+= render layout: 'layouts/section',
+         locals: { heading: 'On-Call Dashboard', creatable: allowed_to?(:new, Roster) && new_roster_path } do
   :ruby
     active_assignments = Assignment.includes(:roster, :user).at(Time.current)
     rosters = active_assignments.select { |assignment| assignment.user == Current.user }.collect(&:roster)
