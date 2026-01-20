@@ -53,22 +53,22 @@ RSpec.describe User do
     end
   end
 
-  describe '#valid?' do
+  describe 'preventing self-deactivation' do
     let(:roster) { create :roster }
-    let(:admin_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
+    let(:user) { create :user, memberships: [build(:membership, roster:, admin: false)] }
 
-    before { Current.user = admin_user }
+    before { Current.user = user }
     after { Current.user = nil }
 
-    it 'prevents admins from deactivating themselves' do
-      admin_user.active = false
-      expect(admin_user).not_to be_valid
+    it 'prevents users from deactivating themselves' do
+      user.active = false
+      expect(user).not_to be_valid
     end
 
-    it 'adds error message when admin tries to deactivate themselves' do
-      admin_user.active = false
-      admin_user.valid?
-      expect(admin_user.errors[:active]).to include('cannot be deactivated while you are an admin')
+    it 'adds error message when user tries to deactivate themselves' do
+      user.active = false
+      user.valid?
+      expect(user.errors[:base]).to include('You may not deactivate yourself')
     end
   end
 end
