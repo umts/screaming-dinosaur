@@ -1,48 +1,135 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Memberships' do
-  describe 'GET /rosters/:roster_id/memberships' do
-    subject(:call) { post "/rosters/#{roster.id}/memberships", params: { user_id: user.id } }
+  describe 'POST /rosters/:roster_id/memberships' do
+    subject(:submit) { post "/rosters/#{roster.id}/memberships", params: { membership: attributes } }
 
     let(:roster) { create :roster }
-    let(:user) { create :user }
 
-    before do
-      admin_membership = Membership.create(roster: roster, admin: true, user: (create :user))
-      set_user admin_membership.user
+    context 'when logged in as a roster user' do
+      let(:attributes) { { user_id: nil } }
+
+      before { login_as create(:membership, roster:, admin: false).user }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
     end
 
-    it 'redirects to roster index' do
-      call
-      expect(response).to redirect_to roster_users_path(roster)
-    end
+    context 'when logged in as a roster admin' do
+      before { login_as create(:membership, roster:, admin: true).user }
 
-    it 'creates a new membership' do
-      call
-      expect(Membership.last.user).to eq user
+      context 'with valid attributes' do
+        let!(:user) { create :user }
+        let(:attributes) { { user_id: user.id, admin: true } }
+
+        it 'redirects to roster index' do
+          submit
+          expect(response).to redirect_to roster_users_path(roster)
+        end
+
+        it 'creates a membership' do
+          expect { submit }.to change(Membership, :count).by(1)
+        end
+
+        it 'creates a membership with the correct attributes' do
+          submit
+          expect(Membership.last).to have_attributes(attributes)
+        end
+      end
+
+      context 'with invalid attributes' do
+        let(:attributes) { { user_id: nil, admin: false } }
+
+        it 'redirects to roster index' do
+          submit
+          expect(response).to redirect_to roster_users_path(roster)
+        end
+
+        it 'does not create a membership' do
+          expect { submit }.not_to change(Membership, :count)
+        end
+      end
     end
   end
 
-  describe 'DELETE /rosters/:roster_id/memberships/:id' do
-    subject(:submit) { delete "/rosters/#{roster.id}/memberships/#{membership.id}" }
+  describe 'PATCH /memberships/:id' do
+    subject(:submit) { patch "/memberships/#{membership.id}", params: { membership: attributes } }
 
     let(:roster) { create :roster }
-    let(:user) { create :user }
-    let(:membership) { create :membership, user: user, roster: roster }
+    let(:membership) { create :membership, roster: }
 
-    before do
-      admin_membership = Membership.create(roster: roster, admin: true, user: (create :user))
-      set_user admin_membership.user
+    context 'when logged in as a roster user' do
+      let(:attributes) { { user_id: nil } }
+
+      before { login_as create(:membership, roster:, admin: false).user }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
     end
 
-    it 'redirects to roster index' do
-      submit
-      expect(response).to redirect_to roster_users_path(roster)
+    context 'when logged in as a roster admin' do
+      before { login_as create(:membership, roster:, admin: true).user }
+
+      context 'with valid attributes' do
+        let(:attributes) { { admin: true } }
+
+        it 'redirects to roster index' do
+          submit
+          expect(response).to redirect_to roster_users_path(roster)
+        end
+
+        it 'updates the membership with the correct attributes' do
+          submit
+          expect(membership.reload).to have_attributes(attributes)
+        end
+      end
+
+      context 'with invalid attributes' do
+        let(:attributes) { { user_id: nil } }
+
+        it 'redirects to roster index' do
+          submit
+          expect(response).to redirect_to roster_users_path(roster)
+        end
+
+        it 'does not update the membership' do
+          expect { submit }.not_to(change { membership.reload.attributes })
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /memberships/:id' do
+    subject(:submit) { delete "/memberships/#{membership.id}" }
+
+    let(:roster) { create :roster }
+    let(:membership) { create :membership, roster: }
+
+    context 'when logged in as a roster user' do
+      before { login_as create(:membership, roster:, admin: false).user }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
     end
 
-    it 'removes the membership' do
-      submit
-      expect(Membership.find_by(roster: roster, user: user)).to be_nil
+    context 'when logged in as a roster admin' do
+      before { login_as create(:membership, roster:, admin: true).user }
+
+      it 'redirects to roster index' do
+        submit
+        expect(response).to redirect_to roster_users_path(roster)
+      end
+
+      it 'removes the membership' do
+        submit
+        expect(Membership.find_by(id: membership.id)).to be_nil
+      end
     end
   end
 end
