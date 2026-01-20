@@ -16,13 +16,11 @@ Rails.application.routes.draw do
 
     resources :assignments, except: :show
 
-    namespace :assignments do
-      get :generate_by_weekday, to: 'weekday_generators#prompt'
-      post :generate_by_weekday, to: 'weekday_generators#perform'
+    get :assign_weeks, to: 'week_assigners#prompt'
+    post :assign_weeks, to: 'week_assigners#perform'
 
-      get :generate_rotation, to: 'rotation_generators#prompt'
-      post :generate_rotation, to: 'rotation_generators#perform'
-    end
+    get :assign_weekdays, to: 'weekday_assigners#prompt'
+    post :assign_weekdays, to: 'weekday_assigners#perform'
 
     resources :memberships, only: %i[create destroy update], shallow: true
 
