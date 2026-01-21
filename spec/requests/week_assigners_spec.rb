@@ -3,8 +3,7 @@
 RSpec.describe 'Week Assigners' do
   shared_context 'when logged in as a roster admin' do
     let(:admin) { create(:user).tap { |user| create :membership, roster:, user:, admin: true } }
-
-    before { set_user admin }
+    let(:current_user) { admin }
   end
 
   describe 'GET /rosters/:roster_id/assign_weeks' do
@@ -23,7 +22,7 @@ RSpec.describe 'Week Assigners' do
     end
 
     context 'when logged in as a normal user' do
-      before { set_user user1 }
+      let(:current_user) { user1 }
 
       it 'responds with an forbidden status' do
         call
@@ -148,7 +147,7 @@ RSpec.describe 'Week Assigners' do
                            user_ids: [user1.id] } }
       end
 
-      before { set_user admin }
+      let(:current_user) { admin }
 
       it 'responds with an forbidden status' do
         submit
@@ -157,7 +156,7 @@ RSpec.describe 'Week Assigners' do
     end
 
     context 'when you are a normal user' do
-      before { set_user user1 }
+      let(:current_user) { user1 }
 
       let(:params) do
         { week_assigner: { start_date: start_date,

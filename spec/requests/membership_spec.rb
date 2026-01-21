@@ -7,9 +7,8 @@ RSpec.describe 'Memberships' do
     let(:roster) { create :roster }
 
     context 'when logged in as a roster user' do
+      let(:current_user) { create(:membership, roster:, admin: false).user }
       let(:attributes) { { user_id: nil } }
-
-      before { login_as create(:membership, roster:, admin: false).user }
 
       it 'responds with a forbidden status' do
         submit
@@ -18,7 +17,7 @@ RSpec.describe 'Memberships' do
     end
 
     context 'when logged in as a roster admin' do
-      before { login_as create(:membership, roster:, admin: true).user }
+      let(:current_user) { create(:membership, roster:, admin: true).user }
 
       context 'with valid attributes' do
         let!(:user) { create :user }
@@ -61,9 +60,8 @@ RSpec.describe 'Memberships' do
     let(:membership) { create :membership, roster: }
 
     context 'when logged in as a roster user' do
+      let(:current_user) { create(:membership, roster:, admin: false).user }
       let(:attributes) { { user_id: nil } }
-
-      before { login_as create(:membership, roster:, admin: false).user }
 
       it 'responds with a forbidden status' do
         submit
@@ -72,7 +70,7 @@ RSpec.describe 'Memberships' do
     end
 
     context 'when logged in as a roster admin' do
-      before { login_as create(:membership, roster:, admin: true).user }
+      let(:current_user) { create(:membership, roster:, admin: true).user }
 
       context 'with valid attributes' do
         let(:attributes) { { admin: true } }
@@ -110,7 +108,7 @@ RSpec.describe 'Memberships' do
     let(:membership) { create :membership, roster: }
 
     context 'when logged in as a roster user' do
-      before { login_as create(:membership, roster:, admin: false).user }
+      let(:current_user) { create(:membership, roster:, admin: false).user }
 
       it 'responds with a forbidden status' do
         submit
@@ -119,7 +117,7 @@ RSpec.describe 'Memberships' do
     end
 
     context 'when logged in as a roster admin' do
-      before { login_as create(:membership, roster:, admin: true).user }
+      let(:current_user) { create(:membership, roster:, admin: true).user }
 
       it 'redirects to roster index' do
         submit

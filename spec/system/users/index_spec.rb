@@ -27,9 +27,9 @@ RSpec.describe 'user index' do
     let(:roster) { create :roster }
     let(:admin_membership) { create :membership, roster:, admin: true }
     let(:admin) { admin_membership.user }
+    let(:current_user) { admin }
 
     before do
-      set_current_user(admin)
       visit root_path
       click_link 'Manage Users'
     end

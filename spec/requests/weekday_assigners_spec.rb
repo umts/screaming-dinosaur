@@ -3,8 +3,7 @@
 RSpec.describe 'Weekday Assigners' do
   shared_context 'when logged in as a roster admin' do
     let(:admin) { create(:user).tap { |user| create :membership, roster:, user:, admin: true } }
-
-    before { set_user admin }
+    let(:current_user) { admin }
   end
 
   describe 'GET /rosters/:id/assign_weekdays' do
