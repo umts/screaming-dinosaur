@@ -12,6 +12,8 @@ require 'rspec/retry'
 require 'rack_session_access/capybara'
 require 'paper_trail/frameworks/rspec'
 
+Rails.root.glob('spec/support/**/*.rb').each { |f| require f }
+
 ActiveRecord::Migration.maintain_test_schema!
 Capybara.server = :puma, { Silent: true }
 Capybara.enable_aria_label = true
@@ -21,6 +23,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.include FactoryBot::Syntax::Methods
+  config.include LoginHelpers
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
@@ -61,6 +64,4 @@ RSpec.configure do |config|
   config.around :each, :js, type: :system do |example|
     example.run_with_retry retry: 3
   end
-
-  Dir['./spec/support/**/*.rb'].each { |f| require f }
 end
