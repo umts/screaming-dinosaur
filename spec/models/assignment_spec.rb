@@ -75,7 +75,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'save' do
+  describe '#save' do
     subject(:save) { assignment.save }
 
     let(:assignment) { create :assignment }
@@ -98,6 +98,8 @@ RSpec.describe Assignment do
       end
 
       context 'when updating an assignment' do
+        before { assignment.assign_attributes start_date: 1.week.from_now, end_date: 2.weeks.from_now }
+
         it 'sends the changed_assignment mail' do
           expect { save }.to have_enqueued_email(AssignmentsMailer, :changed_assignment)
         end
@@ -113,7 +115,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'destroy' do
+  describe '#destroy' do
     subject(:destroy) { assignment.destroy }
 
     let(:assignment) { create :assignment }

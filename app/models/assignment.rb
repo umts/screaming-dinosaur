@@ -5,14 +5,14 @@ class Assignment < ApplicationRecord
   belongs_to :user
   belongs_to :roster
 
-  after_destroy_commit :notify_user_of_destroy
-  after_update_commit :notify_users_of_update
-  after_create_commit :notify_user_of_create
-
   validates :start_date, presence: true
   validates :end_date, presence: true, comparison: { greater_than_or_equal_to: :start_date }
   validate :overlaps_none
   validate :user_in_roster
+
+  after_commit :notify_user_of_assignment
+  after_commit :notify_user_of_change
+  after_commit :notify_user_of_removal
 
   scope :future, -> { where 'start_date > ?', Time.zone.today }
 
@@ -79,37 +79,38 @@ class Assignment < ApplicationRecord
     errors.add :base, 'Overlaps with another assignment'
   end
 
-  def notify_user_of_destroy
-    return unless user != Current.user && user.change_notifications_enabled?
+  def notify_user_of_assignment
+    return unless user_id_previously_changed?
+    return if user == Current.user
+    return unless user.change_notifications_enabled?
 
-    mail = AssignmentsMailer.deleted_assignment(roster, effective_start_datetime,
-                                                effective_end_datetime, user, Current.user)
-    mail.deliver_later
+    AssignmentsMailer.new_assignment(roster, effective_start_datetime, effective_end_datetime, user, Current.user)
+                     .deliver_later
   end
 
-  def notify_user_of_create
-    return unless user != Current.user && user.change_notifications_enabled?
+  def notify_user_of_change
+    return if previously_new_record?
+    return if user_id_previously_changed?
+    return unless start_date_previously_changed? || end_date_previously_changed?
+    return if user == Current.user
+    return unless user.change_notifications_enabled?
 
-    AssignmentsMailer.new_assignment(roster, effective_start_datetime, effective_end_datetime, user,
-                                     Current.user).deliver_later
+    AssignmentsMailer.changed_assignment(roster, effective_start_datetime, effective_end_datetime, user, Current.user)
+                     .deliver_later
   end
 
-  # If the user's being changed, we effectively inform of the change
-  # by telling the previous owner they're not responsible anymore,
-  # and telling the new owner that they're newly responsible now.
-  def notify_users_of_update
-    if user_id == user_id_before_last_save
-      return unless user != Current.user && user.change_notifications_enabled?
+  def notify_user_of_removal
+    return unless previously_persisted? || user_id_previously_changed?
 
-      AssignmentsMailer.changed_assignment(roster, effective_start_datetime, effective_end_datetime,
-                                           user, Current.user).deliver_later
-    else
-      notify_user_of_create
-      return unless user != Current.user && user.change_notifications_enabled?
+    previous_user = previously_persisted? ? user : User.find_by(id: user_id_previously_was)
+    return if previous_user.blank?
+    return if previous_user == Current.user
+    return unless previous_user.change_notifications_enabled?
 
-      AssignmentsMailer.deleted_assignment(roster, effective_start_datetime, effective_end_datetime,
-                                           User.find(user_id_before_last_save), Current.user).deliver_later
-    end
+    AssignmentsMailer.deleted_assignment(roster,
+                                         effective_start_datetime, effective_end_datetime,
+                                         previous_user, Current.user)
+                     .deliver_later
   end
 
   def user_in_roster
