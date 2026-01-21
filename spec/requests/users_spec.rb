@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Users' do
-  describe 'GET /rosters/:id/users' do
-    subject(:call) { get "/rosters/#{roster.id}/users" }
+  describe 'GET /users' do
+    subject(:call) { get '/users' }
 
     let(:roster) { create :roster }
 
@@ -27,8 +27,8 @@ RSpec.describe 'Users' do
     end
   end
 
-  describe 'GET /rosters/:id/users/new' do
-    subject(:call) { get "/rosters/#{roster.id}/users/new" }
+  describe 'GET users/new' do
+    subject(:call) { get '/users/new' }
 
     let(:roster) { create :roster }
 
@@ -53,8 +53,8 @@ RSpec.describe 'Users' do
     end
   end
 
-  describe 'POST /rosters/:id/users' do
-    subject(:submit) { post "/rosters/#{roster.id}/users", params: }
+  describe 'POST users' do
+    subject(:submit) { post '/users', params: }
 
     let(:roster) { create :roster }
 
@@ -74,11 +74,11 @@ RSpec.describe 'Users' do
 
       context 'with valid attributes' do
         let(:attributes) { attributes_for :user }
-        let(:params) { { user: attributes.merge(roster_ids: [roster.id]), roster_id: roster.id } }
+        let(:params) { { user: attributes } }
 
         it 'responds successfully' do
           submit
-          expect(response).to redirect_to(roster_users_path(roster))
+          expect(response).to redirect_to(users_path)
         end
 
         it 'creates a user' do
@@ -87,7 +87,7 @@ RSpec.describe 'Users' do
       end
 
       context 'with invalid attributes' do
-        let(:params) { { user: (attributes_for :user) } }
+        let(:params) { { user: (attributes_for :user).merge(phone: 777) } }
 
         it 'response with unprocessable content' do
           submit
@@ -97,8 +97,8 @@ RSpec.describe 'Users' do
     end
   end
 
-  describe 'GET /rosters/:id/users/:user_id/edit' do
-    subject(:call) { get "/rosters/#{roster.id}/users/#{user.id}/edit" }
+  describe 'GET /users/:user_id/edit' do
+    subject(:call) { get "/users/#{user.id}/edit" }
 
     let(:user) { create :user }
     let(:roster) { user.rosters.first }
@@ -129,8 +129,8 @@ RSpec.describe 'Users' do
     end
   end
 
-  describe 'PATCH /rosters/:id/users/:user_id' do
-    subject(:submit) { patch "/rosters/#{roster.id}/users/#{user.id}", params: { user: attributes } }
+  describe 'PATCH /users/:user_id' do
+    subject(:submit) { patch "/users/#{user.id}", params: { user: attributes } }
 
     let(:user) { create :user }
     let(:roster) { user.rosters.first }
@@ -149,7 +149,7 @@ RSpec.describe 'Users' do
       context 'with valid attributes' do
         it 'responds successfully' do
           submit
-          expect(response).to redirect_to(roster_users_path(roster))
+          expect(response).to redirect_to(users_path)
         end
       end
 
@@ -166,9 +166,9 @@ RSpec.describe 'Users' do
     context 'when logged in a different roster admin' do
       let(:current_user) { Membership.create(user: (create :user), roster: (create :roster), admin: true).user }
 
-      it 'responds with a forbidden status' do
+      it 'responds successfully' do
         submit
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to redirect_to(users_path)
       end
     end
 

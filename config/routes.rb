@@ -24,14 +24,14 @@ Rails.application.routes.draw do
 
     resources :memberships, only: %i[create destroy update], shallow: true
 
-    resources :users, except: %i[show destroy] do
-      collection do
-        get :inactive
-      end
-    end
-
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
+  end
+
+  resources :users, except: %i[show] do
+    collection do
+      get :inactive
+    end
   end
 
   resources :versions do
