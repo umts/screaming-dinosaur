@@ -83,7 +83,7 @@ RSpec.describe 'Versions' do
     context 'when the change is not made by current user' do
       subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
-      before { when_current_user_is :whoever }
+      let(:current_user) { create :user }
 
       let!(:version) { assignment.versions.last }
 

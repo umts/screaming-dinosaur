@@ -11,9 +11,9 @@ RSpec.describe AssignmentsController do
                           start_date: 1.day.after(assignment.end_date),
                           end_date: 2.days.after(assignment.end_date)
     end
+    let(:current_user) { own_assignment.user }
 
     before do
-      when_current_user_is own_assignment.user
       get "/rosters/#{roster.id}/assignments.json",
           params: { start_date: 1.month.ago, end_date: 1.month.from_now }
     end
@@ -81,8 +81,9 @@ RSpec.describe AssignmentsController do
     context 'when the current user is an admin in the roster' do
       before do
         roster_admin.membership_in(roster).update admin: true
-        when_current_user_is roster_admin
       end
+
+      let(:current_user) { roster_admin }
 
       it 'deletes an Assignment' do
         expect { submit }.to change(Assignment, :count).by(-1)
@@ -104,7 +105,7 @@ RSpec.describe AssignmentsController do
     end
 
     context 'when the current user is not an admin in the roster' do
-      before { when_current_user_is assignment.user }
+      let(:current_user) { assignment.user }
 
       it 'does not delete an Assignment' do
         expect { submit }.not_to change(Assignment, :count)

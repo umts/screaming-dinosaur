@@ -219,7 +219,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when you are not a roster admin' do
-      before { set_user create(:membership, roster:, admin: false).user }
+      let(:current_user) { create(:membership, roster:, admin: false).user }
 
       it 'responds with a forbidden status' do
         call
@@ -228,8 +228,9 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a roster admin' do
+      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: true).user }
+
       before do
-        login_as Membership.create(user: (create :user), roster: roster, admin: true).user
         user.memberships.delete_all
       end
 

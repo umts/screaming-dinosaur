@@ -2,9 +2,9 @@
 
 RSpec.describe 'editing a roster' do
   let(:roster) { create :roster, switchover: (23 * 60) + 45 }
+  let(:current_user) { roster_admin roster }
 
   before do
-    when_current_user_is roster_admin(roster)
     visit edit_roster_path(roster)
   end
 
