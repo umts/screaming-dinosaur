@@ -7,7 +7,7 @@ RSpec.describe Assignment do
     let(:roster) { create :roster, switchover: 14 * 60 }
     let :assignment do
       create :assignment, roster:,
-             start_date: Date.new(2017, 4, 10), end_date: Date.new(2017, 4, 11)
+                          start_date: Date.new(2017, 4, 10), end_date: Date.new(2017, 4, 11)
     end
 
     describe 'effective_start_datetime' do
@@ -147,8 +147,8 @@ RSpec.describe Assignment do
 
     before do
       create :assignment, roster:,
-             start_date: Time.zone.today,
-             end_date: 6.days.from_now
+                          start_date: Time.zone.today,
+                          end_date: 6.days.from_now
     end
 
     context 'when creating assignments that do not overlap' do
@@ -178,11 +178,11 @@ RSpec.describe Assignment do
     let(:roster) { create :roster }
     let :assignment_today do
       create :assignment, roster:,
-             start_date: Time.zone.today, end_date: 1.week.since.to_date
+                          start_date: Time.zone.today, end_date: 1.week.since.to_date
     end
     let :assignment_tomorrow do
       create :assignment, roster:,
-             start_date: Date.tomorrow, end_date: 1.week.since.to_date
+                          start_date: Date.tomorrow, end_date: 1.week.since.to_date
     end
 
     context 'when it is before the switchover' do
@@ -215,15 +215,15 @@ RSpec.describe Assignment do
     it 'sends reminders about assignments starting tomorrow' do
       call
       expect(AssignmentsMailer).to have_received(:upcoming_reminder)
-                                     .with(assignment_tomorrow.roster,
-                                           assignment_tomorrow.effective_start_datetime, any_args)
+        .with(assignment_tomorrow.roster,
+              assignment_tomorrow.effective_start_datetime, any_args)
     end
 
     it 'does not send reminders about assignments starting today' do
       call
       expect(AssignmentsMailer).not_to have_received(:upcoming_reminder)
-                                         .with(assignment_today.roster,
-                                               assignment_today.effective_start_datetime, any_args)
+        .with(assignment_today.roster,
+              assignment_today.effective_start_datetime, any_args)
     end
   end
 end
