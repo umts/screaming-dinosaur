@@ -5,6 +5,15 @@ class MembershipsController < ApplicationController
   before_action :initialize_membership, only: :create
   before_action :find_membership, only: %i[update destroy]
 
+  def index
+    @roster = Roster.friendly.find params.require(:roster_id)
+    authorize! @roster
+    @fallback = @roster.fallback_user
+    @active = !params[:active]
+    @memberships = @roster.memberships.active @active
+    @other_users = User.order(:last_name) - @roster.users
+  end
+
   def create
     @membership.assign_attributes(membership_params)
     authorize! @membership
@@ -13,7 +22,7 @@ class MembershipsController < ApplicationController
     else
       flash[:error] = @membership.errors.full_messages
     end
-    redirect_to roster_users_path(@membership.roster)
+    redirect_to roster_memberships_path(@membership.roster)
   end
 
   def update
@@ -24,7 +33,7 @@ class MembershipsController < ApplicationController
     else
       flash[:error] = @membership.errors.full_messages
     end
-    redirect_to roster_users_path(@membership.roster)
+    redirect_to roster_memberships_path(@membership.roster)
   end
 
   def destroy
@@ -34,7 +43,7 @@ class MembershipsController < ApplicationController
     else
       flash[:error] = @membership.errors.full_messages
     end
-    redirect_to roster_users_path(@membership.roster)
+    redirect_to roster_memberships_path(@membership.roster)
   end
 
   private

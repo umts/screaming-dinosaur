@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     get :assign_weekdays, to: 'weekday_assigners#prompt'
     post :assign_weekdays, to: 'weekday_assigners#perform'
 
+    resources :memberships, only: :index
     resources :memberships, only: %i[create destroy update], shallow: true
 
     resources :users, except: %i[show destroy] do
