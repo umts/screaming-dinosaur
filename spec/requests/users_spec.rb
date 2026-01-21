@@ -44,9 +44,7 @@ RSpec.describe 'Users' do
     context 'when logged in as a roster admin' do
       let(:roster) { create :roster }
 
-      before do
-        login_as Membership.create(user: (create :user), roster: roster, admin: true).user
-      end
+      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: true).user }
 
       it 'responds successfully' do
         call
@@ -113,9 +111,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a roster admin' do
-      before do
-        login_as create(:user, memberships: [build(:membership, roster:, admin: true)])
-      end
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       it 'responds successfully' do
         call
@@ -124,9 +120,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as the user themself' do
-      before do
-        login_as user
-      end
+      let(:current_user) { user }
 
       it 'responds successfully' do
         call
@@ -150,9 +144,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as the roster admin' do
-      before do
-        login_as Membership.create(user: (create :user), roster: roster, admin: true).user
-      end
+      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: true).user }
 
       context 'with valid attributes' do
         it 'responds successfully' do
@@ -172,9 +164,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in a different roster admin' do
-      before do
-        login_as Membership.create(user: (create :user), roster: (create :roster), admin: true).user
-      end
+      let(:current_user) { Membership.create(user: (create :user), roster: (create :roster), admin: true).user }
 
       it 'responds with a forbidden status' do
         submit
@@ -183,9 +173,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as the user themself' do
-      before do
-        login_as user
-      end
+      let(:current_user) { user }
 
       context 'with valid attributes' do
         it 'responds successfully' do

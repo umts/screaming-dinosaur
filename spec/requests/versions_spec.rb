@@ -9,9 +9,7 @@ RSpec.describe 'Versions' do
     let(:redirect_target) { '/redirect_to_me' }
 
     context 'when the change is made by user' do
-      before do
-        login_as change_user
-      end
+      let(:current_user) { change_user }
 
       context 'when the version is a "create" version' do
         subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
