@@ -28,11 +28,7 @@ Rails.application.routes.draw do
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
 
-  resources :users, except: %i[show] do
-    collection do
-      get :inactive
-    end
-  end
+  resources :users, except: %i[show]
 
   resources :versions do
     member do
