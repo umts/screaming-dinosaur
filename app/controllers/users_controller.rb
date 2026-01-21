@@ -45,17 +45,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def transfer
-    authorize! context: { roster: @roster }
-    @user.rosters += [@roster]
-    if @user.save
-      confirm_change(@user, "Added #{@user.full_name} to roster.")
-    else
-      flash[:errors] = @user.errors.full_messages
-    end
-    redirect_to roster_users_path(@roster)
-  end
-
   private
 
   def user_params

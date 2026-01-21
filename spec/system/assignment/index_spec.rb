@@ -5,8 +5,9 @@ RSpec.describe 'viewing the index' do
   let(:user) { roster_user(roster) }
 
   context 'when interacting with the ICS feed URL', :js do
+    let(:current_user) { user }
+
     before do
-      set_current_user(user)
       visit root_path
     end
 
@@ -30,9 +31,7 @@ RSpec.describe 'viewing the index' do
       /background-color: *var\(--#{var}\)/
     end
 
-    before do
-      set_current_user(user)
-    end
+    let(:current_user) { user }
 
     it 'highlights today' do
       visit roster_assignments_path(roster)

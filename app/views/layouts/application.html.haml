@@ -11,6 +11,10 @@
   %body
     = render partial: 'layouts/nav', locals: { roster: @roster, rosters: Current.user&.rosters || Roster.none }
     .container.my-3
+      - if flash[:alert].present?
+        .alert.alert-primary.mb-3{ role: 'alert' }= flash[:alert]
+      - if flash[:notice].present?
+        .alert.alert-secondary.mb-3{ role: 'alert' }= flash[:notice]
       - if flash[:message].present?
         .alert.alert-success{ role: 'alert' }
           = flash[:message]
