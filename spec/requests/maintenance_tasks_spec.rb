@@ -5,7 +5,7 @@ RSpec.describe 'Maintenance Tasks' do
     subject(:call) { get '/maintenance_tasks' }
 
     context 'when logged in as a roster admin' do
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds with a forbidden status' do
         call
@@ -14,7 +14,7 @@ RSpec.describe 'Maintenance Tasks' do
     end
 
     context 'when logged in as a system admin' do
-      before { login_as create(:user, admin: true) }
+      let(:current_user) { create :user, admin: true }
 
       it 'responds successfully' do
         call

@@ -45,8 +45,8 @@ RSpec.describe 'ICS views' do
   end
 
   describe 'viewing the ics formatted index' do
+    let(:current_user) { users[0] }
     let :submit do
-      when_current_user_is users[0]
       visit roster_assignments_path(roster, format: 'ics')
     end
 
