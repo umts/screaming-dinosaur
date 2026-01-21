@@ -18,9 +18,9 @@ class Membership < ApplicationRecord
 
   def delete_future_assignment
     user.assignments
-          .where(roster: roster)
-          .upcoming
-          .destroy_all
+        .where(roster: roster)
+        .upcoming
+        .destroy_all
   end
 
 end
