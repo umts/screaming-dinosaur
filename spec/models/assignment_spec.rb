@@ -80,13 +80,10 @@ RSpec.describe Assignment do
 
     let(:assignment) { create :assignment }
     let(:recipient) { assignment.user }
-
-    before do
-      Current.user = create :user
-    end
+    let(:current_user) { create :user }
 
     context 'when the changer is the recipient' do
-      before { Current.user = recipient }
+      let(:current_user) { recipient }
 
       it 'does not send an email' do
         expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
