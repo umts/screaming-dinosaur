@@ -67,6 +67,8 @@ class AssignmentsController < ApplicationController
     @roster = Roster.where('lower(name) = ?', roster).first
     authorize! context: { roster: @roster }
     render_ics_feed
+  rescue ActionPolicy::Unauthorized
+    head :forbidden
   end
 
   private
