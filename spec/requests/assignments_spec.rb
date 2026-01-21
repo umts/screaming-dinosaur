@@ -15,7 +15,7 @@ RSpec.describe 'Assignments' do
     end
 
     context 'when logged in' do
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds successfully' do
         call
@@ -33,7 +33,7 @@ RSpec.describe 'Assignments' do
         create :assignment, roster:, user: users[1], start_date: 2.days.ago, end_date: 1.day.ago
       end
 
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds successfully' do
         call
@@ -70,7 +70,7 @@ RSpec.describe 'Assignments' do
     end
 
     context 'when logged in' do
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds successfully' do
         call
@@ -93,7 +93,7 @@ RSpec.describe 'Assignments' do
     end
 
     context 'when logged in' do
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds successfully' do
         call
@@ -120,7 +120,7 @@ RSpec.describe 'Assignments' do
       let(:user) { create :user, memberships: [build(:membership, roster:)] }
       let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
 
-      before { login_as user }
+      let(:current_user) { user }
 
       it 'redirects to all assignments' do
         submit
@@ -141,7 +141,7 @@ RSpec.describe 'Assignments' do
       let(:user) { create :user }
       let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
 
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds with a forbidden status' do
         submit
@@ -153,7 +153,7 @@ RSpec.describe 'Assignments' do
       let(:user) { create :user, memberships: [build(:membership, roster:)] }
       let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
 
-      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       it 'redirects to all assignments' do
         submit
@@ -174,7 +174,7 @@ RSpec.describe 'Assignments' do
       let(:user) { create :user, memberships: [build(:membership, roster:)] }
       let(:attributes) { { user_id: user.id, start_date: Date.tomorrow, end_date: Date.current } }
 
-      before { login_as user }
+      let(:current_user) { user }
 
       it 'responds with an unprocessable content status' do
         submit
@@ -202,7 +202,7 @@ RSpec.describe 'Assignments' do
       let(:user) { create :user, memberships: [build(:membership, roster:)] }
       let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
 
-      before { login_as user }
+      let(:current_user) { user }
 
       it 'redirects to all assignments' do
         submit
@@ -219,7 +219,7 @@ RSpec.describe 'Assignments' do
       let(:user) { create :user }
       let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
 
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds with a forbidden status' do
         submit
@@ -231,7 +231,7 @@ RSpec.describe 'Assignments' do
       let(:user) { create :user, memberships: [build(:membership, roster:)] }
       let(:attributes) { { user_id: user.id, start_date: Date.current, end_date: Date.tomorrow } }
 
-      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       it 'redirects to all assignments' do
         submit
@@ -248,7 +248,7 @@ RSpec.describe 'Assignments' do
       let(:user) { create :user, memberships: [build(:membership, roster:)] }
       let(:attributes) { { user_id: user.id, start_date: Date.tomorrow, end_date: Date.current } }
 
-      before { login_as user }
+      let(:current_user) { user }
 
       it 'responds with an unprocessable content status' do
         submit
@@ -264,7 +264,7 @@ RSpec.describe 'Assignments' do
     let(:assignment) { create :assignment, roster: }
 
     context 'when logged in as an admin in another roster' do
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds with a forbidden status' do
         submit
@@ -273,7 +273,7 @@ RSpec.describe 'Assignments' do
     end
 
     context 'when logged in as an admin in the roster' do
-      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       it 'redirects to all assignments' do
         submit
@@ -294,7 +294,7 @@ RSpec.describe 'Assignments' do
     let(:token) { 'sometoken' }
 
     context 'when logged in as an unrelated user' do
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds with a forbidden status' do
         call
@@ -303,7 +303,7 @@ RSpec.describe 'Assignments' do
     end
 
     context 'when logged in as a roster user' do
-      before { login_as create(:user, memberships: [build(:membership, roster:)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:)] }
 
       it 'responds successfully' do
         call

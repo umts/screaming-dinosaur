@@ -7,7 +7,7 @@ RSpec.describe 'Users' do
     let(:roster) { create :roster }
 
     context 'when logged in as a roster member' do
-      before { login_as Membership.create(user: (create :user), roster: roster, admin: false).user }
+      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: false).user }
 
       it 'responds with a forbidden status' do
         call
@@ -18,7 +18,7 @@ RSpec.describe 'Users' do
     context 'when logged in as a roster admin' do
       let(:roster) { create :roster }
 
-      before { login_as Membership.create(user: (create :user), roster: roster, admin: true).user }
+      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: true).user }
 
       it 'responds successfully' do
         call
@@ -33,7 +33,7 @@ RSpec.describe 'Users' do
     let(:roster) { create :roster }
 
     context 'when logged in as a roster member' do
-      before { login_as Membership.create(user: (create :user), roster: roster, admin: false).user }
+      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: false).user }
 
       it 'responds with a forbidden status' do
         call
@@ -61,7 +61,7 @@ RSpec.describe 'Users' do
     let(:roster) { create :roster }
 
     context 'when logged in as a roster member' do
-      before { login_as Membership.create(user: (create :user), roster: roster, admin: false).user }
+      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: false).user }
 
       let(:params) { nil }
 
@@ -72,7 +72,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a roster admin' do
-      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       context 'with valid attributes' do
         let(:attributes) { attributes_for :user }
