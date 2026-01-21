@@ -22,5 +22,4 @@ class Membership < ApplicationRecord
         .upcoming
         .destroy_all
   end
-
 end
