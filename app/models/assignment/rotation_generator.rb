@@ -51,7 +51,6 @@ class Assignment < ApplicationRecord
       validate!
       [].tap do |assignments|
         ActiveRecord::Base.transaction { create_assignments_and_save!(assignments) }
-        assignments.each { |assignment| assignment.notify :owner, of: :new_assignment, by: Current.user }
       end
     rescue ActiveRecord::RecordInvalid => e
       errors.merge! e.record.errors

@@ -3,7 +3,8 @@
 RSpec.describe AssignmentsMailer do
   describe 'changed_assignment' do
     subject :output do
-      described_class.changed_assignment assignment, recipient, changer
+      described_class.changed_assignment assignment.roster, assignment.effective_start_datetime,
+                                         assignment.effective_end_datetime, recipient, changer
     end
 
     let(:roster) { create :roster, switchover: 9 * 60 }
@@ -45,7 +46,8 @@ RSpec.describe AssignmentsMailer do
 
   describe 'deleted_assignment' do
     subject :output do
-      described_class.deleted_assignment assignment, recipient, changer
+      described_class.deleted_assignment assignment.roster, assignment.effective_start_datetime,
+                                         assignment.effective_end_datetime, recipient, changer
     end
 
     let(:roster) { create :roster, switchover: 10 * 60 }
@@ -87,7 +89,8 @@ RSpec.describe AssignmentsMailer do
 
   describe 'new_assignment' do
     subject :output do
-      described_class.new_assignment assignment, recipient, changer
+      described_class.new_assignment assignment.roster, assignment.effective_start_datetime,
+                                     assignment.effective_end_datetime, recipient, changer
     end
 
     let(:roster) { create :roster, switchover: 11 * 60 }
@@ -129,7 +132,8 @@ RSpec.describe AssignmentsMailer do
 
   describe 'upcoming_reminder' do
     subject :output do
-      described_class.upcoming_reminder assignment
+      described_class.upcoming_reminder assignment.roster, assignment.effective_start_datetime,
+                                        assignment.effective_end_datetime, assignment.user
     end
 
     let(:roster) { create :roster, switchover: 12 * 60 }
