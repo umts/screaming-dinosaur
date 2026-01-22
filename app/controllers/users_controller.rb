@@ -26,7 +26,7 @@ class UsersController < ApplicationController
     membership_params = user_params[:membership]
     if @user.save && update_membership(membership_params)
       confirm_change(@user)
-      redirect_to roster_users_path(@roster)
+      redirect_to roster_memberships_path(@roster)
     else
       flash.now[:errors] = @user.errors.full_messages
       render :new, status: :unprocessable_content
@@ -79,9 +79,15 @@ class UsersController < ApplicationController
     @user.errors.merge! membership.errors
     false
   end
+
   # rubocop:enable Naming/PredicateMethod
 
   def update_redirect_path
-    allowed_to?(:index?, context: { roster: @roster }) ? roster_users_path(@roster) : roster_assignments_path(@roster)
+    if allowed_to?(:index?,
+                   context: { roster: @roster })
+      roster_memberships_path(@roster)
+    else
+      roster_assignments_path(@roster)
+    end
   end
 end
