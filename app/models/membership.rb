@@ -7,7 +7,6 @@ class Membership < ApplicationRecord
   validates :user, uniqueness: { scope: :roster }
   validate :at_least_one_admin
   after_destroy :delete_future_assignments
-  scope :active, ->(active) { where(user: { active: }).joins(:user) }
 
   private
 

@@ -9,7 +9,7 @@ class MembershipsController < ApplicationController
     @roster = Roster.friendly.find params[:roster_id]
     authorize! context: { roster: @roster }
     @active = !params[:active]
-    @memberships = @roster.memberships.active @active
+    @memberships = @roster.memberships.joins(:user).where(user: { active: @active ? true : [nil, false] })
     @other_users = User.order(:last_name) - @roster.users
   end
 
