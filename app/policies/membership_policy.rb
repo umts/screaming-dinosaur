@@ -3,7 +3,7 @@
 class MembershipPolicy < ApplicationPolicy
   authorize :roster, optional: true
 
-  def index? = user&.admin_in? roster
+  def index? = user&.member_of? roster
 
   def create? = user&.admin_in? record.roster
 

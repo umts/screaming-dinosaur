@@ -10,4 +10,6 @@ class UserPolicy < ApplicationPolicy
 
   def edit? = (user&.admin_in? roster) || (user == record)
   alias update? edit?
+
+  def view_sensitive_info? = user&.admin_in?(roster)
 end
