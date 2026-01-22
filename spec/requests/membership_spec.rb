@@ -25,14 +25,14 @@ RSpec.describe 'Memberships' do
 
         it 'redirects to roster index' do
           submit
-          expect(response).to redirect_to roster_users_path(roster)
+          expect(response).to redirect_to roster_memberships_path(roster)
         end
 
-        it 'creates a membership' do
+        it 'creates a memberships' do
           expect { submit }.to change(Membership, :count).by(1)
         end
 
-        it 'creates a membership with the correct attributes' do
+        it 'creates a memberships with the correct attributes' do
           submit
           expect(Membership.last).to have_attributes(attributes)
         end
@@ -43,10 +43,10 @@ RSpec.describe 'Memberships' do
 
         it 'redirects to roster index' do
           submit
-          expect(response).to redirect_to roster_users_path(roster)
+          expect(response).to redirect_to roster_memberships_path(roster)
         end
 
-        it 'does not create a membership' do
+        it 'does not create a memberships' do
           expect { submit }.not_to change(Membership, :count)
         end
       end
@@ -77,10 +77,10 @@ RSpec.describe 'Memberships' do
 
         it 'redirects to roster index' do
           submit
-          expect(response).to redirect_to roster_users_path(roster)
+          expect(response).to redirect_to roster_memberships_path(roster)
         end
 
-        it 'updates the membership with the correct attributes' do
+        it 'updates the memberships with the correct attributes' do
           submit
           expect(membership.reload).to have_attributes(attributes)
         end
@@ -91,10 +91,10 @@ RSpec.describe 'Memberships' do
 
         it 'redirects to roster index' do
           submit
-          expect(response).to redirect_to roster_users_path(roster)
+          expect(response).to redirect_to roster_memberships_path(roster)
         end
 
-        it 'does not update the membership' do
+        it 'does not update the memberships' do
           expect { submit }.not_to(change { membership.reload.attributes })
         end
       end
@@ -121,10 +121,10 @@ RSpec.describe 'Memberships' do
 
       it 'redirects to roster index' do
         submit
-        expect(response).to redirect_to roster_users_path(roster)
+        expect(response).to redirect_to roster_memberships_path(roster)
       end
 
-      it 'removes the membership' do
+      it 'removes the memberships' do
         submit
         expect(Membership.find_by(id: membership.id)).to be_nil
       end
