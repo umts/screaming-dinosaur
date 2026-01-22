@@ -97,10 +97,7 @@ RSpec.describe AssignmentsController do
       it { is_expected.to redirect_to("/rosters/#{roster.to_param}/assignments") }
 
       it 'sends a notification to the owner of the assignment' do
-        allow(Assignment).to receive_messages(includes: Assignment, find: assignment)
-        allow(assignment).to receive(:notify)
-        submit
-        expect(assignment).to have_received(:notify).with(:owner, of: :deleted_assignment, by: roster_admin)
+        expect { submit }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
       end
     end
 

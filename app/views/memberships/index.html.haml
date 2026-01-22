@@ -1,0 +1,56 @@
+= render layout: 'layouts/section', locals: { heading: "Users in #{@roster.name}", creatable: new_roster_user_path } do
+  - if @roster.fallback_user.blank?
+    .alert.alert-warning
+      %div No fallback user!
+      %div= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
+  %ul.nav.nav-pills.nav-fill.mb-3
+    %li.nav-item= link_to 'Active', roster_memberships_path, class: ['nav-link', @active ? 'active' : nil]
+    %li.nav-item= link_to 'Inactive', roster_memberships_path(active: false),
+                          class: ['nav-link', @active ? nil : 'active']
+
+  .table-responsive
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th Name
+          %th SPIRE
+          %th Email
+          %th Phone
+          %th.column-compact
+          %th.column-compact
+      %tbody
+        - @memberships.each do |membership|
+          - user = membership.user
+          %tr
+            %td
+              = user.full_name
+              - if user == @roster.fallback_user
+                (fallback)
+            %td= user.spire
+            %td= user.email
+            %td= formatted_phone(user.phone)
+            %td
+              = button_to membership_path(user.membership_in(@roster)),
+                          method: :delete,
+                          class: 'btn btn-sm text-nowrap lh-1',
+                          disabled: (user.admin_in? @roster) && @roster.admins.one? do
+                %i.fa-solid.fa-xmark.lh-1
+                %span.d-none.d-xl-inline.lh-1 Remove
+            %td
+              = button_to membership_path(user.membership_in(@roster)),
+                          method: :patch,
+                          params: { membership: { admin: !(user.admin_in? @roster) } },
+                          class: 'btn btn-sm text-nowrap lh-1',
+                          disabled: (user.admin_in? @roster) && @roster.admins.one? do
+                - if user.admin_in? @roster
+                  %i.fa-solid.fa-person-falling.lh-1
+                  %span.d-none.d-xl-inline.lh-1 Demote
+                - else
+                  %i.fa-solid.fa-user-tie.lh-1
+                  %span.d-none.d-xl-inline.lh-1 Promote
+  - if @other_users.present?
+    = form_with model: [@roster, @roster.memberships.new] do |f|
+      .input-group
+        = f.label :user_id, 'Add user', class: 'input-group-text'
+        = f.collection_select :user_id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
+        = f.submit 'Add', class: 'btn btn-secondary'
