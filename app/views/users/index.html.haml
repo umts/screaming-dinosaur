@@ -1,0 +1,43 @@
+= render layout: 'layouts/section', locals: { heading: 'All Users', creatable: new_user_path } do
+  %ul.nav.nav-pills.nav-fill.mb-3
+    %li.nav-item= link_to 'Active', users_path, class: ['nav-link', @active ? 'active' : nil]
+    %li.nav-item= link_to 'Inactive', users_path(active: false), class: ['nav-link', @active ? nil : 'active']
+
+  .table-responsive
+    %table.table.table-striped.table-hover
+      %thead
+        %tr
+          %th Name
+          %th SPIRE
+          %th Email
+          %th Phone
+          %th.column-compact
+          %th.column-compact
+      %tbody
+        - @users.each do |user|
+          %tr
+            %td
+              = user.full_name
+            %td= user.spire
+            %td= user.email
+            %td= formatted_phone(user.phone)
+            %td
+              = link_to edit_user_path(user), class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-edit
+                %span.d-none.d-xl-inline Edit
+            %td
+              - if user.active?
+                = button_to user_path(user),
+                            method: :patch,
+                            params: { user: { active: false } },
+                            data: { confirm: 'Deactivating user will delete all upcoming assignments.' },
+                            class: 'btn btn-sm text-nowrap lh-1' do
+                  %i.fa-solid.fa-user-xmark
+                  %span.d-none.d-xl-inline Deactivate
+              - else
+                = button_to user_path(user),
+                            method: :patch,
+                            params: { user: { active: true } },
+                            class: 'btn btn-sm text-nowrap lh-1' do
+                  %i.fa-solid.fa-user-plus
+                  %span.d-none.d-xl-inline Activate
