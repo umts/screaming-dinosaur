@@ -78,7 +78,7 @@ RSpec.describe 'Users' do
 
         it 'responds successfully' do
           submit
-          expect(response).to redirect_to(roster_users_path(roster))
+          expect(response).to redirect_to(roster_memberships_path(roster))
         end
 
         it 'creates a user' do
@@ -149,7 +149,7 @@ RSpec.describe 'Users' do
       context 'with valid attributes' do
         it 'responds successfully' do
           submit
-          expect(response).to redirect_to(roster_users_path(roster))
+          expect(response).to redirect_to(roster_memberships_path(roster))
         end
       end
 
