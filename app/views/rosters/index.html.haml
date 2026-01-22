@@ -1,23 +1,26 @@
 = render layout: 'layouts/section',
-         locals: { heading: 'On-Call Dashboard', creatable: allowed_to?(:new, Roster) && new_roster_path } do
-  :ruby
-    active_assignments = Assignment.includes(:roster, :user).at(Time.current)
-    rosters = active_assignments.select { |assignment| assignment.user == Current.user }.collect(&:roster)
-    fallbacks = Roster.where(fallback_user: Current.user) - active_assignments.collect(&:roster)
-  - if rosters.any?
-    .alert.alert-info
-      You are currently on call for:
-      %strong= rosters.map(&:name).join(', ')
-  - if fallbacks.any?
-    .alert.alert-danger
-      You are currently the fallback on call for:
-      %strong= fallbacks.map(&:name).join(', ')
-  - @rosters.each do |roster|
-    .card.mb-3
-      .card-body
-        - unless roster.assignments.current
-          .fa-solid.fa-triangle-exclamation
-        = link_to roster.name, roster_assignments_path(roster)
-        = roster.assignments.current&.user&.full_name || roster.fallback_user&.full_name || 'No one on call!'
-        Switches at
-        = roster.switchover_time.strftime '%-I:%M %P'
+         locals: { heading: 'On-Call Dashboard', creatable: allowed_to?(:new?, Roster) && new_roster_path } do
+  .list-group
+    - if @rosters.present?
+      - @rosters.each do |roster|
+        .list-group-item
+          .float-end.d-flex.align-items-end.flex-column
+            - if allowed_to?(:edit?, roster)
+              = link_to setup_roster_path(roster), class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-gear
+                Twilio Setup
+              = link_to edit_roster_url(roster), class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-edit
+                Edit
+              = button_to roster_path(roster),
+                          method: :delete,
+                          data: { confirm: 'Deleting roster will remove all assignments and members.' },
+                          class: 'btn btn-sm text-nowrap lh-1' do
+                %i.fa-solid.fa-trash
+                Delete
+          .d-flex.flex-wrap.align-items-center.gap-2
+            %span.lead= link_to roster.name, roster_assignments_path(roster)
+            %span.badge.bg-secondary= roster.on_call_user&.full_name
+            %span.badge.bg-primary= 'No one on call!' unless roster.on_call_user
+          .text-muted= formatted_phone(roster.phone)
+          .text-muted Switchover: #{roster.switchover_time.strftime '%-I:%M %P'}
