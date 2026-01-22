@@ -6,9 +6,8 @@ class MembershipsController < ApplicationController
   before_action :find_membership, only: %i[update destroy]
 
   def index
-    @roster = Roster.friendly.find params.require(:roster_id)
-    authorize! @roster
-    @fallback = @roster.fallback_user
+    @roster = Roster.friendly.find params[:roster_id]
+    authorize! context: { roster: @roster }
     @active = !params[:active]
     @memberships = @roster.memberships.active @active
     @other_users = User.order(:last_name) - @roster.users

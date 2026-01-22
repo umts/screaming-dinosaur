@@ -1,5 +1,5 @@
 = render layout: 'layouts/section', locals: { heading: "Users in #{@roster.name}", creatable: new_roster_user_path } do
-  - if @fallback.blank?
+  - if @roster.fallback_user.blank?
     .alert.alert-warning
       %div No fallback user!
       %div= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
@@ -24,7 +24,7 @@
           %tr
             %td
               = user.full_name
-              - if user == @fallback
+              - if user == @roster.fallback_user
                 (fallback)
             %td= user.spire
             %td= user.email

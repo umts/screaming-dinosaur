@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class MembershipPolicy < ApplicationPolicy
-  def index? = user&.admin_in? record
+  authorize :roster, optional: true
+
+  def index? = user&.admin_in? roster
 
   def create? = user&.admin_in? record.roster
 
