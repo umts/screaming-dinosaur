@@ -9,6 +9,9 @@
                  aria: { expanded: 'false', label: 'Toggle navigation' } do
       %i.navbar-toggler-icon
     #navbar-content.collapse.navbar-collapse
+      %ul.navbar-nav
+        - if allowed_to?(:index?, User)
+          %li.nav-item= link_to 'Users', users_path, class: 'nav-link'
       - if Current.user.present?
         %ul.navbar-nav.ms-auto
           %li.nav-item.dropdown
