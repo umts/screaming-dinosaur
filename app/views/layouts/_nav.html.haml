@@ -10,6 +10,8 @@
       %i.navbar-toggler-icon
     #navbar-content.collapse.navbar-collapse
       %ul.navbar-nav
+        - if allowed_to?(:index?, Roster)
+          %li.nav-item= link_to 'Rosters', rosters_path, class: 'nav-link'
         - if allowed_to?(:index?, User)
           %li.nav-item= link_to 'Users', users_path, class: 'nav-link'
       - if Current.user.present?
