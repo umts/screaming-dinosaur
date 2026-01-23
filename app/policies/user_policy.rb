@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
 class UserPolicy < ApplicationPolicy
-  def index? = user&.admin?
+  def manage? = user&.admin
+  alias_rule :index?, :new?, :create?, to: :manage?
 
-  def new? = user&.admin?
-
-  alias create? new?
-
-  def edit? = user&.admin? || (user == record)
-
-  alias update? edit?
+  def edit? = manage? || (user == record)
+  alias_rule :update?, to: :edit?
 end

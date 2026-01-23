@@ -26,7 +26,12 @@
         = f.label :reminders_enabled, class: 'list-group-item' do
           = f.check_box :reminders_enabled, class: 'form-check-input me-2'
           Upcoming assignments
-  - if user != Current.user
+  - if allowed_to?(:manage?, user)
+    .mb-3
+      .form-check
+        = f.check_box :admin, class: 'form-check-input'
+        = f.label :admin, class: 'form-check-label'
+  - if allowed_to?(:manage?, user) && user != Current.user
     .mb-3
       .form-check
         = f.check_box :active, class: 'form-check-input'

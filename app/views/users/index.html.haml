@@ -1,38 +1,29 @@
-= render layout: 'layouts/section', locals: { heading: 'All Users', creatable: new_user_path } do
-  %ul.nav.nav-tabs.mb-3
-    %li.nav-item= link_to 'Active', users_path, class: ['nav-link', @active ? 'active' : nil]
-    %li.nav-item= link_to 'Inactive', users_path(active: false), class: ['nav-link', @active ? nil : 'active']
-
-  .list-group.mb-3
-    - if @users.present?
-      - @users.each do |user|
-        .list-group-item
-          .float-end
-            - if user.active?
-              = button_to user_path(user),
-                            method: :patch,
-                            params: { user: { active: false } },
-                            data: { confirm: 'Deactivating user will delete all upcoming assignments.' },
-                            class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-user-xmark
-                Deactivate
-            - else
-              = button_to user_path(user),
-                          method: :patch,
-                          params: { user: { active: true } },
-                          class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-user-plus
-                Activate
-            - if allowed_to?(:update?, user)
-              = link_to edit_user_path(user), class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-edit
-                Edit
-
-          .d-flex.flex-wrap.align-items-center.gap-2
-            %span.lead= user.full_name
-            - if user.admin?
-              %span.badge.bg-secondary Admin
-          .text-muted= formatted_phone user.phone
-          .text-muted= user.email
-    - else
-      .list-group-item No memberships found.
+= render layout: 'layouts/section',
+         locals: { heading: 'Users', creatable: allowed_to?(:new?, User.new) ? new_user_path : nil } do
+  .card
+    .card-header
+      %strong All Users
+    .list-group.list-group-flush
+      - if @users.present?
+        - @users.each do |user|
+          .list-group-item{ class: user.active ? nil : 'text-muted' }
+            .row
+              .col
+                .row
+                  .col-12.col-md-4
+                    = user.full_name
+                    - if user.admin
+                      %span.badge.bg-secondary Admin
+                    - unless user.active
+                      %span.badge.bg-light.text-dark Inactive
+                  .col-12.col-md-4
+                    = formatted_phone user.phone
+                  .col-12.col-md-4
+                    = user.email
+              - if allowed_to?(:edit?, user)
+                .col-auto
+                  = link_to edit_user_path(user), class: 'btn btn-sm lh-1 text-nowrap' do
+                    %i.fa-solid.fa-edit
+                    Edit
+      - else
+        .list-group-item No memberships found.
