@@ -12,7 +12,7 @@
             %span.badge.bg-primary= 'No fallback!' unless roster.fallback_user
           - if roster.assignments.current
             #{roster.on_call_user&.full_name} on call until
-            #{(roster.assignments.current.end_date + 1.day).strftime '%A, %B %e, %Y'}
+            #{roster.switchover_time.strftime '%-I:%M %P'} on
+            #{(roster.assignments.current.end_date + 1.day).strftime '%A, %B %e'}
           - elsif roster.on_call_user
             #{roster.on_call_user.full_name} on call as fallback
-          .text-muted Switchover: #{roster.switchover_time.strftime '%-I:%M %P'}
