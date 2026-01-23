@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AssignmentsIcs
+class Feed
   def initialize(assignments)
     @assignments = assignments
   end

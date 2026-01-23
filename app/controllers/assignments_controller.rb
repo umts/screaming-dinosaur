@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require 'assignments_ics'
-
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
   before_action :set_roster_users, only: %i[edit new create update]
-  before_action :allow_calendar_token_access, only: :feed
+  # before_action :allow_calendar_token_access, only: [:feed]
 
   def index
     authorize!
@@ -59,16 +57,6 @@ class AssignmentsController < ApplicationController
     redirect_to roster_assignments_path(@roster)
   end
 
-  def feed
-    roster = params[:roster].titleize.downcase
-    @roster = Roster.where('lower(name) = ?', roster).first
-    authorize! context: { roster: @roster }
-    render_ics_feed
-  rescue ActionPolicy::Unauthorized
-    skip_verify_authorized!
-    head :forbidden
-  end
-
   private
 
   def assignment_params
@@ -107,7 +95,7 @@ class AssignmentsController < ApplicationController
   end
 
   def render_ics_feed
-    ics = AssignmentsIcs.new(@roster.assignments)
-    render plain: ics.output, content_type: 'text/calendar'
+    feed = Feed.new(@roster.assignments)
+    render plain: feed.output, content_type: 'text/calendar'
   end
 end
