@@ -67,8 +67,11 @@ RSpec.describe User do
     end
 
     it 'sends notification to all affected rosters when fallback user phone changes' do
+      # Ensure phone is different from factory default
+      new_phone = "+1555#{rand(100_000..999_999)}"
+      expect(fallback_user.phone).not_to eq(new_phone)
       expect do
-        fallback_user.update(phone: '+15551234567')
+        fallback_user.update(phone: new_phone)
       end.to change { ActionMailer::Base.deliveries.size }.by 2
     end
 
@@ -80,18 +83,20 @@ RSpec.describe User do
 
     it 'does not send notification when user is not a fallback user' do
       regular_user = create :user
+      new_phone = "+1555#{rand(100_000..999_999)}"
 
       expect do
-        regular_user.update(phone: '+15551234567')
+        regular_user.update(phone: new_phone)
       end.not_to(change { ActionMailer::Base.deliveries.size })
     end
 
     it 'does not send notification to rosters without admins' do
       roster_without_admins = create :roster, fallback_user:
+      new_phone = "+1555#{rand(100_000..999_999)}"
 
       expect do
-        fallback_user.update(phone: '+15551234567')
-      end.to change { ActionMailer::Base.deliveries.size }.by 2
+        fallback_user.update(phone: new_phone)
+      end.to change { ActionMailer::Base.deliveries.size }.by 2 # Only roster1 and roster2 have admins
     end
   end
 end
