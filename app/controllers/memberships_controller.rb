@@ -48,7 +48,7 @@ class MembershipsController < ApplicationController
   private
 
   def initialize_membership
-    @membership = Roster.friendly.find(params[:roster_id])..memberships.new
+    @membership = Roster.friendly.find(params[:roster_id]).memberships.new
   end
 
   def find_membership
