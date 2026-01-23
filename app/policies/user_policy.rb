@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 class UserPolicy < ApplicationPolicy
-  authorize :roster
+  def manage? = user&.admin
 
-  def index? = user&.admin_in? roster
+  def update?
+    return false unless manage? || record == user
+    return false if record.changes.slice('spire', 'admin', 'active').present? && !manage?
 
-  def new? = user&.admin_in? roster
-  alias create? new?
-
-  def edit? = (user&.admin_in? roster) || (user == record)
-  alias update? edit?
-
-  def view_sensitive_info? = user&.admin_in?(roster)
+    true
+  end
 end
