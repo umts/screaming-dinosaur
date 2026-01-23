@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UserPolicy < ApplicationPolicy
-  def manage? = user&.admin
+  def manage? = admin?
 
   def update?
     return false unless manage? || record == user

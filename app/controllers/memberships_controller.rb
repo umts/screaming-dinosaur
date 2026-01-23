@@ -6,7 +6,7 @@ class MembershipsController < ApplicationController
   before_action :find_membership, only: %i[update destroy]
 
   def index
-    @roster = Roster.friendly.find params[:roster_id]
+    @roster = Roster.friendly.find(params[:roster_id])
     authorize! context: { roster: @roster }
     @active = !params[:active]
     @memberships = @roster.memberships.joins(:user).where(user: { active: @active ? true : [nil, false] })
@@ -48,8 +48,7 @@ class MembershipsController < ApplicationController
   private
 
   def initialize_membership
-    roster = Roster.friendly.find(params[:roster_id])
-    @membership = roster.memberships.new
+    @membership = Roster.friendly.find(params[:roster_id])..memberships.new
   end
 
   def find_membership

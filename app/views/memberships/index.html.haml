@@ -16,35 +16,43 @@
         = f.label :user_id, 'Add user', class: 'input-group-text'
         = f.collection_select :user_id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
         = f.submit 'Add', class: 'btn btn-secondary'
-  .list-group.mb-3
-    - if @memberships.present?
-      - @memberships.each do |membership|
-        .list-group-item
-          .float-end
-            - if allowed_to?(:destroy?, membership)
-              = button_to membership_path(membership), method: :delete, class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-xmark.lh-1
-                Remove
-            - if allowed_to?(:update?, membership)
-              = button_to membership_path(membership),
-                          method: :patch,
-                          params: { membership: { admin: !membership.admin? } },
-                          class: 'btn btn-sm text-nowrap lh-1' do
+  .card
+    .card-header
+      %strong Memberships
+    .list-group.list-group-flush
+      - if @memberships.present?
+        - @memberships.each do |membership|
+          .list-group-item
+            .row
+              .col
+                = membership.user.full_name
                 - if membership.admin?
-                  %i.fa-solid.fa-person-falling.lh-1
-                  Demote
-                - else
-                  %i.fa-solid.fa-user-tie.lh-1
-                  Promote
-          .d-flex.flex-wrap.align-items-center.gap-2
-            %span.lead= membership.user.full_name
-            - if membership.admin?
-              %span.badge.bg-secondary Admin
-            - if membership.user == @roster.fallback_user
-              %span.badge.bg-secondary Fallback User
-          - if allowed_to?(:view_sensitive_info?, membership.user, context: { roster: @roster })
-            .text-muted= formatted_phone membership.user.phone
-          .text-muted= membership.user.email
-    - else
-      .list-group-item No memberships found.
-
+                  %span.badge.bg-secondary
+                    %i.fa-solid.fa-user-tie
+                    Admin
+                - if membership.user == @roster.fallback_user
+                  %span.badge.bg-secondary
+                    %i.fa-solid.fa-user-xmark
+                    Fallback User
+              .col-auto
+                - if allowed_to?(:update?, membership)
+                  = button_to membership_path(membership),
+                              method: :patch,
+                              params: { membership: { admin: !membership.admin? } },
+                              form_class: 'd-inline-block',
+                              class: 'btn btn-sm text-nowrap lh-1' do
+                    - if membership.admin?
+                      %i.fa-solid.fa-person-falling
+                      Demote
+                    - else
+                      %i.fa-solid.fa-user-tie
+                      Promote
+                - if allowed_to?(:destroy?, membership)
+                  = button_to membership_path(membership),
+                              method: :delete,
+                              form_class: 'd-inline-block',
+                              class: 'btn btn-sm text-nowrap lh-1' do
+                    %i.fa-solid.fa-xmark
+                    Remove
+      - else
+        .list-group-item No memberships found.
