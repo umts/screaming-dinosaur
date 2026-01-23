@@ -1,4 +1,3 @@
 = render layout: 'layouts/section',
-         locals: { heading: 'Edit user',
-                   closeable: Current.user.admin_in?(@roster) ? roster_memberships_path(@roster) : nil } do
-  = render partial: 'form', locals: { user: @user, roster: @roster, path: roster_user_path(@roster, @user) }
+         locals: { heading: @user.full_name, closeable: allowed_to?(:index, User) ? users_path : nil } do
+  = render partial: 'form', locals: { user: @user }

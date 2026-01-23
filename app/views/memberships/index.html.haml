@@ -1,4 +1,4 @@
-= render layout: 'layouts/section', locals: { heading: "Users in #{@roster.name}", creatable: new_roster_user_path } do
+= render layout: 'layouts/section', locals: { heading: "Users in #{@roster.name}" } do
   - if @roster.fallback_user.blank?
     .alert.alert-warning
       %div No fallback user!

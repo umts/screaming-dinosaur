@@ -1,0 +1,29 @@
+= render layout: 'layouts/section',
+         locals: { heading: 'Users', creatable: allowed_to?(:new?, User.new) ? new_user_path : nil } do
+  .card
+    .card-header
+      %strong All Users
+    .list-group.list-group-flush
+      - if @users.present?
+        - @users.each do |user|
+          .list-group-item{ class: user.active ? nil : 'text-muted' }
+            .row
+              .col
+                .row.row-cols-1.row-cols-md-3
+                  .col
+                    = user.full_name
+                    - if user.admin
+                      %span.badge.bg-secondary Admin
+                    - unless user.active
+                      %span.badge.bg-light.text-dark Inactive
+                  .col
+                    .text-muted= formatted_phone user.phone
+                  .col
+                    .text-muted= user.email
+              - if allowed_to?(:edit?, user)
+                .col-auto
+                  = link_to edit_user_path(user), class: 'btn btn-sm lh-1 text-nowrap' do
+                    %i.fa-solid.fa-edit
+                    Edit
+      - else
+        .list-group-item No memberships found.
