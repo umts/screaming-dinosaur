@@ -9,17 +9,17 @@
           .list-group-item{ class: user.active ? nil : 'text-muted' }
             .row
               .col
-                .row
-                  .col-12.col-md-4
+                .row.row-cols-1.row-cols-md-3
+                  .col
                     = user.full_name
                     - if user.admin
                       %span.badge.bg-secondary Admin
                     - unless user.active
                       %span.badge.bg-light.text-dark Inactive
-                  .col-12.col-md-4
-                    = formatted_phone user.phone
-                  .col-12.col-md-4
-                    = user.email
+                  .col
+                    .text-muted= formatted_phone user.phone
+                  .col
+                    .text-muted= user.email
               - if allowed_to?(:edit?, user)
                 .col-auto
                   = link_to edit_user_path(user), class: 'btn btn-sm lh-1 text-nowrap' do

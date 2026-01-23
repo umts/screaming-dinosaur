@@ -7,7 +7,7 @@
     = f.text_field :last_name, required: true, class: 'form-control'
   .mb-3
     = f.label :spire, class: 'form-label'
-    = f.email_field :spire, required: true, class: 'form-control'
+    = f.email_field :spire, required: true, disabled: !allowed_to?(:manage?, user), class: 'form-control'
     %small.form-text.text-muted e.g. 12345678@umass.edu
   .mb-3
     = f.label :email, class: 'form-label'
@@ -26,14 +26,12 @@
         = f.label :reminders_enabled, class: 'list-group-item' do
           = f.check_box :reminders_enabled, class: 'form-check-input me-2'
           Upcoming assignments
-  - if allowed_to?(:manage?, user)
-    .mb-3
-      .form-check
-        = f.check_box :admin, class: 'form-check-input'
-        = f.label :admin, class: 'form-check-label'
-  - if allowed_to?(:manage?, user) && user != Current.user
-    .mb-3
-      .form-check
-        = f.check_box :active, class: 'form-check-input'
-        = f.label :active, class: 'form-check-label'
+  .mb-3
+    .form-check
+      = f.check_box :admin, disabled: !allowed_to?(:manage?, user), class: 'form-check-input'
+      = f.label :admin, class: 'form-check-label'
+  .mb-3
+    .form-check
+      = f.check_box :active, disabled: !allowed_to?(:manage?, user), class: 'form-check-input'
+      = f.label :active, class: 'form-check-label'
   = f.submit 'Save', class: 'btn w-100 btn-outline-primary'
