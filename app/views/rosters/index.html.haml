@@ -3,24 +3,16 @@
   .list-group
     - if @rosters.present?
       - @rosters.each do |roster|
-        .list-group-item
+        = link_to roster_assignments_path(roster), class: 'list-group-item list-group-item-action' do
           .float-end.d-flex.align-items-end.flex-column
-            - if allowed_to?(:edit?, roster)
-              = link_to setup_roster_path(roster), class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-gear
-                Twilio Setup
-              = link_to edit_roster_url(roster), class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-edit
-                Edit
-              = button_to roster_path(roster),
-                          method: :delete,
-                          data: { confirm: 'Deleting roster will remove all assignments and members.' },
-                          class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-trash
-                Delete
+            = formatted_phone(roster.phone)
           .d-flex.flex-wrap.align-items-center.gap-2
-            %span.lead= link_to roster.name, roster_assignments_path(roster)
-            %span.badge.bg-secondary= roster.on_call_user&.full_name
-            %span.badge.bg-primary= 'No one on call!' unless roster.on_call_user
-          .text-muted= formatted_phone(roster.phone)
+            %span.lead.text-black= roster.name
+            %span.badge.bg-primary= 'No assignment!' unless roster.assignments.current
+            %span.badge.bg-primary= 'No fallback!' unless roster.fallback_user
+          - if roster.assignments.current
+            #{roster.on_call_user&.full_name} on call until
+            #{(roster.assignments.current.end_date + 1.day).strftime '%A, %B %e, %Y'}
+          - elsif roster.on_call_user
+            #{roster.on_call_user.full_name} on call as fallback
           .text-muted Switchover: #{roster.switchover_time.strftime '%-I:%M %P'}
