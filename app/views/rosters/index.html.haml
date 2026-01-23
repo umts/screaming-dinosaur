@@ -1,5 +1,5 @@
 = render layout: 'layouts/section',
-         locals: { heading: 'On-Call Dashboard', creatable: allowed_to?(:new?, Roster) && new_roster_path } do
+         locals: { heading: 'Rosters', creatable: allowed_to?(:new?, Roster) && new_roster_path } do
   .list-group
     - if @rosters.present?
       - @rosters.each do |roster|
@@ -8,11 +8,18 @@
             = formatted_phone(roster.phone)
           .d-flex.flex-wrap.align-items-center.gap-2
             %span.lead.text-black= roster.name
-            %span.badge.bg-primary= 'No assignment!' unless roster.assignments.current
-            %span.badge.bg-primary= 'No fallback!' unless roster.fallback_user
+            - if roster.assignments.current.blank? && allowed_to?(:new?, roster.assignments.new)
+              %span.badge.bg-primary
+                %i.fa-solid.fa-triangle-exclamation
+                No assignment
+            - if roster.fallback_user.blank? && allowed_to?(:edit?, roster)
+              %span.badge.bg-primary
+                %i.fa-solid.fa-triangle-exclamation
+                No fallback
           - if roster.assignments.current
-            #{roster.on_call_user&.full_name} on call until
+            #{roster.on_call_user&.full_name} is on call until
             #{roster.switchover_time.strftime '%-I:%M %P'} on
             #{(roster.assignments.current.end_date + 1.day).strftime '%A, %B %e'}
           - elsif roster.on_call_user
-            #{roster.on_call_user.full_name} on call as fallback
+            %strong= roster.on_call_user.full_name
+            is on call as the fallback user
