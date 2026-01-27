@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Feed
+  attr_reader :assignments
+
   def initialize(assignments)
     @assignments = assignments
   end

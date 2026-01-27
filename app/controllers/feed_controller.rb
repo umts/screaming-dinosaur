@@ -6,7 +6,10 @@ class FeedController < ApplicationController
   def show
     roster = params[:roster].titleize.downcase
     @roster = Roster.where('lower(name) = ?', roster).first
-    authorize! @roster, to: :feed?, context: { roster: @roster }
+
+    feed = Feed.new(@roster.assignments)
+    authorize! feed
+
     render_ics_feed
   rescue ActionPolicy::Unauthorized
     skip_verify_authorized!
