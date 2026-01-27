@@ -116,19 +116,18 @@ RSpec.describe Roster do
     before do
       admin.memberships.create(roster:, admin: true)
       roster.update(fallback_user: old_fallback_user)
-      ActionMailer::Base.deliveries.clear
     end
 
     it 'sends notification when fallback_user_id changes' do
       expect do
         roster.update(fallback_user: new_fallback_user)
-      end.to change { ActionMailer::Base.deliveries.size }.by 1
+      end.to have_enqueued_email(RosterMailer, :fallback_number_changed)
     end
 
     it 'does not send notification when fallback_user_id does not change' do
       expect do
         roster.update(name: 'New Name')
-      end.not_to(change { ActionMailer::Base.deliveries.size })
+      end.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
     end
 
     it 'does not send notification when roster has no admins' do
@@ -136,7 +135,7 @@ RSpec.describe Roster do
 
       expect do
         roster_without_admins.update(fallback_user: new_fallback_user)
-      end.not_to(change { ActionMailer::Base.deliveries.size })
+      end.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
     end
   end
 end
