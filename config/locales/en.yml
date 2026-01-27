@@ -33,6 +33,7 @@ en:
   errors:
     messages:
       end_date_must_be_after_start: "must be on or after start date"
+      may_not_deactivate_self: "You may not deactivate yourself"
       spire_must_be_8_digits_with_umass: "must be 8 digits followed by @umass.edu"
       starting_user_must_be_included: "must be included in the list of selected users"
   activerecord:

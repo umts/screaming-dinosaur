@@ -52,4 +52,25 @@ RSpec.describe User do
       expect(user.assignments).to be_empty
     end
   end
+
+  describe '#valid?' do
+    subject(:call) { user.valid? }
+
+    context 'when logged in as the subject and attempting deactivation' do
+      around { |example| Current.set(user:) { example.run } }
+
+      let(:user) { create :user }
+
+      before { user.active = false }
+
+      it 'does not allow you to deactivate yourself' do
+        expect(call).to be(false)
+      end
+
+      it 'adds a helpful error message' do
+        call
+        expect(user.errors[:base]).to include('You may not deactivate yourself')
+      end
+    end
+  end
 end
