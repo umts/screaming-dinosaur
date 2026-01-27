@@ -16,6 +16,4 @@ class RosterPolicy < ApplicationPolicy
   def assignments? = user.present?
 
   def setup? = user&.admin_in?(record)
-
-  # def feed? = (user.present? && user.member_of?(record)) || valid_api_key?
 end
