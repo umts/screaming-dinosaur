@@ -1,56 +1,58 @@
-= render layout: 'layouts/section', locals: { heading: "Users in #{@roster.name}" } do
+= render layout: 'layouts/section', locals: { heading: @roster.name } do
   - if @roster.fallback_user.blank?
-    .alert.alert-warning
-      %div No fallback user!
-      %div= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
-  %ul.nav.nav-pills.nav-fill.mb-3
-    %li.nav-item= link_to 'Active', roster_memberships_path, class: ['nav-link', @active ? 'active' : nil]
-    %li.nav-item= link_to 'Inactive', roster_memberships_path(active: false),
-                          class: ['nav-link', @active ? nil : 'active']
-
-  .table-responsive
-    %table.table.table-striped.table-hover
-      %thead
-        %tr
-          %th Name
-          %th SPIRE
-          %th Email
-          %th Phone
-          %th.column-compact
-          %th.column-compact
-      %tbody
-        - @memberships.each do |membership|
-          - user = membership.user
-          %tr
-            %td
-              = user.full_name
-              - if user == @roster.fallback_user
-                (fallback)
-            %td= user.spire
-            %td= user.email
-            %td= formatted_phone(user.phone)
-            %td
-              = button_to membership_path(user.membership_in(@roster)),
-                          method: :delete,
-                          class: 'btn btn-sm text-nowrap lh-1',
-                          disabled: (user.admin_in? @roster) && @roster.admins.one? do
-                %i.fa-solid.fa-xmark.lh-1
-                %span.d-none.d-xl-inline.lh-1 Remove
-            %td
-              = button_to membership_path(user.membership_in(@roster)),
-                          method: :patch,
-                          params: { membership: { admin: !(user.admin_in? @roster) } },
-                          class: 'btn btn-sm text-nowrap lh-1',
-                          disabled: (user.admin_in? @roster) && @roster.admins.one? do
-                - if user.admin_in? @roster
-                  %i.fa-solid.fa-person-falling.lh-1
-                  %span.d-none.d-xl-inline.lh-1 Demote
-                - else
-                  %i.fa-solid.fa-user-tie.lh-1
-                  %span.d-none.d-xl-inline.lh-1 Promote
-  - if @other_users.present?
-    = form_with model: [@roster, @roster.memberships.new] do |f|
+    .alert.alert-primary
+      .d-flex.flex-wrap.justify-content-between.align-items-center
+        %div
+          %i.fa-solid.fa-triangle-exclamation
+          There currently is no fallback user.
+        = link_to 'Assign fallback user', edit_roster_path(@roster), class: 'alert-link'
+  %ul.nav.nav-tabs.mb-3
+    %li.nav-item= link_to 'Assignments', roster_assignments_path(@roster), class: 'nav-link'
+    %li.nav-item
+      = link_to 'Memberships', roster_memberships_path(@roster), class: 'nav-link active', 'aria-current': 'page'
+  - if @other_users.present? && allowed_to?(:create?, @roster.memberships.new)
+    = form_with model: [@roster, @roster.memberships.new], html: { class: 'mb-3' } do |f|
       .input-group
         = f.label :user_id, 'Add user', class: 'input-group-text'
         = f.collection_select :user_id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
         = f.submit 'Add', class: 'btn btn-secondary'
+  .card
+    .card-header
+      %strong Memberships
+    .list-group.list-group-flush
+      - if @memberships.present?
+        - @memberships.each do |membership|
+          .list-group-item
+            .row
+              .col
+                = membership.user.full_name
+                - if membership.admin?
+                  %span.badge.bg-secondary
+                    %i.fa-solid.fa-user-tie
+                    Admin
+                - if membership.user == @roster.fallback_user
+                  %span.badge.bg-secondary
+                    %i.fa-solid.fa-user-shield
+                    Fallback User
+              .col-auto
+                - if allowed_to?(:update?, membership)
+                  = button_to membership_path(membership),
+                              method: :patch,
+                              params: { membership: { admin: !membership.admin? } },
+                              form_class: 'd-inline-block',
+                              class: 'btn btn-sm text-nowrap lh-1' do
+                    - if membership.admin?
+                      %i.fa-solid.fa-person-falling
+                      Demote
+                    - else
+                      %i.fa-solid.fa-user-tie
+                      Promote
+                - if allowed_to?(:destroy?, membership)
+                  = button_to membership_path(membership),
+                              method: :delete,
+                              form_class: 'd-inline-block',
+                              class: 'btn btn-sm text-nowrap lh-1' do
+                    %i.fa-solid.fa-xmark
+                    Remove
+      - else
+        .list-group-item No memberships found.
