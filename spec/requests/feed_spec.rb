@@ -2,7 +2,7 @@
 
 RSpec.describe 'ICS views' do
   shared_examples 'an ics assignments feed' do
-    subject(:lines) { page.html.split("\r\n") }
+    subject(:lines) { response.body.split("\r\n") }
 
     let(:roster) { create :roster }
     let(:assignments) do
@@ -47,7 +47,7 @@ RSpec.describe 'ICS views' do
   describe 'viewing the ics formatted index' do
     let(:current_user) { users[0] }
     let :submit do
-      visit roster_assignments_path(roster, format: 'ics')
+      get roster_assignments_path(roster, format: 'ics')
     end
 
     it_behaves_like 'an ics assignments feed'
@@ -56,7 +56,7 @@ RSpec.describe 'ICS views' do
   describe 'viewing the ics feed' do
     let :submit do
       name = roster.name.parameterize
-      visit "feed/#{name}/#{users[0].calendar_access_token}.ics"
+      get "/feed/#{name}/#{users[0].calendar_access_token}.ics"
     end
 
     it_behaves_like 'an ics assignments feed'
