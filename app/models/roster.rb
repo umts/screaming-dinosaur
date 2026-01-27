@@ -75,7 +75,7 @@ class Roster < ApplicationRecord
   def notify_fallback_number_changed
     return if admins.empty?
 
-    RosterMailer.with(roster: self).fallback_number_changed.deliver_now
+    RosterMailer.with(roster: self).fallback_number_changed.deliver_later
   end
 
   def assignment_csv_row(assignment)
