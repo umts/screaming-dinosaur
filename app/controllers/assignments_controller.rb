@@ -3,7 +3,6 @@
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
   before_action :set_roster_users, only: %i[edit new create update]
-  # before_action :allow_calendar_token_access, only: [:feed]
 
   def index
     authorize!
@@ -70,10 +69,6 @@ class AssignmentsController < ApplicationController
 
   def set_roster_users
     @users = @roster.users.active.order :last_name
-  end
-
-  def allow_calendar_token_access
-    Current.user ||= User.find_by(calendar_access_token: params[:token])
   end
 
   def index_html

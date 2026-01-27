@@ -39,8 +39,7 @@ Rails.application.routes.draw do
     end
   end
   
-  
   get 'feed/:roster/:token' => 'feed#show', as: :feed
-
+  
   mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 end
