@@ -32,7 +32,7 @@
                     Admin
                 - if membership.user == @roster.fallback_user
                   %span.badge.bg-secondary
-                    %i.fa-solid.fa-user-xmark
+                    %i.fa-solid.fa-user-shield
                     Fallback User
               .col-auto
                 - if allowed_to?(:update?, membership)
