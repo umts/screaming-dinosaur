@@ -1,6 +1,6 @@
 Hello <%= @recipient.first_name %>,
 
-<%= @changer.full_name %> has cancelled your upcoming on-call assignment.
+<%= @changer&.full_name || 'Unknown User' %> has cancelled your upcoming on-call assignment.
 
 Beginning: <%= @start_date %>
 Ending: <%= @end_date %>
