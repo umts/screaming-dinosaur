@@ -3,6 +3,9 @@
 Rails.application.routes.draw do
   root 'rosters#assignments'
 
+  post :login, to: 'sessions#create' if Rails.env.development?
+  post :logout, to: 'sessions#destroy'
+
   resources :rosters do
     member do
       get :setup
@@ -21,7 +24,7 @@ Rails.application.routes.draw do
       post :generate_rotation, to: 'rotation_generators#perform'
     end
 
-    resources :users, except: :show do
+    resources :users, except: %i[show destroy] do
       collection do
         post :transfer
         get :inactive
@@ -36,13 +39,7 @@ Rails.application.routes.draw do
     end
   end
 
-  unless Rails.env.production?
-    get  'sessions/dev_login', to: 'sessions#dev_login', as: :dev_login
-    post 'sessions/dev_login', to: 'sessions#dev_login'
-  end
-
-  get 'sessions/unauthenticated', to: 'sessions#unauthenticated', as: :unauthenticated_session
-  get 'sessions/destroy', to: 'sessions#destroy', as: :destroy_session
-
   get 'feed/:roster/:token' => 'assignments#feed', as: :feed
+
+  mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 end

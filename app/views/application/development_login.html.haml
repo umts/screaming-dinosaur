@@ -1,0 +1,13 @@
+= render layout: 'layouts/section', locals: { heading: 'Development login' } do
+  .row
+    - Roster.includes(:users).find_each do |roster|
+      .col
+        .card.mb-3
+          .card-header
+            %strong= roster.name
+          .card-body
+            = form_with url: main_app.login_path do |f|
+              = f.hidden_field :roster_id, value: roster.id
+              .input-group
+                = f.select :user_id, grouped_options_for_select(roster.user_options), {}, class: 'form-select'
+                = f.submit 'Login', class: 'btn btn-primary'

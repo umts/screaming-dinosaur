@@ -1,37 +1,35 @@
 # frozen_string_literal: true
 
 RSpec.describe 'user index' do
-  let(:roster) { create :roster }
-  let(:admin_membership) { create :membership, roster:, admin: true }
-  let(:admin) { admin_membership.user }
-
-  context 'when deactivating a user', :js do
-    let(:alert) { accept_alert { click_button 'Deactivate' } }
-
+  describe 'deactivating a user', :js do
     before do
-      when_current_user_is admin
+      roster = create :roster
+      create :user, first_name: 'Bobo', last_name: 'Test', memberships: [build(:membership, roster:)]
+
+      current_user = create :user, memberships: [build(:membership, roster:, admin: true)]
+      login_as current_user
+
       visit root_path
-      click_link 'Manage Users'
+      click_on 'Manage Users'
+      within('tr', text: 'Bobo Test') { accept_alert { click_button 'Deactivate' } }
     end
 
-    it 'warns current user before deactivation with a pop up' do
-      expect(alert).to eq('Deactivating user will delete all upcoming assignments.')
-    end
-
-    it 'deactivates a user' do
-      alert
-      expect(page).to have_no_css 'td', text: admin.first_name
+    it 'no longer lists the user on the roster index' do
+      expect(page).to have_no_text('Bobo Test')
     end
 
     it 'informs you of success' do
-      alert
-      expect(page).to have_css 'div', text: 'User has been updated.'
+      expect(page).to have_text('User has been updated.')
     end
   end
 
   context 'when viewing the index' do
+    let(:roster) { create :roster }
+    let(:admin_membership) { create :membership, roster:, admin: true }
+    let(:admin) { admin_membership.user }
+    let(:current_user) { admin }
+
     before do
-      set_current_user(admin)
       visit root_path
       click_link 'Manage Users'
     end

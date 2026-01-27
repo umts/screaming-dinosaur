@@ -4,10 +4,10 @@ RSpec.describe 'generate rotation' do
   let(:roster) { create :roster }
   let(:roster_admin) { create :user, rosters: [roster] }
   let!(:roster_user) { create :user, rosters: [roster] }
+  let(:current_user) { roster_admin }
 
   before do
     roster_admin.membership_in(roster).update admin: true
-    when_current_user_is roster_admin
     visit roster_assignments_generate_rotation_path(roster)
   end
 

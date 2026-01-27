@@ -2,12 +2,14 @@
 
 module Assignments
   class RotationGeneratorsController < ApplicationController
-    before_action :require_admin_in_roster
     before_action :initialize_rotation_generator
 
-    def prompt; end
+    def prompt
+      authorize! context: { roster: @roster }
+    end
 
     def perform
+      authorize! context: { roster: @roster }
       if @generator.generate
         flash[:message] = t('.success')
         redirect_to roster_assignments_path(@roster, date: @generator.start_date)

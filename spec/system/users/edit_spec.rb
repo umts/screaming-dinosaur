@@ -5,7 +5,7 @@ RSpec.describe 'user editing' do
     let(:roster) { create :roster }
     let(:user) { roster_admin roster }
 
-    before { when_current_user_is user }
+    let(:current_user) { user }
 
     context 'when they are the only admin' do
       it 'is prohibitted to make yourself a non-admin' do
