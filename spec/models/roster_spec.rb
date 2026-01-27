@@ -107,7 +107,7 @@ RSpec.describe Roster do
     end
   end
 
-  describe 'fallback_user_id change notification' do
+  describe '#save' do
     let(:roster) { create :roster }
     let(:admin) { create :user }
     let(:old_fallback_user) { create :user }
