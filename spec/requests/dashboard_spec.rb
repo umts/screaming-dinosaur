@@ -7,9 +7,7 @@ RSpec.describe 'Dashboards' do
   describe 'GET /' do
     subject(:call) { get '/' }
 
-    before do
-      set_user user
-    end
+    let(:current_user) { user }
 
     context 'when user has one roster' do
       it 'redirects to roster assignments' do
@@ -25,7 +23,7 @@ RSpec.describe 'Dashboards' do
 
       it 'shows dashboard' do
         call
-        expect(response).to be_successful
+        expect(response).to redirect_to rosters_path
       end
     end
   end
