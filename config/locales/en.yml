@@ -33,13 +33,10 @@ en:
   errors:
     messages:
       invalid_time: "is not a valid time"
+      invalid_weekday: "is not a valid weekday"
       must_be_fc_id_number: "must be 8 digits followed by @umass.edu"
       must_be_in_selected_users: "must be included in the list of selected users"
       must_not_be_before_start: "must not be before start"
-  activemodel:
-    errors:
-      messages:
-        must_be_weekday: "must be a day of the week"
   assignments:
     update:
       not_an_admin: 'You may only edit assignments such that you become on call.

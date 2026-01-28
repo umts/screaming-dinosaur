@@ -19,8 +19,8 @@ class Assignment < ApplicationRecord
                          comparison: { greater_than_or_equal_to: :start_date,
                                        if: -> { start_date.present? && end_date.present? },
                                        message: :must_not_be_before_start }
-    validates :start_weekday, numericality: { in: 0...7, message: :must_be_weekday }
-    validates :end_weekday, numericality: { in: 0...7, message: :must_be_weekday }
+    validates :start_weekday, numericality: { in: 0...7, message: :invalid_weekday }
+    validates :end_weekday, numericality: { in: 0...7, message: :invalid_weekday }
 
     def generate
       generate!
