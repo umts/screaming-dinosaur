@@ -1,0 +1,18 @@
+.container.my-3
+  .alert.alert-primary.fade.show{ role: 'alert' }
+    .row.gx-3
+      .col-auto
+        %i.fa-solid.fa-fw.fa-circle-info
+      .col
+        Successfully created assignments
+      .col-12.col-md-auto
+        %hr.d-md-none
+        .row.g-3
+          .col
+            = button_tag type: 'button', class: 'btn w-100 p-0 lh-1 text-nowrap' do
+              %i.fa-solid.fa-rotate
+              Undo
+          .col
+            = button_tag type: 'button', class: 'btn w-100 p-0 lh-1 text-nowrap', 'data-bs-dismiss': 'alert' do
+              %i.fa-solid.fa-times
+              Dismiss
