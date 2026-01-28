@@ -32,8 +32,8 @@
 en:
   errors:
     messages:
+      must_be_fc_id_number: "must be 8 digits followed by @umass.edu"
       must_not_be_before_start: "must not be before start"
-      spire_must_be_8_digits_with_umass: "must be 8 digits followed by @umass.edu"
       starting_user_must_be_included: "must be included in the list of selected users"
   activerecord:
     errors:
