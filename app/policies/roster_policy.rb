@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RosterPolicy < ApplicationPolicy
-  def index? = user&.admin?
+  def index? = user.present?
 
   def show? = user.present? || valid_api_key?
 

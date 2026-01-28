@@ -5,7 +5,7 @@ class RostersController < ApplicationController
 
   def index
     authorize!
-    @rosters = Roster.all
+    @rosters = Roster.all.select { |roster| allowed_to?(:show?, roster) }
   end
 
   def show
