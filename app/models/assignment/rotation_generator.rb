@@ -44,7 +44,7 @@ class Assignment < ApplicationRecord
       return if user_ids.blank? || starting_user_id.blank?
       return if user_ids.include? starting_user_id
 
-      errors.add :starting_user_id, message: :starting_user_must_be_included
+      errors.add :starting_user_id, message: :must_be_in_selected_users
     end
 
     def generate!
