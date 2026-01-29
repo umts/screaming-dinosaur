@@ -34,6 +34,7 @@ en:
     messages:
       invalid_time: "is not a valid time"
       invalid_weekday: "is not a valid weekday"
+      may_not_deactivate_self: "You may not deactivate yourself"
       must_be_fc_id_number: "must be 8 digits followed by @umass.edu"
       must_be_in_selected_users: "must be included in the list of selected users"
       must_not_be_before_start: "must not be before start"
