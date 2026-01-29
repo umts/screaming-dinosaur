@@ -27,6 +27,9 @@ class Roster < ApplicationRecord
   validates :switchover, numericality: { in: (0...(24 * 60)), message: :invalid_time }
   validates :phone, phone: { allow_blank: true }
 
+  before_save :track_fallback_user_change
+  after_commit :notify_fallback_number_changed, if: -> { @fallback_user_changed }
+
   def on_call_user
     assignments.current.try(:user) || fallback_user
   end
@@ -69,6 +72,17 @@ class Roster < ApplicationRecord
   end
 
   private
+
+  def track_fallback_user_change
+    @fallback_user_changed = will_save_change_to_fallback_user_id?
+  end
+
+  def notify_fallback_number_changed
+    return if admins.empty?
+
+    RosterMailer.with(roster: self).fallback_number_changed.deliver_later
+    @fallback_user_changed = false
+  end
 
   def assignment_csv_row(assignment)
     { 'roster' => name,
