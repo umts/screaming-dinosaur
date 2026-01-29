@@ -32,40 +32,11 @@
 en:
   errors:
     messages:
-      end_date_must_be_after_start: "must be on or after start date"
-      spire_must_be_8_digits_with_umass: "must be 8 digits followed by @umass.edu"
-      starting_user_must_be_included: "must be included in the list of selected users"
-  activerecord:
-    errors:
-      models:
-        roster:
-          attributes:
-            switchover:
-              not_a_number: 'is not a valid time'
-  activemodel:
-    errors:
-      messages:
-        must_be_weekday: "must be a day of the week"
-      models:
-        assignment:
-          attributes:
-            end_date:
-              greater_than_or_equal_to: "must be on or after start date"
-        assignment/weekday_generator:
-          attributes:
-            end_date:
-              greater_than_or_equal_to: "must be on or after start date"
-  assignments:
-    update:
-      not_an_admin: 'You may only edit assignments such that you become on call.
-                    The intended new owner of this assignment must take it themselves.
-                    Or, a roster administrator can perform this change for you.'
-    create:
-      not_an_admin: 'You may only create assignments such that you become on call.
-                    The intended new owner of this assignment must create it themselves.
-                    Or, a roster administrator can perform this change for you.'
-    destroy:
-      not_an_admin: 'Only roster admins may delete assignments.'
+      invalid_time: "is not a valid time"
+      invalid_weekday: "is not a valid weekday"
+      must_be_fc_id_number: "must be 8 digits followed by @umass.edu"
+      must_be_in_selected_users: "must be included in the list of selected users"
+      must_not_be_before_start: "must not be before start"
   week_assigners:
     perform:
       success: "Assignments have been generated."
