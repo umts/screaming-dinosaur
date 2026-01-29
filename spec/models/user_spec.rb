@@ -57,8 +57,7 @@ RSpec.describe User do
     subject(:call) { user.valid? }
 
     context 'when logged in as the subject and attempting deactivation' do
-      around { |example| Current.set(user:) { example.run } }
-
+      let(:current_user) { user }
       let(:user) { create :user }
 
       before { user.active = false }
