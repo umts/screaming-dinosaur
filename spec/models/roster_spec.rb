@@ -118,6 +118,12 @@ RSpec.describe Roster do
       roster.update(fallback_user: old_fallback_user)
     end
 
+    it 'does not send notification on creation' do
+      expect do
+        create :roster, fallback_user: old_fallback_user
+      end.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+    end
+
     it 'sends notification when fallback_user_id changes' do
       expect do
         roster.update(fallback_user: new_fallback_user)
