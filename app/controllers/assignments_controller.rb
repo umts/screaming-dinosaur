@@ -32,10 +32,10 @@ class AssignmentsController < ApplicationController
     @assignment = @roster.assignments.new assignment_params
     authorize! @assignment
     if @assignment.save
-      confirm_change(@assignment)
+      flash_success_for(@assignment, undoable: true)
       redirect_to roster_assignments_path(@roster)
     else
-      flash.now[:errors] = @assignment.errors.full_messages
+      flash_errors_now_for(@assignment)
       render :new, status: :unprocessable_content
     end
   end
@@ -44,10 +44,10 @@ class AssignmentsController < ApplicationController
     @assignment.assign_attributes assignment_params
     authorize! @assignment
     if @assignment.save
-      confirm_change(@assignment)
+      flash_success_for(@assignment, undoable: true)
       redirect_to roster_assignments_path(@roster)
     else
-      flash.now[:errors] = @assignment.errors.full_messages
+      flash_errors_now_for(@assignment)
       render :edit, status: :unprocessable_content
     end
   end
@@ -55,7 +55,7 @@ class AssignmentsController < ApplicationController
   def destroy
     authorize! @assignment
     @assignment.destroy
-    confirm_change(@assignment)
+    flash_success_for(@assignment, undoable: true)
     redirect_to roster_assignments_path(@roster)
   end
 

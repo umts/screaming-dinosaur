@@ -11,10 +11,10 @@ module Assignments
     def perform
       authorize! context: { roster: @roster }
       if @generator.generate
-        flash[:message] = t('.success')
+        flash_success_for(Assignment.model_name.human.downcase.pluralize, :create)
         redirect_to roster_assignments_path(@roster, date: @generator.start_date)
       else
-        flash.now[:errors] = @generator.errors.full_messages.to_sentence
+        flash_errors_now_for(@generator)
         render :prompt, status: :unprocessable_content
       end
     end

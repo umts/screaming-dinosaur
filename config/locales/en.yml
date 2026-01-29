@@ -43,14 +43,8 @@ en:
       create: "created"
       update: "updated"
       destroy: "deleted"
-  assignments:
-    rotation_generators:
-      perform:
-        success: "Assignments have been generated."
-    weekday_generators:
-      perform:
-        success: "Assignments have been generated."
-  versions:
-    undo:
-      change: "Change has been reverted."
-      create: "%{item} has been deleted."
+      transfer: "added"
+      undo: "reverted"
+  activerecord:
+    models:
+      version: "Change"
