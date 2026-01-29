@@ -37,6 +37,12 @@ en:
       must_be_fc_id_number: "must be 8 digits followed by @umass.edu"
       must_be_in_selected_users: "must be included in the list of selected users"
       must_not_be_before_start: "must not be before start"
+  success:
+    message: "Successfully %{action} %{subject}"
+    actions:
+      create: "created"
+      update: "updated"
+      destroy: "deleted"
   assignments:
     rotation_generators:
       perform:

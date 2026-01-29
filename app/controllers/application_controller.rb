@@ -7,6 +7,12 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def success_message_for(subject, action = nil)
+    subject = subject.model_name.element if subject.respond_to?(:model_name)
+    action ||= action_name
+    t('success.message', action: t("success.actions.#{action}"), subject:)
+  end
+
   def confirm_change(object, message = nil)
     # Rubocop can't tell whether we're redirecting after this or not.
     # rubocop:disable Rails/ActionControllerFlashBeforeRender
