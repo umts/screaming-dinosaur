@@ -1,43 +1,25 @@
-= render layout: 'layouts/section', locals: { heading: 'Rosters', creatable: new_roster_path } do
-  .table-responsive
-    %table.table.table-striped.table-hover
-      %thead
-        %tr
-          %th Name
-          %th Fallback
-          %th Switchover
-          %th Phone
-          %th.column-compact
-          %th.column-compact
-          %th.column-compact
-      %tbody
-        - @rosters.each do |roster|
-          %tr
-            %td= roster.name
-            %td
-              - if roster.fallback_user.present?
-                = roster.fallback_user.last_name
-              - else
-                No fallback user!
-            %td= roster.switchover_time.strftime '%-I:%M %P'
-            %td= formatted_phone(roster.phone)
-            - if Current.user.admin_in? roster
-              %td
-                = link_to setup_roster_path(roster), class: 'btn btn-sm text-nowrap lh-1' do
-                  %i.fa-solid.fa-gear
-                  Twilio Setup
-              %td
-                = link_to edit_roster_url(roster), class: 'btn btn-sm text-nowrap lh-1' do
-                  %i.fa-solid.fa-edit
-                  %span.d-none.d-xl-inline Edit
-              %td
-                = button_to roster_path(roster),
-                            method: :delete,
-                            data: { confirm: 'Deleting roster will remove all assignments and members.' },
-                            class: 'btn btn-sm text-nowrap lh-1' do
-                  %i.fa-solid.fa-trash
-                  %span.d-none.d-xl-inline Delete
-            - else
-              %td
-              %td
-              %td
+= render layout: 'layouts/section',
+         locals: { heading: 'Rosters', creatable: allowed_to?(:new?, Roster) && new_roster_path } do
+  .list-group
+    - if @rosters.present?
+      - @rosters.each do |roster|
+        = link_to roster_assignments_path(roster), class: 'list-group-item list-group-item-action' do
+          .float-end.d-flex.align-items-end.flex-column
+            = formatted_phone(roster.phone)
+          .d-flex.flex-wrap.align-items-center.gap-2
+            %span.lead.text-black= roster.name
+            - if roster.assignments.current.blank? && allowed_to?(:new?, roster.assignments.new)
+              %span.badge.bg-primary
+                %i.fa-solid.fa-triangle-exclamation
+                No assignment
+            - if roster.fallback_user.blank? && allowed_to?(:edit?, roster)
+              %span.badge.bg-primary
+                %i.fa-solid.fa-triangle-exclamation
+                No fallback
+          - if roster.assignments.current
+            #{roster.on_call_user&.full_name} is on call until
+            #{roster.switchover_time.strftime '%-I:%M %P'} on
+            #{(roster.assignments.current.end_date + 1.day).strftime '%A, %B %e'}
+          - elsif roster.on_call_user
+            %strong= roster.on_call_user.full_name
+            is on call as the fallback user

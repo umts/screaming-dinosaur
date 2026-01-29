@@ -11,12 +11,17 @@ class User < ApplicationRecord
                               foreign_key: :fallback_user_id,
                               inverse_of: 'fallback_user',
                               dependent: :nullify
+  has_many :authored_versions, dependent: :restrict_with_error,
+                               class_name: 'Version',
+                               foreign_key: :whodunnit,
+                               inverse_of: :author
 
-  validates :first_name, :last_name, :spire, :email, :phone, :rosters, presence: true
+  validates :first_name, :last_name, :spire, :email, :phone, presence: true
   validates :spire, :email, :phone, uniqueness: { case_sensitive: false }
   validates :calendar_access_token, uniqueness: { case_sensitive: true }
-  validates :spire, format: { with: /\A\d{8}@umass.edu\z/, message: :spire_must_be_8_digits_with_umass }
+  validates :spire, format: { with: /\A\d{8}@umass.edu\z/, message: :must_be_fc_id_number }
   validates :phone, phone: true
+  validate :prevent_self_deactivation, if: :being_deactivated?
 
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
   before_save -> { assignments.future.destroy_all }, if: :being_deactivated?
@@ -31,6 +36,8 @@ class User < ApplicationRecord
   def proper_name
     "#{last_name}, #{first_name}"
   end
+
+  def member_of?(roster) = rosters.include?(roster)
 
   def admin_in?(roster)
     membership_in(roster).try(:admin?) || false
@@ -48,5 +55,11 @@ class User < ApplicationRecord
 
   def being_deactivated?
     active_changed? && !active?
+  end
+
+  def prevent_self_deactivation
+    return unless Current.user == self
+
+    errors.add :base, message: :may_not_deactivate_self
   end
 end

@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 ruby file: '.ruby-version'
 
+gem 'action_policy'
 gem 'cssbundling-rails'
 gem 'csv'
 gem 'friendly_id'
@@ -12,13 +13,15 @@ gem 'icalendar'
 gem 'irb'
 gem 'jbuilder'
 gem 'jsbundling-rails'
+gem 'maintenance_tasks'
 gem 'net-http'
 # TODO: remove when we have modern glibc
 gem 'nokogiri', force_ruby_platform: true
 gem 'paper_trail'
 gem 'phonelib'
 gem 'propshaft'
-gem 'rails', '~> 8.1.1'
+gem 'rails', '~> 8.1.2'
+gem 'stimulus-rails'
 gem 'trilogy'
 gem 'whenever', require: false
 

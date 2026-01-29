@@ -75,76 +75,34 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'notify' do
-    subject(:submit) { assignment.notify(recipient, of: change_type, by: changer) }
+  describe '#save' do
+    subject(:save) { assignment.save }
 
     let(:assignment) { create :assignment }
     let(:recipient) { assignment.user }
-    let(:change_type) { :changed_assignment }
-    let(:changer) { create :user }
-
-    before do
-      %i[changed_assignment new_assignment deleted_assignment].each do |method|
-        allow(AssignmentsMailer).to receive(method).and_call_original
-      end
-    end
+    let(:current_user) { create :user }
 
     context 'when the changer is the recipient' do
-      let(:changer) { recipient }
+      let(:current_user) { recipient }
 
       it 'does not send an email' do
-        submit
-        expect(AssignmentsMailer).not_to have_received(:changed_assignment)
+        expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
       end
     end
 
     context 'when the changer is not the recipient' do
-      context 'when the change type is "create"' do
-        let(:change_type) { :new_assignment }
-
+      context 'when creating a new assignment' do
         it 'sends the new_assignment mail' do
-          submit
-          expect(AssignmentsMailer).to have_received(:new_assignment)
-            .with(assignment, recipient, changer)
+          expect { create :assignment }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
         end
       end
 
-      context 'when the change type is "destroy"' do
-        let(:change_type) { :deleted_assignment }
+      context 'when updating an assignment' do
+        before { assignment.assign_attributes start_date: 1.week.from_now, end_date: 2.weeks.from_now }
 
-        it 'sends the deleted_assignment mail' do
-          submit
-          expect(AssignmentsMailer).to have_received(:deleted_assignment)
-            .with(assignment, recipient, changer)
-        end
-      end
-
-      context 'when the change type is "update"' do
         it 'sends the changed_assignment mail' do
-          submit
-          expect(AssignmentsMailer).to have_received(:changed_assignment)
-            .with(assignment, recipient, changer)
+          expect { save }.to have_enqueued_email(AssignmentsMailer, :changed_assignment)
         end
-      end
-    end
-
-    context 'when the recipient is `:owner`' do
-      let(:recipient) { :owner }
-
-      it 'sends to the assignment owner' do
-        submit
-        expect(AssignmentsMailer).to have_received(:changed_assignment)
-          .with(assignment, assignment.user, changer)
-      end
-    end
-
-    context 'when the recipient is another user' do
-      let(:recipient) { create :user }
-
-      it 'sends to the recipient, not the owner' do
-        submit
-        expect(AssignmentsMailer).to have_received(:changed_assignment)
-          .with(assignment, recipient, changer)
       end
     end
 
@@ -152,9 +110,18 @@ RSpec.describe Assignment do
       before { recipient.update change_notifications_enabled: false }
 
       it 'does not send notifications' do
-        submit
-        expect(AssignmentsMailer).not_to have_received(:changed_assignment)
+        expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
       end
+    end
+  end
+
+  describe '#destroy' do
+    subject(:destroy) { assignment.destroy }
+
+    let(:assignment) { create :assignment }
+
+    it 'sends the deleted_assignment mail' do
+      expect { destroy }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
     end
   end
 
@@ -246,12 +213,16 @@ RSpec.describe Assignment do
 
     it 'sends reminders about assignments starting tomorrow' do
       call
-      expect(AssignmentsMailer).to have_received(:upcoming_reminder).with(assignment_tomorrow)
+      expect(AssignmentsMailer).to have_received(:upcoming_reminder)
+        .with(assignment_tomorrow.roster,
+              assignment_tomorrow.effective_start_datetime, any_args)
     end
 
     it 'does not send reminders about assignments starting today' do
       call
-      expect(AssignmentsMailer).not_to have_received(:upcoming_reminder).with(assignment_today)
+      expect(AssignmentsMailer).not_to have_received(:upcoming_reminder)
+        .with(assignment_today.roster,
+              assignment_today.effective_start_datetime, any_args)
     end
   end
 end

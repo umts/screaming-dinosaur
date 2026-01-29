@@ -1,30 +1,31 @@
 # frozen_string_literal: true
 
 class RostersController < ApplicationController
-  api_accessible only: :show
-
   before_action :find_roster, only: %i[destroy edit setup show update]
-  before_action :require_admin, except: %i[assignments show]
-  before_action :require_admin_in_roster, only: %i[destroy edit setup update]
-
-  def assignments
-    redirect_to roster_assignments_path(@roster)
-  end
 
   def index
-    @rosters = Roster.all
+    authorize!
+    @rosters = Roster.all.select { |roster| allowed_to?(:show?, roster) }
   end
 
   def show
+    authorize! @roster, context: { api_key: params[:api_key] }
     @upcoming = @roster.assignments.upcoming.order(:start_date)
     respond_to do |format|
       format.json { render layout: false }
     end
   end
 
-  def edit; end
+  def new
+    authorize!
+  end
+
+  def edit
+    authorize! @roster
+  end
 
   def create
+    authorize!
     @roster = Roster.new roster_params
     if @roster.save
       # Current user becomes admin in new roster
@@ -38,6 +39,7 @@ class RostersController < ApplicationController
   end
 
   def update
+    authorize! @roster
     if @roster.update roster_params
       confirm_change(@roster)
       redirect_to rosters_path
@@ -47,12 +49,20 @@ class RostersController < ApplicationController
     end
   end
 
-  def setup; end
-
   def destroy
+    authorize! @roster
     @roster.destroy
     confirm_change(@roster, 'Roster and any assignments have been deleted.')
     redirect_to rosters_path
+  end
+
+  def assignments
+    authorize!
+    redirect_to roster_assignments_path(@roster)
+  end
+
+  def setup
+    authorize! @roster
   end
 
   private

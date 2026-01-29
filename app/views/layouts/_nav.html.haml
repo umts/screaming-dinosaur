@@ -1,24 +1,27 @@
-%nav.navbar.navbar-expand-lg.navbar-dark.bg-primary.mb-2
-  .container-fluid
-    - data = { bs_toggle: 'collapse', bs_target: '#nav-collapse' }
-    - aria = { controlls: '#nav-collapse', expanded: 'false', label: 'Toggle navigation' }
-    %button.navbar-toggler{ type: 'button', data:, aria: }
-      %span.navbar-toggler-icon
-    #nav-collapse.collapse.navbar-collapse.mb-2.mb-lg-0
-      %ul.navbar-nav.me-auto
-        - rosters.each do |roster|
-          = nav_link_item roster.name, roster_assignments_path(roster)
-        - if Current.user&.admin?
-          = nav_link_item 'Manage Rosters', rosters_path
-          - if Current.user&.admin_in? roster
-            = nav_link_item 'Manage Users', roster_users_path(roster)
-            %li.nav-item.dropdown
-              = link_to 'Generate', '#',
-                        role: 'button', id: 'navbar-generate-nav-link', class: 'nav-link dropdown-toggle',
-                        'data-bs-toggle': 'dropdown', 'aria-expanded': 'false'
-              .dropdown-menu{ 'aria-labelledby': 'navbar-generate-nav-link' }
-                = link_to 'Rotation', roster_assignments_generate_rotation_path(roster), class: 'dropdown-item'
-                = link_to 'By Weekday', roster_assignments_generate_by_weekday_path(roster), class: 'dropdown-item'
+%nav.navbar.navbar-expand-lg.bg-body-tertiary.border-bottom
+  .container
+    = link_to root_path, class: 'navbar-brand' do
+      %i.fa-solid.fa-phone
+      UMTS On-Call
+    = button_tag type: 'button',
+                 class: 'navbar-toggler',
+                 data: { 'bs-toggle': 'collapse', 'bs-target': '#navbar-content' },
+                 aria: { expanded: 'false', label: 'Toggle navigation' } do
+      %i.navbar-toggler-icon
+    #navbar-content.collapse.navbar-collapse
       %ul.navbar-nav
-        = nav_link_item Current.user.full_name, edit_roster_user_path(roster, Current.user) if Current.user.present?
-        = nav_link_item 'Logout', destroy_session_path
+        - if allowed_to?(:index?, Roster)
+          %li.nav-item= link_to 'Rosters', rosters_path, class: 'nav-link'
+        - if allowed_to?(:index?, User)
+          %li.nav-item= link_to 'Users', users_path, class: 'nav-link'
+      - if Current.user.present?
+        %ul.navbar-nav.ms-auto
+          %li.nav-item.dropdown
+            = button_tag Current.user.full_name,
+                         type: 'button',
+                         class: 'nav-link dropdown-toggle',
+                         'data-bs-toggle': 'dropdown',
+                         'aria-expanded': 'false'
+            %ul.dropdown-menu
+              %li= link_to 'Profile', edit_user_path(Current.user), class: 'dropdown-item'
+              %li= button_to 'Log out', logout_path, class: 'dropdown-item'

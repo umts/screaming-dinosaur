@@ -23,5 +23,6 @@ module ScreamingDinosaur
     #
     config.time_zone = "Eastern Time (US & Canada)"
     config.active_storage.web_image_content_types = %w[image/png image/jpeg image/gif]
+    config.action_dispatch.rescue_responses['ActionPolicy::Unauthorized'] = :forbidden
   end
 end

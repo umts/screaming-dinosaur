@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  root 'rosters#assignments'
+  root 'dashboard#index'
+
+  post :login, to: 'sessions#create' if Rails.env.development?
+  post :logout, to: 'sessions#destroy'
 
   resources :rosters do
     member do
@@ -13,33 +16,27 @@ Rails.application.routes.draw do
 
     resources :assignments, except: :show
 
-    namespace :assignments do
-      get :generate_by_weekday, to: 'weekday_generators#prompt'
-      post :generate_by_weekday, to: 'weekday_generators#perform'
+    get :assign_weeks, to: 'week_assigners#prompt'
+    post :assign_weeks, to: 'week_assigners#perform'
 
-      get :generate_rotation, to: 'rotation_generators#prompt'
-      post :generate_rotation, to: 'rotation_generators#perform'
-    end
+    get :assign_weekdays, to: 'weekday_assigners#prompt'
+    post :assign_weekdays, to: 'weekday_assigners#perform'
+    
+    resources :memberships, only: %i[index create destroy update], shallow: true
 
-    resources :users, except: :show do
-      collection do
-        post :transfer
-        get :inactive
-      end
-    end
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
 
-  get 'changes/:id/undo', to: 'changes#undo', as: :undo_change
+  resources :users, except: %i[show]
 
-  unless Rails.env.production?
-    get  'sessions/dev_login', to: 'sessions#dev_login', as: :dev_login
-    post 'sessions/dev_login', to: 'sessions#dev_login'
+  resources :versions do
+    member do
+      get 'undo'
+    end
   end
 
-  get 'sessions/unauthenticated', to: 'sessions#unauthenticated', as: :unauthenticated_session
-  get 'sessions/destroy', to: 'sessions#destroy', as: :destroy_session
-
   get 'feed/:roster/:token' => 'assignments#feed', as: :feed
+
+  mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 end
