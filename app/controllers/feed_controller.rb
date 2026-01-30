@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class FeedController < ApplicationController
+  skip_before_action :set_roster
   before_action :allow_calendar_token_access, only: :show
 
   def show
-    roster = params[:roster].titleize.downcase
-    @roster = Roster.where('lower(name) = ?', roster).first
-    feed = Feed.new(@roster)
+    feed = Feed.new(Roster.friendly.find(params[:roster]))
     authorize! feed
     render plain: feed.output, content_type: 'text/calendar'
   rescue ActionPolicy::Unauthorized
