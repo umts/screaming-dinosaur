@@ -19,7 +19,7 @@ RSpec.describe 'user index' do
     end
 
     it 'informs you of success' do
-      expect(page).to have_text('User has been updated.')
+      expect(page).to have_text('Successfully updated user')
     end
   end
 
@@ -79,7 +79,7 @@ RSpec.describe 'user index' do
 
       it 'informs you of success' do
         click_button 'Activate'
-        expect(page).to have_css 'div', text: 'User has been updated.'
+        expect(page).to have_text 'Successfully updated user'
       end
     end
   end

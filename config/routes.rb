@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
   resources :versions do
     member do
-      get 'undo'
+      post :undo
     end
   end
 

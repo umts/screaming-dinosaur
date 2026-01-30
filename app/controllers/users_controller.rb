@@ -21,10 +21,10 @@ class UsersController < ApplicationController
     @user.assign_attributes(user_params)
     authorize! @user
     if @user.save
-      confirm_change(@user)
+      flash_success_for(@user, undoable: true)
       redirect_to users_path
     else
-      flash.now[:errors] = @user.errors.full_messages
+      flash_errors_now_for(@user)
       render :new, status: :unprocessable_content
     end
   end
@@ -33,10 +33,10 @@ class UsersController < ApplicationController
     @user.assign_attributes(user_params)
     authorize! @user
     if @user.save
-      confirm_change(@user)
+      flash_success_for(@user, undoable: true)
       redirect_to allowed_to?(:index?, User) ? users_path : root_path
     else
-      flash.now[:errors] = @user.errors.full_messages
+      flash_errors_now_for(@user)
       render :edit, status: :unprocessable_content
     end
   end

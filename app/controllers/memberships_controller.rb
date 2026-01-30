@@ -17,9 +17,9 @@ class MembershipsController < ApplicationController
     @membership.assign_attributes(membership_params)
     authorize! @membership
     if @membership.save
-      confirm_change(@membership, "Added #{@membership.user.full_name} to roster.")
+      flash_success_for(@membership, undoable: true)
     else
-      flash[:error] = @membership.errors.full_messages
+      flash_errors_for(@membership)
     end
     redirect_to roster_memberships_path(@membership.roster)
   end
@@ -28,9 +28,9 @@ class MembershipsController < ApplicationController
     @membership.assign_attributes(membership_params)
     authorize! @membership
     if @membership.save
-      confirm_change(@membership, "Updated #{@membership.user.full_name}.")
+      flash_success_for(@membership, undoable: true)
     else
-      flash[:error] = @membership.errors.full_messages
+      flash_errors_for(@membership)
     end
     redirect_to roster_memberships_path(@membership.roster)
   end
@@ -38,9 +38,9 @@ class MembershipsController < ApplicationController
   def destroy
     authorize! @membership
     if @membership.destroy
-      confirm_change @membership
+      flash_success_for(@membership, undoable: true)
     else
-      flash[:error] = @membership.errors.full_messages
+      flash_errors_for(@membership)
     end
     redirect_to roster_memberships_path(@membership.roster)
   end

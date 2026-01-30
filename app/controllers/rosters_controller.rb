@@ -30,10 +30,10 @@ class RostersController < ApplicationController
     if @roster.save
       # Current user becomes admin in new roster
       @roster.memberships.create(user: Current.user, admin: true)
-      confirm_change(@roster)
+      flash_success_for(@roster, undoable: true)
       redirect_to rosters_path
     else
-      flash.now[:errors] = @roster.errors.full_messages
+      flash_errors_now_for(@roster)
       render :new, status: :unprocessable_content
     end
   end
@@ -41,10 +41,10 @@ class RostersController < ApplicationController
   def update
     authorize! @roster
     if @roster.update roster_params
-      confirm_change(@roster)
+      flash_success_for(@roster, undoable: true)
       redirect_to rosters_path
     else
-      flash.now[:errors] = @roster.errors.full_messages
+      flash_errors_now_for(@roster)
       render :edit, status: :unprocessable_content
     end
   end
@@ -52,7 +52,7 @@ class RostersController < ApplicationController
   def destroy
     authorize! @roster
     @roster.destroy
-    confirm_change(@roster, 'Roster and any assignments have been deleted.')
+    flash_success_for(@roster, undoable: true)
     redirect_to rosters_path
   end
 
