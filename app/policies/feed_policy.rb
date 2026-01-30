@@ -2,6 +2,7 @@
 
 class FeedPolicy < ApplicationPolicy
   def show?
-    true
+    return true if user&.present? && user&.member?(roster) || user&.admin_in?(roster)
+    return true if params[:token] == roster.allow_calendar_token_access
   end
 end
