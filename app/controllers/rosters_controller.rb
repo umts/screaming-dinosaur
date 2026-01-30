@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class RostersController < ApplicationController
-  before_action :find_roster, only: %i[destroy edit setup show update]
+  skip_before_action :set_roster
+  before_action :find_roster, only: %i[show edit update destroy setup]
+  before_action :initialize_roster, only: %i[new create]
 
   def index
     authorize!
-    @rosters = Roster.all
+    @rosters = Roster.all.select { |roster| allowed_to?(:show?, roster) }
   end
 
   def show
@@ -17,7 +19,7 @@ class RostersController < ApplicationController
   end
 
   def new
-    authorize!
+    authorize! @roster
   end
 
   def edit
@@ -25,26 +27,27 @@ class RostersController < ApplicationController
   end
 
   def create
-    authorize!
-    @roster = Roster.new roster_params
+    @roster.assign_attributes roster_params
+    authorize! @roster
     if @roster.save
       # Current user becomes admin in new roster
       @roster.memberships.create(user: Current.user, admin: true)
-      confirm_change(@roster)
+      flash_success_for(@roster, undoable: true)
       redirect_to rosters_path
     else
-      flash.now[:errors] = @roster.errors.full_messages
+      flash_errors_now_for(@roster)
       render :new, status: :unprocessable_content
     end
   end
 
   def update
+    @roster.assign_attributes roster_params
     authorize! @roster
-    if @roster.update roster_params
-      confirm_change(@roster)
+    if @roster.save
+      flash_success_for(@roster, undoable: true)
       redirect_to rosters_path
     else
-      flash.now[:errors] = @roster.errors.full_messages
+      flash_errors_now_for(@roster)
       render :edit, status: :unprocessable_content
     end
   end
@@ -52,13 +55,8 @@ class RostersController < ApplicationController
   def destroy
     authorize! @roster
     @roster.destroy
-    confirm_change(@roster, 'Roster and any assignments have been deleted.')
+    flash_success_for(@roster, undoable: true)
     redirect_to rosters_path
-  end
-
-  def assignments
-    authorize!
-    redirect_to roster_assignments_path(@roster)
   end
 
   def setup
@@ -71,10 +69,11 @@ class RostersController < ApplicationController
     @roster = Roster.friendly.find params.require(:id)
   end
 
+  def initialize_roster
+    @roster = Roster.new
+  end
+
   def roster_params
-    params.expect(roster: %i[name phone fallback_user_id switchover_time]).tap do |p|
-      time = Time.zone.parse p.delete(:switchover_time).to_s
-      p[:switchover] = time && ((time.hour * 60) + time.min)
-    end
+    params.expect(roster: %i[name phone fallback_user_id switchover_time])
   end
 end

@@ -32,11 +32,10 @@ class AssignmentsController < ApplicationController
     @assignment = @roster.assignments.new assignment_params
     authorize! @assignment
     if @assignment.save
-      confirm_change(@assignment)
-      @assignment.notify :owner, of: :new_assignment, by: Current.user
+      flash_success_for(@assignment, undoable: true)
       redirect_to roster_assignments_path(@roster)
     else
-      flash.now[:errors] = @assignment.errors.full_messages
+      flash_errors_now_for(@assignment)
       render :new, status: :unprocessable_content
     end
   end
@@ -45,20 +44,18 @@ class AssignmentsController < ApplicationController
     @assignment.assign_attributes assignment_params
     authorize! @assignment
     if @assignment.save
-      confirm_change(@assignment)
-      notify_appropriate_users
+      flash_success_for(@assignment, undoable: true)
       redirect_to roster_assignments_path(@roster)
     else
-      flash.now[:errors] = @assignment.errors.full_messages
+      flash_errors_now_for(@assignment)
       render :edit, status: :unprocessable_content
     end
   end
 
   def destroy
     authorize! @assignment
-    @assignment.notify :owner, of: :deleted_assignment, by: Current.user
     @assignment.destroy
-    confirm_change(@assignment)
+    flash_success_for(@assignment, undoable: true)
     redirect_to roster_assignments_path(@roster)
   end
 
@@ -67,6 +64,9 @@ class AssignmentsController < ApplicationController
     @roster = Roster.where('lower(name) = ?', roster).first
     authorize! context: { roster: @roster }
     render_ics_feed
+  rescue ActionPolicy::Unauthorized
+    skip_verify_authorized!
+    head :forbidden
   end
 
   private
@@ -104,18 +104,6 @@ class AssignmentsController < ApplicationController
   def index_csv
     @roster = Roster.preload(assignments: :user).friendly.find(params[:roster_id])
     render csv: @roster.assignment_csv, filename: @roster.name
-  end
-
-  # If the user's being changed, we effectively inform of the change
-  # by telling the previous owner they're not responsible anymore,
-  # and telling the new owner that they're newly responsible now.
-  def notify_appropriate_users
-    if @assignment.user == @previous_owner
-      @assignment.notify :owner, of: :changed_assignment, by: Current.user
-    else
-      @assignment.notify :owner, of: :new_assignment, by: Current.user
-      @assignment.notify @previous_owner, of: :deleted_assignment, by: Current.user
-    end
   end
 
   def render_ics_feed

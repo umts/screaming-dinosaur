@@ -19,7 +19,7 @@ RSpec.describe 'user index' do
     end
 
     it 'informs you of success' do
-      expect(page).to have_text('User has been updated.')
+      expect(page).to have_text('Successfully updated user')
     end
   end
 
@@ -27,15 +27,15 @@ RSpec.describe 'user index' do
     let(:roster) { create :roster }
     let(:admin_membership) { create :membership, roster:, admin: true }
     let(:admin) { admin_membership.user }
+    let(:current_user) { admin }
 
     before do
-      set_current_user(admin)
       visit root_path
       click_link 'Manage Users'
     end
 
     it 'directs you to the appropriate page' do
-      expect(page).to have_current_path(roster_users_path(admin_membership.roster))
+      expect(page).to have_current_path(roster_memberships_path(admin_membership.roster))
     end
 
     it 'has a title' do
@@ -79,7 +79,7 @@ RSpec.describe 'user index' do
 
       it 'informs you of success' do
         click_button 'Activate'
-        expect(page).to have_css 'div', text: 'User has been updated.'
+        expect(page).to have_text 'Successfully updated user'
       end
     end
   end

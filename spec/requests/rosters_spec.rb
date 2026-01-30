@@ -5,16 +5,16 @@ RSpec.describe 'Rosters' do
     subject(:call) { get '/rosters' }
 
     context 'when logged in as a normal user' do
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
-      it 'responds with a forbidden status' do
+      it 'responds successfully' do
         call
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to be_successful
       end
     end
 
     context 'when logged in as a roster admin' do
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds successfully' do
         call
@@ -37,7 +37,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as a user' do
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds successfully' do
         call
@@ -119,7 +119,7 @@ RSpec.describe 'Rosters' do
     subject(:call) { get '/rosters/new' }
 
     context 'when logged in as a normal user' do
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds with a forbidden status' do
         call
@@ -128,7 +128,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as a roster admin' do
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds successfully' do
         call
@@ -143,7 +143,7 @@ RSpec.describe 'Rosters' do
     let(:roster) { create :roster }
 
     context 'when logged in as an admin for a different roster' do
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds with a forbidden status' do
         call
@@ -152,7 +152,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as an admin for the given roster' do
-      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       it 'responds successfully' do
         call
@@ -167,7 +167,7 @@ RSpec.describe 'Rosters' do
     context 'when logged in as a normal user' do
       let(:attributes) { nil }
 
-      before { login_as create(:user) }
+      let(:current_user) { create :user }
 
       it 'responds with a forbidden status' do
         submit
@@ -176,7 +176,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as a roster admin' do
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       context 'with valid attributes' do
         let(:attributes) { { name: 'Test Roster', phone: '14135451451', switchover_time: '13:15' } }
@@ -221,7 +221,7 @@ RSpec.describe 'Rosters' do
     context 'when logged in as an admin for a different roster' do
       let(:attributes) { nil }
 
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds with a forbidden status' do
         submit
@@ -230,7 +230,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as an admin for the given roster' do
-      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       context 'with valid attributes' do
         let(:attributes) { { name: 'Test Roster', phone: '14135451451', switchover_time: '13:15' } }
@@ -269,7 +269,7 @@ RSpec.describe 'Rosters' do
     let!(:roster) { create :roster }
 
     context 'when logged in as an admin for a different roster' do
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds with a forbidden status' do
         submit
@@ -278,7 +278,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as an admin for the given roster' do
-      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       it 'redirects to all rosters' do
         submit
@@ -292,37 +292,13 @@ RSpec.describe 'Rosters' do
     end
   end
 
-  describe 'GET /rosters/assignments' do
-    subject(:call) { get '/rosters/assignments' }
-
-    let(:roster) { create :roster }
-
-    context 'when not logged in' do
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when logged in as a user' do
-      let(:roster) { create :roster }
-
-      before { login_as create(:user, rosters: [roster]) }
-
-      it 'redirects to the primary roster of the user' do
-        call
-        expect(response).to redirect_to(roster_assignments_path(roster))
-      end
-    end
-  end
-
   describe 'GET /rosters/:id/setup' do
     subject(:call) { get "/rosters/#{roster.id}/setup" }
 
     let!(:roster) { create :roster }
 
     context 'when logged in as an admin for a different roster' do
-      before { login_as create(:user, memberships: [build(:membership, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds with a forbidden status' do
         call
@@ -331,7 +307,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as an admin for the given roster' do
-      before { login_as create(:user, memberships: [build(:membership, roster:, admin: true)]) }
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
 
       it 'responds successfully' do
         call

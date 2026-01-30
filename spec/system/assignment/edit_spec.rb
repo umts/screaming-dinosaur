@@ -6,9 +6,9 @@ RSpec.describe 'editing an assignment' do
   end
   let(:start_date) { Date.new(2017, 3, 31) }
   let(:end_date) { Date.new(2017, 4, 6) }
+  let(:current_user) { assignment.user }
 
   before do
-    when_current_user_is assignment.user
     visit edit_roster_assignment_path(assignment.roster, assignment)
   end
 

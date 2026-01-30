@@ -24,7 +24,7 @@ class Roster < ApplicationRecord
                              inverse_of: 'fallback_rosters'
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
-  validates :switchover, numericality: { in: (0...(24 * 60)) }
+  validates :switchover, numericality: { in: (0...(24 * 60)), message: :invalid_time }
   validates :phone, phone: { allow_blank: true }
 
   def on_call_user
@@ -33,6 +33,14 @@ class Roster < ApplicationRecord
 
   def switchover_time
     switchover.presence && Time.zone.now.midnight.in(switchover.minutes)
+  end
+
+  def switchover_time=(value)
+    value.tap do |castable|
+      castable = castable.to_time if castable.respond_to?(:to_time)
+      castable = (castable.hour * 60) + castable.min if castable.is_a?(Time)
+      self.switchover = castable
+    end
   end
 
   def user_options
