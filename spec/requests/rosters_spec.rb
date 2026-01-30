@@ -292,30 +292,6 @@ RSpec.describe 'Rosters' do
     end
   end
 
-  describe 'GET /rosters/assignments' do
-    subject(:call) { get '/rosters/assignments' }
-
-    let(:roster) { create :roster }
-
-    context 'when not logged in' do
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when logged in as a user' do
-      let(:roster) { create :roster }
-
-      let(:current_user) { create :user, rosters: [roster] }
-
-      it 'redirects to the primary roster of the user' do
-        call
-        expect(response).to redirect_to(roster_assignments_path(roster))
-      end
-    end
-  end
-
   describe 'GET /rosters/:id/setup' do
     subject(:call) { get "/rosters/#{roster.id}/setup" }
 

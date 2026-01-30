@@ -59,11 +59,6 @@ class RostersController < ApplicationController
     redirect_to rosters_path
   end
 
-  def assignments
-    authorize!
-    redirect_to roster_assignments_path(@roster)
-  end
-
   def setup
     authorize! @roster
   end
