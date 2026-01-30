@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
-class AssignmentsIcs
-  def initialize(assignments)
-    @assignments = assignments
+class Feed
+  attr_reader :roster
+
+  def initialize(roster)
+    @roster = roster
+    @assignments = roster.assignments
   end
 
   def output
