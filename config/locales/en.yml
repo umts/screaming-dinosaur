@@ -38,14 +38,14 @@ en:
       must_be_fc_id_number: "must be 8 digits followed by @umass.edu"
       must_be_in_selected_users: "must be included in the list of selected users"
       must_not_be_before_start: "must not be before start"
-  assignments:
-    rotation_generators:
-      perform:
-        success: "Assignments have been generated."
-    weekday_generators:
-      perform:
-        success: "Assignments have been generated."
-  versions:
-    undo:
-      change: "Change has been reverted."
-      create: "%{item} has been deleted."
+  success:
+    message: "Successfully %{action} %{subject}"
+    actions:
+      create: "created"
+      update: "updated"
+      destroy: "deleted"
+      transfer: "added"
+      undo: "reverted"
+  activerecord:
+    models:
+      version: "Change"
