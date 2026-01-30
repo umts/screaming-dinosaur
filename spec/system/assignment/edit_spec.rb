@@ -55,14 +55,14 @@ RSpec.describe 'editing an assignment' do
     end
 
     it 'destroys the assignment' do
-      click_button 'Delete assignment'
+      click_link 'Delete'
       expect(Assignment.find_by(id: assignment)).to be_blank
     end
   end
 
   context 'when the current user is not an admin' do
     it 'does not allow them to delete the assignment' do
-      expect(page).to have_no_button 'Delete assignment'
+      expect(page).to have_no_link 'Delete'
     end
   end
 end

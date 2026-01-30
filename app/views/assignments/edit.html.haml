@@ -3,13 +3,7 @@
              roster: @roster,
              assignment: @assignment,
              users: @users }
-
-.container-fluid
-  .row.align-items-center
-    %h1.col-md Edit assignment
-    - if Current.user.admin_in?(@roster)
-      = button_to roster_assignment_path(@roster, @assignment),
-                  method: :delete, class: 'btn btn-danger', form_class: 'col-md-auto' do
-        %i.fa-solid.fa-trash-can
-        Delete assignment
+= render layout: 'layouts/section',
+         locals: { heading: 'Edit assignment',
+                   deletable: Current.user.admin_in?(@roster) ? roster_assignment_path : nil } do
   = render partial: 'form', locals: locals
