@@ -9,19 +9,8 @@
     = javascript_include_tag 'application.js', nonce: true, type: :module
     = csrf_meta_tags
   %body
-    = render partial: 'layouts/nav', locals: { roster: @roster, rosters: Current.user&.rosters || Roster.none }
-    .container.my-3
-      - if flash[:message].present?
-        .alert.alert-success{ role: 'alert' }
-          = flash[:message]
-          - if flash[:change].present?
-            (#{link_to 'undo', undo_version_path(flash[:change])})
-      - if flash[:errors].present?
-        .alert.alert-danger{ role: 'alert' }
-          - if flash[:errors].is_a? Array
-            %ul
-              - flash[:errors].each do |error_message|
-                %li= error_message
-          - else
-            = flash[:errors]
-      #main-content= yield
+    %header
+      = render partial: 'layouts/nav', locals: { roster: @roster, rosters: Current.user&.rosters || Roster.none }
+      = render partial: 'application/flash'
+    %main.container.my-3
+      = yield

@@ -25,10 +25,10 @@ class UsersController < ApplicationController
     @user = User.new(user_params.except(:membership))
     membership_params = user_params[:membership]
     if @user.save && update_membership(membership_params)
-      confirm_change(@user)
+      flash_success_for(@user, undoable: true)
       redirect_to roster_users_path(@roster)
     else
-      flash.now[:errors] = @user.errors.full_messages
+      flash_errors_now_for(@user)
       render :new, status: :unprocessable_content
     end
   end
@@ -37,10 +37,10 @@ class UsersController < ApplicationController
     authorize! @user, context: { roster: @roster }
     membership_params = user_params[:membership]
     if @user.update(user_params.except(:membership)) && update_membership(membership_params)
-      confirm_change(@user)
+      flash_success_for(@user, undoable: true)
       redirect_to update_redirect_path
     else
-      flash.now[:errors] = @user.errors.full_messages
+      flash_errors_now_for(@user)
       render :edit, status: :unprocessable_content
     end
   end
@@ -49,9 +49,9 @@ class UsersController < ApplicationController
     authorize! context: { roster: @roster }
     @user.rosters += [@roster]
     if @user.save
-      confirm_change(@user, "Added #{@user.full_name} to roster.")
+      flash_success_for(@user)
     else
-      flash[:errors] = @user.errors.full_messages
+      flash_errors_for(@user)
     end
     redirect_to roster_users_path(@roster)
   end
