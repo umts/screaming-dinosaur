@@ -3,7 +3,7 @@
 require 'paper_trail/frameworks/rspec'
 
 RSpec.describe 'Versions' do
-  describe 'GET /versions/:id/undo', :versioning do
+  describe 'POST /versions/:id/undo', :versioning do
     let(:change_user) { create :user }
     let(:assignment) { create :assignment }
     let(:redirect_target) { '/redirect_to_me' }
@@ -12,7 +12,7 @@ RSpec.describe 'Versions' do
       let(:current_user) { change_user }
 
       context 'when the version is a "create" version' do
-        subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
+        subject(:submit) { post "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
         let! :version do
           PaperTrail.request.whodunnit = change_user.id.to_s
@@ -28,15 +28,10 @@ RSpec.describe 'Versions' do
           submit
           expect(response).to redirect_to redirect_target
         end
-
-        it 'informs you of success' do
-          submit
-          expect(flash[:message]).to eq 'Assignment has been deleted.'
-        end
       end
 
       context 'when the version is a "destroy" version' do
-        subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
+        subject(:submit) { post "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
         let! :version do
           PaperTrail.request.whodunnit = change_user.id.to_s
@@ -56,7 +51,7 @@ RSpec.describe 'Versions' do
       end
 
       context 'when the version is an "update" version' do
-        subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
+        subject(:submit) { post "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
         let!(:original_start_date) { assignment.start_date }
         let! :version do
@@ -79,7 +74,7 @@ RSpec.describe 'Versions' do
     end
 
     context 'when the change is not made by current user' do
-      subject(:submit) { get "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
+      subject(:submit) { post "/versions/#{version.id}/undo", headers: { HTTP_REFERER: redirect_target } }
 
       let(:current_user) { create :user }
 

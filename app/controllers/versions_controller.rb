@@ -8,11 +8,10 @@ class VersionsController < ApplicationController
     # Reify only returns false when the thing didn't exist beforehand.
     if @version.reify
       @version.reify.save!
-      flash[:message] = t('.change')
     else
       @version.item.destroy
-      flash[:message] = t('.create', item: @version.item_type)
     end
+    flash_success_for(@version)
     redirect_back_or_to root_path
   end
 
