@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  root 'rosters#assignments'
+  root 'dashboard#index'
 
   post :login, to: 'sessions#create' if Rails.env.development?
   post :logout, to: 'sessions#destroy'
@@ -10,29 +10,23 @@ Rails.application.routes.draw do
     member do
       get :setup
     end
-    collection do
-      get :assignments
-    end
 
     resources :assignments, except: :show
 
-    namespace :assignments do
-      get :generate_by_weekday, to: 'weekday_generators#prompt'
-      post :generate_by_weekday, to: 'weekday_generators#perform'
+    get :assign_weeks, to: 'week_assigners#prompt'
+    post :assign_weeks, to: 'week_assigners#perform'
 
-      get :generate_rotation, to: 'rotation_generators#prompt'
-      post :generate_rotation, to: 'rotation_generators#perform'
-    end
+    get :assign_weekdays, to: 'weekday_assigners#prompt'
+    post :assign_weekdays, to: 'weekday_assigners#perform'
 
-    resources :users, except: %i[show destroy] do
-      collection do
-        post :transfer
-        get :inactive
-      end
-    end
+    resources :memberships, only: %i[index create destroy update], shallow: true
+
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
+
+  resources :users, except: %i[show]
+
   resources :versions do
     member do
       post :undo

@@ -35,7 +35,7 @@ RSpec.describe 'user index' do
     end
 
     it 'directs you to the appropriate page' do
-      expect(page).to have_current_path(roster_users_path(admin_membership.roster))
+      expect(page).to have_current_path(roster_memberships_path(admin_membership.roster))
     end
 
     it 'has a title' do

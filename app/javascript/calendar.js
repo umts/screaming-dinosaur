@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
       prev: 'fa fa fa-chevron-left',
       next: 'fa fa fa-chevron-right',
     },
+    buttonText: {
+      today: 'Today',
+    },
     initialDate: sessionStorage.getItem('lastDate') || null,
     events: 'assignments.json',
     startParam: 'start_date',
