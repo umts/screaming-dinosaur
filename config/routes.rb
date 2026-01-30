@@ -10,9 +10,6 @@ Rails.application.routes.draw do
     member do
       get :setup
     end
-    collection do
-      get :assignments
-    end
 
     resources :assignments, except: :show
 
@@ -21,7 +18,7 @@ Rails.application.routes.draw do
 
     get :assign_weekdays, to: 'weekday_assigners#prompt'
     post :assign_weekdays, to: 'weekday_assigners#perform'
-    
+
     resources :memberships, only: %i[index create destroy update], shallow: true
 
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
