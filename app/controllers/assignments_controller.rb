@@ -8,7 +8,6 @@ class AssignmentsController < ApplicationController
     authorize!
     respond_to do |format|
       format.html { index_html }
-      format.ics { render_ics_feed }
       format.json { index_json }
       format.csv { index_csv }
     end
@@ -87,10 +86,5 @@ class AssignmentsController < ApplicationController
   def index_csv
     @roster = Roster.preload(assignments: :user).friendly.find(params[:roster_id])
     render csv: @roster.assignment_csv, filename: @roster.name
-  end
-
-  def render_ics_feed
-    feed = Feed.new(@roster.assignments)
-    render plain: feed.output, content_type: 'text/calendar'
   end
 end

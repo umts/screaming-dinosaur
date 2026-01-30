@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 RSpec.describe 'ICS views' do
   shared_examples 'an ics assignments feed' do
-    subject(:lines) { response.body.split("\r\n") }
+    subject(:lines) { page.html.split("\r\n") }
 
     let(:roster) { create :roster }
     let(:assignments) do
@@ -40,15 +42,6 @@ RSpec.describe 'ICS views' do
       ["DTSTART;VALUE=DATE:#{assignment.start_date.to_fs(:number)}",
        "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_fs(:number)}"]
     end
-  end
-
-  describe 'viewing the ics formatted index' do
-    let(:current_user) { users[0] }
-    let :submit do
-      visit roster_assignments_path(roster, format: 'ics')
-    end
-
-    it_behaves_like 'an ics assignments feed'
   end
 
   describe 'viewing the ics feed' do

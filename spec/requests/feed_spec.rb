@@ -1,64 +1,47 @@
 # frozen_string_literal: true
 
-RSpec.describe 'ICS views' do
-  shared_examples 'an ics assignments feed' do
-    subject(:lines) { response.body.split("\r\n") }
+RSpec.describe 'Feeds' do
+  describe 'GET /feed/:roster_name/:token' do
+    subject(:call) { get "/feed/#{roster.name.parameterize}/#{token}" }
 
     let(:roster) { create :roster }
-    let(:assignments) do
-      Array.new(2) do |n|
-        create :assignment, roster:,
-                            start_date: n.weeks.from_now, end_date: (n.weeks + 6.days).from_now
-      end
-    end
-    let(:users) { assignments.map(&:user) }
+    let(:token) { 'sometoken' }
 
-    before { submit }
+    context 'when logged in as an unrelated user' do
+      let(:current_user) { create :user }
 
-    2.times do |n|
-      it "contains a summary for assignment ##{n + 1}" do
-        expect(lines).to include(summary(users[n]))
-      end
-
-      it "contains a description for assignment ##{n + 1}" do
-        expect(lines).to include(description(users[n], roster))
-      end
-
-      it "contains the dates for assignment ##{n + 1}" do
-        expect(lines).to include(*assignment_dates(assignments[n]))
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
-    def summary(user)
-      "SUMMARY:#{user.last_name}"
+    context 'when logged in as a roster user' do
+      let(:current_user) { create :user, memberships: [build(:membership, roster:)] }
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+
+      it 'responds with a calendar file' do
+        call
+        expect(response.media_type).to eq('text/calendar')
+      end
     end
 
-    def description(user, roster)
-      "DESCRIPTION:#{user.first_name} #{user.last_name} " \
-        "is on call for #{roster.name}."
+    context 'when logged in as a roster user through a calendar access token' do
+      let(:token) { create(:user, memberships: [build(:membership, roster:)]).calendar_access_token }
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+
+      it 'responds with a calendar file' do
+        call
+        expect(response.media_type).to eq('text/calendar')
+      end
     end
-
-    def assignment_dates(assignment)
-      ["DTSTART;VALUE=DATE:#{assignment.start_date.to_fs(:number)}",
-       "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_fs(:number)}"]
-    end
-  end
-
-  describe 'viewing the ics formatted index' do
-    let(:current_user) { users[0] }
-    let :submit do
-      get roster_assignments_path(roster, format: 'ics')
-    end
-
-    it_behaves_like 'an ics assignments feed'
-  end
-
-  describe 'viewing the ics feed' do
-    let :submit do
-      name = roster.name.parameterize
-      get "/feed/#{name}/#{users[0].calendar_access_token}.ics"
-    end
-
-    it_behaves_like 'an ics assignments feed'
   end
 end

@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class Feed
+  attr_reader :roster
 
-  def initialize(assignments)
-    @assignments = assignments
+  def initialize(roster)
+    @roster = roster
+    @assignments = roster.assignments
   end
 
   def output

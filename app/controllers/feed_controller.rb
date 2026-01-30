@@ -6,20 +6,12 @@ class FeedController < ApplicationController
   def show
     roster = params[:roster].titleize.downcase
     @roster = Roster.where('lower(name) = ?', roster).first
-
-    #render_ics_feed
-
-    feed = Feed.new(@roster.assignments)
+    feed = Feed.new(@roster)
     authorize! feed
-
     render plain: feed.output, content_type: 'text/calendar'
-    
   rescue ActionPolicy::Unauthorized
     skip_verify_authorized!
     head :forbidden
-
-    feed = Feed.new(@roster.assignments)
-    render plain: feed.output, content_type: 'text/calendar'
   end
 
   private
@@ -29,9 +21,4 @@ class FeedController < ApplicationController
 
     Current.user ||= User.find_by(calendar_access_token: params[:token])
   end
-
-  #def render_ics_feed
-    #feed = Feed.new(@roster.assignments)
-    #render plain: feed.output, content_type: 'text/calendar'
-  #end
 end
