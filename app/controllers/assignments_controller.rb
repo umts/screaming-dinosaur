@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 
-require 'assignments_ics'
-
 class AssignmentsController < ApplicationController
   before_action :find_assignment, only: %i[destroy edit update]
   before_action :set_roster_users, only: %i[edit new create update]
-  before_action :allow_calendar_token_access, only: :feed
 
   def index
     authorize!
     respond_to do |format|
       format.html { index_html }
-      format.ics { render_ics_feed }
       format.json { index_json }
       format.csv { index_csv }
     end
@@ -59,16 +55,6 @@ class AssignmentsController < ApplicationController
     redirect_to roster_assignments_path(@roster)
   end
 
-  def feed
-    roster = params[:roster].titleize.downcase
-    @roster = Roster.where('lower(name) = ?', roster).first
-    authorize! context: { roster: @roster }
-    render_ics_feed
-  rescue ActionPolicy::Unauthorized
-    skip_verify_authorized!
-    head :forbidden
-  end
-
   private
 
   def assignment_params
@@ -82,10 +68,6 @@ class AssignmentsController < ApplicationController
 
   def set_roster_users
     @users = @roster.users.active.order :last_name
-  end
-
-  def allow_calendar_token_access
-    Current.user ||= User.find_by(calendar_access_token: params[:token])
   end
 
   def index_html
@@ -104,10 +86,5 @@ class AssignmentsController < ApplicationController
   def index_csv
     @roster = Roster.preload(assignments: :user).friendly.find(params[:roster_id])
     render csv: @roster.assignment_csv, filename: @roster.name
-  end
-
-  def render_ics_feed
-    ics = AssignmentsIcs.new(@roster.assignments)
-    render plain: ics.output, content_type: 'text/calendar'
   end
 end
