@@ -3,7 +3,7 @@
 Rails.application.routes.draw do
   root 'dashboard#index'
 
-  get 'feed/:roster/:token' => 'feed#show', as: :feed
+  get 'feed/:roster_id/:token' => 'feed#show', as: :feed
 
   post :login, to: 'sessions#create' if Rails.env.development?
   post :logout, to: 'sessions#destroy'

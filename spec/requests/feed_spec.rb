@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Feeds' do
-  describe 'GET /feed/:roster_name/:token' do
-    subject(:call) { get "/feed/#{roster.name.parameterize}/#{token}" }
+  describe 'GET /feed/:roster_id/:token' do
+    subject(:call) { get "/feed/#{roster.slug}/#{token}" }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let(:token) { 'sometoken' }
 
     context 'when logged in as an unrelated user' do
-      let(:current_user) { create :user }
+      let(:current_user) { create(:user) }
 
       it 'responds with a forbidden status' do
         call
@@ -17,7 +17,7 @@ RSpec.describe 'Feeds' do
     end
 
     context 'when logged in as a roster user' do
-      let(:current_user) { create :user, memberships: [build(:membership, roster:)] }
+      let(:current_user) { create(:user, rosters: [roster]) }
 
       it 'responds successfully' do
         call
@@ -31,7 +31,7 @@ RSpec.describe 'Feeds' do
     end
 
     context 'when logged in as a roster user through a calendar access token' do
-      let(:token) { create(:user, memberships: [build(:membership, roster:)]).calendar_access_token }
+      let(:token) { create(:user, rosters: [roster]).calendar_access_token }
 
       it 'responds successfully' do
         call
