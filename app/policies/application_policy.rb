@@ -10,11 +10,13 @@ class ApplicationPolicy < ActionPolicy::Base
 
   protected
 
+  def logged_in? = user.present?
+
+  def member_of?(roster) = logged_in? && user.member_of?(roster)
+
+  def admin_of?(roster) = logged_in? && user.admin_in?(roster)
+
+  def admin? = logged_in? && user.admin
+
   def valid_api_key? = api_key.present? && api_key == Rails.application.credentials.fetch(:api_key)
-
-  def member_of?(roster) = user.present? && user.member_of?(roster)
-
-  def admin_of?(roster) = user.present? && user.admin_in?(roster)
-
-  def admin? = user&.admin
 end

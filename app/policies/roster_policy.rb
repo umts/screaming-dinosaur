@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class RosterPolicy < ApplicationPolicy
+  relation_scope do |relation|
+    next relation if admin?
+
+    relation.joins(:memberships).where(memberships: { user: })
+  end
+
   def index? = user.present?
 
   def show? = user.present? || valid_api_key?
