@@ -32,22 +32,7 @@
                 %i.fa-solid.fa-edit
                 %span.d-none.d-xl-inline Edit
             %td
-              - if user.active?
-                = button_to roster_user_path(@roster, user),
-                            method: :patch,
-                            params: { user: { active: false } },
-                            data: { confirm: 'Deactivating user will delete all upcoming assignments.' },
-                            class: 'btn btn-sm text-nowrap lh-1' do
-                  %i.fa-solid.fa-user-xmark
-                  %span.d-none.d-xl-inline Deactivate
-              - else
-                = button_to roster_user_path(@roster, user),
-                            method: :patch,
-                            params: { user: { active: true } },
-                            class: 'btn btn-sm text-nowrap lh-1' do
-                  %i.fa-solid.fa-user-plus
-                  %span.d-none.d-xl-inline Activate
-
+              
   - if @other_users.present?
     = form_with url: transfer_roster_users_path do |f|
       .input-group

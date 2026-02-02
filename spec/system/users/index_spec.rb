@@ -41,46 +41,5 @@ RSpec.describe 'user index' do
     it 'has a title' do
       expect(page).to have_css 'h1', text: 'Users'
     end
-
-    context 'when viewing active users' do
-      it 'shows inactive users button' do
-        expect(page).to have_link 'Inactive'
-      end
-
-      it 'shows deactivate user button on users' do
-        within 'tr', text: admin.first_name do
-          expect(page).to have_button 'Deactivate'
-        end
-      end
-    end
-
-    context 'when viewing inactive users' do
-      let(:inactive_user) { create :user, active: false }
-
-      before do
-        create :membership, roster: roster, user: inactive_user
-        click_link 'Inactive'
-      end
-
-      it 'shows active users button' do
-        expect(page).to have_link 'Active'
-      end
-
-      it 'shows activate user button on users' do
-        within 'tr', text: inactive_user.first_name do
-          expect(page).to have_button 'Activate'
-        end
-      end
-
-      it 'activates a user' do
-        click_button 'Activate'
-        expect(page).to have_css 'td', text: inactive_user.first_name
-      end
-
-      it 'informs you of success' do
-        click_button 'Activate'
-        expect(page).to have_text('Successfully updated user')
-      end
-    end
   end
 end

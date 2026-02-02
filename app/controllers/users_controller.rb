@@ -6,8 +6,7 @@ class UsersController < ApplicationController
   def index
     authorize! context: { roster: @roster }
     @fallback = @roster.fallback_user
-    @active = !params[:active]
-    @users = @roster.users.where active: @active
+    @users = @roster.users
     @other_users = User.order(:last_name) - @roster.users
   end
 
@@ -59,7 +58,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.expect(user: [:first_name, :last_name, :spire, :email, :phone, :active, :reminders_enabled,
+    params.expect(user: [:first_name, :last_name, :spire, :email, :phone, :reminders_enabled,
                          :change_notifications_enabled, { roster_ids: [], membership: [:admin] }]).tap do |p|
       next if p[:roster_ids].blank?
 
