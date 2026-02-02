@@ -31,8 +31,6 @@
               = link_to edit_roster_user_path(@roster, user), class: 'btn btn-sm text-nowrap lh-1' do
                 %i.fa-solid.fa-edit
                 %span.d-none.d-xl-inline Edit
-            %td
-              
   - if @other_users.present?
     = form_with url: transfer_roster_users_path do |f|
       .input-group
