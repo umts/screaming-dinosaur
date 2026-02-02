@@ -63,7 +63,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_02_154628) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
-    t.boolean "active", default: true
     t.boolean "admin", default: false, null: false
     t.string "calendar_access_token"
     t.boolean "change_notifications_enabled", default: true
