@@ -24,7 +24,7 @@ class Roster < ApplicationRecord
                              inverse_of: 'fallback_rosters'
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
-  validates :switchover, numericality: { in: (0...(24 * 60)) }
+  validates :switchover, numericality: { in: (0...(24 * 60)), message: :invalid_time }
   validates :phone, phone: { allow_blank: true }
 
   before_save :track_fallback_user_change
