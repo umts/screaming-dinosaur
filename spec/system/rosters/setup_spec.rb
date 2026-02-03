@@ -17,13 +17,13 @@ RSpec.describe 'roster setup page' do
   end
 
   it 'has a copy button for call webhook' do
-    within find('.card', text: 'Call webhook') do
+    within('.card', text: 'Call webhook') do
       expect(page).to have_button('Copy')
     end
   end
 
   it 'has a copy button for message webhook' do
-    within find('.card', text: 'Message webhook') do
+    within('.card', text: 'Message webhook') do
       expect(page).to have_button('Copy')
     end
   end
