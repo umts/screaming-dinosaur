@@ -68,7 +68,7 @@ RSpec.describe 'viewing the index' do
       it 'sends you to create a new assignment' do
         visit roster_assignments_path(roster)
 
-        find('td.fc-day', text: '14').click
+        find('td.fc-day', text: '14', match: :first).click
         expect(page).to have_current_path(new_path)
       end
     end
