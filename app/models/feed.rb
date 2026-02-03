@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
-class AssignmentsIcs
-  def initialize(assignments)
-    @assignments = assignments
+class Feed
+  attr_reader :roster
+
+  def initialize(roster)
+    @roster = roster
+    @assignments = roster.assignments
   end
 
   def output
@@ -33,9 +36,8 @@ class AssignmentsIcs
       e.dtstart = Icalendar::Values::Date.new(assignment.start_date)
       e.dtend = Icalendar::Values::Date.new(1.day.after(assignment.end_date))
       e.summary = assignment.user.last_name
-      e.description = <<-DESC.squish
-        #{assignment.user.first_name} #{assignment.user.last_name} is on call
-        for #{assignment.roster.name}.
+      e.description = <<~DESC.squish
+        #{assignment.user.first_name} #{assignment.user.last_name} is on call for #{assignment.roster.name}.
       DESC
     end
   end

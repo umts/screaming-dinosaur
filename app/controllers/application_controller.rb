@@ -7,23 +7,28 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def confirm_change(object, message = nil)
-    # Rubocop can't tell whether we're redirecting after this or not.
-    # rubocop:disable Rails/ActionControllerFlashBeforeRender
-    change = object.versions.where(whodunnit: Current.user).last
-    flash[:change] = change.try(:id)
+  def flash_success_for(subject, action = nil, undoable: false) = flash_success(flash, subject, action, undoable)
 
-    # If we know what change occurred, use it to write the message.
-    # If we don't, try and infer from the current controller action.
-    # Otherwise, just go with 'updated'.
-    event = change.present? ? change.event : (params[:action] || 'update')
-    action_taken = event == 'destroy' ? 'deleted' : event.sub(/e?$/, 'ed')
-    message ||= "#{object.class.name} has been #{action_taken}."
-    flash[:message] = message
-    # rubocop:enable Rails/ActionControllerFlashBeforeRender
-  end
+  def flash_errors_for(subject) = flash_errors(flash, subject)
+
+  def flash_errors_now_for(subject) = flash_errors(flash.now, subject)
 
   private
+
+  def flash_success(flash, subject, action, undoable)
+    flash[:notice] = success_message_for(subject, action)
+    flash[:undo] = subject.versions.last&.id if undoable
+  end
+
+  def flash_errors(flash, subject)
+    flash[:alert] = subject.errors.full_messages.to_sentence
+  end
+
+  def success_message_for(subject, action)
+    subject = subject.model_name.human.downcase if subject.respond_to?(:model_name)
+    action ||= action_name
+    t('success.message', action: t("success.actions.#{action}"), subject:)
+  end
 
   def set_roster
     @roster = Roster.friendly.find(params[:roster_id], allow_nil: true) || Current.user&.rosters&.first || Roster.first
