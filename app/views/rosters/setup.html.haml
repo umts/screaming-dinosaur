@@ -1,4 +1,4 @@
-= render layout: 'layouts/section', locals: { heading: "Setup Twilio for #{@roster.name}", closeable: rosters_path } do
+= render layout: 'layouts/roster', locals: { roster: @roster, active_nav_item: 'twilio' } do
   %ol#twilio-instructions
     %li
       - if @roster.phone.present?

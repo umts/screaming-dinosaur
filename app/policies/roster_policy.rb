@@ -7,19 +7,9 @@ class RosterPolicy < ApplicationPolicy
     relation.joins(:memberships).where(memberships: { user: })
   end
 
-  def index? = user.present?
+  def manage? = admin_of?(record) || admin?
 
-  def show? = user.present? || valid_api_key?
+  def index? = logged_in?
 
-  def new? = user&.admin?
-  alias create? new?
-
-  def edit? = user&.admin_in?(record)
-  alias update? edit?
-
-  def destroy? = user&.admin_in?(record)
-
-  def assignments? = user.present?
-
-  def setup? = user&.admin_in?(record)
+  def show? = member_of?(roster) || manage? || valid_api_key?
 end

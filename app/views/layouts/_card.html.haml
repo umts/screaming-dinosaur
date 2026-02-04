@@ -1,0 +1,14 @@
+:ruby
+  heading = local_assigns[:heading]
+  creatable = local_assigns[:creatable]
+.card
+  .card-header
+    .d-flex
+      .flex-grow-1
+        %strong= heading
+      - if creatable
+        %div
+          = link_to creatable, class: 'btn btn-sm btn-text' do
+            %i.fa-solid.fa-plus
+            New
+  = yield

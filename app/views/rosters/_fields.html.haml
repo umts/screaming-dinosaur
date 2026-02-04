@@ -1,0 +1,19 @@
+- f ||= fields
+.mb-3
+  = f.label :name, class: 'form-label'
+  = f.text_field :name, required: true, class: 'form-control'
+.mb-3
+  = f.label :phone, class: 'form-label'
+  = f.phone_field :phone, class: 'form-control'
+.mb-3
+  = f.label :fallback_user, class: 'form-label'
+  = f.collection_select :fallback_user_id,
+                        f.object.users, :id, :full_name,
+                        { include_blank: true },
+                        disabled: f.object.users.empty?,
+                        class: 'form-select'
+  - if f.object.users.empty?
+    .form-text To assign a fallback user, first create the roster, then add some users to it.
+%div
+  = f.label :switchover_time, class: 'form-label'
+  = f.time_field :switchover_time, required: true, class: 'form-control'

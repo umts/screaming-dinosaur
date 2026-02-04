@@ -1,25 +1,32 @@
-= render layout: 'layouts/section',
-         locals: { heading: 'Rosters', creatable: allowed_to?(:new?, Roster) && new_roster_path } do
-  .list-group
+= render layout: 'layouts/rosters' do
+  = render layout: 'layouts/card',
+           locals: { heading: 'All Rosters', creatable: allowed_to?(:new?, Roster.new) && new_roster_path } do
     - if @rosters.present?
-      - @rosters.each do |roster|
-        = link_to roster_assignments_path(roster), class: 'list-group-item list-group-item-action' do
-          .float-end.d-flex.align-items-end.flex-column
-            = formatted_phone(roster.phone)
-          .d-flex.flex-wrap.align-items-center.gap-2
-            %span.lead.text-black= roster.name
-            - if roster.assignments.current.blank? && allowed_to?(:new?, roster.assignments.new)
-              %span.badge.bg-primary
-                %i.fa-solid.fa-triangle-exclamation
-                No assignment
-            - if roster.fallback_user.blank? && allowed_to?(:edit?, roster)
-              %span.badge.bg-primary
-                %i.fa-solid.fa-triangle-exclamation
-                No fallback
-          - if roster.assignments.current
-            #{roster.on_call_user&.full_name} is on call until
-            #{roster.switchover_time.strftime '%-I:%M %P'} on
-            #{(roster.assignments.current.end_date + 1.day).strftime '%A, %B %e'}
-          - elsif roster.on_call_user
-            %strong= roster.on_call_user.full_name
-            is on call as the fallback user
+      .list-group.list-group-flush
+        - @rosters.each do |roster|
+          = link_to roster_assignments_path(roster), class: 'list-group-item list-group-item-action py-3' do
+            .float-end
+              = formatted_phone(roster.phone)
+            %div
+              %span.h5.text-primary= roster.name
+              - if roster.assignments.current.blank? && allowed_to?(:new?, roster.assignments.new)
+                %span.badge.bg-primary
+                  %i.fa-solid.fa-triangle-exclamation
+                  No assignment
+              - if roster.fallback_user.blank? && allowed_to?(:edit?, roster)
+                %span.badge.bg-primary
+                  %i.fa-solid.fa-triangle-exclamation
+                  No fallback
+            %div
+              %strong= roster.on_call_user&.full_name || 'Nobody'
+              - if roster.assignments.current.blank? && roster.on_call_user.present?
+                (Fallback)
+              is currently on call.
+            - if roster.assignments.current.present?
+              %div
+                %small
+                  Switches
+                  = l roster.assignments.current&.effective_end_datetime, format: :sentence
+    - else
+      .card-body
+        No rosters found.

@@ -30,6 +30,9 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  activerecord:
+    models:
+      version: "Change"
   errors:
     messages:
       invalid_time: "is not a valid time"
@@ -45,6 +48,10 @@ en:
       update: "updated"
       destroy: "deleted"
       undo: "reverted"
-  activerecord:
-    models:
-      version: "Change"
+  date:
+    formats:
+      default: '%-m/%-d/%Y'
+  time:
+    formats:
+      default: '%-m/%-d/%Y %-I:%M %P'
+      sentence: "on %a, %b %-d at %-I:%M %P"

@@ -1,0 +1,27 @@
+- active_nav_item = local_assigns[:active_nav_item]
+.navbar.navbar-expand-md.border-bottom.mb-3
+  %h1.me-3= roster.name
+  = button_tag type: 'button',
+               class: 'navbar-toggler',
+               data: { 'bs-toggle': 'collapse', 'bs-target': '#roster-navbar-content' },
+               aria: { expanded: 'false', label: 'Toggle navigation' } do
+    %i.navbar-toggler-icon
+  #roster-navbar-content.collapse.navbar-collapse
+    %ul.navbar-nav
+      %li.nav-item
+        = link_to roster_assignments_path(roster), class: ['nav-link', active_nav_item == 'assignments' && 'active'] do
+          %i.fa-solid.fa-calendar
+          Assignments
+      %li.nav-item
+        = link_to roster_memberships_path(roster), class: ['nav-link', active_nav_item == 'memberships' && 'active'] do
+          %i.fa-solid.fa-user
+          Memberships
+      %li.nav-item
+        = link_to setup_roster_path(roster), class: ['nav-link', active_nav_item == 'twilio' && 'active'] do
+          %i.fa-solid.fa-phone
+          Twilio
+      %li.nav-item
+        = link_to edit_roster_path(roster), class: ['nav-link', active_nav_item == 'settings' && 'active'] do
+          %i.fa-solid.fa-gears
+          Settings
+= yield
