@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe 'roster setup page' do
+RSpec.describe 'Roster setup' do
   let(:roster) { create :roster, fallback_user: create(:user) }
   let(:current_user) { roster_admin roster }
 
