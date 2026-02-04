@@ -13,7 +13,21 @@
     %ol
       %li
         Set the call webhook to an HTTP GET request to
-        %tt= roster_twilio_call_url(@roster, format: :xml)
+        .card.w-75{ 'data-controller': 'clipboard' }
+          .card-header
+            .d-flex.align-end
+              .flex-grow-1
+                %strong Call webhook
+              .d-flex
+                = button_tag type: 'button',
+                             class: 'btn btn-sm lh-1',
+                             'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
+                  %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
+                  %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
+                  %i.fa-fw.fa-solid.fa-xmark{ hidden: true, 'data-clipboard-target': 'errorIndicator' }
+                  Copy
+          .card-body
+            %tt.m-0{ 'data-clipboard-target': 'source' }= roster_twilio_call_url(@roster, format: :xml)
       - if @roster.fallback_user.present?
         %li
           Set the failure handler to a TwiML Bin containing
@@ -40,7 +54,21 @@
     %ol
       %li
         Set the message webhook to an HTTP GET request to
-        %tt= roster_twilio_text_url(@roster, format: :xml)
+        .card.w-75{ 'data-controller': 'clipboard' }
+          .card-header
+            .d-flex.align-end
+              .flex-grow-1
+                %strong Message webhook
+              .d-flex
+                = button_tag type: 'button',
+                             class: 'btn btn-sm lh-1',
+                             'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
+                  %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
+                  %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
+                  %i.fa-fw.fa-solid.fa-xmark{ hidden: true, 'data-clipboard-target': 'errorIndicator' }
+                  Copy
+          .card-body
+            %tt.m-0{ 'data-clipboard-target': 'source' }= roster_twilio_text_url(@roster, format: :xml)
       - if @roster.fallback_user.present?
         %li
           Set the failure handler to a TwiML Bin containing
