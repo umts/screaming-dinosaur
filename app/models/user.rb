@@ -16,7 +16,7 @@ class User < ApplicationRecord
                                foreign_key: :whodunnit,
                                inverse_of: :author
 
-  validates :first_name, :last_name, :spire, :email, :phone, :rosters, presence: true
+  validates :first_name, :last_name, :spire, :email, :phone, presence: true
   validates :spire, :email, :phone, uniqueness: { case_sensitive: false }
   validates :calendar_access_token, uniqueness: { case_sensitive: true }
   validates :spire, format: { with: /\A\d{8}@umass.edu\z/, message: :must_be_fc_id_number }

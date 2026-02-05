@@ -35,6 +35,14 @@ class Roster < ApplicationRecord
     switchover.presence && Time.zone.now.midnight.in(switchover.minutes)
   end
 
+  def switchover_time=(value)
+    value.tap do |castable|
+      castable = castable.to_time if castable.respond_to?(:to_time)
+      castable = (castable.hour * 60) + castable.min if castable.is_a?(Time)
+      self.switchover = castable
+    end
+  end
+
   def user_options
     as = admins.order(:last_name).map { |a| [a.full_name, a.id] }
     nas = non_admins.order(:last_name).map { |na| [na.full_name, na.id] }

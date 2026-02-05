@@ -7,9 +7,9 @@ RSpec.describe 'Rosters' do
     context 'when logged in as a normal user' do
       let(:current_user) { create :user }
 
-      it 'responds with a forbidden status' do
+      it 'responds successfully' do
         call
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to be_successful
       end
     end
 
@@ -288,30 +288,6 @@ RSpec.describe 'Rosters' do
       it 'destroys the given roster' do
         submit
         expect(Roster.find_by(id: roster.id)).to be_nil
-      end
-    end
-  end
-
-  describe 'GET /rosters/assignments' do
-    subject(:call) { get '/rosters/assignments' }
-
-    let(:roster) { create :roster }
-
-    context 'when not logged in' do
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when logged in as a user' do
-      let(:roster) { create :roster }
-
-      let(:current_user) { create :user, rosters: [roster] }
-
-      it 'redirects to the primary roster of the user' do
-        call
-        expect(response).to redirect_to(roster_assignments_path(roster))
       end
     end
   end

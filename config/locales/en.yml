@@ -44,7 +44,6 @@ en:
       create: "created"
       update: "updated"
       destroy: "deleted"
-      transfer: "added"
       undo: "reverted"
   activerecord:
     models:
