@@ -3,7 +3,7 @@
 class AssignmentPolicy < ApplicationPolicy
   authorize :roster, optional: true
 
-  def manage? = admin_of?(record.roster)
+  def manage? = allowed_to?(:manage?, record.roster)
 
-  def index? = member_of?(roster)
+  def index? = allowed_to?(:show?, roster)
 end
