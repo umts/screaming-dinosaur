@@ -7,7 +7,6 @@ class AssignmentsController < ApplicationController
   def index
     authorize!
     respond_to do |format|
-      format.html { index_html }
       format.json { index_json }
       format.csv { index_csv }
     end
@@ -68,12 +67,6 @@ class AssignmentsController < ApplicationController
 
   def set_roster_users
     @users = @roster.users.active.order :last_name
-  end
-
-  def index_html
-    @assignments = Current.user.assignments.in(@roster).upcoming.order :start_date
-    @current_assignment = @roster.assignments.current
-    @fallback_user = @roster.fallback_user
   end
 
   def index_json
