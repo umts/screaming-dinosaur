@@ -2,5 +2,8 @@
   = render partial: 'current',
            locals: { current_assignment: @current_assignment, fallback_user: @fallback_user, roster: @roster }
   = render partial: 'your_assignments', locals: { assignments: @assignments } if @assignments.present?
-  #calendar.mb-3
+  .mb-3{
+    'data-controller': 'assignment-calendar',
+    'data-assignment-calendar-url-value': roster_assignments_path(@roster, format: :json)
+  }
   = render partial: 'feed_address_form', locals: { roster: @roster }
