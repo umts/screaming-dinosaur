@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class WeekdayAssignersController < ApplicationController
-  skip_before_action :set_roster
+  include Rosterable
+
   before_action :initialize_weekday_assigner
 
   def prompt
@@ -23,11 +24,10 @@ class WeekdayAssignersController < ApplicationController
   private
 
   def initialize_weekday_assigner
-    roster = Roster.friendly.find(params[:roster_id])
     @assigner = WeekdayAssigner.new(roster_id: roster.id)
   end
 
   def weekday_assigner_params
-    params.expect(weekday_assigner: %i[user_id start_date end_date start_weekday end_weekday])
+    params.expect weekday_assigner: %i[user_id start_date end_date start_weekday end_weekday]
   end
 end
