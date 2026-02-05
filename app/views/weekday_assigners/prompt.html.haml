@@ -1,6 +1,6 @@
 = render layout: 'layouts/section',
          locals: { heading: 'Assign Weekdays',
-                   closeable: allowed_to?(:index?, Assignment) && roster_assignments_path(@assigner.roster) } do
+                   closeable: allowed_to?(:index?, Assignment) && roster_path(@assigner.roster) } do
   = form_with model: @assigner, url: roster_assign_weekdays_path(@assigner.roster) do |f|
     .mb-3
       = f.label :user_id, class: 'form-label'

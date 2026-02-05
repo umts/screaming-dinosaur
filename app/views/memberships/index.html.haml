@@ -7,7 +7,7 @@
           There currently is no fallback user.
         = link_to 'Assign fallback user', edit_roster_path(@roster), class: 'alert-link'
   %ul.nav.nav-tabs.mb-3
-    %li.nav-item= link_to 'Assignments', roster_assignments_path(@roster), class: 'nav-link'
+    %li.nav-item= link_to 'Assignments', roster_path(@roster), class: 'nav-link'
     %li.nav-item
       = link_to 'Memberships', roster_memberships_path(@roster), class: 'nav-link active', 'aria-current': 'page'
   - if @other_users.present? && allowed_to?(:create?, @roster.memberships.new)

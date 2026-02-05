@@ -13,7 +13,7 @@ class WeekAssignersController < ApplicationController
     authorize! @assigner
     if @assigner.perform
       flash_success_for(Assignment.model_name.human.downcase.pluralize, :create)
-      redirect_to roster_assignments_path(@assigner.roster, date: @assigner.start_date)
+      redirect_to roster_path(@assigner.roster, date: @assigner.start_date)
     else
       flash_errors_now_for(@assigner)
       render :prompt, status: :unprocessable_content
