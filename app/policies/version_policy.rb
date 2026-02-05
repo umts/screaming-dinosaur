@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class VersionPolicy < ApplicationPolicy
-  def undo? = logged_in? && user == record.author
+  def manage? = logged_in? && user == record.author
 end

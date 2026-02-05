@@ -6,7 +6,7 @@ class ApplicationPolicy < ActionPolicy::Base
 
   pre_check :allow_admins
 
-  alias_rule :index?, :create?, to: :manage?
+  alias_rule :create?, to: :manage?
   alias_rule :new?, to: :create?
   alias_rule :edit?, to: :update?
 
