@@ -4,7 +4,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import {Controller} from '@hotwired/stimulus';
 
 export default class extends Controller {
-  static values = {url: String};
+  static values = {
+    eventsUrl: String,
+    newAssignmentUrl: String,
+  };
 
   connect() {
     const calendar = new Calendar(this.element, {
@@ -18,7 +21,7 @@ export default class extends Controller {
         today: 'Today',
       },
       initialDate: sessionStorage.getItem('lastDate') || null,
-      events: this.urlValue,
+      events: this.eventsUrlValue,
       startParam: 'start_date',
       endParam: 'end_date',
       dayCellClassNames: 'day-empty',
@@ -43,7 +46,7 @@ export default class extends Controller {
     this.element.addEventListener('click', (e) => {
       const dayElement = e.target.closest('td.day-empty');
       if (dayElement) {
-        window.location = 'assignments/new?date=' + dayElement.dataset.date;
+        window.location = `${this.newAssignmentUrlValue}?date=` + dayElement.dataset.date;
       }
     });
   }
