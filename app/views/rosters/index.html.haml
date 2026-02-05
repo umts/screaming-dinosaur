@@ -3,7 +3,7 @@
   .list-group
     - if @rosters.present?
       - @rosters.each do |roster|
-        = link_to roster_assignments_path(roster), class: 'list-group-item list-group-item-action' do
+        = link_to roster_path(roster), class: 'list-group-item list-group-item-action' do
           .float-end.d-flex.align-items-end.flex-column
             = formatted_phone(roster.phone)
           .d-flex.flex-wrap.align-items-center.gap-2

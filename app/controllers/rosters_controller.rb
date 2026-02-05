@@ -12,9 +12,11 @@ class RostersController < ApplicationController
 
   def show
     authorize! @roster, context: { api_key: params[:api_key] }
-    @upcoming = @roster.assignments.upcoming.order(:start_date)
     respond_to do |format|
-      format.json { render layout: false }
+      format.html { index_html }
+      format.json do
+        @upcoming = @roster.assignments.upcoming.order(:start_date)
+      end
     end
   end
 
@@ -75,5 +77,11 @@ class RostersController < ApplicationController
 
   def roster_params
     params.expect(roster: %i[name phone fallback_user_id switchover_time])
+  end
+
+  def index_html
+    @assignments = Current.user.assignments.in(@roster).upcoming.order :start_date
+    @current_assignment = @roster.assignments.current
+    @fallback_user = @roster.fallback_user
   end
 end

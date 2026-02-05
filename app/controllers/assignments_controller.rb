@@ -7,7 +7,6 @@ class AssignmentsController < ApplicationController
   def index
     authorize!
     respond_to do |format|
-      format.html { index_html }
       format.json { index_json }
       format.csv { index_csv }
     end
@@ -29,7 +28,7 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     if @assignment.save
       flash_success_for(@assignment, undoable: true)
-      redirect_to roster_assignments_path(@roster)
+      redirect_to roster_path(@roster)
     else
       flash_errors_now_for(@assignment)
       render :new, status: :unprocessable_content
@@ -41,7 +40,7 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     if @assignment.save
       flash_success_for(@assignment, undoable: true)
-      redirect_to roster_assignments_path(@roster)
+      redirect_to roster_path(@roster)
     else
       flash_errors_now_for(@assignment)
       render :edit, status: :unprocessable_content
@@ -52,7 +51,7 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     @assignment.destroy
     flash_success_for(@assignment, undoable: true)
-    redirect_to roster_assignments_path(@roster)
+    redirect_to roster_path(@roster)
   end
 
   private
@@ -68,12 +67,6 @@ class AssignmentsController < ApplicationController
 
   def set_roster_users
     @users = @roster.users.active.order :last_name
-  end
-
-  def index_html
-    @assignments = Current.user.assignments.in(@roster).upcoming.order :start_date
-    @current_assignment = @roster.assignments.current
-    @fallback_user = @roster.fallback_user
   end
 
   def index_json

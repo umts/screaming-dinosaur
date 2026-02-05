@@ -4,5 +4,8 @@
 
 import { application } from "./application"
 
+import AssignmentCalendarController from "./assignment_calendar_controller"
+application.register("assignment-calendar", AssignmentCalendarController)
+
 import ClipboardController from "./clipboard_controller"
 application.register("clipboard", ClipboardController)
