@@ -5,5 +5,5 @@
              users: @users }
 = render layout: 'layouts/section',
          locals: { heading: 'Edit assignment',
-                   deletable: Current.user.admin_in?(@roster) ? assignment_path(@assignment) : nil } do
+                   deletable: allowed_to?(:destroy?, @assignment) ? assignment_path(@assignment) : nil } do
   = render partial: 'form', locals: locals

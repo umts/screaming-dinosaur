@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class UserPolicy < ApplicationPolicy
-  def manage? = admin?
+  def manage? = record == user
+
+  def index? = false
 
   def update?
-    return false unless manage? || record == user
-    return false if record.changes.slice('spire', 'admin', 'active').present? && !manage?
+    return false if record.changes.slice('spire', 'admin', 'active').present?
 
-    true
+    manage?
   end
 end

@@ -3,8 +3,12 @@
 Rails.application.routes.draw do
   root 'dashboard#index'
 
+  get 'feed/:roster_id/:token' => 'feed#show', as: :feed
+
   post :login, to: 'sessions#create' if Rails.env.development?
   post :logout, to: 'sessions#destroy'
+
+  mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 
   resources :rosters do
     member do
@@ -25,15 +29,11 @@ Rails.application.routes.draw do
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
 
-  resources :users, except: %i[show]
+  resources :users, only: %i[index new edit create update destroy]
 
-  resources :versions do
+  resources :versions, only: [] do
     member do
       post :undo
     end
   end
-
-  get 'feed/:roster/:token' => 'feed#show', as: :feed
-
-  mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 end

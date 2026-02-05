@@ -37,20 +37,6 @@ class User < ApplicationRecord
     "#{last_name}, #{first_name}"
   end
 
-  def member_of?(roster) = rosters.include?(roster)
-
-  def admin_in?(roster)
-    membership_in(roster).try(:admin?) || false
-  end
-
-  def admin?
-    memberships.any?(&:admin?)
-  end
-
-  def membership_in(roster)
-    memberships.find_by(roster:)
-  end
-
   private
 
   def being_deactivated?

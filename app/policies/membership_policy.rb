@@ -3,7 +3,7 @@
 class MembershipPolicy < ApplicationPolicy
   authorize :roster, optional: true
 
-  def manage? = admin_of?(record.try(:roster) || roster) || admin?
+  def manage? = allowed_to?(:manage?, record.roster)
 
-  def index? = member_of?(roster) || manage?
+  def index? = allowed_to?(:show?, roster)
 end

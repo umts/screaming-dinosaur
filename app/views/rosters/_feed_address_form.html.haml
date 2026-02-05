@@ -8,7 +8,7 @@
           %span#clip-info.visually-hidden= calendar_instructions
       .form-control
         .text-nowrap.overflow-hidden{ 'data-clipboard-target': 'source' }
-          = feed_url(roster: roster.slug, token: Current.user.calendar_access_token, format: :ics)
+          = feed_url(roster_id: roster.slug, token: Current.user.calendar_access_token, format: :ics)
       = button_tag type: 'button',
                    class: 'btn btn-outline-secondary',
                    'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
