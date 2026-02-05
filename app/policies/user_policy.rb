@@ -3,7 +3,7 @@
 class UserPolicy < ApplicationPolicy
   def manage? = record == user
 
-  def index? = user.present?
+  def index? = false
 
   def update?
     return false if record.changes.slice('spire', 'admin', 'active').present?
