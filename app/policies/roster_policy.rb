@@ -2,7 +2,7 @@
 
 class RosterPolicy < ApplicationPolicy
   relation_scope do |relation|
-    next relation if admin?
+    next relation if user&.admin?
 
     relation.joins(:memberships).where(memberships: { user: })
   end
