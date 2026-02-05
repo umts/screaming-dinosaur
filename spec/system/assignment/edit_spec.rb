@@ -9,7 +9,7 @@ RSpec.describe 'editing an assignment' do
   let(:current_user) { assignment.user }
 
   before do
-    visit edit_roster_assignment_path(assignment.roster, assignment)
+    visit edit_assignment_path(assignment)
   end
 
   it 'redirects to the correct URL' do

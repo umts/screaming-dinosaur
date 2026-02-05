@@ -11,7 +11,7 @@ Rails.application.routes.draw do
       get :setup
     end
 
-    resources :assignments, only: %i[index new edit create update destroy]
+    resources :assignments, only: %i[index new edit create update destroy], shallow: true
 
     get :assign_weeks, to: 'week_assigners#prompt'
     post :assign_weeks, to: 'week_assigners#perform'
