@@ -11,6 +11,18 @@ module LoginHelpers
     else
       around { |example| Current.set(user: current_user) { example.run } }
     end
+
+    shared_context 'when logged in as a user unrelated to the roster' do
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+    end
+
+    shared_context 'when logged in as a member of the roster' do
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: false)] }
+    end
+
+    shared_context 'when logged in as an admin of the roster' do
+      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
+    end
   end
 
   def login_as(user)

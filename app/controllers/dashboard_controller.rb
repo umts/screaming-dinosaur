@@ -5,7 +5,7 @@ class DashboardController < ApplicationController
     authorize!
     rosters = authorized_scope Roster.all
     if rosters.one?
-      redirect_to roster_assignments_path(rosters.first)
+      redirect_to roster_path(rosters.first)
     else
       redirect_to rosters_path
     end

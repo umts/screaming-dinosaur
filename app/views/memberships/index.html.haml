@@ -10,8 +10,8 @@
     %li.nav-item= link_to 'Assignments', roster_path(@roster), class: 'nav-link'
     %li.nav-item
       = link_to 'Memberships', roster_memberships_path(@roster), class: 'nav-link active', 'aria-current': 'page'
-  - if @other_users.present? && allowed_to?(:create?, @roster.memberships.new)
-    = form_with model: [@roster, @roster.memberships.new], html: { class: 'mb-3' } do |f|
+  - if @other_users.present? && allowed_to?(:create?, Membership.new(roster: @roster))
+    = form_with model: [@roster, Membership.new(roster: @roster)], html: { class: 'mb-3' } do |f|
       .input-group
         = f.label :user_id, 'Add user', class: 'input-group-text'
         = f.collection_select :user_id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'

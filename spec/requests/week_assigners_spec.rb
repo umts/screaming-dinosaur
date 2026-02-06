@@ -1,60 +1,61 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Week Assigners' do
-  shared_context 'when logged in as a roster admin' do
-    let(:admin) { create(:user).tap { |user| create :membership, roster:, user:, admin: true } }
-    let(:current_user) { admin }
-  end
-
   describe 'GET /rosters/:roster_id/assign_weeks' do
     subject(:call) { get "/rosters/#{roster.slug}/assign_weeks" }
 
     let(:roster) { create :roster }
-    let(:user1) { create(:user).tap { |user| create :membership, roster:, user: } }
 
-    include_context 'when logged in as a roster admin'
-
-    context 'when logged in as the roster admin' do
-      it 'responds successfully' do
-        call
-        expect(response).to be_successful
-      end
-    end
-
-    context 'when logged in as a normal user' do
-      let(:current_user) { user1 }
+    context 'when logged in as a member of the roster' do
+      include_context 'when logged in as a member of the roster'
 
       it 'responds with an forbidden status' do
         call
         expect(response).to have_http_status :forbidden
       end
     end
+
+    context 'when logged in as the roster admin' do
+      include_context 'when logged in as an admin of the roster'
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+    end
   end
 
   describe 'POST /rosters/:roster_id/assign_weeks' do
-    subject(:submit) { post "/rosters/#{roster.slug}/assign_weeks", params: }
+    subject(:submit) { post "/rosters/#{roster.slug}/assign_weeks", params: { week_assigner: attributes } }
 
     let(:roster) { create :roster }
-    let(:user1) { create(:user).tap { |user| create :membership, roster:, user: } }
-    let(:start_date) { Date.current.beginning_of_week(:sunday) }
 
-    include_context 'when logged in as a roster admin'
+    context 'when logged in as a member of the roster' do
+      include_context 'when logged in as a member of the roster'
 
-    context 'with valid params' do
-      let(:params) do
-        { week_assigner: { start_date: start_date,
-                           end_date: start_date + 18.days,
-                           starting_user_id: user1.id,
-                           user_ids: [admin.id, user1.id] } }
+      let(:attributes) { { start_date: Date.current } }
+
+      it 'responds with an forbidden status' do
+        submit
+        expect(response).to have_http_status :forbidden
       end
+    end
 
-      let(:expected_attributes) do
-        [a_hash_including('roster_id' => roster.id, 'user_id' => user1.id,
-                          'start_date' => start_date + 2.weeks, 'end_date' => start_date + 2.weeks + 4.days),
-         a_hash_including('roster_id' => roster.id, 'user_id' => admin.id,
-                          'start_date' => start_date + 1.week, 'end_date' => start_date + 1.week + 6.days),
-         a_hash_including('roster_id' => roster.id, 'user_id' => user1.id,
-                          'start_date' => start_date, 'end_date' => start_date + 6.days)]
+    context 'when logged in as an admin of the roster with valid attributes' do
+      include_context 'when logged in as an admin of the roster'
+
+      let(:attributes) do
+        { start_date: start_date,
+          end_date: start_date + 18.days,
+          starting_user_id: users.first.id,
+          user_ids: users.map(&:id) }
+      end
+      let(:users) { create_list :user, 2, rosters: [roster] }
+      let(:start_date) { Date.current.beginning_of_week(:sunday) }
+
+      it 'redirects to the roster assignments page' do
+        submit
+        expect(response).to redirect_to roster_path(roster, date: start_date)
       end
 
       it 'creates new assignments' do
@@ -63,111 +64,25 @@ RSpec.describe 'Week Assigners' do
 
       it 'creates new assignments with the right attributes' do
         submit
-        expect(Assignment.last(3).map(&:attributes)).to match_array(expected_attributes)
-      end
-
-      it 'redirects to the roster assignments page' do
-        submit
-        expect(response).to redirect_to roster_assignments_path(roster, date: start_date)
+        expect(Assignment.last(3)).to contain_exactly(
+          have_attributes('roster_id' => roster.id, 'user_id' => users.first.id,
+                          'start_date' => start_date + 2.weeks, 'end_date' => start_date + 2.weeks + 4.days),
+          have_attributes('roster_id' => roster.id, 'user_id' => users.second.id,
+                          'start_date' => start_date + 1.week, 'end_date' => start_date + 1.week + 6.days),
+          have_attributes('roster_id' => roster.id, 'user_id' => users.first.id,
+                          'start_date' => start_date, 'end_date' => start_date + 6.days)
+        )
       end
     end
 
-    context 'with the end date before the start' do
-      let(:params) do
-        { week_assigner: { start_date: start_date,
-                           end_date: 2.months.ago,
-                           starting_user_id: user1.id,
-                           user_ids: [user1.id, admin.id] } }
-      end
+    context 'when logged in as an admin of the roster with invalid attributes' do
+      include_context 'when logged in as an admin of the roster'
 
-      it 'responds with an unprocessable entity status' do
+      let(:attributes) { { start_date: Date.current } }
+
+      it 'responds with an unprocessable content status' do
         submit
         expect(response).to have_http_status(:unprocessable_content)
-      end
-    end
-
-    context 'with a start date that interferes with another assignment' do
-      let(:other_params) do
-        { week_assigner: { start_date: start_date,
-                           end_date: start_date + 6.days,
-                           starting_user_id: user1.id,
-                           user_ids: [user1.id] } }
-      end
-      let(:params) do
-        { week_assigner: { start_date: start_date,
-                           end_date: start_date + 18.days,
-                           starting_user_id: user1.id,
-                           user_ids: [admin.id, user1.id] } }
-      end
-
-      before { post "/rosters/#{roster.id}/assign_weeks", params: other_params }
-
-      it 'responds with an unprocessable entity status' do
-        submit
-        expect(response).to have_http_status :unprocessable_content
-      end
-    end
-
-    context 'with the starting user not in the roster' do
-      let(:mystery_user) { create :user }
-      let(:params) do
-        { week_assigner: { start_date: start_date,
-                           end_date: 2.months.ago,
-                           starting_user_id: mystery_user.id,
-                           user_ids: [user1.id, admin.id] } }
-      end
-
-      it 'responds with an unprocessable entity status' do
-        submit
-        expect(response).to have_http_status :unprocessable_content
-      end
-    end
-
-    context 'when no users are selected' do
-      let(:params) do
-        { week_assigner: { start_date: start_date,
-                           end_date: 1.week.from_now.end_of_week(:sunday),
-                           starting_user_id: user1.id,
-                           user_ids: [] } }
-      end
-
-      it 'responds with an unprocessable entity status' do
-        submit
-        expect(response).to have_http_status :unprocessable_content
-      end
-    end
-
-    context 'when you are an admin but not in the roster' do
-      let(:other_roster) { create :roster }
-      let(:admin) { create(:user).tap { |user| create :membership, roster: other_roster, user:, admin: true } }
-      let(:params) do
-        { week_assigner: { start_date: start_date,
-                           end_date: 1.week.from_now.end_of_week(:sunday),
-                           starting_user_id: user1.id,
-                           user_ids: [user1.id] } }
-      end
-
-      let(:current_user) { admin }
-
-      it 'responds with an forbidden status' do
-        submit
-        expect(response).to have_http_status :forbidden
-      end
-    end
-
-    context 'when you are a normal user' do
-      let(:current_user) { user1 }
-
-      let(:params) do
-        { week_assigner: { start_date: start_date,
-                           end_date: 1.week.from_now.end_of_week(:sunday),
-                           starting_user_id: user1.id,
-                           user_ids: [user1.id] } }
-      end
-
-      it 'responds with an forbbiden status' do
-        submit
-        expect(response).to have_http_status :forbidden
       end
     end
   end

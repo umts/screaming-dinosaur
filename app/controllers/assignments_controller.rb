@@ -31,7 +31,7 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     if @assignment.save
       flash_success_for(@assignment, undoable: true)
-      redirect_to roster_path(@roster)
+      redirect_to roster_path(@assignment.roster)
     else
       flash_errors_now_for(@assignment)
       render :new, status: :unprocessable_content
@@ -43,7 +43,7 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     if @assignment.save
       flash_success_for(@assignment, undoable: true)
-      redirect_to roster_path(@roster)
+      redirect_to roster_path(@assignment.roster)
     else
       flash_errors_now_for(@assignment)
       render :edit, status: :unprocessable_content
@@ -54,7 +54,7 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     @assignment.destroy
     flash_success_for(@assignment, undoable: true)
-    redirect_to roster_path(@roster)
+    redirect_to roster_path(@assignment.roster)
   end
 
   private
