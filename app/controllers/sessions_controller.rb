@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
     def destroy
       authorize!
       session.clear
-      redirect_back_or_to root_path
+      redirect_to root_path
     end
     # :nocov:
   else

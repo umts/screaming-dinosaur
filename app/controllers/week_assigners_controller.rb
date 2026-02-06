@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class WeekAssignersController < ApplicationController
-  skip_before_action :set_roster
+  include Rosterable
+
   before_action :initialize_week_assigner
 
   def prompt
@@ -23,7 +24,6 @@ class WeekAssignersController < ApplicationController
   private
 
   def initialize_week_assigner
-    roster = Roster.friendly.find(params[:roster_id])
     default_start = roster.next_rotation_start_date
     @assigner = WeekAssigner.new(roster_id: roster.id,
                                  start_date: default_start,
@@ -32,6 +32,6 @@ class WeekAssignersController < ApplicationController
   end
 
   def week_assigner_params
-    params.expect(week_assigner: [:starting_user_id, :start_date, :end_date, { user_ids: [] }])
+    params.expect week_assigner: [:starting_user_id, :start_date, :end_date, { user_ids: [] }]
   end
 end

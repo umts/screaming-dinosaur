@@ -1,19 +1,18 @@
 # frozen_string_literal: true
 
 class RostersController < ApplicationController
-  skip_before_action :set_roster
   before_action :find_roster, only: %i[show edit update destroy setup]
   before_action :initialize_roster, only: %i[new create]
 
   def index
     authorize!
-    @rosters = Roster.all.select { |roster| allowed_to?(:show?, roster) }
+    @rosters = authorized_scope Roster.all
   end
 
   def show
     authorize! @roster, context: { api_key: params[:api_key] }
     respond_to do |format|
-      format.html { index_html }
+      format.html
       format.json do
         @upcoming = @roster.assignments.upcoming.order(:start_date)
       end
@@ -32,8 +31,6 @@ class RostersController < ApplicationController
     @roster.assign_attributes roster_params
     authorize! @roster
     if @roster.save
-      # Current user becomes admin in new roster
-      @roster.memberships.create(user: Current.user, admin: true)
       flash_success_for(@roster, undoable: true)
       redirect_to rosters_path
     else
@@ -68,20 +65,15 @@ class RostersController < ApplicationController
   private
 
   def find_roster
-    @roster = Roster.friendly.find params.require(:id)
+    @roster = Roster.friendly.find params[:id]
   end
 
   def initialize_roster
     @roster = Roster.new
+    @roster.memberships.build user: Current.user, admin: true
   end
 
   def roster_params
-    params.expect(roster: %i[name phone fallback_user_id switchover_time])
-  end
-
-  def index_html
-    @assignments = Current.user.assignments.in(@roster).upcoming.order :start_date
-    @current_assignment = @roster.assignments.current
-    @fallback_user = @roster.fallback_user
+    params.expect roster: %i[name phone fallback_user_id switchover_time]
   end
 end

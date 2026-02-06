@@ -1,34 +1,37 @@
 # frozen_string_literal: true
 
 class AssignmentsController < ApplicationController
-  before_action :find_assignment, only: %i[destroy edit update]
-  before_action :set_roster_users, only: %i[edit new create update]
+  include Rosterable
+
+  before_action :find_assignment, only: %i[edit update destroy]
+  before_action :initialize_assignment, only: %i[new create]
 
   def index
     authorize!
     respond_to do |format|
-      format.json { index_json }
-      format.csv { index_csv }
+      format.json do
+        @assignments = roster.assignments.between(Date.parse(params[:start_date]), Date.parse(params[:end_date]))
+      end
+      format.csv do
+        render csv: roster.assignment_csv, filename: roster.name
+      end
     end
   end
 
   def new
-    authorize!
-    @start_date = Date.parse params.require(:date)
-    @end_date = @start_date + 6.days
-    @assignment = Assignment.new
+    authorize! @assignment
   end
 
   def edit
-    authorize!
+    authorize! @assignment
   end
 
   def create
-    @assignment = @roster.assignments.new assignment_params
+    @assignment.assign_attributes assignment_params
     authorize! @assignment
     if @assignment.save
       flash_success_for(@assignment, undoable: true)
-      redirect_to roster_path(@roster)
+      redirect_to roster_path(@assignment.roster)
     else
       flash_errors_now_for(@assignment)
       render :new, status: :unprocessable_content
@@ -40,7 +43,7 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     if @assignment.save
       flash_success_for(@assignment, undoable: true)
-      redirect_to roster_path(@roster)
+      redirect_to roster_path(@assignment.roster)
     else
       flash_errors_now_for(@assignment)
       render :edit, status: :unprocessable_content
@@ -51,33 +54,24 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     @assignment.destroy
     flash_success_for(@assignment, undoable: true)
-    redirect_to roster_path(@roster)
+    redirect_to roster_path(@assignment.roster)
   end
 
   private
 
+  def find_assignment
+    @assignment = Assignment.find(params[:id])
+  end
+
+  def initialize_assignment
+    @assignment = roster.assignments.new
+    return if params[:date].blank?
+
+    @assignment.start_date = params[:date].to_date
+    @assignment.end_date = @assignment.start_date + 6.days
+  end
+
   def assignment_params
     params.expect assignment: %i[start_date end_date user_id]
-  end
-
-  def find_assignment
-    @assignment = Assignment.includes(:user).find(params.require(:id))
-    @previous_owner = @assignment.user
-  end
-
-  def set_roster_users
-    @users = @roster.users.active.order :last_name
-  end
-
-  def index_json
-    start_date = Date.parse(params[:start_date])
-    end_date = Date.parse(params[:end_date])
-    @assignments = @roster.assignments.between(start_date, end_date)
-    render layout: false
-  end
-
-  def index_csv
-    @roster = Roster.preload(assignments: :user).friendly.find(params[:roster_id])
-    render csv: @roster.assignment_csv, filename: @roster.name
   end
 end

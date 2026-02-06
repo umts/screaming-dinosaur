@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Users' do
+  shared_context 'with invalid attributes' do
+    let(:attributes) { { first_name: nil, last_name: nil } }
+  end
+
   describe 'GET /users' do
     subject(:call) { get '/users' }
 
-    let(:roster) { create :roster }
-
-    context 'when logged in as a roster member' do
-      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: false).user }
+    context 'when logged in as a roster admin' do
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds with a forbidden status' do
         call
@@ -15,10 +17,8 @@ RSpec.describe 'Users' do
       end
     end
 
-    context 'when logged in as a roster admin' do
-      let(:roster) { create :roster }
-
-      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: true).user }
+    context 'when logged in as a system admin' do
+      let(:current_user) { create :user, admin: true }
 
       it 'responds successfully' do
         call
@@ -27,13 +27,11 @@ RSpec.describe 'Users' do
     end
   end
 
-  describe 'GET users/new' do
+  describe 'GET /users/new' do
     subject(:call) { get '/users/new' }
 
-    let(:roster) { create :roster }
-
-    context 'when logged in as a roster member' do
-      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: false).user }
+    context 'when logged in as a roster admin' do
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
 
       it 'responds with a forbidden status' do
         call
@@ -41,10 +39,8 @@ RSpec.describe 'Users' do
       end
     end
 
-    context 'when logged in as a roster admin' do
-      let(:roster) { create :roster }
-
-      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: true).user }
+    context 'when logged in as a system admin' do
+      let(:current_user) { create :user, admin: true }
 
       it 'responds successfully' do
         call
@@ -53,65 +49,22 @@ RSpec.describe 'Users' do
     end
   end
 
-  describe 'POST users' do
-    subject(:submit) { post '/users', params: }
-
-    let(:roster) { create :roster }
-
-    context 'when logged in as a roster member' do
-      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: false).user }
-
-      let(:params) { nil }
-
-      it 'responds with a forbidden status' do
-        submit
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when logged in as a roster admin' do
-      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
-
-      context 'with valid attributes' do
-        let(:attributes) { attributes_for :user }
-        let(:params) { { user: attributes } }
-
-        it 'responds successfully' do
-          submit
-          expect(response).to redirect_to(users_path)
-        end
-
-        it 'creates a user' do
-          expect { submit }.to change(User, :count).by(1)
-        end
-      end
-
-      context 'with invalid attributes' do
-        let(:params) { { user: (attributes_for :user).merge(phone: 777) } }
-
-        it 'response with unprocessable content' do
-          submit
-          expect(response).to have_http_status(:unprocessable_content)
-        end
-      end
-    end
-  end
-
-  describe 'GET /users/:user_id/edit' do
+  describe 'GET /users/:id/edit' do
     subject(:call) { get "/users/#{user.id}/edit" }
 
     let(:user) { create :user }
-    let(:roster) { user.rosters.first }
 
-    context 'when logged in as another user' do
+    context 'when logged in as a roster admin' do
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+
       it 'responds with a forbidden status' do
         call
         expect(response).to have_http_status(:forbidden)
       end
     end
 
-    context 'when logged in as a roster admin' do
-      let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
+    context 'when logged in as a system admin' do
+      let(:current_user) { create :user, admin: true }
 
       it 'responds successfully' do
         call
@@ -119,7 +72,7 @@ RSpec.describe 'Users' do
       end
     end
 
-    context 'when logged in as the user themself' do
+    context 'when logged in as the user to edit' do
       let(:current_user) { user }
 
       it 'responds successfully' do
@@ -129,66 +82,175 @@ RSpec.describe 'Users' do
     end
   end
 
-  describe 'PATCH /users/:user_id' do
-    subject(:submit) { patch "/users/#{user.id}", params: { user: attributes } }
+  describe 'POST /users' do
+    subject(:submit) { post '/users', params: { user: attributes } }
 
-    let(:user) { create :user }
-    let(:roster) { user.rosters.first }
-    let(:attributes) { attributes_for :user }
+    context 'when logged in as a roster admin' do
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          spire: '12345678@umass.edu',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056' }
+      end
 
-    context 'when not logged in' do
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+
       it 'responds with a forbidden status' do
         submit
         expect(response).to have_http_status(:forbidden)
       end
     end
 
-    context 'when logged in as the roster admin' do
-      let(:current_user) { Membership.create(user: (create :user), roster: roster, admin: true).user }
-
-      context 'with valid attributes' do
-        it 'responds successfully' do
-          submit
-          expect(response).to redirect_to(users_path)
-        end
+    context 'when logged in as a system admin with valid attributes' do
+      let(:current_user) { create :user, admin: true }
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          spire: '12345678@umass.edu',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056' }
       end
 
-      context 'with invalid attributes' do
-        let(:attributes) { { phone: '777' } }
-
-        it 'responds with unprocessable entity' do
-          submit
-          expect(response).to have_http_status(:unprocessable_content)
-        end
-      end
-    end
-
-    context 'when logged in a different roster admin' do
-      let(:current_user) { Membership.create(user: (create :user), roster: (create :roster), admin: true).user }
-
-      it 'responds successfully' do
+      it 'redirects to all users' do
         submit
         expect(response).to redirect_to(users_path)
       end
-    end
 
-    context 'when logged in as the user themself' do
-      let(:current_user) { user }
-
-      context 'with valid attributes' do
-        it 'responds successfully' do
-          submit
-          expect(response).to redirect_to(roster_assignments_path(roster))
-        end
+      it 'creates a user' do
+        expect { submit }.to change(User, :count).by(1)
       end
 
-      context 'with invalid attributes' do
-        let(:attributes) { { phone: '777' } }
+      it 'creates a user with the given attributes' do
+        submit
+        expect(User.last).to have_attributes(attributes)
+      end
+    end
 
-        it 'responds with unprocessable entity' do
-          submit
-          expect(response).to have_http_status(:unprocessable_content)
-        end
+    context 'when logged in as a system admin with invalid attributes' do
+      include_context 'with invalid attributes'
+
+      let(:current_user) { create :user, admin: true }
+
+      it 'responds with an unprocessable content status' do
+        submit
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+  end
+
+  describe 'PATCH /users/:id' do
+    subject(:submit) { patch "/users/#{user.id}", params: { user: attributes } }
+
+    let(:user) { create :user }
+
+    context 'when logged in as a roster admin' do
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          spire: '12345678@umass.edu',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056' }
+      end
+
+      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a system admin with valid attributes' do
+      let(:current_user) { create :user, admin: true }
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          spire: '12345678@umass.edu',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056' }
+      end
+
+      it 'redirects to all users' do
+        submit
+        expect(response).to redirect_to(users_path)
+      end
+
+      it 'updates the user with the given attributes' do
+        submit
+        expect(user.reload).to have_attributes(attributes)
+      end
+    end
+
+    context 'when logged in as a system admin with invalid attributes' do
+      include_context 'with invalid attributes'
+
+      let(:current_user) { create :user, admin: true }
+
+      it 'responds with an unprocessable content status' do
+        submit
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context 'when logged in as the user to edit with valid attributes' do
+      let(:current_user) { user }
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056' }
+      end
+
+      it 'redirects to the root path' do
+        submit
+        expect(response).to redirect_to(root_path)
+      end
+
+      it 'updates the user with the given attributes' do
+        submit
+        expect(user.reload).to have_attributes(attributes)
+      end
+    end
+
+    context 'when logged in as the user to edit with invalid attributes' do
+      include_context 'with invalid attributes'
+
+      let(:current_user) { user }
+
+      it 'responds with an unprocessable content status' do
+        submit
+        expect(response).to have_http_status(:unprocessable_content)
+      end
+    end
+
+    context 'when logged in as the user to edit with a spire update' do
+      let(:current_user) { user }
+      let(:attributes) { { spire: '12345678@umass.edu' } }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as the user to edit with an admin update' do
+      let(:current_user) { user }
+      let(:attributes) { { admin: true } }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as the user to edit with an active update' do
+      let(:current_user) { user }
+      let(:attributes) { { active: false } }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
       end
     end
   end
