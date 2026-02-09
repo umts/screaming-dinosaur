@@ -1,9 +1,9 @@
 :ruby
-  locals = { path: roster_assignment_path(@roster, @assignment),
+  locals = { path: assignment_path(@assignment),
              roster: @roster,
              assignment: @assignment,
              users: @users }
 = render layout: 'layouts/section',
          locals: { heading: 'Edit assignment',
-                   deletable: Current.user.admin_in?(@roster) ? roster_assignment_path : nil } do
+                   deletable: Current.user.admin_in?(@roster) ? assignment_path(@assignment) : nil } do
   = render partial: 'form', locals: locals
