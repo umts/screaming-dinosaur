@@ -3,7 +3,11 @@
   = fields.text_field :name, required: true, class: 'form-control'
 .mb-3
   = fields.label :phone, class: 'form-label'
-  = fields.phone_field :phone, class: 'form-control'
+  = fields.phone_field :phone, required: true, class: 'form-control'
+  - if fields.object.phone.blank?
+    .form-text
+      Configure a phone number in
+      #{link_to 'Twilio', 'https://console.twilio.com/us1/develop/phone-numbers/manage/incoming'}.
 .mb-3
   = fields.label :fallback_user, class: 'form-label'
   = fields.collection_select :fallback_user_id,
@@ -13,6 +17,6 @@
                              class: 'form-select'
   - if fields.object.users.empty?
     .form-text To assign the fallback user, first create the roster, then add some users to it.
-%div
+.mb-3
   = fields.label :switchover_time, class: 'form-label'
   = fields.time_field :switchover_time, class: 'form-control', required: true

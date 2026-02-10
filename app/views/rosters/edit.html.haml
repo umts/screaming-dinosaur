@@ -1,20 +1,58 @@
 = render layout: 'layouts/roster', locals: { roster: @roster, nav_item: 'settings' } do
-  = form_with model: @roster, html: { id: 'roster-form' } do |f|
-    .card.mb-3
-      .card-header
-        Edit Roster
-      .card-body
+  .card.mb-3
+    .card-header
+      Edit Roster
+    .card-body
+      = form_with model: @roster, html: { id: 'roster-form' } do |f|
         = render partial: 'fields', object: f
-  .row.row-cols-2.g-3
-    .col.d-grid
-      = button_tag type: :submit, form: 'roster-form', class: 'btn btn-outline-primary' do
-        %i.fa-solid.fa-save
-        Save
-    .col.d-grid
-      = button_to roster_path(@roster),
-                  method: :delete,
-                  class: 'btn btn-outline-secondary',
-                  form_class: 'd-grid',
-                  'data-confirm': 'Are you sure? This cannot be undone.' do
-        %i.fa-solid.fa-trash
-        Delete
+      .row.row-cols-2.g-3
+        .col.d-grid
+          = button_tag type: :submit, form: 'roster-form', class: 'btn btn-outline-primary' do
+            %i.fa-solid.fa-save
+            Save
+        .col.d-grid
+          = button_to roster_path(@roster),
+                      method: :delete,
+                      class: 'btn btn-outline-secondary',
+                      form_class: 'd-grid',
+                      'data-confirm': 'Are you sure? This cannot be undone.' do
+            %i.fa-solid.fa-trash
+            Delete
+  .card.mb-3
+    .card-header
+      Configure Twilio
+    %ol.list-group.list-group-flush.list-group-numbered
+      %li.list-group-item.py-3
+        Pull up
+        %span.text-muted= formatted_phone(@roster.phone)
+        in #{link_to 'Twilio', 'https://console.twilio.com/us1/develop/phone-numbers/manage/incoming'}.
+      %li.list-group-item.py-3
+        Under "Voice and Fax"
+        %ol{ type: 'a' }
+          %li.mt-2
+            Set the webhook to an HTTP GET request to
+            .mt-2
+              = render partial: 'external_config_value',
+                       locals: { value: roster_twilio_call_url(@roster, format: :xml) }
+          - if @roster.fallback_user.present?
+            %li.mt-2
+              Set the failure handler to a TwiML Bin containing
+              - xml = render template: 'twilio/call',
+                             formats: :xml,
+                             locals: { user: @roster.fallback_user, fallback: true }
+              .mt-2= render partial: 'external_config_value', locals: { value: String.new(xml) }
+      %li.list-group-item.py-3
+        Under "Messaging"
+        %ol{ type: 'a' }
+          %li.mt-2
+            Set the webhook to an HTTP GET request to
+            .mt-2
+              = render partial: 'external_config_value',
+                       locals: { value: roster_twilio_text_url(@roster, format: :xml) }
+          - if @roster.fallback_user.present?
+            %li.mt-2
+              Set the failure handler to a TwiML Bin containing
+              - xml = render template: 'twilio/text',
+                             formats: :xml,
+                             locals: { user: @roster.fallback_user, body: '{{Body}}', fallback: true }
+              .mt-2= render partial: 'external_config_value', locals: { value: String.new(xml) }

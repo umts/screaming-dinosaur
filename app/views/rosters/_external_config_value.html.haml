@@ -1,0 +1,11 @@
+.bg-body-tertiary{ 'data-controller': 'clipboard' }
+  .float-end
+    = button_tag type: 'button',
+                 class: 'btn btn-sm btn-text m-3',
+                 'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
+      %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
+      %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
+      %i.fa-fw.fa-solid.fa-xmark{ hidden: true, 'data-clipboard-target': 'errorIndicator' }
+      Copy
+  %pre.p-3.m-0.bg-body-tertiary{ 'data-clipboard-target': 'source' }
+    = value

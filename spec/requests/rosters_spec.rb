@@ -326,28 +326,4 @@ RSpec.describe 'Rosters' do
       end
     end
   end
-
-  describe 'GET /rosters/:id/setup' do
-    subject(:call) { get "/rosters/#{roster.slug}/setup" }
-
-    let!(:roster) { create :roster }
-
-    context 'when logged in as a member of the roster' do
-      include_context 'when logged in as a member of the roster'
-
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when logged in as an admin of the roster' do
-      include_context 'when logged in as an admin of the roster'
-
-      it 'responds successfully' do
-        call
-        expect(response).to be_successful
-      end
-    end
-  end
 end

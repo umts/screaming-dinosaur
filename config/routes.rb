@@ -11,10 +11,6 @@ Rails.application.routes.draw do
   mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 
   resources :rosters do
-    member do
-      get :setup
-    end
-
     resources :assignments, only: %i[index new edit create update destroy], shallow: true
 
     get :assign_weeks, to: 'week_assigners#prompt'

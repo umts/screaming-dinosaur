@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RostersController < ApplicationController
-  before_action :find_roster, only: %i[show edit update destroy setup]
+  before_action :find_roster, only: %i[show edit update destroy]
   before_action :initialize_roster, only: %i[new create]
 
   def index
@@ -58,10 +58,6 @@ class RostersController < ApplicationController
     @roster.destroy
     flash_success_for(@roster, undoable: true)
     redirect_to rosters_path
-  end
-
-  def setup
-    authorize! @roster
   end
 
   private
