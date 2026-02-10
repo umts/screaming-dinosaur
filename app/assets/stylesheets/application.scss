@@ -15,6 +15,11 @@
 @use "assignments";
 @use "assignments/calendar";
 
+.btn-text {
+  line-height: 1;
+  text-wrap: nowrap;
+}
+
 .column-compact {
   width: 1px;
 }

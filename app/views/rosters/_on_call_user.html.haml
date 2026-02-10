@@ -1,0 +1,10 @@
+%div
+  %strong= roster.on_call_user&.full_name || 'Nobody'
+  is currently on call
+  - if roster.assignments.current.blank? && roster.on_call_user.present?
+    as a fallback
+- if roster.assignments.current.present?
+  %div
+    %small
+      Switches on
+      = l roster.assignments.current&.effective_end_datetime, format: :named

@@ -1,2 +1,20 @@
-= render layout: 'layouts/section', locals: { heading: 'Edit Roster', closeable: rosters_path } do
-  = render partial: 'form', locals: { roster: @roster }
+= render layout: 'layouts/roster', locals: { roster: @roster, nav_item: 'settings' } do
+  = form_with model: @roster, html: { id: 'roster-form' } do |f|
+    .card.mb-3
+      .card-header
+        Edit Roster
+      .card-body
+        = render partial: 'fields', object: f
+  .row.row-cols-2.g-3
+    .col.d-grid
+      = button_tag type: :submit, form: 'roster-form', class: 'btn btn-outline-primary' do
+        %i.fa-solid.fa-save
+        Save
+    .col.d-grid
+      = button_to roster_path(@roster),
+                  method: :delete,
+                  class: 'btn btn-outline-secondary',
+                  form_class: 'd-grid',
+                  'data-confirm': 'Are you sure? This cannot be undone.' do
+        %i.fa-solid.fa-trash
+        Delete

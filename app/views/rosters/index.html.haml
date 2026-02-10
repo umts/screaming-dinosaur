@@ -1,25 +1,25 @@
-= render layout: 'layouts/section',
-         locals: { heading: 'Rosters', creatable: allowed_to?(:new?, Roster) && new_roster_path } do
-  .list-group
+= render layout: 'layouts/rosters' do
+  .card
+    .card-header
+      .d-flex
+        .flex-grow-1
+          - if Current.user.admin?
+            All
+          - else
+            Your
+          Rosters
+        - if allowed_to?(:new?, Roster.new)
+          %div
+            = link_to new_roster_path, class: 'btn btn-sm btn-text' do
+              %i.fa-solid.fa-plus
+              New
     - if @rosters.present?
-      - @rosters.each do |roster|
-        = link_to roster_path(roster), class: 'list-group-item list-group-item-action' do
-          .float-end.d-flex.align-items-end.flex-column
-            = formatted_phone(roster.phone)
-          .d-flex.flex-wrap.align-items-center.gap-2
-            %span.lead.text-black= roster.name
-            - if roster.assignments.current.blank? && allowed_to?(:new?, roster.assignments.new)
-              %span.badge.bg-primary
-                %i.fa-solid.fa-triangle-exclamation
-                No assignment
-            - if roster.fallback_user.blank? && allowed_to?(:edit?, roster)
-              %span.badge.bg-primary
-                %i.fa-solid.fa-triangle-exclamation
-                No fallback
-          - if roster.assignments.current
-            #{roster.on_call_user&.full_name} is on call until
-            #{roster.switchover_time.strftime '%-I:%M %P'} on
-            #{(roster.assignments.current.end_date + 1.day).strftime '%A, %B %e'}
-          - elsif roster.on_call_user
-            %strong= roster.on_call_user.full_name
-            is on call as the fallback user
+      .list-group.list-group-flush
+        - @rosters.each do |roster|
+          = link_to roster_path(roster), class: 'list-group-item list-group-item-action py-3' do
+            .float-end= formatted_phone(roster.phone)
+            .h5.card-title= roster.name
+            = render partial: 'rosters/on_call_user', locals: { roster: }
+    - else
+      .card-body
+        No rosters found

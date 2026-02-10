@@ -1,0 +1,16 @@
+.input-group{ 'data-controller': 'clipboard' }
+  .input-group-text
+    - info_tooltip_data = { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions }
+    %span{ data: info_tooltip_data, aria: { label: 'Calendar feed information' }, tabindex: 0 }
+      %i.fa-solid.fa-circle-info
+      %span#clip-info.visually-hidden= calendar_instructions
+  .form-control
+    .text-nowrap.overflow-hidden{ 'data-clipboard-target': 'source' }
+      = feed_url(roster_id: roster.slug, token: Current.user.calendar_access_token, format: :ics)
+  = button_tag type: 'button',
+               class: 'btn btn-outline-secondary',
+               'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
+    %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
+    %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
+    %i.fa-fw.fa-solid.fa-xmark{ hidden: true, 'data-clipboard-target': 'errorIndicator' }
+    Copy
