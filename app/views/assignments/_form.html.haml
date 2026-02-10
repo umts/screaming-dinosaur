@@ -4,12 +4,8 @@
   = f.hidden_field :roster_id, value: roster.id
   .mb-3
     = f.label :user_id, class: 'form-label'
-    - if Current.user.admin_in?(roster)
-      = f.collection_select :user_id, users, :id, :last_name,
-                            { selected: assignment.user&.id || Current.user.id }, class: 'form-select'
-    - else
-      = f.hidden_field :user_id, value: Current.user.id
-      = f.text_field :user_name, value: Current.user.last_name, disabled: true, class: 'form-control'
+    = f.collection_select :user_id, users, :id, :last_name,
+                          { selected: assignment.user&.id || Current.user.id }, class: 'form-select'
   .mb-3
     = f.label :start_date, class: 'form-label'
     = f.date_field :start_date, value: start_date, class: 'form-control'
