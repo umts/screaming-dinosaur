@@ -22,11 +22,11 @@
               .col
                 = membership.user.full_name
                 - if membership.admin?
-                  %span.badge.bg-secondary
+                  %span.badge.textbg-secondary
                     %i.fa-solid.fa-user-tie
                     Admin
                 - if membership.user == @roster.fallback_user
-                  %span.badge.bg-secondary
+                  %span.badge.text-bg-secondary
                     %i.fa-solid.fa-user-shield
                     Fallback User
               .col-auto
