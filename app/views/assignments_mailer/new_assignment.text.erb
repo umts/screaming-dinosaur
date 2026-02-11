@@ -4,3 +4,15 @@ Hello <%= @recipient.first_name %>,
 
 Beginning: <%= @start_date %>
 Ending: <%= @end_date %>
+
+<% if @overlapping_assignments.present? %>
+
+Warning: You have overlapping assignments in other rosters:
+
+<% @overlapping_assignments.each do |assignment| %>
+- Roster: <%= assignment.roster.name %>
+  Start: <%= assignment.start_date.strftime("%A, %B %-d at %-l:%M %p") %>
+  End: <%= assignment.end_date.strftime("%A, %B %-d at %-l:%M %p") %>
+<% end %>
+
+<% end %>

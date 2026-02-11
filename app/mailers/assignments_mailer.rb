@@ -25,6 +25,13 @@ class AssignmentsMailer < ApplicationMailer
          subject: "Reminder: Upcoming on-call (#{@roster.name})"
   end
 
+  def overlap_warning(roster, start_date, end_date, recipient, overlapping_assignments)
+    set_defaults(roster, start_date, end_date, recipient)
+    @overlapping_assignments = overlapping_assignments
+    mail to: @recipient.email,
+         subject: "Warning: Overlapping Assignments (#{@roster.name})"
+  end
+
   private
 
   def set_defaults(roster, start_date, end_date, recipient = nil, changer = nil)
