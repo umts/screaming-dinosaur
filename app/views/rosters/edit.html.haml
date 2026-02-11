@@ -5,19 +5,20 @@
     .card-body
       = form_with model: @roster, html: { id: 'roster-form' } do |f|
         = render partial: 'fields', object: f
-      .row.row-cols-2.g-3
+      .row.g-3
         .col.d-grid
           = button_tag type: :submit, form: 'roster-form', class: 'btn btn-outline-primary' do
             %i.fa-solid.fa-save
             Save
-        .col.d-grid
-          = button_to roster_path(@roster),
-                      method: :delete,
-                      class: 'btn btn-outline-secondary',
-                      form_class: 'd-grid',
-                      'data-confirm': 'Are you sure? This cannot be undone.' do
-            %i.fa-solid.fa-trash
-            Delete
+        - if allowed_to?(:destroy?, @roster)
+          .col.d-grid
+            = button_to roster_path(@roster),
+                        method: :delete,
+                        class: 'btn btn-outline-secondary',
+                        form_class: 'd-grid',
+                        'data-confirm': 'Are you sure? This cannot be undone.' do
+              %i.fa-solid.fa-trash
+              Delete
   .card.mb-3
     .card-header
       Configure Twilio
