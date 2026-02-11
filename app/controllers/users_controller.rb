@@ -34,7 +34,7 @@ class UsersController < ApplicationController
     authorize! @user
     if @user.save
       flash_success_for(@user, undoable: true)
-      redirect_to allowed_to?(:index?, User) ? users_path : root_path
+      redirect_to edit_user_path(@user)
     else
       flash_errors_now_for(@user)
       render :edit, status: :unprocessable_content
