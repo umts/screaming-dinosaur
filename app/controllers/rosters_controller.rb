@@ -33,8 +33,8 @@ class RostersController < ApplicationController
     @roster.assign_attributes roster_params
     authorize! @roster
     if @roster.save
-      flash_success_for(@roster, undoable: true)
-      redirect_to rosters_path
+      flash_success_for(@roster)
+      redirect_to edit_roster_path(@roster)
     else
       flash_errors_now_for(@roster)
       render :new, status: :unprocessable_content
@@ -56,7 +56,7 @@ class RostersController < ApplicationController
   def destroy
     authorize! @roster
     @roster.destroy
-    flash_success_for(@roster, undoable: true)
+    flash_success_for(@roster)
     redirect_to rosters_path
   end
 

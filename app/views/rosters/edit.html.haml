@@ -31,28 +31,24 @@
         %ol{ type: 'a' }
           %li.mt-2
             Set the webhook to an HTTP GET request to
-            .mt-2
-              = render partial: 'external_config_value',
-                       locals: { value: roster_twilio_call_url(@roster, format: :xml) }
+            .mt-2= render partial: 'application/snippet', object: roster_twilio_call_url(@roster, format: :xml)
           - if @roster.fallback_user.present?
             %li.mt-2
               Set the failure handler to a TwiML Bin containing
               - xml = render template: 'twilio/call',
                              formats: :xml,
                              locals: { user: @roster.fallback_user, fallback: true }
-              .mt-2= render partial: 'external_config_value', locals: { value: String.new(xml) }
+              .mt-2= render partial: 'application/snippet', object: xml
       %li.list-group-item.py-3
         Under "Messaging"
         %ol{ type: 'a' }
           %li.mt-2
             Set the webhook to an HTTP GET request to
-            .mt-2
-              = render partial: 'external_config_value',
-                       locals: { value: roster_twilio_text_url(@roster, format: :xml) }
+            .mt-2= render partial: 'application/snippet', object: roster_twilio_text_url(@roster, format: :xml)
           - if @roster.fallback_user.present?
             %li.mt-2
               Set the failure handler to a TwiML Bin containing
               - xml = render template: 'twilio/text',
                              formats: :xml,
                              locals: { user: @roster.fallback_user, body: '{{Body}}', fallback: true }
-              .mt-2= render partial: 'external_config_value', locals: { value: String.new(xml) }
+              .mt-2= render partial: 'application/snippet', object: xml
