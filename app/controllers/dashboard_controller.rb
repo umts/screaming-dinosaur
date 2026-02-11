@@ -3,8 +3,9 @@
 class DashboardController < ApplicationController
   def index
     authorize!
-    if Current.user.rosters.one?
-      redirect_to roster_path(Current.user.rosters.first)
+    rosters = authorized_scope Roster.all
+    if rosters.one?
+      redirect_to roster_path(rosters.first)
     else
       redirect_to rosters_path
     end

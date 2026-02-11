@@ -1,10 +1,9 @@
 = form_with model: assignment, url: path do |f|
   - start_date = f.object.start_date || local_assigns[:start_date]
   - end_date = f.object.end_date || local_assigns[:end_date]
-  = f.hidden_field :roster_id, value: roster.id
   .mb-3
     = f.label :user_id, class: 'form-label'
-    = f.collection_select :user_id, users, :id, :last_name,
+    = f.collection_select :user_id, assignment.roster.users, :id, :last_name,
                           { selected: assignment.user&.id || Current.user.id }, class: 'form-select'
   .mb-3
     = f.label :start_date, class: 'form-label'
