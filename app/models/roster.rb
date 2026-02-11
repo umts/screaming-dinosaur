@@ -43,12 +43,6 @@ class Roster < ApplicationRecord
     end
   end
 
-  def user_options
-    as = admins.order(:last_name).map { |a| [a.full_name, a.id] }
-    nas = non_admins.order(:last_name).map { |na| [na.full_name, na.id] }
-    { 'Admins' => as, 'Non-Admins' => nas }
-  end
-
   def uncovered_dates_between(start_date, end_date)
     (start_date.to_date..end_date.to_date).to_a -
       assignments.between(start_date.to_date, end_date.to_date).inject([]) do |dates, assignment|
