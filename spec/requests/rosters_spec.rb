@@ -218,9 +218,9 @@ RSpec.describe 'Rosters' do
 
       let(:current_user) { create :user, admin: true }
 
-      it 'redirects to all rosters' do
+      it 'redirects to the roster edit page' do
         submit
-        expect(response).to redirect_to(rosters_path)
+        expect(response).to redirect_to(edit_roster_path(Roster.last))
       end
 
       it 'creates a roster' do
@@ -270,9 +270,9 @@ RSpec.describe 'Rosters' do
       include_context 'when logged in as an admin of the roster'
       include_context 'with valid attributes'
 
-      it 'redirects to all rosters' do
+      it 'redirects to the roster edit page' do
         submit
-        expect(response).to redirect_to(rosters_path)
+        expect(response).to redirect_to(edit_roster_path(roster))
       end
 
       it 'updates the roster with the given attributes' do
