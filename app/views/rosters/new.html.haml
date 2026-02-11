@@ -1,11 +1,11 @@
 = render layout: 'layouts/rosters' do
-  = form_with model: @roster do |f|
-    .card.mb-3
-      .card-header
-        New Roster
-      .card-body
+  .card.mb-3
+    .card-header
+      New Roster
+    .card-body
+      = form_with model: @roster do |f|
         = render partial: 'fields', object: f
         .d-grid
-          = button_tag type: :submit, class: 'btn btn-outline-primary' do
+          = f.button type: :submit, class: 'btn btn-outline-primary' do
             %i.fa-solid.fa-save
             Save

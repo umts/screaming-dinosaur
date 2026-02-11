@@ -1,9 +1,11 @@
-:ruby
-  locals = { path: roster_assignments_path(@roster),
-             start_date: @start_date,
-             end_date: @end_date,
-             roster: @roster,
-             assignment: @assignment,
-             users: @users }
-= render layout: 'layouts/section', locals: { heading: 'New assignment' } do
-  = render partial: 'form', locals: locals
+= render layout: 'layouts/roster', locals: { roster: @assignment.roster, nav_item: 'assignments' } do
+  .card.mb-3
+    .card-header
+      New Assignment
+    .card-body
+      = form_with model: [@assignment.roster, @assignment] do |f|
+        = render partial: 'fields', object: f
+        .d-grid
+          = f.button type: :submit, class: 'btn btn-outline-primary' do
+            %i.fa-solid.fa-save
+            Save
