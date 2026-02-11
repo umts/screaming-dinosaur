@@ -171,9 +171,9 @@ RSpec.describe 'Users' do
           phone: '(413) 545-0056' }
       end
 
-      it 'redirects to all users' do
+      it 'redirects to the edit user page' do
         submit
-        expect(response).to redirect_to(users_path)
+        expect(response).to redirect_to(edit_user_path(user))
       end
 
       it 'updates the user with the given attributes' do
@@ -202,9 +202,9 @@ RSpec.describe 'Users' do
           phone: '(413) 545-0056' }
       end
 
-      it 'redirects to the root path' do
+      it 'redirects to the edit user page' do
         submit
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(edit_user_path(user))
       end
 
       it 'updates the user with the given attributes' do

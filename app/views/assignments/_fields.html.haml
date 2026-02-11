@@ -1,0 +1,11 @@
+.mb-3
+  = fields.label :user_id, class: 'form-label'
+  = fields.collection_select :user_id,
+                             fields.object.roster.users.order(:first_name, :last_name), :id, :full_name,
+                             {}, required: true, class: 'form-select'
+.mb-3
+  = fields.label :start_date, class: 'form-label'
+  = fields.date_field :start_date, required: true, class: 'form-control'
+.mb-3
+  = fields.label :end_date, class: 'form-label'
+  = fields.date_field :end_date, required: true, class: 'form-control'

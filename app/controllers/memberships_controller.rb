@@ -8,8 +8,7 @@ class MembershipsController < ApplicationController
 
   def index
     authorize!
-    @memberships = roster.memberships
-    @other_users = User.order(:last_name) - @roster.users
+    @memberships = roster.memberships.joins(:user).order('users.first_name', 'users.last_name')
   end
 
   def create

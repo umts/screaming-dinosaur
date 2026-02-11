@@ -30,6 +30,9 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  activerecord:
+    models:
+      version: "Change"
   errors:
     messages:
       invalid_time: "is not a valid time"
@@ -38,6 +41,13 @@ en:
       must_be_fc_id_number: "must be 8 digits followed by @umass.edu"
       must_be_in_selected_users: "must be included in the list of selected users"
       must_not_be_before_start: "must not be before start"
+  date:
+    formats:
+      default: '%-m/%-d/%Y'
+  time:
+    formats:
+      default: '%-m/%-d/%Y %-I:%M %P'
+      named: "%a, %b %-d at %-I:%M %P"
   success:
     message: "Successfully %{action} %{subject}"
     actions:
@@ -45,6 +55,3 @@ en:
       update: "updated"
       destroy: "deleted"
       undo: "reverted"
-  activerecord:
-    models:
-      version: "Change"

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RostersController < ApplicationController
-  before_action :find_roster, only: %i[show edit update destroy setup]
+  before_action :find_roster, only: %i[show edit update destroy]
   before_action :initialize_roster, only: %i[new create]
 
   def index
@@ -12,7 +12,9 @@ class RostersController < ApplicationController
   def show
     authorize! @roster, context: { api_key: params[:api_key] }
     respond_to do |format|
-      format.html
+      format.html do
+        @your_assignments = @roster.assignments.upcoming.joins(:user).where(user: Current.user).order(start_date: :asc)
+      end
       format.json do
         @upcoming = @roster.assignments.upcoming.order(:start_date)
       end
@@ -31,8 +33,8 @@ class RostersController < ApplicationController
     @roster.assign_attributes roster_params
     authorize! @roster
     if @roster.save
-      flash_success_for(@roster, undoable: true)
-      redirect_to rosters_path
+      flash_success_for(@roster)
+      redirect_to edit_roster_path(@roster)
     else
       flash_errors_now_for(@roster)
       render :new, status: :unprocessable_content
@@ -44,7 +46,7 @@ class RostersController < ApplicationController
     authorize! @roster
     if @roster.save
       flash_success_for(@roster, undoable: true)
-      redirect_to rosters_path
+      redirect_to edit_roster_path(@roster)
     else
       flash_errors_now_for(@roster)
       render :edit, status: :unprocessable_content
@@ -54,12 +56,8 @@ class RostersController < ApplicationController
   def destroy
     authorize! @roster
     @roster.destroy
-    flash_success_for(@roster, undoable: true)
+    flash_success_for(@roster)
     redirect_to rosters_path
-  end
-
-  def setup
-    authorize! @roster
   end
 
   private

@@ -218,9 +218,9 @@ RSpec.describe 'Rosters' do
 
       let(:current_user) { create :user, admin: true }
 
-      it 'redirects to all rosters' do
+      it 'redirects to the roster edit page' do
         submit
-        expect(response).to redirect_to(rosters_path)
+        expect(response).to redirect_to(edit_roster_path(Roster.last))
       end
 
       it 'creates a roster' do
@@ -270,9 +270,9 @@ RSpec.describe 'Rosters' do
       include_context 'when logged in as an admin of the roster'
       include_context 'with valid attributes'
 
-      it 'redirects to all rosters' do
+      it 'redirects to the roster edit page' do
         submit
-        expect(response).to redirect_to(rosters_path)
+        expect(response).to redirect_to(edit_roster_path(roster))
       end
 
       it 'updates the roster with the given attributes' do
@@ -323,30 +323,6 @@ RSpec.describe 'Rosters' do
       it 'destroys the given roster' do
         submit
         expect { roster.reload }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-  end
-
-  describe 'GET /rosters/:id/setup' do
-    subject(:call) { get "/rosters/#{roster.slug}/setup" }
-
-    let!(:roster) { create :roster }
-
-    context 'when logged in as a member of the roster' do
-      include_context 'when logged in as a member of the roster'
-
-      it 'responds with a forbidden status' do
-        call
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context 'when logged in as an admin of the roster' do
-      include_context 'when logged in as an admin of the roster'
-
-      it 'responds successfully' do
-        call
-        expect(response).to be_successful
       end
     end
   end

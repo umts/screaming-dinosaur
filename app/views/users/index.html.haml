@@ -1,8 +1,14 @@
-= render layout: 'layouts/section',
-         locals: { heading: 'Users', creatable: allowed_to?(:new?, User.new) ? new_user_path : nil } do
+= render layout: 'layouts/users' do
   .card
     .card-header
-      %strong All Users
+      .d-flex
+        .flex-grow-1
+          All Users
+        - if allowed_to?(:new?, User.new)
+          %div
+            = link_to new_user_path, class: 'btn btn-sm btn-text' do
+              %i.fa-solid.fa-plus
+              New
     .list-group.list-group-flush
       - if @users.present?
         - @users.each do |user|
@@ -26,4 +32,4 @@
                     %i.fa-solid.fa-edit
                     Edit
       - else
-        .list-group-item No memberships found.
+        .list-group-item No users found

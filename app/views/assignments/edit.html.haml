@@ -1,9 +1,21 @@
-:ruby
-  locals = { path: assignment_path(@assignment),
-             roster: @roster,
-             assignment: @assignment,
-             users: @users }
-= render layout: 'layouts/section',
-         locals: { heading: 'Edit assignment',
-                   deletable: allowed_to?(:destroy?, @assignment) ? assignment_path(@assignment) : nil } do
-  = render partial: 'form', locals: locals
+= render layout: 'layouts/roster', locals: { roster: @assignment.roster, nav_item: 'assignments' } do
+  .card.mb-3
+    .card-header
+      Edit Assignment
+    .card-body
+      = form_with model: @assignment, html: { id: 'assignment-form' } do |f|
+        = render partial: 'fields', object: f
+      .row.g-3
+        .col.d-grid
+          = button_tag type: :submit, form: 'assignment-form', class: 'btn btn-outline-primary' do
+            %i.fa-solid.fa-save
+            Save
+        - if allowed_to?(:destroy?, @assignment)
+          .col.d-grid
+            = button_to assignment_path(@assignment),
+                        method: :delete,
+                        class: 'btn btn-outline-secondary',
+                        form_class: 'd-grid',
+                        'data-confirm': 'Are you sure?' do
+              %i.fa-solid.fa-trash
+              Delete

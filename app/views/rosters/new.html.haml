@@ -1,2 +1,11 @@
-= render layout: 'layouts/section', locals: { heading: 'New Roster', closeable: rosters_path } do
-  = render partial: 'form', locals: { roster: @roster }
+= render layout: 'layouts/rosters' do
+  .card.mb-3
+    .card-header
+      New Roster
+    .card-body
+      = form_with model: @roster do |f|
+        = render partial: 'fields', object: f
+        .d-grid
+          = f.button type: :submit, class: 'btn btn-outline-primary' do
+            %i.fa-solid.fa-save
+            Save

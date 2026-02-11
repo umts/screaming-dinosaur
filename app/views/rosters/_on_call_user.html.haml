@@ -1,0 +1,23 @@
+%div
+  %strong
+    - if roster.on_call_user.present?
+      = roster.on_call_user.full_name
+    - else
+      %span.text-primary
+        %i.fa-solid.fa-triangle-exclamation
+        Nobody
+  is currently on call
+  - if roster.assignments.current.blank? && roster.on_call_user.present?
+    %span.text-primary
+      %i.fa-solid.fa-triangle-exclamation
+      as a fallback
+  - if roster.assignments.current.present? && roster.fallback_user.blank?
+    %span.text-primary
+      %i.fa-solid.fa-triangle-exclamation
+      with no fallback
+
+- if roster.assignments.current.present?
+  %div
+    %small
+      Switches on
+      = l roster.assignments.current&.effective_end_datetime, format: :named
