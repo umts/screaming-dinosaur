@@ -1,21 +1,16 @@
-= render layout: 'layouts/section', locals: { heading: @roster.name } do
-  - if @roster.fallback_user.blank?
-    .alert.alert-primary
-      .d-flex.flex-wrap.justify-content-between.align-items-center
-        %div
-          %i.fa-solid.fa-triangle-exclamation
-          There currently is no fallback user.
-        = link_to 'Assign fallback user', edit_roster_path(@roster), class: 'alert-link'
-  %ul.nav.nav-tabs.mb-3
-    %li.nav-item= link_to 'Assignments', roster_path(@roster), class: 'nav-link'
-    %li.nav-item
-      = link_to 'Memberships', roster_memberships_path(@roster), class: 'nav-link active', 'aria-current': 'page'
-  - if @other_users.present? && allowed_to?(:create?, Membership.new(roster: @roster))
-    = form_with model: [@roster, Membership.new(roster: @roster)], html: { class: 'mb-3' } do |f|
-      .input-group
-        = f.label :user_id, 'Add user', class: 'input-group-text'
-        = f.collection_select :user_id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
-        = f.submit 'Add', class: 'btn btn-secondary'
+= render layout: 'layouts/roster', locals: { roster: @roster, nav_item: 'memberships' } do
+  :ruby
+    other_users = User.where.not(id: @roster.users.select(:id)).order(:first_name, :last_name)
+    new_membership = Membership.new(roster: @roster)
+  - if allowed_to?(:create?, new_membership) && other_users.present?
+    .mb-3
+      = form_with model: [@roster, new_membership] do |f|
+        .input-group
+          = f.label :user_id, 'Add user', class: 'input-group-text'
+          = f.collection_select :user_id, other_users, :id, :full_name, {}, required: true, class: 'form-select'
+          = f.button type: :submit, class: 'btn btn-outline-secondary' do
+            %i.fa-solid.fa-check
+            Add
   .card
     .card-header
       %strong Memberships
@@ -55,4 +50,4 @@
                     %i.fa-solid.fa-xmark
                     Remove
       - else
-        .list-group-item No memberships found.
+        .list-group-item No memberships found
