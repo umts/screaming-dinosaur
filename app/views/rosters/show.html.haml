@@ -45,4 +45,4 @@
         'data-assignment-calendar-events-url-value': roster_assignments_path(@roster, format: :json),
         'data-assignment-calendar-new-assignment-url-value': new_roster_assignment_path(@roster)
       }
-      = render partial: 'feeds/address', locals: { roster: @roster }
+      = render partial: 'feeds/url', locals: { roster: @roster }

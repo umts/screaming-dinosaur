@@ -1,9 +1,8 @@
+- information = capture do
+  Use this address to subscribe to this calendar in another application (e.g. Google Calendar).
 .input-group{ 'data-controller': 'clipboard' }
-  .input-group-text
-    - info_tooltip_data = { 'bs-toggle': 'tooltip', 'bs-placement': 'top', 'bs-title': calendar_instructions }
-    %span{ data: info_tooltip_data, aria: { label: 'Calendar feed information' }, tabindex: 0 }
-      %i.fa-solid.fa-circle-info
-      %span#clip-info.visually-hidden= calendar_instructions
+  = button_tag type: 'button', class: 'input-group-text', 'data-bs-toggle': 'popover', 'data-bs-content': information do
+    %i.fa-solid.fa-circle-info
   .form-control
     .text-nowrap.overflow-hidden{ 'data-clipboard-target': 'source' }
       = feed_url(roster_id: roster.slug, token: Current.user.calendar_access_token, format: :ics)
