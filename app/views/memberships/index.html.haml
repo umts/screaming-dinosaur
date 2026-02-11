@@ -22,7 +22,7 @@
               .col
                 = membership.user.full_name
                 - if membership.admin?
-                  %span.badge.textbg-secondary
+                  %span.badge.text-bg-secondary
                     %i.fa-solid.fa-user-tie
                     Admin
                 - if membership.user == @roster.fallback_user
