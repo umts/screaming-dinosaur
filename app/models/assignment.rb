@@ -16,6 +16,7 @@ class Assignment < ApplicationRecord
   after_commit :notify_user_of_assignment
   after_commit :notify_user_of_change
   after_commit :notify_user_of_removal
+  after_commit :check_overlap, on: :create
 
   scope :future, -> { where 'start_date > ?', Time.zone.today }
 
@@ -120,5 +121,19 @@ class Assignment < ApplicationRecord
     return if roster.users.include? user
 
     errors.add :base, 'User is not in this roster'
+  end
+
+  def check_overlap
+    overlapping_assignments = Assignment
+                              .where(user_id: user_id)
+                              .where.not(roster_id: roster_id)
+                              .where('`start_date` <= ? AND `end_date` >= ?', end_date, start_date)
+
+    return if overlapping_assignments.blank?
+
+    AssignmentsMailer.overlap_warning(roster, effective_start_datetime,
+                                      effective_end_datetime, user,
+                                      overlapping_assignments)
+                     .deliver_later
   end
 end
