@@ -61,4 +61,8 @@ unless ENV['SKIP_ASSIGNMENTS']
         end_date: i.weeks.since.end_of_week(:friday)
     end
   end
+
+  (10.years.ago.to_date..1.month.from_now.to_date).each do |date|
+    NewAssignment.create!(roster: it, end_datetime: date.beginning_of_day + rand(0...1.day))
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_12_150633) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_12_174908) do
   create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.date "end_date"
@@ -48,6 +48,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_150633) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "user_id"
     t.index ["user_id", "roster_id"], name: "index_memberships_on_user_id_and_roster_id", unique: true
+  end
+
+  create_table "new_assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "end_datetime", precision: nil, null: false
+    t.bigint "roster_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["end_datetime"], name: "index_new_assignments_on_end_datetime"
+    t.index ["roster_id", "end_datetime"], name: "index_new_assignments_on_roster_id_and_end_datetime", unique: true
+    t.index ["roster_id"], name: "index_new_assignments_on_roster_id"
+    t.index ["user_id"], name: "index_new_assignments_on_user_id"
   end
 
   create_table "rosters", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
@@ -92,4 +104,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_12_150633) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
     t.check_constraint "json_valid(`object`)", name: "object"
   end
+
+  add_foreign_key "new_assignments", "rosters"
+  add_foreign_key "new_assignments", "users"
 end
