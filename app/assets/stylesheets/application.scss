@@ -3,25 +3,10 @@
 @use "@fortawesome/fontawesome-free/scss/regular" as fontawesome-regular;
 @use "@fortawesome/fontawesome-free/scss/solid" as fontawesome-solid;
 @use "bootstrap/scss/bootstrap" with (
-  $primary: #881c1c,
-  $secondary: #63666a,
-  $success: #76881d,
-  $danger: #a8431e,
-  $warning: #c69214,
-  $info: #71b2c9,
-  $light: #eee,
-  $dark: #333,
+  $primary: #881c1c
 );
-@use "assignments";
-@use "assignments/calendar";
 
-.column-compact {
-  width: 1px;
-}
-
-.legend-label {
-  display: inline-block;
-  font-size: inherit;
-  float: none;
-  margin-bottom: bootstrap.$form-label-margin-bottom;
+.btn-text {
+  line-height: 1;
+  text-wrap: nowrap;
 }

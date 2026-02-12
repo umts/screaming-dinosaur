@@ -1,4 +1,11 @@
-= render layout: 'layouts/section',
-         locals: { heading: 'Edit user',
-                   closeable: Current.user.admin_in?(@roster) ? roster_users_path(@roster) : nil } do
-  = render partial: 'form', locals: { user: @user, roster: @roster, path: roster_user_path(@roster, @user) }
+= render layout: 'layouts/user', locals: { user: @user } do
+  .card.mb-3
+    .card-header
+      Edit User
+    .card-body
+      = form_with model: @user do |f|
+        = render partial: 'fields', object: f
+        .d-grid
+          = f.button type: :submit, class: 'btn btn-outline-primary' do
+            %i.fa-solid.fa-save
+            Save
