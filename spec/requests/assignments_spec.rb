@@ -52,7 +52,7 @@ RSpec.describe 'Assignments' do
             'allDay' => true,
             'start' => own_assignment.start_date.iso8601,
             'end' => (own_assignment.end_date + 1).iso8601,
-            'color' => 'var(--bs-info)' },
+            'color' => 'var(--bs-primary)' },
           { 'id' => "assignment-#{other_assignment.id}",
             'title' => other_assignment.user.last_name,
             'url' => edit_assignment_path(other_assignment),
