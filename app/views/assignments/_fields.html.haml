@@ -1,11 +1,19 @@
 .mb-3
   = fields.label :user_id, class: 'form-label'
-  = fields.collection_select :user_id,
-                             fields.object.roster.users.order(:first_name, :last_name), :id, :full_name,
-                             {}, required: true, class: 'form-select'
+  - if allowed_to?(:manage?, fields.object)
+    = fields.collection_select :user_id,
+                               fields.object.roster.users.order(:first_name, :last_name), :id, :full_name,
+                               {}, required: true, class: 'form-select'
+  - else
+    = fields.text_field :user_id, value: Current.user.full_name, disabled: true, class: 'form-control'
+    = fields.hidden_field :user_id, value: Current.user.id
 .mb-3
   = fields.label :start_date, class: 'form-label'
-  = fields.date_field :start_date, required: true, class: 'form-control'
+  = fields.date_field :start_date, required: true,
+                                   disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
+                                   class: 'form-control'
 .mb-3
   = fields.label :end_date, class: 'form-label'
-  = fields.date_field :end_date, required: true, class: 'form-control'
+  = fields.date_field :end_date, required: true,
+                                 disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
+                                 class: 'form-control'
