@@ -118,8 +118,8 @@ RSpec.describe 'Assignments' do
     let(:roster) { create :roster }
     let(:params) { nil }
 
-    context 'when logged in as a member of the roster' do
-      include_context 'when logged in as a member of the roster'
+    context 'when logged in as a user unrelated to the roster' do
+      include_context 'when logged in as a user unrelated to the roster'
 
       it 'responds with a forbidden status' do
         call
@@ -127,19 +127,8 @@ RSpec.describe 'Assignments' do
       end
     end
 
-    context 'when logged in as an admin of the roster' do
-      include_context 'when logged in as an admin of the roster'
-
-      it 'responds successfully' do
-        call
-        expect(response).to be_successful
-      end
-    end
-
-    context 'when logged in as an admin of the roster with a date param' do
-      include_context 'when logged in as an admin of the roster'
-
-      let(:params) { { date: 1.week.from_now } }
+    context 'when logged in as a member of the roster' do
+      include_context 'when logged in as a member of the roster'
 
       it 'responds successfully' do
         call
@@ -154,8 +143,8 @@ RSpec.describe 'Assignments' do
     let(:roster) { create :roster }
     let(:assignment) { create :assignment, roster: }
 
-    context 'when logged in as a member of the roster' do
-      include_context 'when logged in as a member of the roster'
+    context 'when logged in as a user unrelated to the roster' do
+      include_context 'when logged in as a user unrelated to the roster'
 
       it 'responds with a forbidden status' do
         call
@@ -163,8 +152,8 @@ RSpec.describe 'Assignments' do
       end
     end
 
-    context 'when logged in as an admin of the roster' do
-      include_context 'when logged in as an admin of the roster'
+    context 'when logged in as a member of the roster' do
+      include_context 'when logged in as a member of the roster'
 
       it 'responds successfully' do
         call
@@ -178,7 +167,37 @@ RSpec.describe 'Assignments' do
 
     let(:roster) { create :roster }
 
-    context 'when logged in as a member of the roster' do
+    context 'when logged in as user unrelated to the roster' do
+      include_context 'when logged in as a user unrelated to the roster'
+      include_context 'with valid attributes'
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a member of the roster assigning themselves' do
+      include_context 'when logged in as a member of the roster'
+
+      let(:attributes) { { user_id: current_user.id, start_date: Date.current, end_date: Date.tomorrow } }
+
+      it 'redirects to the roster' do
+        submit
+        expect(response).to redirect_to roster_path(roster)
+      end
+
+      it 'creates a new assignment' do
+        expect { submit }.to change(Assignment, :count).by(1)
+      end
+
+      it 'creates a new assignment with the given attributes' do
+        submit
+        expect(Assignment.last).to have_attributes(attributes.merge('roster_id' => roster.id))
+      end
+    end
+
+    context 'when logged in as a member of the roster assigning someone else' do
       include_context 'when logged in as a member of the roster'
       include_context 'with valid attributes'
 
@@ -224,9 +243,51 @@ RSpec.describe 'Assignments' do
     let(:roster) { create :roster }
     let(:assignment) { create(:assignment, roster:) }
 
-    context 'when logged in as a member of the roster' do
-      include_context 'when logged in as a member of the roster'
+    context 'when logged in as user unrelated to the roster' do
+      include_context 'when logged in as a user unrelated to the roster'
       include_context 'with valid attributes'
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a member of the roster assigning themselves' do
+      include_context 'when logged in as a member of the roster'
+
+      let(:attributes) { { user_id: current_user.id } }
+
+      it 'redirects to the roster' do
+        submit
+        expect(response).to redirect_to roster_path(roster)
+      end
+
+      it 'creates a new assignment' do
+        expect { submit }.to change(Assignment, :count).by(1)
+      end
+
+      it 'creates a new assignment with the given attributes' do
+        submit
+        expect(Assignment.last).to have_attributes(attributes.merge('roster_id' => roster.id))
+      end
+    end
+
+    context 'when logged in as a member of the roster assigning someone else' do
+      include_context 'when logged in as a member of the roster'
+
+      let(:attributes) { { user_id: create(:user, rosters: [roster]).id } }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a member of the roster changing dates' do
+      include_context 'when logged in as a member of the roster'
+
+      let(:attributes) { { start_date: Date.current, end_date: Date.tomorrow } }
 
       it 'responds with a forbidden status' do
         submit
