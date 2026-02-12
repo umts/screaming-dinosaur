@@ -10,6 +10,16 @@ class ApplicationPolicy < ActionPolicy::Base
   alias_rule :new?, to: :create?
   alias_rule :edit?, to: :update?
 
+  protected
+
+  def member_of?(roster)
+    roster.is_a?(Roster) && user&.memberships&.any? { |mem| mem.roster_id == roster.id }
+  end
+
+  def admin_of?(roster)
+    roster.is_a?(Roster) && user&.memberships&.any? { |mem| mem.admin? && mem.roster_id == roster.id }
+  end
+
   private
 
   def allow_admins
