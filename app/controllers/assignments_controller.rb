@@ -67,7 +67,7 @@ class AssignmentsController < ApplicationController
   end
 
   def set_roster_users
-    @users = @roster.users.active.order :last_name
+    @users = @roster.users.order :last_name
   end
 
   def index_html
