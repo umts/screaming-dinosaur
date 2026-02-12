@@ -10,7 +10,7 @@ class RostersController < ApplicationController
   end
 
   def show
-    authorize! @roster, context: { api_key: request.headers['Authorization']&.split&.last || params[:api_key] }
+    authorize! @roster, context: { api_key: }
     respond_to do |format|
       format.html do
         @your_assignments = @roster.assignments.upcoming.joins(:user).where(user: Current.user).order(start_date: :asc)
@@ -74,4 +74,6 @@ class RostersController < ApplicationController
   def roster_params
     params.expect roster: %i[name phone fallback_user_id switchover_time]
   end
+
+  def api_key = request.headers['Authorization']&.split&.last || params[:api_key]
 end
