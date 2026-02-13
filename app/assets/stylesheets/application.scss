@@ -6,7 +6,15 @@
   $primary: #881c1c
 );
 
+.btn {
+  text-wrap: nowrap;
+}
+
 .btn-text {
   line-height: 1;
+  text-wrap: nowrap;
+}
+
+.nav-link {
   text-wrap: nowrap;
 }

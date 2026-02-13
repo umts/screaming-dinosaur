@@ -35,7 +35,7 @@
                               method: :patch,
                               params: { membership: { admin: !membership.admin? } },
                               form_class: 'd-inline-block',
-                              class: 'btn btn-sm text-nowrap lh-1' do
+                              class: 'btn btn-sm lh-1' do
                     - if membership.admin?
                       %i.fa-solid.fa-person-falling
                       Demote
@@ -46,7 +46,7 @@
                   = button_to membership_path(membership),
                               method: :delete,
                               form_class: 'd-inline-block',
-                              class: 'btn btn-sm text-nowrap lh-1' do
+                              class: 'btn btn-sm lh-1' do
                     %i.fa-solid.fa-xmark
                     Remove
       - else
