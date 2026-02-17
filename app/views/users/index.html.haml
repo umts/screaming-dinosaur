@@ -28,7 +28,7 @@
                     .text-muted= user.email
               - if allowed_to?(:edit?, user)
                 .col-auto
-                  = link_to edit_user_path(user), class: 'btn btn-sm lh-1' do
+                  = link_to edit_user_path(user), class: 'btn btn-sm btn-text' do
                     %i.fa-solid.fa-edit
                     Edit
       - else

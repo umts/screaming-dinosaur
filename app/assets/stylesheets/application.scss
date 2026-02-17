@@ -11,8 +11,19 @@
 }
 
 .btn-text {
-  line-height: 1;
-  text-wrap: nowrap;
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0;
+  --bs-btn-font-weight: #{bootstrap.$font-weight-normal};
+  --bs-btn-line-height: #{bootstrap.$line-height-base};
+  --bs-btn-bg: transparent;
+  --bs-btn-border-width: 0;
+  --bs-btn-border-color: transparent;
+  --bs-btn-hover-border-color: transparent;
+  --bs-btn-active-border-color: transparent;
+  --bs-btn-disabled-border-color: transparent;
+
+  appearance: none;
+  vertical-align: baseline;
 }
 
 .nav-link {
