@@ -18,6 +18,6 @@ class VersionsController < ApplicationController
   private
 
   def find_version
-    @version = Version.find params.require(:id)
+    @version = Version.find params[:id]
   end
 end

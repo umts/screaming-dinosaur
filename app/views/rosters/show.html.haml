@@ -1,0 +1,48 @@
+= render layout: 'layouts/roster', locals: { roster: @roster, nav_item: 'assignments' } do
+  .card.mb-3
+    .card-body
+      .float-end= formatted_phone(@roster.phone)
+      = render partial: 'on_call_user', locals: { roster: @roster }
+  - if @your_assignments.present?
+    .card.mb-3
+      .card-header Your assignments
+      .list-group.list-group-flush
+        - @your_assignments.each do |assignment|
+          .list-group-item
+            .float-end.text-muted
+              in
+              = distance_of_time_in_words_to_now(assignment.effective_start_datetime)
+            %div
+              From
+              %span.text-muted= l assignment.effective_start_datetime, format: :named
+              to
+              %span.text-muted= l assignment.effective_end_datetime, format: :named
+  .card.mb-3
+    .card-header
+      .d-flex
+        .flex-grow-1
+          Calendar
+        %div
+          = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-sm btn-text' do
+            %i.fa-solid.fa-download
+            CSV
+        %div
+          = button_tag type: 'button',
+                       class: 'btn btn-sm btn-text',
+                       'data-bs-toggle': 'dropdown',
+                       'aria-expanded': 'false' do
+            %i.fa-solid.fa-plus
+            Assign
+          %ul.dropdown-menu
+            %li= link_to 'Single', new_roster_assignment_path(@roster), class: 'dropdown-item'
+            - if allowed_to?(:prompt?, WeekAssigner.new(roster_id: @roster.id))
+              %li= link_to 'Weeks', roster_assign_weeks_path(@roster), class: 'dropdown-item'
+            - if allowed_to?(:prompt, WeekdayAssigner.new(roster_id: @roster.id))
+              %li= link_to 'Weekdays', roster_assign_weekdays_path(@roster), class: 'dropdown-item'
+    .card-body
+      .mb-3{
+        'data-controller': 'assignment-calendar',
+        'data-assignment-calendar-events-url-value': roster_assignments_path(@roster, format: :json),
+        'data-assignment-calendar-new-assignment-url-value': new_roster_assignment_path(@roster)
+      }
+      = render partial: 'feeds/url', locals: { roster: @roster }
