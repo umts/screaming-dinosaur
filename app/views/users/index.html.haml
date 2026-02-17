@@ -19,9 +19,13 @@
                   .col
                     = user.full_name
                     - if user.admin
-                      %span.badge.text-bg-secondary Admin
+                      %span.badge.text-bg-secondary
+                        %i.fa-solid.fa-user-tie
+                        Admin
                     - unless user.active
-                      %span.badge.text-bg-light Inactive
+                      %span.badge.text-bg-light
+                        %i.fa-solid.fa-user-slash
+                        Inactive
                   .col
                     .text-muted= formatted_phone user.phone
                   .col
