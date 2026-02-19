@@ -1,0 +1,37 @@
+.mb-3
+  = fields.label :first_name, class: 'form-label'
+  = fields.text_field :first_name, required: true, class: 'form-control'
+.mb-3
+  = fields.label :last_name, class: 'form-label'
+  = fields.text_field :last_name, required: true, class: 'form-control'
+.mb-3
+  = fields.label :spire, class: 'form-label'
+  = fields.email_field :spire, required: true, disabled: !allowed_to?(:manage?, fields.object), class: 'form-control'
+  %small.form-text.text-muted e.g. 12345678@umass.edu
+.mb-3
+  = fields.label :email, class: 'form-label'
+  = fields.email_field :email, required: true, class: 'form-control'
+.mb-3
+  = fields.label :phone, class: 'form-label'
+  = fields.phone_field :phone, required: true, class: 'form-control'
+  %small.form-text.text-muted e.g. +14135450056
+.mb-3
+  = field_set_tag nil do
+    %legend.form-label.fs-6 Notify about
+    .list-group
+      = fields.label :change_notifications_enabled, class: 'list-group-item' do
+        = fields.check_box :change_notifications_enabled, class: 'form-check-input me-2'
+        Changes to assignments
+      = fields.label :reminders_enabled, class: 'list-group-item' do
+        = fields.check_box :reminders_enabled, class: 'form-check-input me-2'
+        Upcoming assignments
+.mb-3
+  = field_set_tag nil do
+    %legend.form-label.fs-6 Access
+    .list-group
+      = fields.label :admin, class: 'list-group-item' do
+        = fields.check_box :admin, disabled: !allowed_to?(:manage?, fields.object), class: 'form-check-input me-2'
+        Admin
+      = fields.label :active, class: 'list-group-item' do
+        = fields.check_box :active, disabled: !allowed_to?(:manage?, fields.object), class: 'form-check-input me-2'
+        Active

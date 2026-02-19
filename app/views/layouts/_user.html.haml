@@ -1,0 +1,4 @@
+:ruby
+  user = local_assigns[:user]
+= render layout: 'layouts/resource', locals: { heading: user.full_name } do
+  = yield

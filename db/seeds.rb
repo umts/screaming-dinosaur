@@ -51,6 +51,7 @@ ops.memberships.joins(:user).where(users: { last_name: %w(Barrington Noble) })
                             .update_all admin: true
 it.memberships.joins(:user).where(users: { last_name: 'Sherson' })
                            .update_all admin: true
+User.find_by(last_name: 'Sherson').update(admin: true)
 
 # ASSIGNMENTS
 unless ENV['SKIP_ASSIGNMENTS']
