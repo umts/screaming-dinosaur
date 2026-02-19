@@ -1,46 +1,50 @@
 # frozen_string_literal: true
 
 RSpec.describe 'Twilio' do
-  subject(:xml) do
-    call
-    Nokogiri::XML response.body
-  end
-
   let(:roster) { create :roster }
-  let(:user) { roster_user(roster) }
-  let(:user_phone) { Phonelib.parse(user.phone).full_e164 }
+  let(:user) { create :user, rosters: [roster], phone: '(413) 545-0056' }
 
-  before do
-    create :assignment, start_date: Date.yesterday, end_date: Date.tomorrow, roster:, user:
-  end
+  before { create :assignment, start_date: Date.yesterday, end_date: Date.tomorrow, roster:, user: }
 
-  describe 'GET /rosters/:id/twilio/call.xml' do
-    let(:call) { get "/rosters/#{roster.id}/twilio/call.xml" }
+  describe 'GET /rosters/:roster_id/twilio/call.xml' do
+    let(:call) { get "/rosters/#{roster.slug}/twilio/call", headers: { 'ACCEPT' => 'application/xml' } }
 
-    it 'has a "Response" root element' do
-      expect(xml.root.name).to eq('Response')
+    it 'responds successfully' do
+      call
+      expect(response).to be_successful
     end
 
-    it 'calls the correct user' do
-      expect(xml.at_xpath('/Response/Dial').text).to eq(user_phone)
+    it 'responds with a twilio directive to call the on call user' do
+      call
+      expect(response.body).to eq(<<~XML)
+        <?xml version='1.0' encoding='utf-8' ?>
+        <Response>
+        <Dial>+14135450056</Dial>
+        </Response>
+      XML
     end
   end
 
-  describe 'GET /rosters/:id/twilio/text.xml' do
+  describe 'GET /rosters/:roster_id/twilio/text.xml' do
     let(:call) do
-      get "/rosters/#{roster.id}/twilio/text.xml", params: { 'Body' => 'IMPORTANT MESSAGE' }
+      get "/rosters/#{roster.slug}/twilio/text",
+          headers: { 'ACCEPT' => 'application/xml' },
+          params: { 'Body' => 'IMPORTANT MESSAGE' }
     end
 
-    it 'has a "Response" root element' do
-      expect(xml.root.name).to eq('Response')
+    it 'responds successfully' do
+      call
+      expect(response).to be_successful
     end
 
-    it 'messages the correct user' do
-      expect(xml.at_xpath("/Response/Message[@to='#{user_phone}']")).to be_present
-    end
-
-    it 'forwards the message' do
-      expect(xml.at_xpath("/Response/Message[@to='#{user_phone}']").text).to eq('IMPORTANT MESSAGE')
+    it 'responds with a twilio directive to text the on call user' do
+      call
+      expect(response.body).to eq(<<~XML)
+        <?xml version='1.0' encoding='utf-8' ?>
+        <Response>
+        <Message to="+14135450056">IMPORTANT MESSAGE</Message>
+        </Response>
+      XML
     end
   end
 end

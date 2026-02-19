@@ -3,26 +3,25 @@
 class AssignmentPolicy < ApplicationPolicy
   authorize :roster, optional: true
 
-  def index? = user.present?
+  def manage? = allowed_to?(:manage?, record.roster)
 
-  def new? = user.present?
+  def index? = allowed_to?(:show?, roster)
 
-  def create? = user.present? && (user&.admin_in?(record.roster) || not_assigning_someone_else?)
+  def create?
+    return true if manage?
 
-  def edit? = user.present?
+    member_of?(record.roster) && not_assigning_someone_else?
+  end
 
-  def update? = user.present? && (user&.admin_in?(record.roster) || not_assigning_someone_else?)
+  def update?
+    return true if manage?
 
-  def destroy? = user&.admin_in?(record.roster)
-
-  def feed? = user&.member_of?(roster)
+    member_of?(record.roster) && not_assigning_someone_else? && not_changing_dates?
+  end
 
   private
 
-  def not_assigning_someone_else?
-    return true if user&.admin_in?(record.roster)
-    return true unless record.user_changed?
+  def not_assigning_someone_else? = record.changes.slice('user_id').blank? || record.user == user
 
-    record.user == user
-  end
+  def not_changing_dates? = record.changes.slice('start_date', 'end_date').blank?
 end
