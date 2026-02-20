@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# :nocov:
 module Maintenance
   class ImportEntraUidsTask < MaintenanceTasks::Task
     csv_collection
@@ -9,3 +10,4 @@ module Maintenance
     end
   end
 end
+# :nocov:

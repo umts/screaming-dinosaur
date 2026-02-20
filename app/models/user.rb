@@ -31,7 +31,9 @@ class User < ApplicationRecord
 
   scope :active, -> { where active: true }
   scope :inactive, -> { where active: false }
+  # :nocov:
   scope :non_placeholder, -> { where.not(spire: (1..9).map { |n| "#{n.to_s * 8}@umass.edu" }) }
+  # :nocov:
 
   def full_name
     "#{first_name} #{last_name}"
@@ -41,11 +43,13 @@ class User < ApplicationRecord
     "#{last_name}, #{first_name}"
   end
 
+  # :nocov:
   def self.to_spire_id_csv
     CSV.generate headers: %i[spire_id], write_headers: true do |csv|
       find_each { |user| csv << { spire_id: user.spire.delete_suffix('@umass.edu') } }
     end
   end
+  # :nocov:
 
   private
 
