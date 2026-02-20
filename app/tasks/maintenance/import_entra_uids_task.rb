@@ -5,7 +5,7 @@ module Maintenance
     csv_collection
 
     def process(row)
-      User.find_by!(spire: "#{row[:spire_id]}@umass.edu").update!(entra_uid: row[:entra_uid])
+      User.find_by!(spire: "#{row['spire_id']}@umass.edu").update!(entra_uid: row['entra_uid'])
     end
   end
 end
