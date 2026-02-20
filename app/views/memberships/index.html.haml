@@ -30,24 +30,25 @@
                     %i.fa-solid.fa-user-shield
                     Fallback User
               .col-auto
-                - if allowed_to?(:update?, membership)
-                  = button_to membership_path(membership),
-                              method: :patch,
-                              params: { membership: { admin: !membership.admin? } },
-                              form_class: 'd-inline-block',
-                              class: 'btn btn-sm text-nowrap lh-1' do
-                    - if membership.admin?
-                      %i.fa-solid.fa-person-falling
-                      Demote
-                    - else
-                      %i.fa-solid.fa-user-tie
-                      Promote
-                - if allowed_to?(:destroy?, membership)
-                  = button_to membership_path(membership),
-                              method: :delete,
-                              form_class: 'd-inline-block',
-                              class: 'btn btn-sm text-nowrap lh-1' do
-                    %i.fa-solid.fa-xmark
-                    Remove
+                .d-flex.align-items-center.gap-3
+                  - if allowed_to?(:update?, membership)
+                    = button_to membership_path(membership),
+                                method: :patch,
+                                params: { membership: { admin: !membership.admin? } },
+                                form_class: 'd-inline-block',
+                                class: 'btn btn-sm btn-text' do
+                      - if membership.admin?
+                        %i.fa-solid.fa-person-falling
+                        Demote
+                      - else
+                        %i.fa-solid.fa-user-tie
+                        Promote
+                  - if allowed_to?(:destroy?, membership)
+                    = button_to membership_path(membership),
+                                method: :delete,
+                                form_class: 'd-inline-block',
+                                class: 'btn btn-sm btn-text' do
+                      %i.fa-solid.fa-xmark
+                      Remove
       - else
         .list-group-item No memberships found
