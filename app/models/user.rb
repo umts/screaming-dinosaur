@@ -16,6 +16,7 @@ class User < ApplicationRecord
                                foreign_key: :whodunnit,
                                inverse_of: :author
 
+  validates :entra_uid, uniqueness: { case_sensitive: true, allow_nil: true }
   validates :first_name, :last_name, :spire, :email, :phone, presence: true
   validates :spire, :email, :phone, uniqueness: { case_sensitive: false }
   validates :calendar_access_token, uniqueness: { case_sensitive: true }
