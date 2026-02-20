@@ -4,6 +4,11 @@
       .d-flex
         .flex-grow-1
           All Users
+        - if allowed_to?(:spire_ids?, User)
+          %div
+            = link_to spire_ids_users_path(format: :csv), class: 'btn btn-sm btn-text' do
+              %i.fa-solid.fa-download
+              Spire IDs
         - if allowed_to?(:new?, User.new)
           %div
             = link_to new_user_path, class: 'btn btn-sm btn-text' do

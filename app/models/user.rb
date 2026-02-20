@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 class User < ApplicationRecord
   has_paper_trail
   has_secure_token :calendar_access_token
@@ -29,6 +31,7 @@ class User < ApplicationRecord
 
   scope :active, -> { where active: true }
   scope :inactive, -> { where active: false }
+  scope :non_placeholder, -> { where.not(spire: (1..9).map { |n| "#{n.to_s * 8}@umass.edu" }) }
 
   def full_name
     "#{first_name} #{last_name}"
@@ -36,6 +39,12 @@ class User < ApplicationRecord
 
   def proper_name
     "#{last_name}, #{first_name}"
+  end
+
+  def self.to_spire_id_csv
+    CSV.generate headers: %i[spire_id], write_headers: true do |csv|
+      find_each { |user| csv << { spire_id: user.spire.delete_suffix('@umass.edu') } }
+    end
   end
 
   private

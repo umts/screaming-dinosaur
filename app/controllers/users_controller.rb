@@ -41,6 +41,12 @@ class UsersController < ApplicationController
     end
   end
 
+  def spire_ids
+    authorize!
+    @users = User.non_placeholder.where(entra_uid: nil)
+    respond_to { |format| format.csv { render csv: @users.to_spire_id_csv, filename: 'spire_ids.csv' } }
+  end
+
   private
 
   def find_user
