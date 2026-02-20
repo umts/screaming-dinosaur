@@ -39,9 +39,7 @@
             - if allowed_to?(:prompt, WeekdayAssigner.new(roster_id: @roster.id))
               %li= link_to 'Weekdays', roster_assign_weekdays_path(@roster), class: 'dropdown-item'
     .card-body
-      .mb-3{
-        'data-controller': 'assignment-calendar',
-        'data-assignment-calendar-events-url-value': roster_assignments_path(@roster, format: :json),
-        'data-assignment-calendar-new-assignment-url-value': new_roster_assignment_path(@roster)
-      }
+      .mb-3{ 'data-controller': 'assignment-calendar',
+             'data-assignment-calendar-events-url-value': roster_assignments_path(@roster, format: :json),
+             'data-assignment-calendar-new-assignment-url-value': new_roster_assignment_path(@roster) }
       = render partial: 'feeds/url', locals: { roster: @roster }
