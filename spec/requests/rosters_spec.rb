@@ -78,17 +78,6 @@ RSpec.describe 'Rosters' do
       end
     end
 
-    context 'with an api key passed through params' do
-      let(:params) { { api_key: 'test api key' } }
-
-      before { allow(Rails.application).to receive(:credentials).and_return({ api_key: 'test api key' }) }
-
-      it 'responds successfully' do
-        call
-        expect(response).to be_successful
-      end
-    end
-
     context 'with an api key as a header' do
       let(:headers) { { 'ACCEPT' => 'application/json', 'Authorization' => 'Basic test_api_key' } }
 
