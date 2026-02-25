@@ -75,5 +75,5 @@ class RostersController < ApplicationController
     params.expect roster: %i[name phone fallback_user_id switchover_time]
   end
 
-  def api_key = request.headers['Authorization']&.split&.last || params[:api_key]
+  def api_key = request.headers['Authorization']&.split&.last
 end
