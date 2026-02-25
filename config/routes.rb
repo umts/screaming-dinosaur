@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   get 'feed/:roster_id/:token' => 'feed#show', as: :feed
 
-  post :login, to: 'sessions#create' if Rails.env.development?
+  get '/auth/:provider/callback', to: 'sessions#create'
   post :logout, to: 'sessions#destroy'
 
   mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
