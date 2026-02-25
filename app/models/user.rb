@@ -23,6 +23,7 @@ class User < ApplicationRecord
   validates :phone, phone: true
 
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
+  after_commit :notify_fallback_rosters_of_phone_change, on: :update
 
   def full_name
     "#{first_name} #{last_name}"
@@ -32,19 +33,21 @@ class User < ApplicationRecord
     "#{last_name}, #{first_name}"
   end
 
-  def admin_in?(roster)
-    memberships.exists?(roster: roster, admin: true)
-  end
-
-  def admin?
-    memberships.exists?(admin: true)
-  end
-
   private
 
   def prevent_self_deactivation
     return unless Current.user == self
 
     errors.add :base, message: :may_not_deactivate_self
+  end
+
+  def notify_fallback_rosters_of_phone_change
+    return unless phone_previously_changed?
+
+    fallback_rosters.includes(:admins).find_each do |roster|
+      next if roster.admins.empty?
+
+      RosterMailer.with(roster: roster).fallback_number_changed.deliver_later
+    end
   end
 end

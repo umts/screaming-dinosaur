@@ -15,32 +15,70 @@ RSpec.describe User do
     it { is_expected.to eq [user.last_name, user.first_name].join(', ') }
   end
 
-  describe 'admin_in?' do
-    let(:roster) { create :roster }
+  describe '#save' do
+    subject(:call) { user.save }
 
-    context 'with admin membership in the roster' do
-      before { create :membership, roster:, user:, admin: true }
+    context 'when the user is a new user' do
+      let(:user) { build :user }
 
-      it('returns true') { expect(user).to be_admin_in(roster) }
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
     end
 
-    context 'with non-admin membership in the roster' do
-      before { create :membership, roster:, user:, admin: false }
+    context 'when the user is a fallback user and their phone changes' do
+      let(:user) { create :user }
+      let(:roster) { create :roster, fallback_user: user }
 
-      it('returns false') { expect(user).not_to be_admin_in(roster) }
+      before do
+        create(:membership, roster:, admin: true)
+        roster
+        user.phone = '14135551234'
+      end
+
+      it 'sends a notification' do
+        expect { call }.to have_enqueued_email(RosterMailer, :fallback_number_changed)
+          .with(params: { roster: roster }, args: [])
+      end
     end
-  end
 
-  describe 'admin?' do
-    let(:membership) { create :membership }
-    let(:admin_membership) { create :membership, admin: true }
+    context 'when the user is a fallback user but their phone does not change' do
+      let(:user) { create :user }
+      let(:roster) { create :roster, fallback_user: user }
 
-    context 'with admin membership in any roster' do
-      it('returns true') { expect(admin_membership.user).to be_admin }
+      before do
+        create(:membership, roster:, admin: true)
+        roster
+        user.first_name = 'NewName'
+      end
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
     end
 
-    context 'without any admin memberships' do
-      it('returns false') { expect(membership.user).not_to be_admin }
+    context 'when the user is a fallback user with no admins and their phone changes' do
+      let(:user) { create :user }
+      let(:roster) { create :roster, fallback_user: user }
+
+      before do
+        roster
+        user.phone = '14135551234'
+      end
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
+    end
+
+    context 'when the user is not a fallback user and their phone changes' do
+      let(:user) { create :user }
+
+      before { user.phone = '14135551234' }
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
     end
   end
 end
