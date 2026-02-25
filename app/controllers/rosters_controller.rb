@@ -6,7 +6,7 @@ class RostersController < ApplicationController
 
   def index
     authorize!
-    @rosters = authorized_scope Roster.all
+    @rosters = authorized_scope(Roster.all).page(params[:page])
   end
 
   def show

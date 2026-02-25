@@ -1,0 +1,8 @@
+- if current_page.last?
+  %li.page-item.disabled
+    %span.page-link
+      %i.fa-solid.fa-angle-right
+- else
+  %li.page-item
+    = link_to url, rel: 'next', remote: remote, class: 'page-link', 'aria-label': 'Next page' do
+      %i.fa-solid.fa-angle-right
