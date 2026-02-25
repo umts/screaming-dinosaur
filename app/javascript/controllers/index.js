@@ -9,3 +9,6 @@ application.register("assignment-calendar", AssignmentCalendarController)
 
 import ClipboardController from "./clipboard_controller"
 application.register("clipboard", ClipboardController)
+
+import TomSelectController from "./tom_select_controller"
+application.register("tom-select", TomSelectController)

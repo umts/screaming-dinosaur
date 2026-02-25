@@ -12,5 +12,8 @@
       .card-body
         = form_with url: main_app.login_path do |f|
           .input-group
-            = f.collection_select :user_id, users, :id, :full_name, { include_blank: false }, class: 'form-select'
+            = f.collection_select :user_id, users, :id, :full_name,
+                                  { include_blank: false },
+                                  class: 'form-select',
+                                  'data-controller': 'tom-select'
             = f.submit 'Log in', class: 'btn btn-outline-primary'

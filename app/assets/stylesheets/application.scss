@@ -5,6 +5,7 @@
 @use "bootstrap/scss/bootstrap" with (
   $primary: #881c1c
 );
+@use "tom-select/dist/css/tom-select.bootstrap5";
 
 .btn-text {
   line-height: 1;
