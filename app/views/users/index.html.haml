@@ -1,39 +1,34 @@
-= render layout: 'layouts/section', locals: { heading: "Users in #{@roster.name}", creatable: new_roster_user_path } do
-  - if @fallback.blank?
-    .alert.alert-warning
-      %div No fallback user!
-      %div= link_to 'Select a fallback user', edit_roster_path(@roster), class: 'alert-link'
-  %ul.nav.nav-pills.nav-fill.mb-3
-    %li.nav-item= link_to 'Active', roster_users_path, class: ['nav-link', @active ? 'active' : nil]
-    %li.nav-item= link_to 'Inactive', roster_users_path(active: false), class: ['nav-link', @active ? nil : 'active']
-
-  .table-responsive
-    %table.table.table-striped.table-hover
-      %thead
-        %tr
-          %th Name
-          %th SPIRE
-          %th Email
-          %th Phone
-          %th.column-compact
-          %th.column-compact
-      %tbody
+= render layout: 'layouts/users' do
+  .card
+    .card-header
+      .d-flex
+        .flex-grow-1
+          All Users
+        - if allowed_to?(:new?, User.new)
+          %div
+            = link_to new_user_path, class: 'btn btn-sm btn-text' do
+              %i.fa-solid.fa-plus
+              New
+    .list-group.list-group-flush
+      - if @users.present?
         - @users.each do |user|
-          %tr
-            %td
-              = user.full_name
-              - if user == @fallback
-                (fallback)
-            %td= user.spire
-            %td= user.email
-            %td= formatted_phone(user.phone)
-            %td
-              = link_to edit_roster_user_path(@roster, user), class: 'btn btn-sm text-nowrap lh-1' do
-                %i.fa-solid.fa-edit
-                %span.d-none.d-xl-inline Edit
-  - if @other_users.present?
-    = form_with url: transfer_roster_users_path do |f|
-      .input-group
-        = f.label :id, 'Add user', class: 'input-group-text'
-        = f.collection_select :id, @other_users, :id, :last_name, {}, required: true, class: 'form-select'
-        = f.submit 'Add', class: 'btn btn-secondary'
+          .list-group-item
+            .row
+              .col
+                .row.row-cols-1.row-cols-md-3
+                  .col
+                    = user.full_name
+                    - if user.admin
+                      %span.badge.text-bg-secondary Admin
+                  .col
+                    .text-muted= formatted_phone user.phone
+                  .col
+                    .text-muted= user.email
+              - if allowed_to?(:edit?, user)
+                .col-auto
+                  = link_to edit_user_path(user), class: 'btn btn-sm lh-1 text-nowrap' do
+                    %i.fa-solid.fa-edit
+                    Edit
+      - else
+        .list-group-item No users found
+

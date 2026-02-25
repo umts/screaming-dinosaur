@@ -1,44 +1,35 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  root 'rosters#assignments'
+  root 'dashboard#index'
+
+  get 'feed/:roster_id/:token' => 'feed#show', as: :feed
 
   post :login, to: 'sessions#create' if Rails.env.development?
   post :logout, to: 'sessions#destroy'
 
+  mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
+
   resources :rosters do
-    member do
-      get :setup
-    end
-    collection do
-      get :assignments
-    end
+    resources :assignments, only: %i[index new edit create update destroy], shallow: true
 
-    resources :assignments, except: :show
+    get :assign_weeks, to: 'week_assigners#prompt'
+    post :assign_weeks, to: 'week_assigners#perform'
 
-    namespace :assignments do
-      get :generate_by_weekday, to: 'weekday_generators#prompt'
-      post :generate_by_weekday, to: 'weekday_generators#perform'
+    get :assign_weekdays, to: 'weekday_assigners#prompt'
+    post :assign_weekdays, to: 'weekday_assigners#perform'
 
-      get :generate_rotation, to: 'rotation_generators#prompt'
-      post :generate_rotation, to: 'rotation_generators#perform'
-    end
+    resources :memberships, only: %i[index create destroy update], shallow: true
 
-    resources :users, except: %i[show destroy] do
-      collection do
-        post :transfer
-      end
-    end
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
-  resources :versions do
+
+  resources :users, only: %i[index new edit create update]
+
+  resources :versions, only: [] do
     member do
       post :undo
     end
   end
-
-  get 'feed/:roster/:token' => 'feed#show', as: :feed
-
-  mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 end

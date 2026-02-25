@@ -5,10 +5,10 @@ RSpec.describe RosterMailer do
     subject(:email) { described_class.with(roster:, open_dates:).open_dates_alert }
 
     let(:admin) { create :user }
-    let(:roster) { admin.rosters.last }
+    let(:roster) { create :roster }
     let(:open_dates) { Time.zone.today.to_date..6.days.from_now.to_date }
 
-    before { admin.memberships.last.update(admin: true) }
+    before { create :membership, user: admin, roster:, admin: true }
 
     it 'queues the email to be sent' do
       expect { email.deliver_now }.to change { ActionMailer::Base.deliveries.size }.by 1
