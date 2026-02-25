@@ -35,12 +35,6 @@ class User < ApplicationRecord
 
   private
 
-  def prevent_self_deactivation
-    return unless Current.user == self
-
-    errors.add :base, message: :may_not_deactivate_self
-  end
-
   def notify_fallback_rosters_of_phone_change
     return unless phone_previously_changed?
 
