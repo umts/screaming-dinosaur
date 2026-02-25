@@ -75,7 +75,7 @@ RSpec.describe RosterMailer do
     end
 
     it 'includes the update twilio link' do
-      expect(email.body.encoded).to include('update twilio').and include(setup_roster_path(roster))
+      expect(email.body.encoded).to include('update twilio').and include(edit_roster_path(roster))
     end
   end
 end
