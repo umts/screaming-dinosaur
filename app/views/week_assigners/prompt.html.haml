@@ -3,7 +3,7 @@
     .card-header
       Assign weeks
     .card-body
-      - user_options = @assigner.roster.users.active.order(:first_name, :last_name)
+      - user_options = @assigner.roster.users.order(:first_name, :last_name)
       = form_with model: @assigner, url: roster_assign_weeks_path(@assigner.roster) do |f|
         .mb-3
           = f.label :start_date, class: 'form-label'

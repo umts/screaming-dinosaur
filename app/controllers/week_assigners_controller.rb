@@ -28,7 +28,7 @@ class WeekAssignersController < ApplicationController
     @assigner = WeekAssigner.new(roster_id: roster.id,
                                  start_date: default_start,
                                  end_date: default_start + 3.months,
-                                 user_ids: roster.users.active.pluck(:id))
+                                 user_ids: roster.users.pluck(:id))
   end
 
   def week_assigner_params

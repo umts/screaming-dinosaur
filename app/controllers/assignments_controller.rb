@@ -59,10 +59,6 @@ class AssignmentsController < ApplicationController
 
   private
 
-  def find_assignment
-    @assignment = Assignment.find(params[:id])
-  end
-
   def initialize_assignment
     @assignment = roster.assignments.new
     return if params[:date].blank?
@@ -73,5 +69,10 @@ class AssignmentsController < ApplicationController
 
   def assignment_params
     params.expect assignment: %i[start_date end_date user_id]
+  end
+
+  def find_assignment
+    @assignment = Assignment.includes(:user).find(params.require(:id))
+    @previous_owner = @assignment.user
   end
 end

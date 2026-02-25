@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 
   def index
     authorize!
-    @users = User.order(active: :desc, first_name: :asc, last_name: :asc)
+    @users = User.order(first_name: :asc, last_name: :asc)
   end
 
   def new

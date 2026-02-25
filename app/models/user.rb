@@ -21,14 +21,9 @@ class User < ApplicationRecord
   validates :calendar_access_token, uniqueness: { case_sensitive: true }
   validates :spire, format: { with: /\A\d{8}@umass.edu\z/, message: :must_be_fc_id_number }
   validates :phone, phone: true
-  validate :prevent_self_deactivation, if: :being_deactivated?
 
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
-  before_save -> { assignments.future.destroy_all }, if: :being_deactivated?
   after_commit :notify_fallback_rosters_of_phone_change, on: :update
-
-  scope :active, -> { where active: true }
-  scope :inactive, -> { where active: false }
 
   def full_name
     "#{first_name} #{last_name}"
@@ -39,10 +34,6 @@ class User < ApplicationRecord
   end
 
   private
-
-  def being_deactivated?
-    active_changed? && !active?
-  end
 
   def prevent_self_deactivation
     return unless Current.user == self

@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     get 'twilio/text', to: 'twilio#text', as: :twilio_text
   end
 
-  resources :users, only: %i[index new edit create update destroy]
+  resources :users, only: %i[index new edit create update]
 
   resources :versions, only: [] do
     member do

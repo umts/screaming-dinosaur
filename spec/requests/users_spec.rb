@@ -243,15 +243,5 @@ RSpec.describe 'Users' do
         expect(response).to have_http_status(:forbidden)
       end
     end
-
-    context 'when logged in as the user to edit with an active update' do
-      let(:current_user) { user }
-      let(:attributes) { { active: false } }
-
-      it 'responds with a forbidden status' do
-        submit
-        expect(response).to have_http_status(:forbidden)
-      end
-    end
   end
 end
