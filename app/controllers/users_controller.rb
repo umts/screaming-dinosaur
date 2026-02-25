@@ -52,7 +52,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.expect user: %i[first_name last_name spire email phone admin active reminders_enabled
-                           change_notifications_enabled]
+    params.expect user: %i[first_name last_name email phone admin active reminders_enabled change_notifications_enabled]
   end
 end

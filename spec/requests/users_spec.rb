@@ -89,7 +89,6 @@ RSpec.describe 'Users' do
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
-          spire: '12345678@umass.edu',
           email: 'bobo@test.com',
           phone: '(413) 545-0056' }
       end
@@ -107,7 +106,6 @@ RSpec.describe 'Users' do
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
-          spire: '12345678@umass.edu',
           email: 'bobo@test.com',
           phone: '(413) 545-0056' }
       end
@@ -148,7 +146,6 @@ RSpec.describe 'Users' do
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
-          spire: '12345678@umass.edu',
           email: 'bobo@test.com',
           phone: '(413) 545-0056' }
       end
@@ -166,7 +163,6 @@ RSpec.describe 'Users' do
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
-          spire: '12345678@umass.edu',
           email: 'bobo@test.com',
           phone: '(413) 545-0056' }
       end
@@ -221,16 +217,6 @@ RSpec.describe 'Users' do
       it 'responds with an unprocessable content status' do
         submit
         expect(response).to have_http_status(:unprocessable_content)
-      end
-    end
-
-    context 'when logged in as the user to edit with a spire update' do
-      let(:current_user) { user }
-      let(:attributes) { { spire: '12345678@umass.edu' } }
-
-      it 'responds with a forbidden status' do
-        submit
-        expect(response).to have_http_status(:forbidden)
       end
     end
 

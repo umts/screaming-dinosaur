@@ -3,5 +3,5 @@
 class UserPolicy < ApplicationPolicy
   def manage? = false
 
-  def update? = user == record && record.changes.slice('spire', 'admin', 'active').blank?
+  def update? = user == record && record.changes.slice('admin', 'active').blank?
 end
