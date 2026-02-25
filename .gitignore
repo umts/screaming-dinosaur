@@ -9,4 +9,5 @@
 /node_modules/
 /public/assets/
 /spec/examples.txt
-/tmp
+/storage/
+/tmp/
