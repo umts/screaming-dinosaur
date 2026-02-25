@@ -109,8 +109,9 @@ RSpec.describe Roster do
         roster.fallback_user = create(:user)
       end
 
-      it 'sends a notification' do
+      it 'sends a notification with the correct roster' do
         expect { call }.to have_enqueued_email(RosterMailer, :fallback_number_changed)
+          .with(params: { roster: roster }, args: [])
       end
     end
 
