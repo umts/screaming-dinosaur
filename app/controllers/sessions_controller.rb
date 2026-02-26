@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
-  skip_forgery_protection
+  skip_forgery_protection only: :create
 
   def create
     authorize!
@@ -15,8 +15,8 @@ class SessionsController < ApplicationController
   def destroy
     authorize!
     session.clear
-    # :nocov:
     if Rails.env.development?
+      # :nocov:
       redirect_to root_path
       # :nocov:
     else
