@@ -3,9 +3,16 @@
     .card-header
       New User
     .card-body
-      = form_with model: @user do |f|
+      = form_with model: @user, html: { id: 'user-form' } do |f|
         = render partial: 'fields', object: f
-        .d-grid
-          = f.button type: :submit, class: 'btn btn-outline-primary' do
+      .row.g-3
+        .col.d-grid
+          = button_tag type: :submit, form: 'user-form', class: 'btn btn-outline-primary' do
             %i.fa-solid.fa-save
             Save
+        .col.d-grid
+          = button_to logout_path,
+                      class: 'btn btn-outline-secondary',
+                      form_class: 'd-grid' do
+            %i.fa-solid.fa-times
+            Cancel
