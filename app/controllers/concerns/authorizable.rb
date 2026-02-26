@@ -10,7 +10,7 @@ module Authorizable
     verify_authorized
     rescue_from ActionPolicy::Unauthorized do |exception|
       if Current.user.present?
-        raise exception if Current.user.present?
+        raise exception
       elsif session[:entra_uid].present?
         redirect_to main_app.new_user_path
       # :nocov:
@@ -18,10 +18,10 @@ module Authorizable
         render 'application/production_login', layout: 'layouts/application', status: :unauthorized
       elsif Rails.env.development?
         render 'application/development_login', layout: 'layouts/application', status: :unauthorized
+      # :nocov:
       else
         head :unauthorized
       end
-      # :nocov:
     end
   end
 
