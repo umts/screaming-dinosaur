@@ -43,10 +43,12 @@ module LoginHelpers
   end
 
   def rack_login_as(user)
-    put RackSessionAccess.path, params: { data: RackSessionAccess.encode(user_id: user&.id) }
+    get '/auth/developer/callback', params: { uid: user&.entra_uid }
   end
 
   def capybara_login_as(user)
-    page.set_rack_session(user_id: user&.id)
+    original_url = current_url
+    visit "/auth/developer/callback?uid=#{user&.entra_uid}"
+    visit original_url
   end
 end

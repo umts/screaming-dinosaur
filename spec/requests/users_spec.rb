@@ -30,8 +30,14 @@ RSpec.describe 'Users' do
   describe 'GET /users/new' do
     subject(:call) { get '/users/new' }
 
-    context 'when logged in as a roster admin' do
-      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+    context 'when logged in as a user' do
+      let(:current_user) { create :user }
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056' }
+      end
 
       it 'responds with a forbidden status' do
         call
@@ -41,6 +47,21 @@ RSpec.describe 'Users' do
 
     context 'when logged in as a system admin' do
       let(:current_user) { create :user, admin: true }
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056' }
+      end
+
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a registrant' do
+      let(:current_user) { User.new(entra_uid: 'new-user') }
 
       it 'responds successfully' do
         call
@@ -85,7 +106,8 @@ RSpec.describe 'Users' do
   describe 'POST /users' do
     subject(:submit) { post '/users', params: { user: attributes } }
 
-    context 'when logged in as a roster admin' do
+    context 'when logged in as a user' do
+      let(:current_user) { create :user }
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
@@ -93,15 +115,13 @@ RSpec.describe 'Users' do
           phone: '(413) 545-0056' }
       end
 
-      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
-
       it 'responds with a forbidden status' do
         submit
         expect(response).to have_http_status(:forbidden)
       end
     end
 
-    context 'when logged in as a system admin with valid attributes' do
+    context 'when logged in as a system admin' do
       let(:current_user) { create :user, admin: true }
       let(:attributes) do
         { first_name: 'Bobo',
@@ -110,9 +130,24 @@ RSpec.describe 'Users' do
           phone: '(413) 545-0056' }
       end
 
-      it 'redirects to all users' do
+      it 'responds with a forbidden status' do
         submit
-        expect(response).to redirect_to(users_path)
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a registrant with valid attributes' do
+      let(:current_user) { User.new(entra_uid: 'new-user') }
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056' }
+      end
+
+      it 'redirects to the root path' do
+        submit
+        expect(response).to redirect_to(root_path)
       end
 
       it 'creates a user' do
@@ -121,14 +156,14 @@ RSpec.describe 'Users' do
 
       it 'creates a user with the given attributes' do
         submit
-        expect(User.last).to have_attributes(attributes)
+        expect(User.last).to have_attributes(attributes.merge(entra_uid: 'new-user'))
       end
     end
 
     context 'when logged in as a system admin with invalid attributes' do
       include_context 'with invalid attributes'
 
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { User.new(entra_uid: 'new-user') }
 
       it 'responds with an unprocessable content status' do
         submit
