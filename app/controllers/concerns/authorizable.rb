@@ -12,10 +12,16 @@ module Authorizable
       if Current.user.present?
         raise exception if Current.user.present?
       elsif session[:entra_uid].present?
-        redirect_to new_user_path
-      else
+        redirect_to main_app.new_user_path
+      # :nocov:
+      elsif Rails.env.production?
+        render 'application/production_login', layout: 'layouts/application', status: :unauthorized
+      elsif Rails.env.development?
         render 'application/development_login', layout: 'layouts/application', status: :unauthorized
+      else
+        head :unauthorized
       end
+      # :nocov:
     end
   end
 
