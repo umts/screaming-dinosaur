@@ -5,12 +5,17 @@ module Authorizable
 
   included do
     before_action :set_current_user
+    authorize :request, through: :request
     authorize :user, through: -> { Current.user }
     verify_authorized
     rescue_from ActionPolicy::Unauthorized do |exception|
-      raise exception if Current.user.present?
-
-      render 'application/development_login', layout: 'layouts/application', status: :unauthorized
+      if Current.user.present?
+        raise exception if Current.user.present?
+      elsif session[:entra_uid].present?
+        redirect_to new_user_path
+      else
+        render 'application/development_login', layout: 'layouts/application', status: :unauthorized
+      end
     end
   end
 

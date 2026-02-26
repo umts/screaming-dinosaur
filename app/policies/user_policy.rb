@@ -3,5 +3,11 @@
 class UserPolicy < ApplicationPolicy
   def manage? = false
 
-  def update? = user == record && record.changes.slice('admin', 'active').blank?
+  def create? = request.session[:entra_uid].present? && user.blank? && no_admin_changes?
+
+  def update? = user == record && no_admin_changes?
+
+  private
+
+  def no_admin_changes? = record.changes.slice('admin', 'active').blank?
 end

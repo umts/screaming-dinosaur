@@ -6,6 +6,9 @@ class SessionsController < ApplicationController
   def create
     authorize!
     session[:entra_uid] = auth_hash.uid
+    session[:email] = auth_hash.info.email
+    session[:first_name] = auth_hash.info.first_name
+    session[:last_name] = auth_hash.info.last_name
     redirect_to auth_referer || root_path
   end
 

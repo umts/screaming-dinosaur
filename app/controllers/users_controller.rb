@@ -21,8 +21,8 @@ class UsersController < ApplicationController
     @user.assign_attributes(user_params)
     authorize! @user
     if @user.save
-      flash_success_for(@user, undoable: true)
-      redirect_to users_path
+      flash_success_for(@user)
+      redirect_to root_path
     else
       flash_errors_now_for(@user)
       render :new, status: :unprocessable_content
@@ -48,7 +48,10 @@ class UsersController < ApplicationController
   end
 
   def initialize_user
-    @user = User.new
+    @user = User.new entra_uid: session[:entra_uid],
+                     email: session[:email],
+                     first_name: session[:first_name],
+                     last_name: session[:last_name]
   end
 
   def user_params
