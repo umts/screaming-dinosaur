@@ -13,9 +13,9 @@ RSpec.describe 'Rosters' do
     subject(:call) { get '/rosters' }
 
     context 'when not logged in' do
-      it 'responds with a forbidden status' do
+      it 'responds with an unauthorized status' do
         call
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 

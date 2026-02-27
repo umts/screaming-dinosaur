@@ -89,4 +89,50 @@ RSpec.describe Roster do
       end
     end
   end
+
+  describe '#save' do
+    subject(:call) { roster.save }
+
+    context 'when the roster is a new roster' do
+      let(:roster) { build :roster }
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
+    end
+
+    context 'when there are admins in the roster and the fallback_user_id changes' do
+      let(:roster) { create :roster }
+
+      before do
+        create(:membership, roster:, admin: true)
+        roster.fallback_user = create(:user)
+      end
+
+      it 'sends a notification with the correct roster' do
+        expect { call }.to have_enqueued_email(RosterMailer, :fallback_number_changed)
+          .with(params: { roster: roster }, args: [])
+      end
+    end
+
+    context 'when the fallback_user_id does not change' do
+      let(:roster) { create :roster }
+
+      before { roster.name = 'New name' }
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
+    end
+
+    context 'when there are no admins in the roster and the fallback_user_id changes' do
+      let(:roster) { create :roster }
+
+      before { roster.fallback_user = create(:user) }
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
+    end
+  end
 end

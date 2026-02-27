@@ -13,7 +13,9 @@ append :linked_files,
        'config/database.yml',
        'config/credentials/production.key'
 
-append :linked_dirs, '.bundle', 'log'
+append :linked_dirs, '.bundle', 'log', 'storage'
 
 set :passenger_restart_with_sudo, true
 set :bundle_version, 4
+
+after 'deploy:published', 'solid_queue:restart'

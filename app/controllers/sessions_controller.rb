@@ -1,24 +1,38 @@
 # frozen_string_literal: true
 
 class SessionsController < ApplicationController
-  if Rails.env.development?
-    # :nocov:
-    def create
-      authorize!
-      session[:user_id] = params[:user_id]
-      redirect_back_or_to root_path
-    end
+  skip_forgery_protection only: :create
 
-    def destroy
-      authorize!
-      session.clear
+  def create
+    authorize!
+    session[:entra_uid] = auth_hash.uid
+    session[:email] = auth_hash.info.email
+    session[:first_name] = auth_hash.info.first_name
+    session[:last_name] = auth_hash.info.last_name
+    redirect_to auth_referer || root_path
+  end
+
+  def destroy
+    authorize!
+    session.clear
+    if Rails.env.development?
+      # :nocov:
       redirect_to root_path
+      # :nocov:
+    else
+      redirect_to entra_logout_url, allow_other_host: true
     end
-    # :nocov:
-  else
-    def destroy
-      authorize!
-      redirect_to '/Shibboleth.sso/Logout?return=https://webauth.umass.edu/saml2/idp/SingleLogoutService.php'
-    end
+  end
+
+  private
+
+  def auth_hash = request.env['omniauth.auth']
+
+  def auth_referer = request.env['omniauth.origin'].presence
+
+  def entra_logout_url
+    tenant_id = Rails.application.credentials.dig(:entra_id, :tenant_id)
+    redirect_uri = CGI.escape(root_url)
+    "https://login.microsoftonline.com/#{tenant_id}/oauth2/v2.0/logout?post_logout_redirect_uri=#{redirect_uri}"
   end
 end

@@ -5,10 +5,6 @@
   = fields.label :last_name, class: 'form-label'
   = fields.text_field :last_name, required: true, class: 'form-control'
 .mb-3
-  = fields.label :spire, class: 'form-label'
-  = fields.email_field :spire, required: true, disabled: !allowed_to?(:manage?, fields.object), class: 'form-control'
-  %small.form-text.text-muted e.g. 12345678@umass.edu
-.mb-3
   = fields.label :email, class: 'form-label'
   = fields.email_field :email, required: true, class: 'form-control'
 .mb-3
