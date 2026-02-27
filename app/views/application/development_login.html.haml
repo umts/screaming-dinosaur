@@ -17,5 +17,6 @@
       .card-body
         = form_with url: '/auth/developer/callback', method: :get do |f|
           .input-group
-            = f.collection_select :uid, users, :entra_uid, :full_name, { include_blank: false }, class: 'form-select'
+            = f.collection_select :uid, users, :entra_uid, :full_name,
+                                  { include_blank: false }, class: 'form-select', 'data-controller': 'tom-select'
             = f.submit 'Log in', class: 'btn btn-outline-primary'
