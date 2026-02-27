@@ -8,9 +8,10 @@
     = stylesheet_link_tag 'application.css', media: 'all'
     = javascript_include_tag 'application.js', nonce: true, type: :module
     = csrf_meta_tags
-  %body
-    %header
-      = render partial: 'application/navbar'
-      = render partial: 'application/flash'
-    %main.container.my-3
-      = yield
+  %body.bg-body-tertiary
+    .min-vh-100.border-bottom.bg-body.d-flex.flex-column
+      %header
+        = render partial: 'application/navbar'
+        = render partial: 'application/flash'
+      %main.flex-grow-1
+        .container.mb-3= yield
