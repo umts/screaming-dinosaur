@@ -28,6 +28,7 @@ gem 'whenever', require: false
 
 group :production do
   gem 'exception_notification'
+  gem 'solid_queue'
 end
 
 group :production, :development do
