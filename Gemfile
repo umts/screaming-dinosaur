@@ -17,6 +17,7 @@ gem 'maintenance_tasks'
 gem 'net-http'
 # TODO: remove when we have modern glibc
 gem 'nokogiri', force_ruby_platform: true
+gem 'omniauth'
 gem 'paper_trail'
 gem 'phonelib'
 gem 'propshaft'
@@ -27,6 +28,10 @@ gem 'whenever', require: false
 
 group :production do
   gem 'exception_notification'
+end
+
+group :production, :development do
+  gem 'omniauth-entra-id'
 end
 
 group :development do
@@ -62,7 +67,6 @@ end
 
 group :test do
   gem 'capybara'
-  gem 'rack_session_access'
   gem 'rails-controller-testing'
   gem 'rspec-html-matchers'
   gem 'rspec-retry'
