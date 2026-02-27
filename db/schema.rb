@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_25_193429) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_26_203905) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -102,14 +102,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_25_193429) do
     t.string "last_name"
     t.string "phone"
     t.boolean "reminders_enabled", default: true
-    t.string "shibboleth_eppn"
-    t.string "spire"
     t.datetime "updated_at", precision: nil, null: false
     t.index ["calendar_access_token"], name: "index_users_on_calendar_access_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["entra_uid"], name: "index_users_on_entra_uid", unique: true
     t.index ["phone"], name: "index_users_on_phone", unique: true
-    t.index ["spire"], name: "index_users_on_spire", unique: true
   end
 
   create_table "versions", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
