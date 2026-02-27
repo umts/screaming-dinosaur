@@ -5,20 +5,17 @@
   - if allowed_to?(:show?, roster)
     %li.nav-item
       = link_to roster_path(roster), class: ['nav-link', nav_item == 'assignments' && 'active'] do
-        .text-nowrap
-          %i.fa-solid.fa-calendar
-          Assignments
+        %i.fa-solid.fa-calendar
+        Assignments
   - if allowed_to?(:index?, Membership, context: { roster: })
     %li.nav-item
       = link_to roster_memberships_path(roster), class: ['nav-link', nav_item == 'memberships' && 'active'] do
-        .text-nowrap
-          %i.fa-solid.fa-user
-          Memberships
+        %i.fa-solid.fa-user
+        Memberships
   - if allowed_to?(:edit?, roster)
     %li.nav-item
       = link_to edit_roster_path(roster), class: ['nav-link', nav_item == 'settings' && 'active'] do
-        .text-nowrap
-          %i.fa-solid.fa-gears
-          Settings
+        %i.fa-solid.fa-gears
+        Settings
 = render layout: 'layouts/resource', locals: { heading: roster.name, nav_expand: 'md', nav_items: } do
   = yield
