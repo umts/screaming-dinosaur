@@ -6,6 +6,7 @@ export default class extends Controller {
     new TomSelect(this.element, {
       create: false,
       plugins: ['dropdown_input'],
+      refreshThrottle: 0,
     });
   }
 }
