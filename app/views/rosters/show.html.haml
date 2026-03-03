@@ -22,11 +22,10 @@
       .d-flex
         .flex-grow-1
           Calendar
-        %div
+        .d-flex.align-items-center.gap-3
           = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-sm btn-text' do
             %i.fa-solid.fa-download
             CSV
-        %div
           = button_tag type: 'button',
                        class: 'btn btn-sm btn-text',
                        'data-bs-toggle': 'dropdown',
