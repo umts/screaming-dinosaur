@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe AssignmentsMailer do
   describe 'changed_assignment' do
     subject :output do

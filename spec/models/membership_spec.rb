@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe Membership do
   describe 'at least one admin validation' do
     it 'allows adding an admin' do

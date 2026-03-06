@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe RosterMailer do
   describe 'open_dates_alert' do
     subject(:email) { described_class.with(roster:, open_dates:).open_dates_alert }

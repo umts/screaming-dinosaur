@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Dashboard' do
   let(:user) { create :user }
   let(:roster) { user.rosters.first }

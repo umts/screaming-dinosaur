@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Twilio' do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster], phone: '(413) 545-0056' }
