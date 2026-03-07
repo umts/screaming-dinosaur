@@ -5,10 +5,10 @@ RSpec.describe RosterMailer do
     subject(:email) { described_class.with(roster:, open_dates:).open_dates_alert }
 
     let(:admin) { create :user }
-    let(:roster) { admin.rosters.last }
+    let(:roster) { create :roster }
     let(:open_dates) { Time.zone.today.to_date..6.days.from_now.to_date }
 
-    before { admin.memberships.last.update(admin: true) }
+    before { create :membership, user: admin, roster:, admin: true }
 
     it 'queues the email to be sent' do
       expect { email.deliver_now }.to change { ActionMailer::Base.deliveries.size }.by 1
@@ -48,6 +48,34 @@ RSpec.describe RosterMailer do
       it 'includes the fallback user name' do
         expect(email.body.encoded).to have_text "The fallback user is #{roster.fallback_user.full_name}."
       end
+    end
+  end
+
+  describe 'fallback_number_changed' do
+    subject(:email) { described_class.with(roster:).fallback_number_changed }
+
+    let(:admin) { create :user }
+    let(:roster) { create :roster, fallback_user: create(:user) }
+
+    before { admin.memberships.create(roster:, admin: true) }
+
+    it 'queues the email to be sent' do
+      expect { email.deliver_now }.to change { ActionMailer::Base.deliveries.size }.by 1
+    end
+
+    it 'sends the email to the correct users' do
+      admin2 = create :user
+      admin2.memberships.create(roster:, admin: true)
+
+      expect(email.to).to eq [admin.email, admin2.email]
+    end
+
+    it 'has the correct subject' do
+      expect(email.subject).to eq "Fallback number changed for #{roster.name} On-Call"
+    end
+
+    it 'includes the update twilio link' do
+      expect(email.body.encoded).to include('update twilio').and include(edit_roster_path(roster))
     end
   end
 end

@@ -9,7 +9,6 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'rspec/retry'
-require 'rack_session_access/capybara'
 require 'paper_trail/frameworks/rspec'
 
 Rails.root.glob('spec/support/**/*.rb').each { |f| require f }

@@ -53,23 +53,6 @@ RSpec.describe Roster do
     end
   end
 
-  describe 'user_options' do
-    let(:roster) { create :roster }
-    let!(:admins) { [roster_admin(roster)] }
-    let!(:non_admins) { [roster_user(roster)] }
-    let(:call) { roster.user_options }
-
-    it 'has admins in the "Admins"' do
-      expect(call.fetch('Admins'))
-        .to match_array(admins.map { |a| [a.full_name, a.id] })
-    end
-
-    it 'has non-admins in the "Non-Admins"' do
-      expect(call.fetch('Non-Admins'))
-        .to match_array(non_admins.map { |na| [na.full_name, na.id] })
-    end
-  end
-
   describe '#uncovered_dates_between' do
     subject(:call) { roster.uncovered_dates_between(start_date, end_date) }
 
@@ -103,6 +86,52 @@ RSpec.describe Roster do
 
       it 'is the correct time' do
         expect(call.to_fs(:time)).to eq('12:34')
+      end
+    end
+  end
+
+  describe '#save' do
+    subject(:call) { roster.save }
+
+    context 'when the roster is a new roster' do
+      let(:roster) { build :roster }
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
+    end
+
+    context 'when there are admins in the roster and the fallback_user_id changes' do
+      let(:roster) { create :roster }
+
+      before do
+        create(:membership, roster:, admin: true)
+        roster.fallback_user = create(:user)
+      end
+
+      it 'sends a notification with the correct roster' do
+        expect { call }.to have_enqueued_email(RosterMailer, :fallback_number_changed)
+          .with(params: { roster: roster }, args: [])
+      end
+    end
+
+    context 'when the fallback_user_id does not change' do
+      let(:roster) { create :roster }
+
+      before { roster.name = 'New name' }
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
+      end
+    end
+
+    context 'when there are no admins in the roster and the fallback_user_id changes' do
+      let(:roster) { create :roster }
+
+      before { roster.fallback_user = create(:user) }
+
+      it 'does not send a notification' do
+        expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
       end
     end
   end

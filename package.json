@@ -14,7 +14,8 @@
     "postcss": "*",
     "postcss-cli": "< 11",
     "postcss-scss": "*",
-    "rollup": "< 4"
+    "rollup": "< 4",
+    "tom-select": "*"
   },
   "devDependencies": {
     "@eslint/js": "< 9",

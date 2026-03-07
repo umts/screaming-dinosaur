@@ -4,7 +4,9 @@ RSpec.describe CheckRostersUncoveredDatesJob do
   subject(:job) { described_class.perform_now }
 
   let(:admin) { create :user }
-  let(:roster) { admin.rosters.last }
+  let(:roster) { create :roster }
+
+  before { create :membership, user: admin, roster: }
 
   context 'with open assignments in the next two weeks' do
     before do

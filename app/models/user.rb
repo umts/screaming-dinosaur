@@ -16,18 +16,14 @@ class User < ApplicationRecord
                                foreign_key: :whodunnit,
                                inverse_of: :author
 
-  validates :first_name, :last_name, :spire, :email, :phone, :rosters, presence: true
-  validates :spire, :email, :phone, uniqueness: { case_sensitive: false }
+  validates :entra_uid, presence: true, uniqueness: { case_sensitive: true }
+  validates :first_name, :last_name, :email, :phone, presence: true
+  validates :email, :phone, uniqueness: { case_sensitive: false }
   validates :calendar_access_token, uniqueness: { case_sensitive: true }
-  validates :spire, format: { with: /\A\d{8}@umass.edu\z/, message: :must_be_fc_id_number }
   validates :phone, phone: true
-  validate :prevent_self_deactivation, if: :being_deactivated?
 
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
-  before_save -> { assignments.future.destroy_all }, if: :being_deactivated?
-
-  scope :active, -> { where active: true }
-  scope :inactive, -> { where active: false }
+  after_commit :notify_fallback_rosters_of_phone_change, on: :update
 
   def full_name
     "#{first_name} #{last_name}"
@@ -37,29 +33,15 @@ class User < ApplicationRecord
     "#{last_name}, #{first_name}"
   end
 
-  def member_of?(roster) = rosters.include?(roster)
-
-  def admin_in?(roster)
-    membership_in(roster).try(:admin?) || false
-  end
-
-  def admin?
-    memberships.any?(&:admin?)
-  end
-
-  def membership_in(roster)
-    memberships.find_by(roster:)
-  end
-
   private
 
-  def being_deactivated?
-    active_changed? && !active?
-  end
+  def notify_fallback_rosters_of_phone_change
+    return unless phone_previously_changed?
 
-  def prevent_self_deactivation
-    return unless Current.user == self
+    fallback_rosters.includes(:admins).find_each do |roster|
+      next if roster.admins.empty?
 
-    errors.add :base, message: :may_not_deactivate_self
+      RosterMailer.with(roster: roster).fallback_number_changed.deliver_later
+    end
   end
 end

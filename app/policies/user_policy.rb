@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class UserPolicy < ApplicationPolicy
-  authorize :roster
+  skip_pre_check :allow_admins, only: :create?
 
-  def index? = user&.admin_in? roster
+  def manage? = false
 
-  def new? = user&.admin_in? roster
-  alias create? new?
+  def create? = request.session[:entra_uid].present? && user.blank? && no_admin_changes?
 
-  def edit? = (user&.admin_in? roster) || (user == record)
-  alias update? edit?
+  def update? = user == record && no_admin_changes?
 
-  def transfer? = user&.admin_in? roster
+  private
+
+  def no_admin_changes? = record.changes.slice('admin').blank?
 end
