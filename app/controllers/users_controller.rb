@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 
   def index
     authorize!
-    @users = User.order(active: :desc, first_name: :asc, last_name: :asc)
+    @users = User.order(active: :desc, first_name: :asc, last_name: :asc).page(params[:page])
   end
 
   def new

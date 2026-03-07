@@ -1,5 +1,5 @@
 = render layout: 'layouts/users' do
-  .card
+  .card.mb-3
     .card-header
       .d-flex
         .flex-grow-1
@@ -37,3 +37,4 @@
                     Edit
       - else
         .list-group-item No users found
+  = paginate @users
