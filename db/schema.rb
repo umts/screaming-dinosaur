@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_27_145040) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_06_183316) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -41,11 +41,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_145040) do
 
   create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
-    t.date "end_date"
-    t.integer "roster_id"
-    t.date "start_date"
+    t.date "end_date", null: false
+    t.bigint "roster_id", null: false
+    t.date "start_date", null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.integer "user_id"
+    t.bigint "user_id", null: false
+    t.index ["roster_id"], name: "index_assignments_on_roster_id"
+    t.index ["user_id"], name: "index_assignments_on_user_id"
   end
 
   create_table "maintenance_tasks_runs", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
@@ -70,22 +72,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_145040) do
   end
 
   create_table "memberships", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
-    t.boolean "admin", default: false
+    t.boolean "admin", default: false, null: false
     t.datetime "created_at", precision: nil, null: false
-    t.integer "roster_id"
+    t.bigint "roster_id", null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.integer "user_id"
+    t.bigint "user_id", null: false
+    t.index ["roster_id"], name: "index_memberships_on_roster_id"
     t.index ["user_id", "roster_id"], name: "index_memberships_on_user_id_and_roster_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
   create_table "rosters", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
-    t.integer "fallback_user_id"
-    t.string "name"
-    t.string "phone"
-    t.string "slug"
+    t.bigint "fallback_user_id"
+    t.string "name", null: false
+    t.string "phone", null: false
+    t.string "slug", null: false
     t.integer "switchover", default: 1020, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["fallback_user_id"], name: "index_rosters_on_fallback_user_id"
     t.index ["name"], name: "index_rosters_on_name", unique: true
     t.index ["slug"], name: "index_rosters_on_slug", unique: true
   end
@@ -212,17 +217,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_145040) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
-    t.boolean "active", default: true
+    t.boolean "active", default: true, null: false
     t.boolean "admin", default: false, null: false
-    t.string "calendar_access_token"
-    t.boolean "change_notifications_enabled", default: true
+    t.string "calendar_access_token", null: false
+    t.boolean "change_notifications_enabled", default: true, null: false
     t.datetime "created_at", precision: nil, null: false
-    t.string "email"
+    t.string "email", null: false
     t.string "entra_uid", null: false
-    t.string "first_name"
-    t.string "last_name"
-    t.string "phone"
-    t.boolean "reminders_enabled", default: true
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "phone", null: false
+    t.boolean "reminders_enabled", default: true, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["calendar_access_token"], name: "index_users_on_calendar_access_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -236,17 +241,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_27_145040) do
     t.integer "item_id", null: false
     t.string "item_type", limit: 191, null: false
     t.text "object", size: :long, collation: "utf8mb4_bin"
-    t.string "whodunnit"
+    t.bigint "whodunnit"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+    t.index ["whodunnit"], name: "index_versions_on_whodunnit"
     t.check_constraint "json_valid(`object`)", name: "object"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "assignments", "rosters"
+  add_foreign_key "assignments", "users"
+  add_foreign_key "memberships", "rosters"
+  add_foreign_key "memberships", "users"
+  add_foreign_key "rosters", "users", column: "fallback_user_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "versions", "users", column: "whodunnit"
 end
