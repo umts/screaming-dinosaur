@@ -1,5 +1,5 @@
 = render layout: 'layouts/rosters' do
-  .card
+  .card.mb-3
     .card-header
       .d-flex
         .flex-grow-1
@@ -23,3 +23,4 @@
     - else
       .card-body
         No rosters found
+  = paginate @rosters

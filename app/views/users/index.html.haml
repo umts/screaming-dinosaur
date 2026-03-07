@@ -1,5 +1,5 @@
 = render layout: 'layouts/users' do
-  .card
+  .card.mb-3
     .card-header
       .d-flex
         .flex-grow-1
@@ -19,15 +19,18 @@
                   .col
                     = user.full_name
                     - if user.admin
-                      %span.badge.text-bg-secondary Admin
+                      %span.badge.text-bg-secondary
+                        %i.fa-solid.fa-user-tie
+                        Admin
                   .col
                     .text-muted= formatted_phone user.phone
                   .col
                     .text-muted= user.email
               - if allowed_to?(:edit?, user)
                 .col-auto
-                  = link_to edit_user_path(user), class: 'btn btn-sm lh-1 text-nowrap' do
+                  = link_to edit_user_path(user), class: 'btn btn-sm btn-text' do
                     %i.fa-solid.fa-edit
                     Edit
       - else
         .list-group-item No users found
+  = paginate @users

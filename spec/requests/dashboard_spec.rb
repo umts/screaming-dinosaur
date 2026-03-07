@@ -10,9 +10,9 @@ RSpec.describe 'Dashboard' do
     before { create_list :roster, 2 }
 
     context 'when not logged in' do
-      it 'responds with a forbidden status' do
+      it 'responds with an unauthorized status' do
         call
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
