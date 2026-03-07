@@ -12,7 +12,7 @@
     .list-group.list-group-flush
       - if @users.present?
         - @users.each do |user|
-          .list-group-item{ class: user.active ? nil : 'text-muted' }
+          .list-group-item
             .row
               .col
                 .row.row-cols-1.row-cols-md-3
@@ -22,10 +22,6 @@
                       %span.badge.text-bg-secondary
                         %i.fa-solid.fa-user-tie
                         Admin
-                    - unless user.active
-                      %span.badge.text-bg-light
-                        %i.fa-solid.fa-user-slash
-                        Inactive
                   .col
                     .text-muted= formatted_phone user.phone
                   .col

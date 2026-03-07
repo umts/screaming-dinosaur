@@ -28,6 +28,3 @@
       = fields.label :admin, class: 'list-group-item' do
         = fields.check_box :admin, disabled: !allowed_to?(:manage?, fields.object), class: 'form-check-input me-2'
         Admin
-      = fields.label :active, class: 'list-group-item' do
-        = fields.check_box :active, disabled: !allowed_to?(:manage?, fields.object), class: 'form-check-input me-2'
-        Active
