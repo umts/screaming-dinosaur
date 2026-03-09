@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Feeds' do
   describe 'GET /feed/:roster_id/:token' do
     subject(:call) { get "/feed/#{roster.slug}/#{token}" }

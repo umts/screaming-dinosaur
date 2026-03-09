@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Week Assigners' do
   describe 'GET /rosters/:roster_id/assign_weeks' do
     subject(:call) { get "/rosters/#{roster.slug}/assign_weeks" }

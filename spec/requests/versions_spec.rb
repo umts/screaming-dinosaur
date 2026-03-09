@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'paper_trail/frameworks/rspec'
+require 'rails_helper'
 
 RSpec.describe 'Versions' do
   describe 'POST /versions/:id/undo', :versioning do

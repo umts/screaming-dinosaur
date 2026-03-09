@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Memberships' do
   shared_context 'with valid attributes' do
     let(:attributes) { { user_id: create(:user).id, admin: true } }

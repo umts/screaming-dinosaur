@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe CheckRostersUncoveredDatesJob do
   subject(:job) { described_class.perform_now }
 

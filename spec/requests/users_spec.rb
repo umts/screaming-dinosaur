@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Users' do
   shared_context 'with invalid attributes' do
     let(:attributes) { { first_name: nil, last_name: nil } }

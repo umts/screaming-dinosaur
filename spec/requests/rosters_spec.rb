@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Rosters' do
   shared_context 'with valid attributes' do
     let(:attributes) { { name: 'Test Roster', phone: '14135451451', switchover_time: '13:15' } }

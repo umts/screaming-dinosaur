@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'ICS views' do
   shared_examples 'an ics assignments feed' do
     subject(:lines) { page.html.split("\r\n") }

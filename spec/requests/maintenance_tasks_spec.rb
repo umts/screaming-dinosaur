@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Maintenance Tasks' do
   describe 'GET /maintenance_tasks' do
     subject(:call) { get '/maintenance_tasks' }
