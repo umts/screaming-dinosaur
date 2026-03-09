@@ -23,6 +23,7 @@ gem 'omniauth'
 gem 'paper_trail'
 gem 'phonelib'
 gem 'propshaft'
+gem 'puma'
 gem 'rails', '~> 8.1.2'
 gem 'stimulus-rails'
 gem 'thruster', require: false
@@ -65,7 +66,6 @@ group :development, :test do
   gem 'debug'
   gem 'dotenv'
   gem 'factory_bot_rails'
-  gem 'puma'
   gem 'rspec-rails'
 end
 
