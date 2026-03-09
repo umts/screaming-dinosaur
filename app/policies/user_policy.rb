@@ -11,5 +11,5 @@ class UserPolicy < ApplicationPolicy
 
   private
 
-  def no_admin_changes? = record.changes.slice('admin', 'active').blank?
+  def no_admin_changes? = record.changes.slice('admin').blank?
 end

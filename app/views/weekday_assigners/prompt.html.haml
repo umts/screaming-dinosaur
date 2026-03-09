@@ -7,7 +7,7 @@
         .mb-3
           = f.label :user_id, class: 'form-label'
           = f.collection_select :user_id,
-                                @assigner.roster.users.active.order(:first_name, :last_name), :id, :full_name,
+                                @assigner.roster.users.order(:first_name, :last_name), :id, :full_name,
                                 {}, required: true, class: 'form-select'
         .row.g-3
           .mb-3.col-md

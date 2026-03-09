@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_06_183316) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_07_175220) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -217,7 +217,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_06_183316) do
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
-    t.boolean "active", default: true, null: false
     t.boolean "admin", default: false, null: false
     t.string "calendar_access_token", null: false
     t.boolean "change_notifications_enabled", default: true, null: false

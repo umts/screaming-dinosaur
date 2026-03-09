@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 
   def index
     authorize!
-    @users = User.order(active: :desc, first_name: :asc, last_name: :asc).page(params[:page])
+    @users = User.order(first_name: :asc, last_name: :asc).page(params[:page])
   end
 
   def new
@@ -55,6 +55,6 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.expect user: %i[first_name last_name email phone admin active reminders_enabled change_notifications_enabled]
+    params.expect user: %i[first_name last_name email phone admin reminders_enabled change_notifications_enabled]
   end
 end
