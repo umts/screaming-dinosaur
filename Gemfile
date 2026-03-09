@@ -25,6 +25,7 @@ gem 'phonelib'
 gem 'propshaft'
 gem 'rails', '~> 8.1.2'
 gem 'stimulus-rails'
+gem 'thruster', require: false
 gem 'trilogy'
 
 group :production do
