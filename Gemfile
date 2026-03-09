@@ -25,7 +25,6 @@ gem 'propshaft'
 gem 'rails', '~> 8.1.2'
 gem 'stimulus-rails'
 gem 'trilogy'
-gem 'whenever', require: false
 
 group :production do
   gem 'exception_notification'
