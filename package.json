@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "@rails/ujs": "*",
-    "@rollup/plugin-node-resolve": "*",
     "@csstools/postcss-sass": "*",
     "@fortawesome/fontawesome-free": "*",
     "@fullcalendar/bootstrap5": "*",
@@ -9,6 +7,8 @@
     "@fullcalendar/daygrid": "*",
     "@hotwired/stimulus": "*",
     "@popperjs/core": "^2.11.8",
+    "@rails/ujs": "*",
+    "@rollup/plugin-node-resolve": "*",
     "autoprefixer": "*",
     "bootstrap": "^5.3.8",
     "postcss": "*",
