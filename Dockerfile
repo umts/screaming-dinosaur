@@ -25,6 +25,7 @@ ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_ONLY="default production" \
+    SOLID_QUEUE_IN_PUMA="1" \
     NODE_ENV="production" \
     LD_PRELOAD="/usr/local/lib/libjemalloc.so"
 
