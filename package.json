@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "@rails/ujs": "*",
-    "@rollup/plugin-node-resolve": "*",
     "@csstools/postcss-sass": "*",
     "@fortawesome/fontawesome-free": "*",
     "@fullcalendar/bootstrap5": "*",
@@ -9,13 +7,15 @@
     "@fullcalendar/daygrid": "*",
     "@hotwired/stimulus": "*",
     "@popperjs/core": "^2.11.8",
+    "@rails/ujs": "*",
+    "@rollup/plugin-node-resolve": "*",
     "autoprefixer": "*",
     "bootstrap": "^5.3.8",
     "postcss": "*",
     "postcss-cli": "< 11",
     "postcss-scss": "*",
     "rollup": "< 4",
-    "tom-select": "*"
+    "tom-select": "^2.5.2"
   },
   "devDependencies": {
     "@eslint/js": "< 9",
