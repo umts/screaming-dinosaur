@@ -7,10 +7,10 @@
       = form_with model: [@roster, new_membership] do |f|
         .input-group
           = f.label :user_id, 'Add user', class: 'input-group-text'
-          = f.collection_select :user_id, other_users, :id, :full_name, {},
-                                required: true,
-                                class: 'form-select',
-                                data: { controller: 'tom-select' }
+          = f.collection_select :user_id,
+                                other_users, :id, :full_name,
+                                { include_blank: true },
+                                required: true, class: 'form-select', 'data-controller': 'tom-select'
           = f.button type: :submit, class: 'btn btn-outline-secondary' do
             %i.fa-solid.fa-check
             Add
