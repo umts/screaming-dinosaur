@@ -1,4 +1,3 @@
-import TomSelect from 'tom-select';
 import Rails from '@rails/ujs';
 import {Popover} from 'bootstrap';
 import './controllers/index.js';
