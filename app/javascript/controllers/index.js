@@ -13,5 +13,8 @@ application.register("clipboard", ClipboardController)
 import LoginController from "./login_controller"
 application.register("login", LoginController)
 
+import PopoverController from "./popover_controller"
+application.register("popover", PopoverController)
+
 import TomSelectController from "./tom_select_controller"
 application.register("tom-select", TomSelectController)
