@@ -5,6 +5,7 @@ ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
+require 'paper_trail/frameworks/rspec'
 
 Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
 
@@ -29,5 +30,12 @@ RSpec.configure do |config|
 
   config.before :each, :js, type: :system do
     driven_by :selenium, using: :headless_chrome
+  end
+end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
   end
 end
