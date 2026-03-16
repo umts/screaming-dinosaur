@@ -12,7 +12,7 @@
     "autoprefixer": "*",
     "bootstrap": "^5.3.8",
     "postcss": "*",
-    "postcss-cli": "< 11",
+    "postcss-cli": "*",
     "postcss-scss": "*",
     "rollup": "*",
     "tom-select": "*"
