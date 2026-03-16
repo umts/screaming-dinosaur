@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'simplecov'
-SimpleCov.start 'rails'
+SimpleCov.start 'rails' do
+  enable_coverage :branch
+end
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
