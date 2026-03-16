@@ -24,9 +24,9 @@
     "eslint-formatter-compact": "*",
     "globals": "*",
     "run-pty": "*",
-    "stylelint": "< 16",
-    "stylelint-config-standard": "< 35",
-    "stylelint-config-standard-scss": "< 12"
+    "stylelint": "*",
+    "stylelint-config-standard": "*",
+    "stylelint-config-standard-scss": "*"
   },
   "scripts": {
     "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -c",
