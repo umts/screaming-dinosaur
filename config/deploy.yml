@@ -15,7 +15,7 @@ servers:
     - afs-umts-web4.admin.umass.edu
 proxy:
   ssl: true
-  host: gtfs-cache.admin.umass.edu
+  host: umts-oncall.admin.umass.edu
 registry:
   server: localhost:5555
 builder:
