@@ -2,6 +2,9 @@ const js = require('@eslint/js');
 const googleConfig = require('eslint-config-google');
 const globals = require('globals');
 
+delete googleConfig.rules['valid-jsdoc'];
+delete googleConfig.rules['require-jsdoc'];
+
 module.exports = [
   {
     ignores: [
@@ -21,7 +24,6 @@ module.exports = [
       ...js.configs.recommended.rules,
       ...googleConfig.rules,
       'max-len': ['error', {code: 120}],
-      'require-jsdoc': 'off',
     },
   },
   {

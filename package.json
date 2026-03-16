@@ -18,9 +18,10 @@
     "tom-select": "*"
   },
   "devDependencies": {
-    "@eslint/js": "< 9",
-    "eslint": "< 9",
+    "@eslint/js": "< 10",
+    "eslint": "< 10",
     "eslint-config-google": "*",
+    "eslint-formatter-compact": "*",
     "globals": "*",
     "run-pty": "*",
     "stylelint": "< 16",
