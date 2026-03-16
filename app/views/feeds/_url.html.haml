@@ -1,7 +1,10 @@
 - information = capture do
   Use this address to subscribe to this calendar in another application (e.g. Google Calendar).
 .input-group{ 'data-controller': 'clipboard' }
-  = button_tag type: 'button', class: 'input-group-text', 'data-bs-toggle': 'popover', 'data-bs-content': information do
+  = button_tag type: 'button',
+               class: 'input-group-text',
+               'data-controller': 'popover',
+               'data-bs-content': information do
     %i.fa-solid.fa-circle-info
   .form-control
     .text-nowrap.overflow-hidden{ 'data-clipboard-target': 'source' }
