@@ -2,21 +2,17 @@
 
 class Membership < ApplicationRecord
   has_paper_trail
+
   belongs_to :user
   belongs_to :roster
-  validates :user, uniqueness: { scope: :roster }
-  validate :at_least_one_admin
+
+  validates :user_id, uniqueness: { scope: :roster_id }
+
   after_destroy :delete_future_assignments
 
   private
 
-  def at_least_one_admin
-    return unless admin_changed?(to: false) && roster.admins.one?
-
-    errors.add :user, 'is the last admin and cannot be demoted'
-  end
-
   def delete_future_assignments
-    user.assignments.where(roster:).future.destroy_all
+    user.assignments.where(roster:).future.each(&:destroy!)
   end
 end
