@@ -2,8 +2,8 @@
 # check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build --build-arg RUBY_VERSION=$(cat .ruby-version) --build-arg NODE_VERSION=$(cat .node-version) -t screaming-dinosaur .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/credentials/production.key> screaming-dinosaur
+# docker build --tag screaming-dinosaur --build-arg RUBY_VERSION="$(cat .ruby-version)" --build-arg NODE_VERSION=$(cat .node-version) .
+# docker run --interactive --tty --publish 80:80 --env RAILS_MASTER_KEY="$(cat config/credentials/production.key)" screaming-dinosaur
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
@@ -74,17 +74,15 @@ RUN rm -rf node_modules
 # Final stage for app image
 FROM base
 
+# Copy built artifacts: gems, application
+COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /rails /rails
+
 # Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    mkdir -p /rails && chown -R rails:rails /rails
+    mkdir -p /rails/log /rails/storage /rails/tmp && chown -R rails:rails /rails/log /rails/storage /rails/tmp
 USER 1000:1000
-
-# Copy built artifacts: gems, application
-COPY --chown=rails:rails --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --chown=rails:rails --from=build /rails /rails
-
-RUN mkdir -p /rails/log /rails/storage
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
