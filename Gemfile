@@ -45,6 +45,7 @@ group :development do
   gem 'brakeman', require: false
   gem 'ed25519', require: false
   gem 'haml_lint', require: false
+  gem 'kamal', require: false
   gem 'listen'
   gem 'overcommit', require: false
   gem 'rb-readline', require: false
