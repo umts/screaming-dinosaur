@@ -1,7 +1,7 @@
-const resolve = require('@rollup/plugin-node-resolve');
-const {defineConfig} = require('rollup');
+import resolve from '@rollup/plugin-node-resolve';
+import {defineConfig} from 'rollup';
 
-module.exports = defineConfig({
+export default defineConfig({
   output: {
     format: 'esm',
     sourcemap: true,
