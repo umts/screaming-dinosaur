@@ -11,7 +11,7 @@
     "bootstrap": "^5.3.8",
     "fullcalendar": "*",
     "postcss": "*",
-    "postcss-cli": "< 11",
+    "postcss-cli": "*",
     "postcss-scss": "*",
     "rollup": "*",
     "temporal-polyfill": "*",
