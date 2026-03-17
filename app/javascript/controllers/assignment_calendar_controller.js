@@ -36,7 +36,7 @@ export default class extends Controller {
         }
       },
       eventSourceFailure: function(response) {
-        alert('Something has gone wrong. IT has been notified. Contact them if the problem persists');
+        alert('Something has gone wrong. IT has been notified. Contact them if the problem persists.');
       },
       datesSet: function(info) {
         const currentStart = info.view.currentStart.toISOString();
