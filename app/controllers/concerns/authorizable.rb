@@ -17,12 +17,12 @@ module Authorizable
       elsif Rails.env.production?
         respond_to do |format|
           format.html { render 'application/production_login', layout: 'layouts/application', status: :unauthorized }
-          format.json { head :unauthorized }
+          format.all { head :unauthorized }
         end
       elsif Rails.env.development?
         respond_to do |format|
           format.html { render 'application/development_login', layout: 'layouts/application', status: :unauthorized }
-          format.json { head :unauthorized }
+          format.all { head :unauthorized }
         end
       # :nocov:
       else
