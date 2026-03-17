@@ -36,7 +36,11 @@ export default class extends Controller {
         }
       },
       eventSourceFailure: function(response) {
-        alert('Something has gone wrong. IT has been notified. Contact them if the problem persists.');
+        if (response.status == 403) {
+          window.location.replace(`${window.location.origin}/rosters`);
+        } else {
+          window.location.replace(window.location.origin);
+        }
       },
       datesSet: function(info) {
         const currentStart = info.view.currentStart.toISOString();
