@@ -35,6 +35,9 @@ export default class extends Controller {
           date.setDate(date.getDate() + 1);
         }
       },
+      eventSourceFailure: function(response) {
+        alert('Something has gone wrong. IT has been notified. Contact them if the problem persists');
+      },
       datesSet: function(info) {
         const currentStart = info.view.currentStart.toISOString();
         sessionStorage.setItem('lastDate', currentStart);

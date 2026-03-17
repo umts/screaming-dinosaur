@@ -15,9 +15,15 @@ module Authorizable
         redirect_to main_app.new_user_path
       # :nocov:
       elsif Rails.env.production?
-        render 'application/production_login', layout: 'layouts/application', status: :unauthorized
+        respond_to do |format|
+          format.html { render 'application/production_login', layout: 'layouts/application', status: :unauthorized }
+          format.json { head :unauthorized }
+        end
       elsif Rails.env.development?
-        render 'application/development_login', layout: 'layouts/application', status: :unauthorized
+        respond_to do |format|
+          format.html { render 'application/development_login', layout: 'layouts/application', status: :unauthorized }
+          format.json { head :unauthorized }
+        end
       # :nocov:
       else
         head :unauthorized
