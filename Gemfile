@@ -69,3 +69,5 @@ group :test do
   gem 'selenium-webdriver'
   gem 'simplecov'
 end
+
+gem 'kaminari'
