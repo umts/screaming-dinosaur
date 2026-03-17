@@ -11,6 +11,59 @@ RSpec.describe 'Memberships' do
     let(:attributes) { { user_id: nil } }
   end
 
+  describe 'GET /rosters/:roster_id/memberships' do
+    subject(:submit) { get "/rosters/#{roster.id}/memberships", params: }
+
+    let(:roster) { create :roster }
+
+    context 'when logged in as a member of the roster' do
+      include_context 'when logged in as a member of the roster'
+
+      let(:params) { {} }
+
+      it 'returns a success status' do
+        submit
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when logged in as an admin of the roster' do
+      include_context 'when logged in as an admin of the roster'
+
+      before do
+        create_list(:membership, 30, roster:)
+      end
+
+      context 'when loading the first page' do
+        let(:params) { { page: 1 } }
+
+        it 'returns a success status' do
+          submit
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'shows the first page of memberships' do
+          submit
+          expect(response.body).to include('page=2')
+        end
+      end
+
+      context 'when loading the second page' do
+        let(:params) { { page: 2 } }
+
+        it 'returns a success status' do
+          submit
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'shows pagination controls' do
+          submit
+          expect(response.body).to include('aria-label="Pages"')
+        end
+      end
+    end
+  end
+
   describe 'POST /rosters/:roster_id/memberships' do
     subject(:submit) { post "/rosters/#{roster.id}/memberships", params: { membership: attributes } }
 
