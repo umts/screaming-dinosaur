@@ -37,7 +37,7 @@ export default class extends Controller {
       },
       eventSourceFailure: function(response) {
         if (response.status == 403) {
-          window.location.replace(`${window.location.origin}/rosters`);
+          window.location.replace(window.location.origin);
         } else if (response.status == 401) {
           window.location.reload();
         } else {
