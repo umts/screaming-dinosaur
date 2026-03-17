@@ -38,8 +38,10 @@ export default class extends Controller {
       eventSourceFailure: function(response) {
         if (response.status == 403) {
           window.location.replace(`${window.location.origin}/rosters`);
+        } else if (response.status == 401) {
+          window.location.reload();
         } else {
-          window.location.replace(window.location.origin);
+          alert('Something has gone wrong. IT has been notified. Contact them if the problem persists.');
         }
       },
       datesSet: function(info) {
