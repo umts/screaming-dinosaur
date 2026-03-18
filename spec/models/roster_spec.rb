@@ -63,8 +63,8 @@ RSpec.describe Roster do
 
     context 'with multiple assignments' do
       before do
-        create :assignment, roster:, end_date: 2.days.from_now
-        create :assignment, roster:, end_date: 10.days.from_now
+        create :assignment, roster:, start_date: Date.today, end_date: 2.days.from_now
+        create :assignment, roster:, start_date: 3.days.from_now, end_date: 10.days.from_now
       end
 
       it 'returns the day after the last assignment ends with latest end date' do
