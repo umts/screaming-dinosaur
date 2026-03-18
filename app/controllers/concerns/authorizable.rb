@@ -14,10 +14,11 @@ module Authorizable
       elsif session[:entra_uid].present?
         redirect_to main_app.new_user_path
       # :nocov:
-      elsif Rails.env.production?
-        render 'application/production_login', layout: 'layouts/application', status: :unauthorized
-      elsif Rails.env.development?
-        render 'application/development_login', layout: 'layouts/application', status: :unauthorized
+      elsif Rails.env.production? || Rails.env.development?
+        respond_to do |format|
+          format.html { render "application/#{Rails.env}_login", layout: 'layouts/application', status: :unauthorized }
+          format.all { head :unauthorized }
+        end
       # :nocov:
       else
         head :unauthorized
