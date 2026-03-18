@@ -63,7 +63,7 @@ RSpec.describe Roster do
 
     context 'with multiple assignments' do
       before do
-        create :assignment, roster:, start_date: Date.today, end_date: 2.days.from_now
+        create :assignment, roster:, start_date: Time.zone.today, end_date: 2.days.from_now
         create :assignment, roster:, start_date: 3.days.from_now, end_date: 10.days.from_now
       end
 
