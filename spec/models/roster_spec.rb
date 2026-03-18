@@ -5,6 +5,39 @@ require 'rails_helper'
 RSpec.describe Roster do
   include ActiveSupport::Testing::TimeHelpers
 
+  describe '#switchover_time=' do
+    subject(:call) { roster.switchover_time = value }
+
+    let(:roster) { build :roster }
+
+    context 'with a time object' do
+      let(:value) { Time.zone.parse('12:30') }
+
+      it 'converts time to minutes' do
+        call
+        expect(roster.switchover).to eq((12 * 60) + 30)
+      end
+    end
+
+    context 'when switchover_time is nil' do
+      let(:value) { nil }
+
+      it 'set switchover time to nil' do
+        call
+        expect(roster.switchover).to be_nil
+      end
+    end
+
+    context 'when switchover_time is string' do
+      let(:value) { '12:30' }
+
+      it 'set switchover time to nil' do
+        call
+        expect(roster.switchover).to eq((12 * 60) + 30)
+      end
+    end
+  end
+
   describe 'next_rotation_start_date' do
     subject(:result) { roster.next_rotation_start_date }
 
@@ -25,6 +58,17 @@ RSpec.describe Roster do
       it 'returns the upcoming Friday' do
         travel_to Date.parse('Monday, May 8th, 2017')
         expect(result).to eq Date.parse('Friday, May 12th, 2017')
+      end
+    end
+
+    context 'with multiple assignments' do
+      before do
+        create :assignment, roster:, end_date: 2.days.from_now
+        create :assignment, roster:, end_date: 10.days.from_now
+      end
+
+      it 'returns the day after the last assignment ends with latest end date' do
+        expect(result).to eq 11.days.from_now.to_date
       end
     end
   end
