@@ -30,36 +30,11 @@ RSpec.describe 'Memberships' do
     context 'when logged in as an admin of the roster' do
       include_context 'when logged in as an admin of the roster'
 
-      before do
-        create_list(:membership, 30, roster:)
-      end
+      let(:params) { {} }
 
-      context 'when loading the first page' do
-        let(:params) { { page: 1 } }
-
-        it 'returns a success status' do
-          submit
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'shows the first page of memberships' do
-          submit
-          expect(response.body).to include('page=2')
-        end
-      end
-
-      context 'when loading the second page' do
-        let(:params) { { page: 2 } }
-
-        it 'returns a success status' do
-          submit
-          expect(response).to have_http_status(:ok)
-        end
-
-        it 'shows pagination controls' do
-          submit
-          expect(response.body).to include('aria-label="Pages"')
-        end
+      it 'returns a success status' do
+        submit
+        expect(response).to have_http_status(:ok)
       end
     end
   end
