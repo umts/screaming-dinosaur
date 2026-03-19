@@ -6,7 +6,7 @@ class RostersController < ApplicationController
 
   def index
     authorize!
-    @rosters = authorized_scope(Roster.all).page(params[:page])
+    @rosters = authorized_scope(Roster.includes(:fallback_user, current_assignment: :user)).page(params[:page])
   end
 
   def show
