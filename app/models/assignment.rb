@@ -10,19 +10,15 @@ class Assignment < ApplicationRecord
 
   validates :end_datetime, presence: true, uniqueness: { scope: :roster_id }
 
+  scope :ending_before, ->(time) { where(arel_table[:end_datetime].lt(time)) }
+  scope :ending_after, ->(time) { where(arel_table[:end_datetime].gt(time)) }
+  scope :overlapping, ->(range) { where(start_datetime: nil..range.end, end_datetime: range.begin..nil) }
+
   def start_datetime = super.presence || previous&.end_datetime || roster.created_at
 
-  def previous
-    roster.assignments
-          .where(self.class.arel_table[:end_datetime].lt(end_datetime))
-          .order(end_datetime: :desc).first
-  end
+  def previous = roster.assignments.ending_before(end_datetime).order(end_datetime: :desc).first
 
-  def next
-    roster.assignments
-          .where(self.class.arel_table[:end_datetime].gt(end_datetime))
-          .order(end_datetime: :asc).first
-  end
+  def next = roster.assignments.ending_after(end_datetime).order(end_datetime: :asc).first
 
   class << self
     def with_start_datetimes
