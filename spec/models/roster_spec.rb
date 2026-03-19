@@ -5,31 +5,7 @@ require 'rails_helper'
 RSpec.describe Roster do
   include ActiveSupport::Testing::TimeHelpers
 
-  describe 'next_rotation_start_date' do
-    subject(:result) { roster.next_rotation_start_date }
-
-    let(:roster) { create :roster, fallback_user: }
-    let(:fallback_user) { create :user }
-
-    context 'with existing assignments' do
-      before do
-        create :assignment, roster:, end_date: 1.week.from_now
-      end
-
-      it 'returns the day after the last assignment ends' do
-        expect(result).to eq 8.days.since.to_date
-      end
-    end
-
-    context 'with no existing assignments' do
-      it 'returns the upcoming Friday' do
-        travel_to Date.parse('Monday, May 8th, 2017')
-        expect(result).to eq Date.parse('Friday, May 12th, 2017')
-      end
-    end
-  end
-
-  describe 'on_call_user' do
+  describe '#on_call_user' do
     subject(:result) { roster.on_call_user }
 
     let(:roster) { create :roster, fallback_user: }
@@ -55,20 +31,6 @@ RSpec.describe Roster do
     end
   end
 
-  describe '#uncovered_dates_between' do
-    subject(:call) { roster.uncovered_dates_between(start_date, end_date) }
-
-    let(:roster) { create :roster }
-    let(:start_date) { Time.zone.today }
-    let(:end_date) { 1.week.from_now }
-
-    before { create :assignment, roster:, start_date: 1.day.from_now, end_date: 6.days.from_now }
-
-    it 'returns the dates with no assignments between the given start and end date' do
-      expect(call).to eq [Time.zone.today.to_date, 7.days.from_now.to_date]
-    end
-  end
-
   describe '#switchover_time' do
     subject(:call) { roster.switchover_time }
 
@@ -88,6 +50,88 @@ RSpec.describe Roster do
 
       it 'is the correct time' do
         expect(call.to_fs(:time)).to eq('12:34')
+      end
+    end
+  end
+
+  describe '#switchover_time=' do
+    subject(:call) { roster.switchover_time = value }
+
+    let(:roster) { build :roster }
+
+    context 'with a time object' do
+      let(:value) { Time.zone.parse('12:30') }
+
+      it 'converts time to minutes' do
+        call
+        expect(roster.switchover).to eq((12 * 60) + 30)
+      end
+    end
+
+    context 'when switchover_time is nil' do
+      let(:value) { nil }
+
+      it 'set switchover time to nil' do
+        call
+        expect(roster.switchover).to be_nil
+      end
+    end
+
+    context 'when switchover_time is string' do
+      let(:value) { '12:30' }
+
+      it 'set switchover time to nil' do
+        call
+        expect(roster.switchover).to eq((12 * 60) + 30)
+      end
+    end
+  end
+
+  describe '#uncovered_dates_between' do
+    subject(:call) { roster.uncovered_dates_between(start_date, end_date) }
+
+    let(:roster) { create :roster }
+    let(:start_date) { Time.zone.today }
+    let(:end_date) { 1.week.from_now }
+
+    before { create :assignment, roster:, start_date: 1.day.from_now, end_date: 6.days.from_now }
+
+    it 'returns the dates with no assignments between the given start and end date' do
+      expect(call).to eq [Time.zone.today.to_date, 7.days.from_now.to_date]
+    end
+  end
+
+  describe '#next_rotation_start_date' do
+    subject(:result) { roster.next_rotation_start_date }
+
+    let(:roster) { create :roster, fallback_user: }
+    let(:fallback_user) { create :user }
+
+    context 'with existing assignments' do
+      before do
+        create :assignment, roster:, end_date: 1.week.from_now
+      end
+
+      it 'returns the day after the last assignment ends' do
+        expect(result).to eq 8.days.since.to_date
+      end
+    end
+
+    context 'with no existing assignments' do
+      it 'returns the upcoming Friday' do
+        travel_to Date.parse('Monday, May 8th, 2017')
+        expect(result).to eq Date.parse('Friday, May 12th, 2017')
+      end
+    end
+
+    context 'with multiple assignments' do
+      before do
+        create :assignment, roster:, start_date: Time.zone.today, end_date: 2.days.from_now
+        create :assignment, roster:, start_date: 3.days.from_now, end_date: 10.days.from_now
+      end
+
+      it 'returns the day after the last assignment ends with latest end date' do
+        expect(result).to eq 11.days.from_now.to_date
       end
     end
   end
