@@ -11,12 +11,12 @@
           .list-group-item
             .float-end.text-muted
               in
-              = distance_of_time_in_words_to_now(assignment.effective_start_datetime)
+              = distance_of_time_in_words_to_now(assignment.start_datetime)
             %div
               From
-              %span.text-muted= l assignment.effective_start_datetime, format: :named
+              %span.text-muted= l assignment.start_datetime, format: :named
               to
-              %span.text-muted= l assignment.effective_end_datetime, format: :named
+              %span.text-muted= l assignment.end_datetime, format: :named
   .card.mb-3
     .card-header
       .d-flex
