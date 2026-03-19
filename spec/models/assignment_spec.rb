@@ -5,226 +5,146 @@ require 'rails_helper'
 RSpec.describe Assignment do
   include ActiveSupport::Testing::TimeHelpers
 
-  describe 'effective time methods' do
-    let(:roster) { create :roster, switchover: 14 * 60 }
-    let :assignment do
-      create :assignment, roster:,
-                          start_date: Date.new(2017, 4, 10), end_date: Date.new(2017, 4, 11)
-    end
-
-    describe 'effective_start_datetime' do
-      it 'returns the start date, at the switchover hour' do
-        expect(assignment.effective_start_datetime)
-          .to eql Time.zone.local(2017, 4, 10, 14)
-      end
-    end
-
-    describe 'effective_end_datetime' do
-      it 'returns the day after the end date, at the switchover hour' do
-        expect(assignment.effective_end_datetime)
-          .to eql Time.zone.local(2017, 4, 12, 14)
-      end
-    end
+  describe 'associations' do
+    it { is_expected.to belong_to(:roster) }
+    it { is_expected.to belong_to(:user).optional }
   end
 
-  describe 'current' do
-    subject(:call) { described_class.current }
+  describe 'validations' do
+    subject { build :assignment }
+
+    it { is_expected.to validate_presence_of(:end_datetime) }
+    it { is_expected.to validate_uniqueness_of(:end_datetime).scoped_to(:roster_id) }
+  end
+
+  describe '#previous' do
+    subject(:call) { assignment.previous }
 
     let(:roster) { create :roster }
-    let! :yesterday do
-      date = Date.new(2019, 11, 12)
-      create :assignment, start_date: date, end_date: date, roster:
-    end
-    let! :today do
-      date = Date.new(2019, 11, 13)
-      create :assignment, start_date: date, end_date: date, roster:
-    end
-    let :switchover_time do
-      Date.new(2019, 11, 13) + roster.switchover.minutes
-    end
-
-    context 'when it is before the switchover hour' do
-      it "returns yesterday's assignment" do
-        travel_to 1.minute.before(switchover_time)
-        expect(call).to eq yesterday
-      end
-    end
-
-    context 'when it is after the switchover hour' do
-      it "returns today's assignment" do
-        travel_to 1.minute.after(switchover_time)
-        expect(call).to eq today
-      end
-    end
-
-    context 'with assignments in multiple rosters' do
-      before do
-        travel_to 1.minute.after(switchover_time)
-      end
-
-      let! :new_assignment do
-        # This new assignment will also belong to a new roster
-        create :assignment, start_date: Time.zone.today, end_date: Time.zone.today
-      end
-
-      it 'includes assignments in the current roster' do
-        expect(roster.assignments.current).to eq today
-      end
-
-      it 'includes assignments in the other roster when called on the other roster' do
-        expect(new_assignment.roster.assignments.current).to eq new_assignment
-      end
-    end
-  end
-
-  describe '#save' do
-    subject(:save) { assignment.save }
-
-    let(:assignment) { create :assignment }
-    let(:recipient) { assignment.user }
-    let(:current_user) { create :user }
-
-    context 'when the changer is the recipient' do
-      let(:current_user) { recipient }
-
-      it 'does not send an email' do
-        expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
-      end
-    end
-
-    context 'when the changer is not the recipient' do
-      context 'when creating a new assignment' do
-        it 'sends the new_assignment mail' do
-          expect { create :assignment }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
-        end
-      end
-
-      context 'when updating an assignment' do
-        before { assignment.assign_attributes start_date: 1.week.from_now, end_date: 2.weeks.from_now }
-
-        it 'sends the changed_assignment mail' do
-          expect { save }.to have_enqueued_email(AssignmentsMailer, :changed_assignment)
-        end
-      end
-    end
-
-    context 'when change notifications are disabled' do
-      before { recipient.update change_notifications_enabled: false }
-
-      it 'does not send notifications' do
-        expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
-      end
-    end
-  end
-
-  describe '#destroy' do
-    subject(:destroy) { assignment.destroy }
-
-    let(:assignment) { create :assignment }
-
-    it 'sends the deleted_assignment mail' do
-      expect { destroy }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
-    end
-  end
-
-  describe 'on' do
-    subject(:call) { described_class.on date }
-
-    let(:date) { Date.new(2019, 11, 13) }
-    let! :correct_assignment do
-      create :assignment, start_date: date, end_date: 6.days.after(date)
-    end
+    let(:assignment) { build_stubbed(:assignment, roster:) }
 
     before do
-      create :assignment, start_date: 1.week.before(date), end_date: 1.day.before(date)
-      create :assignment, start_date: 1.week.after(date), end_date: 13.days.after(date)
+      create(:assignment, roster:, end_datetime: assignment.end_datetime + 10.minutes)
+      create(:assignment, roster:, end_datetime: assignment.end_datetime + 5.minutes)
+      create :assignment, end_datetime: assignment.end_datetime - 5.minutes
     end
 
-    it { is_expected.to eq correct_assignment }
+    context 'when there are no other assignments that have the same roster and an earlier end datetime' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there are other assignments that have the same roster and an earlier end datetime' do
+      let!(:target) { create(:assignment, roster:, end_datetime: assignment.end_datetime - 5.minutes) }
+
+      before { create(:assignment, roster:, end_datetime: assignment.end_datetime - 10.minutes) }
+
+      it 'returns the one with the latest end datetime' do
+        expect(call).to eq(target)
+      end
+    end
   end
 
-  describe 'overlapping assignment validation' do
+  describe '#next' do
+    subject(:call) { assignment.next }
+
     let(:roster) { create :roster }
+    let(:assignment) { build_stubbed(:assignment, roster:) }
 
     before do
-      create :assignment, roster:,
-                          start_date: Time.zone.today,
-                          end_date: 6.days.from_now
+      create :assignment, end_datetime: assignment.end_datetime + 5.minutes
+      create(:assignment, roster:, end_datetime: assignment.end_datetime - 5.minutes)
+      create(:assignment, roster:, end_datetime: assignment.end_datetime - 10.minutes)
     end
 
-    context 'when creating assignments that do not overlap' do
-      it 'does not add errors' do
-        assignments = [[1.week.ago, Date.yesterday],
-                       [1.week.from_now, 2.weeks.from_now]].map do |s, e|
-          create :assignment, start_date: s, end_date: e, roster: roster
-        end
-        expect(assignments).to all(be_valid)
-      end
+    context 'when there are no other assignments that have the same roster and a later end datetime' do
+      it { is_expected.to be_nil }
     end
 
-    context 'with an overlapping assignment in the same roster' do
-      it 'adds errors' do
-        assignment = build :assignment,
-                           roster: roster,
-                           start_date: Date.yesterday,
-                           end_date: Date.tomorrow
-        expect(assignment).not_to be_valid
+    context 'when there are other assignments that have the same roster and a later end datetime' do
+      let!(:target) { create(:assignment, roster:, end_datetime: assignment.end_datetime + 5.minutes) }
+
+      before { create(:assignment, roster:, end_datetime: assignment.end_datetime + 10.minutes) }
+
+      it 'returns the one with the earliest end datetime' do
+        expect(call).to eq(target)
       end
     end
   end
 
-  describe 'upcoming' do
-    subject { described_class.upcoming }
+  describe '#start_datetime' do
+    subject(:call) { assignment.start_datetime }
 
-    let(:roster) { create :roster }
-    let :assignment_today do
-      create :assignment, roster:,
-                          start_date: Time.zone.today, end_date: 1.week.since.to_date
-    end
-    let :assignment_tomorrow do
-      create :assignment, roster:,
-                          start_date: Date.tomorrow, end_date: 1.week.since.to_date
+    context 'when the attribute has been previously set' do
+      let(:assignment) { build_stubbed :assignment, start_datetime: value }
+      let(:value) { Time.current }
+
+      it 'returns the previously set value' do
+        expect(call).to eq(value)
+      end
     end
 
-    context 'when it is before the switchover' do
+    context 'when the assignment has a predecessor' do
+      let(:roster) { create :roster }
+      let(:assignment) { build_stubbed(:assignment, roster:) }
+      let!(:predecessor) { create(:assignment, roster:, end_datetime: assignment.end_datetime - 5.minutes) }
+
       before do
-        travel_to 1.minute.before(roster.switchover_time)
+        create(:assignment, roster:, end_datetime: assignment.end_datetime + 10.minutes)
+        create(:assignment, roster:, end_datetime: assignment.end_datetime + 5.minutes)
+        create(:assignment, roster:, end_datetime: assignment.end_datetime - 10.minutes)
+        create :assignment, end_datetime: assignment.end_datetime - 5.minutes
       end
 
-      it { is_expected.to include assignment_today }
-      it { is_expected.to include assignment_tomorrow }
+      it "returns the predecessor's end datetime" do
+        expect(call).to eq(predecessor.end_datetime)
+      end
     end
 
-    context 'when it is after the switchover' do
-      before do
-        travel_to 1.minute.after(roster.switchover_time)
-      end
+    context 'when the assignment has no predecessor' do
+      let(:roster) { create :roster }
+      let(:assignment) { build_stubbed(:assignment, roster:) }
 
-      it { is_expected.not_to include assignment_today }
-      it { is_expected.to include assignment_tomorrow }
+      it "returns the roster's create datetime" do
+        expect(call).to eq(roster.created_at)
+      end
     end
   end
 
-  describe 'send_reminders!' do
-    subject(:call) { described_class.send_reminders! }
+  describe '.with_start_datetimes' do
+    subject(:call) { described_class.with_start_datetimes }
 
-    let!(:assignment_today) { create :assignment, start_date: Time.zone.today }
-    let!(:assignment_tomorrow) { create :assignment, start_date: Date.tomorrow }
-
-    before { allow(AssignmentsMailer).to receive(:upcoming_reminder).and_call_original }
-
-    it 'sends reminders about assignments starting tomorrow' do
-      call
-      expect(AssignmentsMailer).to have_received(:upcoming_reminder)
-        .with(assignment_tomorrow.roster,
-              assignment_tomorrow.effective_start_datetime, any_args)
+    let(:time) { Time.current }
+    let(:rosters) { create_list :roster, 2 }
+    let!(:roster_one_assignments) do
+      [1.minute.after(time), 1.minute.before(time), 3.minutes.before(time)].map do |end_datetime|
+        create(:assignment, roster: rosters.first, end_datetime:)
+      end.sort_by(&:end_datetime)
+    end
+    let!(:roster_two_assignments) do
+      [2.minutes.after(time), time, 2.minutes.before(time)].map do |end_datetime|
+        create(:assignment, roster: rosters.second, end_datetime:)
+      end.sort_by(&:end_datetime)
     end
 
-    it 'does not send reminders about assignments starting today' do
-      call
-      expect(AssignmentsMailer).not_to have_received(:upcoming_reminder)
-        .with(assignment_today.roster,
-              assignment_today.effective_start_datetime, any_args)
+    it 'returns a relation' do
+      expect(call).to be_a(ActiveRecord::Relation)
+    end
+
+    it 'preloads start datetimes at the database level and writes them to attributes' do
+      expect(call.collect(&:attributes)).to contain_exactly(
+        a_hash_including('id' => roster_one_assignments.first.id,
+                         'start_datetime' => nil),
+        a_hash_including('id' => roster_one_assignments.second.id,
+                         'start_datetime' => roster_one_assignments.first.end_datetime),
+        a_hash_including('id' => roster_one_assignments.third.id,
+                         'start_datetime' => roster_one_assignments.second.end_datetime),
+        a_hash_including('id' => roster_two_assignments.first.id,
+                         'start_datetime' => nil),
+        a_hash_including('id' => roster_two_assignments.second.id,
+                         'start_datetime' => roster_two_assignments.first.end_datetime),
+        a_hash_including('id' => roster_two_assignments.third.id,
+                         'start_datetime' => roster_two_assignments.second.end_datetime)
+      )
     end
   end
 end
