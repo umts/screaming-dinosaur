@@ -43,13 +43,9 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
-  gem 'capistrano', require: false
-  gem 'capistrano-bundler', require: false
-  gem 'capistrano-passenger', require: false
-  gem 'capistrano-pending', require: false
-  gem 'capistrano-rails', require: false
   gem 'ed25519', require: false
   gem 'haml_lint', require: false
+  gem 'kamal', require: false
   gem 'listen'
   gem 'overcommit', require: false
   gem 'rb-readline', require: false
