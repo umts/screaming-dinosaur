@@ -257,7 +257,9 @@ RSpec.describe Assignment do
     let(:assignment) do
       build :assignment, roster: roster, user: user_not_in_roster
     end
+
     it 'adds error message if the user is not in the roster' do
       expect(assignment).not_to be_valid
+    end
   end
 end
