@@ -12,14 +12,14 @@ RSpec.describe Assignment do
                           start_date: Date.new(2017, 4, 10), end_date: Date.new(2017, 4, 11)
     end
 
-    describe 'effective_start_datetime' do
+    describe '#effective_start_datetime' do
       it 'returns the start date, at the switchover hour' do
         expect(assignment.effective_start_datetime)
           .to eql Time.zone.local(2017, 4, 10, 14)
       end
     end
 
-    describe 'effective_end_datetime' do
+    describe '#effective_end_datetime' do
       it 'returns the day after the end date, at the switchover hour' do
         expect(assignment.effective_end_datetime)
           .to eql Time.zone.local(2017, 4, 12, 14)
@@ -27,7 +27,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'between' do
+  describe '.between' do
     let(:roster) { create :roster }
 
     let!(:assignment) do
@@ -40,7 +40,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'current' do
+  describe '.current' do
     subject(:call) { described_class.current }
 
     let(:roster) { create :roster }
@@ -140,7 +140,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'in(roster)' do
+  describe '.in(roster)' do
     let(:roster) { create :roster }
     let!(:assignment) { create :assignment, roster: }
 
@@ -149,7 +149,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'on' do
+  describe '.on' do
     subject(:call) { described_class.on date }
 
     let(:date) { Date.new(2019, 11, 13) }
@@ -195,7 +195,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'upcoming' do
+  describe '.upcoming' do
     subject { described_class.upcoming }
 
     let(:roster) { create :roster }
@@ -227,7 +227,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'send_reminders!' do
+  describe '.send_reminders!' do
     subject(:call) { described_class.send_reminders! }
 
     let!(:assignment_today) { create :assignment, start_date: Time.zone.today }
@@ -250,7 +250,7 @@ RSpec.describe Assignment do
     end
   end
 
-  describe 'user_in_roster' do
+  describe '#user_in_roster' do
     let(:roster) { create :roster }
     let(:user_not_in_roster) { create :user }
 
