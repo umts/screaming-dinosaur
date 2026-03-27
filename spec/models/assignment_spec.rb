@@ -27,6 +27,19 @@ RSpec.describe Assignment do
     end
   end
 
+  describe 'between' do
+    let(:roster) { create :roster }
+
+    let!(:assignment) do
+      create :assignment, roster:, start_date: Time.zone.today, end_date: 5.days.from_now
+    end
+
+    it 'returns overlapping assignment range' do
+      result = described_class.between(Time.zone.today + 2, Time.zone.today + 3)
+      expect(result).to include(assignment)
+    end
+  end
+
   describe 'current' do
     subject(:call) { described_class.current }
 
@@ -124,6 +137,15 @@ RSpec.describe Assignment do
 
     it 'sends the deleted_assignment mail' do
       expect { destroy }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
+    end
+  end
+
+  describe 'in(roster)' do
+    let(:roster) { create :roster }
+    let!(:assignment) { create :assignment, roster: }
+
+    it 'returns assignment in the given roster' do
+      expect(described_class.in(roster)).to include(assignment)
     end
   end
 
@@ -226,5 +248,14 @@ RSpec.describe Assignment do
         .with(assignment_today.roster,
               assignment_today.effective_start_datetime, any_args)
     end
+  end
+
+  describe 'user_in_roster' do
+    let(:roster) { create :roster }
+    let(:user_not_in_roster) { create :user }
+
+    it 'adds error message if the user is not in the roster'
+    assignment = build :assignment, roster: roster, user: user_not_in_roster
+    expect(assignment).not_to be_valid
   end
 end
