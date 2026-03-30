@@ -14,7 +14,7 @@ class Roster < ApplicationRecord
   has_many :memberships, dependent: :destroy
 
   has_one :current_assignment,
-          -> { where(arel_table[:end_datetime].gt(Time.current)).order(end_datetime: :asc) },
+          -> { ending_after(Time.current).order(end_datetime: :asc).order(end_datetime: :asc) },
           class_name: 'Assignment', dependent: nil, inverse_of: :roster
   has_many :admin_memberships, -> { where(admin: true) }, class_name: 'Membership', dependent: nil, inverse_of: :roster
 
