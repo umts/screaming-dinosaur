@@ -13,7 +13,8 @@ class RostersController < ApplicationController
     authorize! @roster, context: { api_key: }
     respond_to do |format|
       format.html do
-        @your_assignments = @roster.assignments.ending_after(Time.current).joins(:user).where(user: Current.user).order(end_datetime: :asc)
+        @your_assignments = @roster.assignments.ending_after(Time.current).joins(:user)
+                                   .where(user: Current.user).order(end_datetime: :asc)
       end
       format.json do
         @upcoming = @roster.assignments.ending_after(Time.current).order(end_datetime: :asc)
