@@ -10,7 +10,9 @@ class AssignmentsController < ApplicationController
     authorize!
     respond_to do |format|
       format.json do
-        @assignments = roster.assignments.between(Date.parse(params[:start_date]), Date.parse(params[:end_date]))
+        if params[:start_datetime] && params[:end_datetime]
+          @assignments = roster.assignments.between(Date.parse(params[:start_datetime]), Date.parse(params[:end_datetime]))
+        end 
       end
       format.csv do
         render csv: roster.assignment_csv, filename: roster.name
@@ -67,8 +69,7 @@ class AssignmentsController < ApplicationController
     @assignment = roster.assignments.new
     return if params[:date].blank?
 
-    @assignment.start_date = params[:date].to_date
-    @assignment.end_date = @assignment.start_date + 6.days
+    @assignment.end_datetime = params[:date].to_date + 6.days
   end
 
   def assignment_params
