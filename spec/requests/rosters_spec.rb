@@ -299,6 +299,29 @@ RSpec.describe 'Rosters' do
         expect { submit }.not_to(change { roster.reload.attributes })
       end
     end
+
+    context 'with versioning', :versioning do
+      context 'when logged in as an admin of the roster with valid attributes' do
+        include_context 'when logged in as an admin of the roster'
+        include_context 'with valid attributes'
+
+        it 'sets an undo action in the flash' do
+          submit
+          expect(flash[:undo]).to be_present
+        end
+      end
+
+      context 'when logged in as an admin of the roster with unchanged attributes' do
+        include_context 'when logged in as an admin of the roster'
+
+        let(:attributes) { { name: roster.name } }
+
+        it 'does not set an undo action in the flash' do
+          submit
+          expect(flash[:undo]).to be_nil
+        end
+      end
+    end
   end
 
   describe 'DELETE /rosters/:id' do
