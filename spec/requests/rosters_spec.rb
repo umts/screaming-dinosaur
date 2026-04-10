@@ -299,7 +299,6 @@ RSpec.describe 'Rosters' do
         expect { submit }.not_to(change { roster.reload.attributes })
       end
     end
-
   end
 
   describe 'DELETE /rosters/:id' do
