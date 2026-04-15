@@ -3,26 +3,29 @@
 require 'rails_helper'
 
 RSpec.describe 'Undo', :versioning do
-  describe 'updating a roster' do
+  describe 'saving a record' do
+    include_context 'when logged in as an admin of the roster'
+
     let(:roster) { create :roster }
-    let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
+
+    before { visit edit_roster_path(roster) }
 
     context 'when making changes' do
-      it 'shows an undo button' do
-        visit edit_roster_path(roster)
-        fill_in 'Name', with: 'New Roster Name'
+      before do
+        fill_in 'Name', with: 'New Name'
         click_on 'Save'
+      end
 
-        expect(page).to have_button 'Undo'
+      it 'offers an undo button after saving' do
+        expect(page).to have_button('Undo')
       end
     end
 
-    context 'when making no changes' do
-      it 'does not show an undo button' do
-        visit edit_roster_path(roster)
-        click_on 'Save'
+    context 'when not making changes' do
+      before { click_on 'Save' }
 
-        expect(page).to have_no_button 'Undo'
+      it 'does not show an undo button' do
+        expect(page).to have_no_button('Undo')
       end
     end
   end
