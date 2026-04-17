@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Assignments' do
   shared_context 'with valid attributes' do
     let(:attributes) do
-      { user_id: create(:user, rosters: [roster]).id, start_date: Date.current, end_date: Date.tomorrow }
+      { user_id: create(:user, rosters: [roster]).id, start_datetime: Date.current, end_datetime: Date.tomorrow }
     end
   end
 
@@ -15,7 +15,8 @@ RSpec.describe 'Assignments' do
 
   describe 'GET /rosters/:roster_id/assignments.json' do
     subject(:call) do
-      get "/rosters/#{roster.slug}/assignments.json", params: { start_date: 1.month.ago, end_date: 1.month.from_now }
+      get "/rosters/#{roster.slug}/assignments.json",
+          params: { start_datetime: 1.month.ago, end_datetime: 1.month.from_now }
     end
 
     let(:roster) { create :roster }
@@ -33,11 +34,11 @@ RSpec.describe 'Assignments' do
       include_context 'when logged in as a member of the roster'
 
       let!(:own_assignment) do
-        create :assignment, roster:, user: current_user, start_date: Date.current, end_date: Date.tomorrow
+        create :assignment, roster:, user: current_user, start_datetime: Date.current, end_datetime: Date.tomorrow
       end
       let!(:other_assignment) do
         create :assignment, roster:, user: create(:user, rosters: [roster]),
-                            start_date: 2.days.from_now, end_date: 4.days.from_now
+                            start_datetime: 2.days.from_now, end_datetime: 4.days.from_now
       end
 
       it 'responds successfully' do
@@ -52,15 +53,15 @@ RSpec.describe 'Assignments' do
             'title' => own_assignment.user.last_name,
             'url' => edit_assignment_path(own_assignment),
             'allDay' => true,
-            'start' => own_assignment.start_date.iso8601,
-            'end' => (own_assignment.end_date + 1).iso8601,
+            'start' => own_assignment.start_datetime.iso8601,
+            'end' => (own_assignment.end_datetime + 1).iso8601,
             'color' => 'var(--bs-primary)' },
           { 'id' => "assignment-#{other_assignment.id}",
             'title' => other_assignment.user.last_name,
             'url' => edit_assignment_path(other_assignment),
             'allDay' => true,
-            'start' => other_assignment.start_date.iso8601,
-            'end' => (other_assignment.end_date + 1).iso8601,
+            'start' => other_assignment.start_datetime.iso8601,
+            'end' => (other_assignment.end_datetime + 1).iso8601,
             'color' => 'var(--bs-secondary)' }
         )
       end
@@ -86,10 +87,10 @@ RSpec.describe 'Assignments' do
 
       let(:users) { create_list :user, 2, rosters: [roster] }
       let!(:current_assignment) do
-        create :assignment, roster:, user: users[0], start_date: Date.current, end_date: 1.day.from_now
+        create :assignment, roster:, user: users[0], start_datetime: Date.current, end_datetime: 1.day.from_now
       end
       let!(:past_assignment) do
-        create :assignment, roster:, user: users[1], start_date: 2.days.ago, end_date: 1.day.ago
+        create :assignment, roster:, user: users[1], start_datetime: 2.days.ago, end_datetime: 1.day.ago
       end
 
       it 'responds successfully' do
@@ -100,10 +101,10 @@ RSpec.describe 'Assignments' do
       it 'responds with assignment data for the given roster' do
         call
         row1 = [roster.name, users[1].email, users[1].first_name, users[1].last_name,
-                past_assignment.start_date.to_fs(:db), past_assignment.end_date.to_fs(:db),
+                past_assignment.start_datetime.to_fs(:db), past_assignment.end_datetime.to_fs(:db),
                 past_assignment.created_at.to_fs(:db), past_assignment.updated_at.to_fs(:db)].join ','
         row2 = [roster.name, users[0].email, users[0].first_name, users[0].last_name,
-                current_assignment.start_date.to_fs(:db), current_assignment.end_date.to_fs(:db),
+                current_assignment.start_datetime.to_fs(:db), current_assignment.end_datetime.to_fs(:db),
                 current_assignment.created_at.to_fs(:db), current_assignment.updated_at.to_fs(:db)].join ','
         expect(response.body).to eq(<<~CSV)
           roster,email,first_name,last_name,start_date,end_date,created_at,updated_at
@@ -182,7 +183,11 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster assigning themselves' do
       include_context 'when logged in as a member of the roster'
 
-      let(:attributes) { { user_id: current_user.id, start_date: Date.current, end_date: Date.tomorrow } }
+      let(:attributes) { { user_id: current_user.id, end_datetime: Date.tomorrow } }
+
+      before do
+        allow(assignment).to receive(:start_datetime).and_return(Date.current)
+      end
 
       it 'redirects to the roster' do
         submit
@@ -289,7 +294,7 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster changing dates' do
       include_context 'when logged in as a member of the roster'
 
-      let(:attributes) { { start_date: Date.current, end_date: Date.tomorrow } }
+      let(:attributes) { { start_datetime: Date.current, end_datetime: Date.tomorrow } }
 
       it 'responds with a forbidden status' do
         submit

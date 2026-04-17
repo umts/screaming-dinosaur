@@ -21,15 +21,15 @@ RSpec.describe Membership do
       let(:membership) { create :membership }
       let!(:past_assignments) do
         [create(:assignment, roster: membership.roster, user: membership.user,
-                             start_date: 4.days.ago, end_date: 3.days.ago),
+                             start_datetime: 4.days.ago, end_datetime: 3.days.ago),
          create(:assignment, roster: membership.roster, user: membership.user,
-                             start_date: 2.days.ago, end_date: 1.day.ago)]
+                             start_datetime: 2.days.ago, end_datetime: 1.day.ago)]
       end
       let!(:future_assignments) do
         [create(:assignment, roster: membership.roster, user: membership.user,
-                             start_date: Date.tomorrow, end_date: 2.days.from_now),
+                             start_datetime: Date.tomorrow, end_datetime: 2.days.from_now),
          create(:assignment, roster: membership.roster, user: membership.user,
-                             start_date: 3.days.from_now, end_date: 4.days.from_now)]
+                             start_datetime: 3.days.from_now, end_datetime: 4.days.from_now)]
       end
 
       it 'leaves past assignment untouched for the associated user and roster' do

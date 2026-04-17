@@ -69,12 +69,10 @@ RSpec.describe 'Weekday Assigners' do
         expect(Assignment.last(2)).to contain_exactly(
           have_attributes('roster_id' => roster.id,
                           'user_id' => user.id,
-                          'start_date' => Date.current.beginning_of_week(:sunday) + 3,
-                          'end_date' => Date.current.beginning_of_week(:sunday) + 4),
+                          'end_datetime' => (Date.current.beginning_of_week(:sunday) + 4).beginning_of_day),
           have_attributes('roster_id' => roster.id,
                           'user_id' => user.id,
-                          'start_date' => 1.week.from_now.to_date.beginning_of_week(:sunday) + 2,
-                          'end_date' => 1.week.from_now.to_date.beginning_of_week(:sunday) + 3)
+                          'end_datetime' => (1.week.from_now.to_date.beginning_of_week(:sunday) + 3).beginning_of_day)
         )
       end
     end

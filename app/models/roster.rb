@@ -51,7 +51,7 @@ class Roster < ApplicationRecord
   def assignment_csv
     CSV.generate headers: %w[roster email first_name last_name start_date end_date created_at updated_at],
                  write_headers: true do |csv|
-      assignments.sort_by(&:start_date).each do |assignment|
+      assignments.sort_by(&:start_datetime).each do |assignment|
         csv << assignment_csv_row(assignment)
       end
     end
@@ -60,9 +60,9 @@ class Roster < ApplicationRecord
   # Returns the day AFTER the last assignment ends.
   # If there is no last assignment, returns the upcoming Friday.
   def next_rotation_start_date
-    last = assignments.order(:end_date).last
+    last = assignments.order(:end_datetime).last
     if last.present?
-      last.end_date + 1.day
+      (last.end_datetime + 1.day).to_date
     else
       Time.zone.today.next_occurring :friday
     end
@@ -82,8 +82,8 @@ class Roster < ApplicationRecord
       'email' => assignment.user.email,
       'first_name' => assignment.user.first_name,
       'last_name' => assignment.user.last_name,
-      'start_date' => assignment.start_date.to_fs(:db),
-      'end_date' => assignment.end_date.to_fs(:db),
+      'start_date' => assignment.start_datetime.to_fs(:db),
+      'end_date' => assignment.end_datetime.to_fs(:db),
       'created_at' => assignment.created_at.to_fs(:db),
       'updated_at' => assignment.updated_at.to_fs(:db) }
   end

@@ -61,8 +61,7 @@ class WeekAssigner
     (start_date..end_date).each_slice(7).with_index do |week, i|
       output << Assignment.create!(
         roster: @roster,
-        start_date: week.first,
-        end_date: week.last,
+        end_datetime: week.last.to_datetime,
         user_id: rotation[i % rotation.size]
       )
     end
