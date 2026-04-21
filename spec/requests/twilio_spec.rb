@@ -6,7 +6,7 @@ RSpec.describe 'Twilio' do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster], phone: '(413) 545-0056' }
 
-  before { create :assignment, start_date: Date.yesterday, end_date: Date.tomorrow, roster:, user: }
+  before { create :assignment, start_datetime: Date.yesterday, end_datetime: Date.tomorrow, roster:, user: }
 
   describe 'GET /rosters/:roster_id/twilio/call.xml' do
     let(:call) { get "/rosters/#{roster.slug}/twilio/call", headers: { 'ACCEPT' => 'application/xml' } }

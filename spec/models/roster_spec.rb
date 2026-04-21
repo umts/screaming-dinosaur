@@ -94,7 +94,7 @@ RSpec.describe Roster do
     let(:start_date) { Time.zone.today }
     let(:end_date) { 1.week.from_now }
 
-    before { create :assignment, roster:, start_date: 1.day.from_now, end_date: 6.days.from_now }
+    before { create :assignment, roster:, start_datetime: 1.day.from_now, end_datetime: 6.days.from_now }
 
     it 'returns the dates with no assignments between the given start and end date' do
       expect(call).to eq [Time.zone.today.to_date, 7.days.from_now.to_date]
@@ -109,11 +109,11 @@ RSpec.describe Roster do
 
     context 'with existing assignments' do
       before do
-        create :assignment, roster:, end_date: 1.week.from_now
+        create :assignment, roster:, end_datetime: 1.week.from_now
       end
 
       it 'returns the day after the last assignment ends' do
-        expect(result).to eq 8.days.since.to_date
+        expect(result).to eq (Time.zone.today + 8.days).to_date
       end
     end
 
@@ -126,12 +126,12 @@ RSpec.describe Roster do
 
     context 'with multiple assignments' do
       before do
-        create :assignment, roster:, start_date: Time.zone.today, end_date: 2.days.from_now
-        create :assignment, roster:, start_date: 3.days.from_now, end_date: 10.days.from_now
+        create :assignment, roster:, start_datetime: Time.zone.today, end_datetime: 2.days.from_now
+        create :assignment, roster:, start_datetime: 3.days.from_now, end_datetime: 10.days.from_now
       end
 
       it 'returns the day after the last assignment ends with latest end date' do
-        expect(result).to eq 11.days.from_now.to_date
+        expect(result).to eq (Time.zone.today + 11.days).to_date
       end
     end
   end

@@ -46,7 +46,7 @@ class WeekdayAssigner
     validate!
     ActiveRecord::Base.transaction do
       date_ranges.each do |range|
-        roster.assignments.create! user:, start_date: range.begin, end_date: range.end
+        roster.assignments.create! user:, end_datetime: range.end
       end
     end
   rescue ActiveRecord::RecordInvalid => e

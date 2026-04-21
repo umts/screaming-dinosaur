@@ -68,11 +68,11 @@ RSpec.describe 'Week Assigners' do
         submit
         expect(Assignment.last(3)).to contain_exactly(
           have_attributes('roster_id' => roster.id, 'user_id' => users.first.id,
-                          'start_date' => start_date + 2.weeks, 'end_date' => start_date + 2.weeks + 4.days),
+                          'end_datetime' => start_date + 2.weeks + 4.days),
           have_attributes('roster_id' => roster.id, 'user_id' => users.second.id,
-                          'start_date' => start_date + 1.week, 'end_date' => start_date + 1.week + 6.days),
+                          'end_datetime' => start_date + 1.week + 6.days),
           have_attributes('roster_id' => roster.id, 'user_id' => users.first.id,
-                          'start_date' => start_date, 'end_date' => start_date + 6.days)
+                          'end_datetime' => start_date + 6.days)
         )
       end
     end
