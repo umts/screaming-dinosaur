@@ -14,7 +14,7 @@
                              fields.object.users, :id, :full_name,
                              { include_blank: true },
                              disabled: fields.object.users.blank?,
-                             class: 'form-select'
+                             class: 'form-select', 'data-controller': 'tom-select'
   - if fields.object.users.empty?
     .form-text To assign the fallback user, first create the roster, then add some users to it.
 .mb-3
