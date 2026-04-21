@@ -12,7 +12,6 @@ class Assignment < ApplicationRecord
 
   scope :ending_before, ->(time) { where(arel_table[:end_datetime].lt(time)) }
   scope :ending_after, ->(time) { where(arel_table[:end_datetime].gt(time)) }
-  scope :overlapping, ->(range) { where(start_datetime: nil..range.end, end_datetime: range.begin..nil) }
 
   def start_datetime = super.presence || previous&.end_datetime || roster.created_at
 

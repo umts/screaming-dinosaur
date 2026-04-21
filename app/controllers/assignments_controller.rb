@@ -9,11 +9,7 @@ class AssignmentsController < ApplicationController
   def index
     authorize!
     respond_to do |format|
-      format.json do
-        if params[:start_datetime] && params[:end_datetime]
-          @assignments = roster.assignments.between(Date.parse(params[:start_datetime]), Date.parse(params[:end_datetime]))
-        end 
-      end
+      format.json { index_json }
       format.csv do
         render csv: roster.assignment_csv, filename: roster.name
       end
@@ -74,5 +70,11 @@ class AssignmentsController < ApplicationController
 
   def assignment_params
     params.expect assignment: %i[start_date end_date user_id]
+  end
+
+  def index_json
+    @assignments = roster.assignments.with_start_datetimes.preload(:user)
+                         .where(start_datetime: nil..Date.parse(params[:end_date]).at_end_of_day,
+                                end_datetime: Date.parse(params[:start_date]).at_beginning_of_day..nil)
   end
 end
