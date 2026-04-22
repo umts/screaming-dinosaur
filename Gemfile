@@ -5,6 +5,8 @@ ruby file: '.ruby-version'
 
 gem 'action_policy'
 gem 'bootsnap', require: false
+# TODO: Unpin when we can actually compile a newer version (gcc >= 5).
+gem 'bigdecimal', '4.1.1'
 gem 'cssbundling-rails'
 gem 'csv'
 gem 'friendly_id'
@@ -17,7 +19,7 @@ gem 'jsbundling-rails'
 gem 'kaminari'
 gem 'maintenance_tasks'
 gem 'net-http'
-# TODO: remove when we have modern glibc
+# TODO: Remove when we have modern glibc.
 gem 'nokogiri', force_ruby_platform: true
 gem 'omniauth'
 gem 'paper_trail'
