@@ -1,0 +1,7 @@
+@use "bootstrap";
+@use "tom-select/dist/css/tom-select.bootstrap5";
+
+.input-group > select:first-child + .ts-wrapper.ts-wrapper.ts-wrapper.ts-wrapper.ts-wrapper {
+  border-top-left-radius: bootstrap.$input-border-radius;
+  border-bottom-left-radius: bootstrap.$input-border-radius;
+}
