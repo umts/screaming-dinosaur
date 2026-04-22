@@ -15,7 +15,7 @@ RSpec.describe 'Assignments' do
 
   describe 'GET /rosters/:roster_id/assignments.json' do
     subject(:call) do
-      get "/rosters/#{roster.slug}/assignments.json", params: { start_date: 1.month.ago, end_date: 1.month.from_now }
+      get "/rosters/#{roster.slug}/assignments.json", params: { start_date: Date.current, end_date: Date.tomorrow }
     end
 
     let(:roster) { create :roster }
@@ -32,13 +32,18 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
 
+      let!(:past_assignment) { create :assignment, roster:, end_datetime: Date.yesterday.at_middle_of_day }
+      let!(:open_assignment) { create :assignment, roster:, end_datetime: Date.current.at_middle_of_day }
+      let!(:taken_assignment) do
+        create :assignment, roster:,
+                            user: create(:user, rosters: [roster]),
+                            end_datetime: Date.tomorrow.at_middle_of_day
+      end
       let!(:own_assignment) do
-        create :assignment, roster:, user: current_user, start_date: Date.current, end_date: Date.tomorrow
+        create :assignment, roster:, user: current_user, end_datetime: 2.days.from_now.at_middle_of_day
       end
-      let!(:other_assignment) do
-        create :assignment, roster:, user: create(:user, rosters: [roster]),
-                            start_date: 2.days.from_now, end_date: 4.days.from_now
-      end
+
+      before { create :assignment, roster:, end_datetime: 3.days.from_now.at_middle_of_day }
 
       it 'responds successfully' do
         call
@@ -48,20 +53,30 @@ RSpec.describe 'Assignments' do
       it 'responds with calendar data' do
         call
         expect(response.parsed_body).to contain_exactly(
-          { 'id' => "assignment-#{own_assignment.id}",
+          a_hash_including(
+            'id' => "assignment-#{open_assignment.id}",
+            'title' => 'Open',
+            'url' => edit_assignment_path(open_assignment),
+            'start' => past_assignment.end_datetime.iso8601,
+            'end' => open_assignment.end_datetime.iso8601,
+            'color' => 'var(--bs-secondary)'
+          ),
+          a_hash_including(
+            'id' => "assignment-#{taken_assignment.id}",
+            'title' => taken_assignment.user.last_name,
+            'url' => edit_assignment_path(taken_assignment),
+            'start' => open_assignment.end_datetime.iso8601,
+            'end' => taken_assignment.end_datetime.iso8601,
+            'color' => 'var(--bs-secondary)'
+          ),
+          a_hash_including(
+            'id' => "assignment-#{own_assignment.id}",
             'title' => own_assignment.user.last_name,
             'url' => edit_assignment_path(own_assignment),
-            'allDay' => true,
-            'start' => own_assignment.start_date.iso8601,
-            'end' => (own_assignment.end_date + 1).iso8601,
-            'color' => 'var(--bs-primary)' },
-          { 'id' => "assignment-#{other_assignment.id}",
-            'title' => other_assignment.user.last_name,
-            'url' => edit_assignment_path(other_assignment),
-            'allDay' => true,
-            'start' => other_assignment.start_date.iso8601,
-            'end' => (other_assignment.end_date + 1).iso8601,
-            'color' => 'var(--bs-secondary)' }
+            'start' => taken_assignment.end_datetime.iso8601,
+            'end' => own_assignment.end_datetime.iso8601,
+            'color' => 'var(--bs-primary)'
+          )
         )
       end
     end
