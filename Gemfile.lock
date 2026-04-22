@@ -517,6 +517,7 @@ DEPENDENCIES
   action_policy
   bcrypt_pbkdf
   better_errors
+  bigdecimal
   binding_of_caller
   bootsnap
   brakeman
