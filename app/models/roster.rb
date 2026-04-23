@@ -5,33 +5,29 @@ require 'csv'
 class Roster < ApplicationRecord
   extend FriendlyId
 
-  has_paper_trail
   friendly_id :name, use: :slugged
 
+  has_paper_trail
+
+  belongs_to :fallback_user, class_name: 'User', optional: true, inverse_of: 'fallback_rosters'
   has_many :assignments, dependent: :destroy
   has_many :memberships, dependent: :destroy
-  has_many :admin_memberships, -> { where(admin: true) },
-           class_name: 'Membership', dependent: nil, inverse_of: :roster
-  has_many :non_admin_memberships, -> { where.not(admin: true) },
-           class_name: 'Membership', dependent: nil, inverse_of: :roster
+
+  has_one :current_assignment,
+          -> { ending_after(Time.current).order(end_datetime: :asc).order(end_datetime: :asc) },
+          class_name: 'Assignment', dependent: nil, inverse_of: :roster
+  has_many :admin_memberships, -> { where(admin: true) }, class_name: 'Membership', dependent: nil, inverse_of: :roster
 
   has_many :users, through: :memberships
   has_many :admins, through: :admin_memberships, source: :user
-  has_many :non_admins, through: :non_admin_memberships, source: :user
-
-  belongs_to :fallback_user, class_name: 'User',
-                             optional: true,
-                             inverse_of: 'fallback_rosters'
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :switchover, numericality: { in: (0...(24 * 60)), message: :invalid_time }
-  validates :phone, phone: { allow_blank: true }
+  validates :phone, presence: true, phone: { allow_blank: true }
 
   after_commit :notify_fallback_number_changed, on: :update
 
-  def on_call_user
-    assignments.current.try(:user) || fallback_user
-  end
+  def on_call_user = current_assignment&.user || fallback_user
 
   def switchover_time
     switchover.presence && Time.zone.now.midnight.in(switchover.minutes)
