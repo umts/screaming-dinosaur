@@ -10,6 +10,5 @@
 .mb-3
   = fields.label :end_datetime, class: 'form-label'
   = fields.datetime_field :end_datetime, required: true,
-                                   disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
-                                   class: 'form-control'
-
+                                         disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
+                                         class: 'form-control'
