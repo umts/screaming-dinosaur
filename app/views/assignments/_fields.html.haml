@@ -8,12 +8,8 @@
     = fields.text_field :user_id, value: Current.user.full_name, disabled: true, class: 'form-control'
     = fields.hidden_field :user_id, value: Current.user.id
 .mb-3
-  = fields.label :start_date, class: 'form-label'
-  = fields.date_field :start_date, required: true,
+  = fields.label :end_datetime, class: 'form-label'
+  = fields.datetime_field :end_datetime, required: true,
                                    disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
                                    class: 'form-control'
-.mb-3
-  = fields.label :end_date, class: 'form-label'
-  = fields.date_field :end_date, required: true,
-                                 disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
-                                 class: 'form-control'
+
