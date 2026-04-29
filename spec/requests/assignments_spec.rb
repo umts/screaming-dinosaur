@@ -100,12 +100,13 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
 
+      let(:roster) { create :roster, created_at: Date.new(2026, 4, 27) }
       let(:users) { create_list :user, 2, rosters: [roster] }
       let!(:current_assignment) do
-        create :assignment, roster:, user: users[0], start_datetime: Time.zone.now, end_datetime: 1.day.from_now
+        create :assignment, roster:, user: users[0], end_datetime: Date.tomorrow.end_of_day
       end
       let!(:past_assignment) do
-        create :assignment, roster:, user: users[1], start_datetime: 2.days.ago, end_datetime: 1.day.ago
+        create :assignment, roster:, user: users[1], end_datetime: Date.yesterday.end_of_day
       end
 
       it 'responds successfully' do
@@ -116,10 +117,12 @@ RSpec.describe 'Assignments' do
       it 'responds with assignment data for the given roster' do
         call
         row1 = [roster.name, users[1].email, users[1].first_name, users[1].last_name,
-                past_assignment.start_date.to_fs(:db), past_assignment.end_date.to_fs(:db),
+                past_assignment.start_datetime.to_date.to_fs(:db),
+                past_assignment.end_datetime.to_date.to_fs(:db),
                 past_assignment.created_at.to_fs(:db), past_assignment.updated_at.to_fs(:db)].join ','
         row2 = [roster.name, users[0].email, users[0].first_name, users[0].last_name,
-                current_assignment.start_date.to_fs(:db), current_assignment.end_date.to_fs(:db),
+                current_assignment.start_datetime.to_date.to_fs(:db),
+                current_assignment.end_datetime.to_date.to_fs(:db),
                 current_assignment.created_at.to_fs(:db), current_assignment.updated_at.to_fs(:db)].join ','
         expect(response.body).to eq(<<~CSV)
           roster,email,first_name,last_name,start_date,end_date,created_at,updated_at
