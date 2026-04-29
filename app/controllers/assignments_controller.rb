@@ -65,17 +65,21 @@ class AssignmentsController < ApplicationController
     @assignment = roster.assignments.new
     return if params[:date].blank?
 
-    @assignment.start_date = params[:date].to_date
-    @assignment.end_date = @assignment.start_date + 6.days
+    @assignment.start_datetime = params[:date].to_date
+    @assignment.end_datetime = @assignment.start_datetime + 6.days
   end
 
   def assignment_params
-    params.expect assignment: %i[start_date end_date user_id]
+    params.expect assignment: %i[start_datetime end_datetime user_id]
   end
 
   def index_json
     @assignments = roster.assignments.with_start_datetimes.preload(:user)
-                         .where(start_datetime: nil..Date.parse(params[:end_date]).at_end_of_day,
-                                end_datetime: Date.parse(params[:start_date]).at_beginning_of_day..nil)
+    return unless params[:start_datetime].present? && params[:end_datetime].present?
+
+    @assignments = @assignments.where(
+      start_datetime: nil..Date.parse(params[:end_datetime]).at_end_of_day,
+      end_datetime: Date.parse(params[:start_datetime]).at_beginning_of_day..nil
+    )
   end
 end
