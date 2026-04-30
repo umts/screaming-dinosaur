@@ -5,18 +5,17 @@ require 'rails_helper'
 RSpec.describe 'Assignments' do
   shared_context 'with valid attributes' do
     let(:attributes) do
-      { user_id: create(:user, rosters: [roster]).id, end_datetime: Time.zone.tomorrow.beginning_of_day }
+      { user_id: create(:user, rosters: [roster]).id, end_datetime: Time.zone.tomorrow.middle_of_day }
     end
   end
 
   shared_context 'with invalid attributes' do
-    let(:attributes) { { user_id: nil, start_datetime: nil, end_datetime: nil } }
+    let(:attributes) { { user_id: nil, end_datetime: nil } }
   end
 
   describe 'GET /rosters/:roster_id/assignments.json' do
     subject(:call) do
-      get "/rosters/#{roster.slug}/assignments.json",
-          params: { start_datetime: Time.zone.now, end_datetime: Time.zone.tomorrow }
+      get "/rosters/#{roster.slug}/assignments.json", params: { start_date: Date.current, end_date: Date.tomorrow }
     end
 
     let(:roster) { create :roster }
@@ -102,10 +101,10 @@ RSpec.describe 'Assignments' do
 
       let(:users) { create_list :user, 2, rosters: [roster] }
       let!(:current_assignment) do
-        create :assignment, roster:, user: users[0], start_datetime: Time.zone.now, end_datetime: 1.day.from_now
+        create :assignment, roster:, user: users[0], start_date: Date.current, end_date: 1.day.from_now
       end
       let!(:past_assignment) do
-        create :assignment, roster:, user: users[1], start_datetime: 2.days.ago, end_datetime: 1.day.ago
+        create :assignment, roster:, user: users[1], start_date: 2.days.ago, end_date: 1.day.ago
       end
 
       it 'responds successfully' do
@@ -305,7 +304,7 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster changing dates' do
       include_context 'when logged in as a member of the roster'
 
-      let(:attributes) { { start_datetime: Time.zone.now, end_datetime: Time.zone.tomorrow } }
+      let(:attributes) { { end_datetime: Time.zone.tomorrow } }
 
       it 'responds with a forbidden status' do
         submit
