@@ -5,12 +5,12 @@ require 'rails_helper'
 RSpec.describe 'Assignments' do
   shared_context 'with valid attributes' do
     let(:attributes) do
-      { user_id: create(:user, rosters: [roster]).id, end_datetime: Time.zone.tomorrow.beginning_of_day }
+      { user_id: create(:user, rosters: [roster]).id, end_datetime: Time.zone.tomorrow.middle_of_day }
     end
   end
 
   shared_context 'with invalid attributes' do
-    let(:attributes) { { user_id: nil, start_datetime: nil, end_datetime: nil } }
+    let(:attributes) { { user_id: nil, end_datetime: nil } }
   end
 
   describe 'GET /rosters/:roster_id/assignments.json' do
@@ -201,7 +201,7 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster assigning themselves' do
       include_context 'when logged in as a member of the roster'
 
-      let(:attributes) { { user_id: current_user.id, end_datetime: Time.zone.tomorrow.beginning_of_day } }
+      let(:attributes) { { user_id: current_user.id, end_datetime: Time.zone.tomorrow.middle_of_day } }
 
       it 'redirects to the roster' do
         submit
@@ -308,7 +308,7 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster changing dates' do
       include_context 'when logged in as a member of the roster'
 
-      let(:attributes) { { start_datetime: Time.zone.now, end_datetime: Time.zone.tomorrow } }
+      let(:attributes) { { end_datetime: Time.zone.tomorrow.middle_of_day } }
 
       it 'responds with a forbidden status' do
         submit

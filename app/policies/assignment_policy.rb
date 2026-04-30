@@ -23,5 +23,5 @@ class AssignmentPolicy < ApplicationPolicy
 
   def not_assigning_someone_else? = record.changes.slice('user_id').blank? || record.user == user
 
-  def not_changing_dates? = record.changes.slice('start_datetime', 'end_datetime').blank?
+  def not_changing_dates? = record.changes.slice('end_datetime').blank?
 end
