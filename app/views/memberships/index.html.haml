@@ -14,7 +14,7 @@
           = f.button type: :submit, class: 'btn btn-outline-secondary' do
             %i.fa-solid.fa-check
             Add
-  .card
+  .card.mb-3
     .card-header
       %strong Memberships
     .list-group.list-group-flush
@@ -55,3 +55,4 @@
                       Remove
       - else
         .list-group-item No memberships found
+  = paginate @memberships
