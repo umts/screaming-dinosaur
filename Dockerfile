@@ -2,8 +2,8 @@
 # check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build --tag screaming-dinosaur --build-arg RUBY_VERSION="$(cat .ruby-version)" --build-arg NODE_VERSION=$(cat .node-version) .
-# docker run --interactive --tty --publish 80:80 --env RAILS_MASTER_KEY="$(cat config/credentials/production.key)" screaming-dinosaur
+# docker build --tag screaming_dinosaur --build-arg RUBY_VERSION="$(cat .ruby-version)" --build-arg NODE_VERSION=$(cat .node-version) .
+# docker run --interactive --tty --publish 80:80 --env RAILS_MASTER_KEY="$(cat config/credentials/production.key)" screaming_dinosaur
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
