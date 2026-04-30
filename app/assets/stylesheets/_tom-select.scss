@@ -1,0 +1,3 @@
+/* The tom-select stylesheet references bootstrap vars as global ones and is not @use ready. */
+@use "bootstrap" as *;
+@import "tom-select/dist/scss/tom-select.bootstrap5";
