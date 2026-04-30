@@ -510,7 +510,6 @@ PLATFORMS
 
 DEPENDENCIES
   action_policy
-  bcrypt_pbkdf
   better_errors
   bigdecimal (= 4.1.1)
   binding_of_caller
@@ -521,7 +520,6 @@ DEPENDENCIES
   csv
   debug
   dotenv
-  ed25519
   exception_notification
   factory_bot_rails
   friendly_id

@@ -41,11 +41,9 @@ group :production, :development do
 end
 
 group :development do
-  gem 'bcrypt_pbkdf', require: false
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
-  gem 'ed25519', require: false
   gem 'haml_lint', require: false
   gem 'kamal', require: false
   gem 'listen'
