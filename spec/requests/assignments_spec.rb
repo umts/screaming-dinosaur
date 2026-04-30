@@ -197,7 +197,7 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster assigning themselves' do
       include_context 'when logged in as a member of the roster'
 
-      let(:attributes) { { user_id: current_user.id, end_datetime: Time.zone.tomorrow.beginning_of_day } }
+      let(:attributes) { { user_id: current_user.id, end_datetime: Time.zone.tomorrow.middle_of_day } }
 
       it 'redirects to the roster' do
         submit
@@ -304,7 +304,7 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster changing dates' do
       include_context 'when logged in as a member of the roster'
 
-      let(:attributes) { { end_datetime: Time.zone.tomorrow } }
+      let(:attributes) { { end_datetime: Time.zone.tomorrow.middle_of_day } }
 
       it 'responds with a forbidden status' do
         submit
