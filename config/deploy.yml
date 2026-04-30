@@ -8,8 +8,8 @@
   end
 %>
 
-service: screaming-dinosaur
-image: umts/screaming-dinosaur
+service: screaming_dinosaur
+image: umts/screaming_dinosaur
 servers:
   web:
     - afs-umts-web4.admin.umass.edu
@@ -29,5 +29,5 @@ env:
 ssh:
   user: <%= user_for 'afs-umts-web4.admin.umass.edu' %>
 volumes:
-  - "screaming-dinosaur_log:/rails/log"
-  - "screaming-dinosaur_storage:/rails/storage"
+  - "screaming_dinosaur_log:/rails/log"
+  - "screaming_dinosaur_storage:/rails/storage"
