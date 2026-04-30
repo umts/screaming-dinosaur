@@ -63,10 +63,6 @@ class AssignmentsController < ApplicationController
 
   def initialize_assignment
     @assignment = roster.assignments.new
-    return if params[:date].blank?
-
-    @assignment.start_datetime = params[:date].to_date
-    @assignment.end_datetime = @assignment.start_datetime + 6.days
   end
 
   def assignment_params
