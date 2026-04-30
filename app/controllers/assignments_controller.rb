@@ -10,9 +10,7 @@ class AssignmentsController < ApplicationController
     authorize!
     respond_to do |format|
       format.json { index_json }
-      format.csv do
-        render csv: roster.assignment_csv, filename: roster.name
-      end
+      format.csv { index_csv }
     end
   end
 
@@ -73,5 +71,9 @@ class AssignmentsController < ApplicationController
     @assignments = roster.assignments.with_start_datetimes.preload(:user)
                          .where(start_datetime: nil..Date.parse(params[:end_date]).at_end_of_day,
                                 end_datetime: Date.parse(params[:start_date]).at_beginning_of_day..nil)
+  end
+
+  def index_csv
+    render csv: roster.assignments.with_start_datetimes.order(end_datetime: :asc).to_csv, filename: roster.name
   end
 end

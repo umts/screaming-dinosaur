@@ -99,12 +99,13 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
 
+      let(:roster) { create :roster, created_at: 2.days.ago.middle_of_day }
       let(:users) { create_list :user, 2, rosters: [roster] }
-      let!(:current_assignment) do
-        create :assignment, roster:, user: users[0], start_date: Date.current, end_date: 1.day.from_now
-      end
-      let!(:past_assignment) do
-        create :assignment, roster:, user: users[1], start_date: 2.days.ago, end_date: 1.day.ago
+      let!(:assignments) do
+        [
+          create(:assignment, roster:, user: users.first, end_datetime: Date.current.middle_of_day),
+          create(:assignment, roster:, user: users.second, end_datetime: Date.yesterday.middle_of_day)
+        ]
       end
 
       it 'responds successfully' do
@@ -114,14 +115,18 @@ RSpec.describe 'Assignments' do
 
       it 'responds with assignment data for the given roster' do
         call
-        row1 = [roster.name, users[1].email, users[1].first_name, users[1].last_name,
-                past_assignment.start_date.to_fs(:db), past_assignment.end_date.to_fs(:db),
-                past_assignment.created_at.to_fs(:db), past_assignment.updated_at.to_fs(:db)].join ','
-        row2 = [roster.name, users[0].email, users[0].first_name, users[0].last_name,
-                current_assignment.start_date.to_fs(:db), current_assignment.end_date.to_fs(:db),
-                current_assignment.created_at.to_fs(:db), current_assignment.updated_at.to_fs(:db)].join ','
+        row1 = [roster.name, users.second.email, users.second.first_name, users.second.last_name,
+                roster.created_at.iso8601,
+                assignments.second.end_datetime.iso8601,
+                assignments.second.created_at.iso8601,
+                assignments.second.updated_at.iso8601].join(',')
+        row2 = [roster.name, users.first.email, users.first.first_name, users.first.last_name,
+                assignments.second.end_datetime.iso8601,
+                assignments.first.end_datetime.iso8601,
+                assignments.first.created_at.iso8601,
+                assignments.first.updated_at.iso8601].join(',')
         expect(response.body).to eq(<<~CSV)
-          roster,email,first_name,last_name,start_date,end_date,created_at,updated_at
+          roster,email,first_name,last_name,start,end,created_at,updated_at
           #{row1}
           #{row2}
         CSV
