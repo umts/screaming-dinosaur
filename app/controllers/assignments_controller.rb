@@ -66,7 +66,7 @@ class AssignmentsController < ApplicationController
   end
 
   def assignment_params
-    params.expect assignment: %i[start_datetime end_datetime user_id]
+    params.expect assignment: %i[end_datetime user_id]
   end
 
   def index_json
