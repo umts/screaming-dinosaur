@@ -24,6 +24,24 @@ class Assignment < ApplicationRecord
       from arel_table.project(arel_table[Arel.star], start_datetime_node).as(arel_table.name)
     end
 
+    def to_csv # rubocop:disable Metrics
+      CSV.generate headers: %i[roster email first_name last_name start end created_at updated_at],
+                   write_headers: true do |csv|
+        all.each do |assignment| # rubocop:disable Rails/FindEach
+          csv << {
+            roster: assignment.roster.name,
+            email: assignment.user.email,
+            first_name: assignment.user.first_name,
+            last_name: assignment.user.last_name,
+            start: assignment.start_datetime.iso8601,
+            end: assignment.end_datetime.iso8601,
+            created_at: assignment.created_at.iso8601,
+            updated_at: assignment.updated_at.iso8601
+          }
+        end
+      end
+    end
+
     private
 
     def start_datetime_node

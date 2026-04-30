@@ -43,26 +43,17 @@ class Roster < ApplicationRecord
 
   def uncovered_dates_between(start_date, end_date)
     (start_date.to_date..end_date.to_date).to_a -
-      assignments.ending_after(start_date).ending_before(end_date).inject([]) do |dates, assignment|
-        dates | (assignment.start_datetime.to_date..assignment.end_datetime.to_date).to_a
+      assignments.between(start_date.to_date, end_date.to_date).inject([]) do |dates, assignment|
+        dates | (assignment.start_date..assignment.end_date).to_a
       end
-  end
-
-  def assignment_csv
-    CSV.generate headers: %w[roster email first_name last_name start_date end_date created_at updated_at],
-                 write_headers: true do |csv|
-      assignments.sort_by(&:start_datetime).each do |assignment|
-        csv << assignment_csv_row(assignment)
-      end
-    end
   end
 
   # Returns the day AFTER the last assignment ends.
   # If there is no last assignment, returns the upcoming Friday.
   def next_rotation_start_date
-    last = assignments.order(:end_datetime).last
+    last = assignments.order(:end_date).last
     if last.present?
-      last.end_datetime + 1.day
+      last.end_date + 1.day
     else
       Time.zone.today.next_occurring :friday
     end
@@ -75,16 +66,5 @@ class Roster < ApplicationRecord
     return if admins.empty?
 
     RosterMailer.with(roster: self).fallback_number_changed.deliver_later
-  end
-
-  def assignment_csv_row(assignment)
-    { 'roster' => name,
-      'email' => assignment.user.email,
-      'first_name' => assignment.user.first_name,
-      'last_name' => assignment.user.last_name,
-      'start_date' => assignment.start_datetime.to_date.to_fs(:db),
-      'end_date' => assignment.end_datetime.to_date.to_fs(:db),
-      'created_at' => assignment.created_at.to_fs(:db),
-      'updated_at' => assignment.updated_at.to_fs(:db) }
   end
 end

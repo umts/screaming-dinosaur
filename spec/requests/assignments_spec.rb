@@ -126,7 +126,7 @@ RSpec.describe 'Assignments' do
                 assignments.first.created_at.iso8601,
                 assignments.first.updated_at.iso8601].join(',')
         expect(response.body).to eq(<<~CSV)
-          roster,email,first_name,last_name,start_datetime,end_datetime,created_at,updated_at
+          roster,email,first_name,last_name,start,end,created_at,updated_at
           #{row1}
           #{row2}
         CSV
