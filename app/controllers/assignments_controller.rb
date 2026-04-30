@@ -71,11 +71,7 @@ class AssignmentsController < ApplicationController
 
   def index_json
     @assignments = roster.assignments.with_start_datetimes.preload(:user)
-    return unless params[:start_datetime].present? && params[:end_datetime].present?
-
-    @assignments = @assignments.where(
-      start_datetime: nil..Date.parse(params[:end_datetime]).at_end_of_day,
-      end_datetime: Date.parse(params[:start_datetime]).at_beginning_of_day..nil
-    )
+                         .where(start_datetime: nil..Date.parse(params[:end_date]).at_end_of_day,
+                                end_datetime: Date.parse(params[:start_date]).at_beginning_of_day..nil)
   end
 end
