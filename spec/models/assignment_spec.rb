@@ -11,8 +11,9 @@ RSpec.describe Assignment do
   end
 
   describe 'validations' do
-    subject { build :assignment }
+    subject(:assignment) { create :assignment }
 
+    it { is_expected.not_to allow_value(assignment.roster.created_at).for(:end_datetime) }
     it { is_expected.to validate_presence_of(:end_datetime) }
     it { is_expected.to validate_uniqueness_of(:end_datetime).scoped_to(:roster_id) }
   end

@@ -5,5 +5,6 @@ FactoryBot.define do
     sequence(:name) { |n| "Name #{n}" }
     sequence(:phone) { |n| format('+1413545%04d', n) }
     switchover { (16 * 60) + 30 }
+    created_at { 1.week.ago }
   end
 end

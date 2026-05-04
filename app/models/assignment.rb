@@ -8,7 +8,11 @@ class Assignment < ApplicationRecord
   belongs_to :roster
   belongs_to :user, optional: true
 
-  validates :end_datetime, presence: true, uniqueness: { scope: :roster_id }
+  validates :end_datetime, comparison: { greater_than: ->(assignment) { assignment.roster.created_at },
+                                         if: ->(assignment) { assignment.roster.present? },
+                                         allow_nil: true },
+                           presence: true,
+                           uniqueness: { scope: :roster_id }
 
   scope :ending_before, ->(time) { where(arel_table[:end_datetime].lt(time)) }
   scope :ending_after, ->(time) { where(arel_table[:end_datetime].gt(time)) }
