@@ -115,7 +115,9 @@ RSpec.describe Assignment do
     subject(:call) { described_class.with_start_datetimes }
 
     let(:time) { Time.current }
-    let(:rosters) { create_list :roster, 2 }
+    let(:rosters) do
+      [create(:roster, created_at: 5.minutes.before(time)), create(:roster, created_at: 4.minutes.before(time))]
+    end
     let!(:roster_one_assignments) do
       [1.minute.after(time), 1.minute.before(time), 3.minutes.before(time)].map do |end_datetime|
         create(:assignment, roster: rosters.first, end_datetime:)
@@ -134,13 +136,13 @@ RSpec.describe Assignment do
     it 'preloads start datetimes at the database level and writes them to attributes' do
       expect(call.collect(&:attributes)).to contain_exactly(
         a_hash_including('id' => roster_one_assignments.first.id,
-                         'start_datetime' => nil),
+                         'start_datetime' => rosters.first.created_at),
         a_hash_including('id' => roster_one_assignments.second.id,
                          'start_datetime' => roster_one_assignments.first.end_datetime),
         a_hash_including('id' => roster_one_assignments.third.id,
                          'start_datetime' => roster_one_assignments.second.end_datetime),
         a_hash_including('id' => roster_two_assignments.first.id,
-                         'start_datetime' => nil),
+                         'start_datetime' => rosters.second.created_at),
         a_hash_including('id' => roster_two_assignments.second.id,
                          'start_datetime' => roster_two_assignments.first.end_datetime),
         a_hash_including('id' => roster_two_assignments.third.id,
