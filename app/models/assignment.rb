@@ -8,7 +8,11 @@ class Assignment < ApplicationRecord
   belongs_to :roster
   belongs_to :user, optional: true
 
-  validates :end_datetime, presence: true, uniqueness: { scope: :roster_id }
+  validates :end_datetime, comparison: { greater_than: ->(assignment) { assignment.roster.created_at },
+                                         if: ->(assignment) { assignment.roster.present? },
+                                         allow_nil: true },
+                           presence: true,
+                           uniqueness: { scope: :roster_id }
 
   scope :ending_before, ->(time) { where(arel_table[:end_datetime].lt(time)) }
   scope :ending_after, ->(time) { where(arel_table[:end_datetime].gt(time)) }
@@ -21,7 +25,9 @@ class Assignment < ApplicationRecord
 
   class << self
     def with_start_datetimes
-      from arel_table.project(arel_table[Arel.star], start_datetime_node).as(arel_table.name)
+      from arel_table.join(Roster.arel_table).on(arel_table[:roster_id].eq(Roster.arel_table[:id]))
+                     .project(arel_table[Arel.star], start_datetime_node)
+                     .as(arel_table.name)
     end
 
     def to_csv # rubocop:disable Metrics
@@ -46,7 +52,9 @@ class Assignment < ApplicationRecord
 
     def start_datetime_node
       Arel::Nodes::Over.new(
-        Arel::Nodes::NamedFunction.new('LAG', [arel_table[:end_datetime]]),
+        Arel::Nodes::NamedFunction.new('LAG', [arel_table[:end_datetime],
+                                               Arel::Nodes::SqlLiteral.new('1'),
+                                               Roster.arel_table[:created_at]]),
         Arel::Nodes::Window.new.partition(arel_table[:roster_id]).order(arel_table[:end_datetime])
       ).as(arel_table[:start_datetime].name)
     end
