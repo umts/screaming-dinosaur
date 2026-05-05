@@ -35,7 +35,7 @@ RSpec.describe RosterMailer do
       open_dates_string = ''
       open_dates.each { |date| open_dates_string += "\r\n#{date.to_fs(:short)}" }
 
-      expect(email.body.encoded).to have_content open_dates_string
+      expect(email.body.encoded).to have_text(open_dates_string)
     end
 
     context 'without a fallback user' do
