@@ -13,12 +13,6 @@ Rails.application.routes.draw do
   resources :rosters do
     resources :assignments, only: %i[index new edit create update destroy], shallow: true
 
-    get :assign_weeks, to: 'week_assigners#prompt'
-    post :assign_weeks, to: 'week_assigners#perform'
-
-    get :assign_weekdays, to: 'weekday_assigners#prompt'
-    post :assign_weekdays, to: 'weekday_assigners#perform'
-
     resources :memberships, only: %i[index create destroy update], shallow: true
 
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
