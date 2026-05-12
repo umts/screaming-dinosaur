@@ -56,7 +56,7 @@ class AssignmentsController < ApplicationController
   private
 
   def find_assignment
-    @assignment = Assignment.find(params[:id])
+    @assignment = Assignment.find(params.expect(:id))
   end
 
   def initialize_assignment
