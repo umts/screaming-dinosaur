@@ -10,6 +10,6 @@ module Rosterable
   protected
 
   def roster
-    @roster ||= Roster.friendly.find(params[:roster_id]) if params.key?(:roster_id)
+    @roster ||= Roster.friendly.find(params.expect(:roster_id)) if params.key?(:roster_id)
   end
 end
