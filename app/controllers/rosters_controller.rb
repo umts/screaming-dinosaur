@@ -58,7 +58,7 @@ class RostersController < ApplicationController
   private
 
   def find_roster
-    @roster = Roster.friendly.find params[:id]
+    @roster = Roster.friendly.find(params.expect(:id))
   end
 
   def initialize_roster
