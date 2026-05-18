@@ -34,13 +34,12 @@
                     %i.fa-solid.fa-edit
                     Edit
                   = button_to assignment_path(assignment),
-                               method: :delete,
-                               class: 'btn btn-outline-secondary',
-                               form_class: 'd-grid',
-                               'data-confirm': 'Are you sure?' do
+                              method: :delete,
+                              class: 'btn btn-outline-secondary',
+                              form_class: 'd-grid',
+                              'data-confirm': 'Are you sure?' do
                     %i.fa-solid.fa-trash
                     Delete
-             
       - else
         .list-group-item No assignments found
   = paginate @assignments

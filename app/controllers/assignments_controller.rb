@@ -67,7 +67,7 @@ class AssignmentsController < ApplicationController
   def assignment_params
     params.expect assignment: %i[end_datetime user_id]
   end
-  
+
   def index_html
     @assignments = roster.assignments.with_start_datetimes.preload(:user)
                          .order(end_datetime: :asc).page(params[:page])

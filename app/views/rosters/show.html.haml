@@ -20,6 +20,11 @@
   .card.mb-3
     .card-header
     .card-body
-      .mb-3{ data: { controller: 'assignment-calendar',
-                     'assignment-calendar-events-url-value': roster_assignments_path(@roster, format: :json) } }
+      .mb-3{
+        data: {
+          controller: 'assignment-calendar',
+          'assignment-calendar-events-url-value':
+              roster_assignments_path(@roster, format: :json)
+        }
+      }
       = render partial: 'feeds/url', locals: { roster: @roster }

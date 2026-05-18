@@ -9,8 +9,8 @@
         Overview
       %li.nav-item
       = link_to roster_assignments_path(roster), class: ['nav-link', nav_item == 'assignments' && 'active'] do
-        %i.fa-solid.fa-list 
-        Assignments 
+        %i.fa-solid.fa-list
+        Assignments
   - if allowed_to?(:index?, Membership, context: { roster: })
     %li.nav-item
       = link_to roster_memberships_path(roster), class: ['nav-link', nav_item == 'memberships' && 'active'] do
