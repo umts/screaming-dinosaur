@@ -4,7 +4,7 @@
 - nav_items = capture do
   - if allowed_to?(:show?, roster)
     %li.nav-item
-      = link_to roster_path(roster), class: ['nav-link', nav_item == 'assignments' && 'active'] do
+      = link_to roster_path(roster), class: ['nav-link', nav_item == 'overview' && 'active'] do
         %i.fa-solid.fa-calendar
         Overview
       %li.nav-item
