@@ -9,6 +9,7 @@ class AssignmentsController < ApplicationController
   def index
     authorize!
     respond_to do |format|
+      format.html { index_html }
       format.json { index_json }
       format.csv { index_csv }
     end
@@ -65,6 +66,11 @@ class AssignmentsController < ApplicationController
 
   def assignment_params
     params.expect assignment: %i[end_datetime user_id]
+  end
+  
+  def index_html
+    @assignments = roster.assignments.with_start_datetimes.preload(:user)
+                         .order(end_datetime: :asc).page(params[:page])
   end
 
   def index_json
