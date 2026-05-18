@@ -15,6 +15,25 @@ RSpec.describe Assignment do
 
     it { is_expected.to validate_presence_of(:end_datetime) }
     it { is_expected.to validate_uniqueness_of(:end_datetime).scoped_to(:roster_id) }
+
+    describe 'end_datetime relative to the roster create datetime' do
+      let(:roster) { create :roster }
+
+      it 'is invalid when before the roster create datetime' do
+        assignment = build(:assignment, roster:, end_datetime: 1.second.before(roster.created_at))
+        expect(assignment).not_to be_valid
+      end
+
+      it 'is invalid when equal to the roster create datetime' do
+        assignment = build(:assignment, roster:, end_datetime: roster.created_at)
+        expect(assignment).not_to be_valid
+      end
+
+      it 'is valid when after the roster create datetime' do
+        assignment = build(:assignment, roster:, end_datetime: 1.second.after(roster.created_at))
+        expect(assignment).to be_valid
+      end
+    end
   end
 
   describe '#previous' do
@@ -113,7 +132,7 @@ RSpec.describe Assignment do
   describe '.with_start_datetimes' do
     subject(:call) { described_class.with_start_datetimes }
 
-    let(:time) { Time.current }
+    let(:time) { 1.hour.from_now }
     let(:rosters) { create_list :roster, 2 }
     let!(:roster_one_assignments) do
       [1.minute.after(time), 1.minute.before(time), 3.minutes.before(time)].map do |end_datetime|
@@ -133,13 +152,13 @@ RSpec.describe Assignment do
     it 'preloads start datetimes at the database level and writes them to attributes' do
       expect(call.collect(&:attributes)).to contain_exactly(
         a_hash_including('id' => roster_one_assignments.first.id,
-                         'start_datetime' => nil),
+                         'start_datetime' => rosters.first.created_at),
         a_hash_including('id' => roster_one_assignments.second.id,
                          'start_datetime' => roster_one_assignments.first.end_datetime),
         a_hash_including('id' => roster_one_assignments.third.id,
                          'start_datetime' => roster_one_assignments.second.end_datetime),
         a_hash_including('id' => roster_two_assignments.first.id,
-                         'start_datetime' => nil),
+                         'start_datetime' => rosters.second.created_at),
         a_hash_including('id' => roster_two_assignments.second.id,
                          'start_datetime' => roster_two_assignments.first.end_datetime),
         a_hash_including('id' => roster_two_assignments.third.id,

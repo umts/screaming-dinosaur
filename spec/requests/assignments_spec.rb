@@ -32,6 +32,7 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
 
+      let(:roster) { create :roster, created_at: 2.days.ago.middle_of_day }
       let!(:past_assignment) { create :assignment, roster:, end_datetime: Date.yesterday.at_middle_of_day }
       let!(:open_assignment) { create :assignment, roster:, end_datetime: Date.current.at_middle_of_day }
       let!(:taken_assignment) do
