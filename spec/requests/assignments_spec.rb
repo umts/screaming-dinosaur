@@ -13,6 +13,45 @@ RSpec.describe 'Assignments' do
     let(:attributes) { { user_id: nil, end_datetime: nil } }
   end
 
+  describe 'GET /rosters/:roster_id/assignments.html' do
+    subject(:call) do
+      get "/rosters/#{roster.slug}/assignments.html"
+    end
+
+    let(:roster) { create :roster }
+
+    context 'when logged in as a user unrelated to the roster' do
+      include_context 'when logged in as a user unrelated to the roster'
+
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a member of the roster' do
+      include_context 'when logged in as a member of the roster'
+
+      let(:roster) { create :roster, created_at: 2.days.ago.middle_of_day }
+      let(:users) { create_list :user, 2, rosters: [roster] }
+
+      before do
+        create(:assignment, roster:, user: users.first, end_datetime: Date.current.middle_of_day)
+        create(:assignment, roster:, user: users.second, end_datetime: Date.yesterday.middle_of_day)
+      end
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+
+      it 'renders the index template' do
+        call
+        expect(response).to render_template(:index)
+      end
+    end
+  end
+
   describe 'GET /rosters/:roster_id/assignments.json' do
     subject(:call) do
       get "/rosters/#{roster.slug}/assignments.json", params: { start_date: Date.current, end_date: Date.tomorrow }
