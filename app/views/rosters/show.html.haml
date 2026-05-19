@@ -3,6 +3,11 @@
     .card-body
       .float-end= formatted_phone(@roster.phone)
       = render partial: 'on_call_user', locals: { roster: @roster }
+  .card.mb-3
+    .card-body
+      .mb-3{ data: { controller: 'assignment-calendar',
+                     'assignment-calendar-events-url-value': roster_assignments_path(@roster, format: :json) } }
+      = render partial: 'feeds/url', locals: { roster: @roster }
   - if @your_assignments.present?
     .card.mb-3
       .card-header Your assignments
@@ -17,14 +22,3 @@
               %span.text-muted= l assignment.start_datetime, format: :named
               to
               %span.text-muted= l assignment.end_datetime, format: :named
-  .card.mb-3
-    .card-header
-    .card-body
-      .mb-3{
-        data: {
-          controller: 'assignment-calendar',
-          'assignment-calendar-events-url-value':
-              roster_assignments_path(@roster, format: :json)
-        }
-      }
-      = render partial: 'feeds/url', locals: { roster: @roster }
