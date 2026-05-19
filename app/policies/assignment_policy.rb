@@ -6,22 +6,4 @@ class AssignmentPolicy < ApplicationPolicy
   def manage? = allowed_to?(:manage?, record.roster)
 
   def index? = allowed_to?(:show?, roster)
-
-  def create?
-    return true if manage?
-
-    member_of?(record.roster) && not_assigning_someone_else?
-  end
-
-  def update?
-    return true if manage?
-
-    member_of?(record.roster) && not_assigning_someone_else? && not_changing_dates?
-  end
-
-  private
-
-  def not_assigning_someone_else? = record.changes.slice('user_id').blank? || record.user == user
-
-  def not_changing_dates? = record.changes.slice('end_datetime').blank?
 end
