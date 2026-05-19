@@ -9,14 +9,9 @@
             %i.fa-solid.fa-download
             CSV
           - if allowed_to?(:new?, @roster.assignments.new)
-            = button_tag type: 'button',
-                         class: 'btn btn-sm btn-text',
-                         'data-bs-toggle': 'dropdown',
-                         'aria-expanded': 'false' do
+            = link_to new_roster_assignment_path(@roster), class: 'btn btn-sm btn-text' do
               %i.fa-solid.fa-plus
-              Assign
-            %ul.dropdown-menu
-              %li= link_to 'Single', new_roster_assignment_path(@roster), class: 'dropdown-item'
+              New
     .list-group.list-group-flush
       - if @assignments.present?
         - @assignments.each do |assignment|
@@ -24,22 +19,23 @@
             .row
               .col
                 .row.row-cols-1.row-cols-md-3
-                  .col
-                    = assignment.user&.full_name
-                  .col.text-muted= l assignment.start_datetime, format: :named
-                  .col.text-muted= l assignment.end_datetime, format: :named
-              - if allowed_to?(:edit?, assignment)
-                .col-auto.d-flex.align-items-center.gap-2
-                  = link_to edit_assignment_path(assignment), class: 'btn btn-sm btn-text' do
-                    %i.fa-solid.fa-edit
-                    Edit
-                  = button_to assignment_path(assignment),
-                              method: :delete,
-                              class: 'btn btn-outline-secondary',
-                              form_class: 'd-grid',
-                              'data-confirm': 'Are you sure?' do
-                    %i.fa-solid.fa-trash
-                    Delete
+                  .col= l assignment.start_datetime
+                  .col= l assignment.end_datetime
+                  .col= assignment.user&.full_name
+              .col-auto
+                .d-flex.flex-nowrap.gap-3
+                  - if allowed_to?(:edit?, assignment)
+                    = link_to edit_assignment_path(assignment), class: 'btn btn-sm btn-text' do
+                      %i.fa-solid.fa-edit
+                      Edit
+                  - if allowed_to?(:destroy?, assignment)
+                    = button_to assignment_path(assignment),
+                                method: :delete,
+                                form_class: 'd-grid',
+                                class: 'btn btn-sm btn-text',
+                                'data-confirm': 'Are you sure?' do
+                      %i.fa-solid.fa-trash
+                      Delete
       - else
         .list-group-item No assignments found
   = paginate @assignments
