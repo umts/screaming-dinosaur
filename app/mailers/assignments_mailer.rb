@@ -19,10 +19,10 @@ class AssignmentsMailer < ApplicationMailer
          subject: "New upcoming on-call (#{@roster.name})"
   end
 
-  def upcoming_reminder(roster, start_date, end_date, recipient)
-    set_defaults(roster, start_date, end_date, recipient)
-    mail to: @recipient.email,
-         subject: "Reminder: Upcoming on-call (#{@roster.name})"
+  def upcoming_reminder(recipient, assignments)
+    @recipient = recipient
+    @assignments = assignments
+    mail to: @recipient.email
   end
 
   private
