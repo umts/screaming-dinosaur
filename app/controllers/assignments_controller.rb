@@ -57,7 +57,7 @@ class AssignmentsController < ApplicationController
   private
 
   def find_assignment
-    @assignment = Assignment.find(params[:id])
+    @assignment = Assignment.find(params.expect(:id))
   end
 
   def initialize_assignment
@@ -70,7 +70,7 @@ class AssignmentsController < ApplicationController
 
   def index_html
     @assignments = roster.assignments.with_start_datetimes.preload(:user)
-                         .order(end_datetime: :asc).page(params[:page])
+                         .order(end_datetime: :desc).page(params[:page])
   end
 
   def index_json

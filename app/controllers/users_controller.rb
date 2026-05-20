@@ -44,7 +44,7 @@ class UsersController < ApplicationController
   private
 
   def find_user
-    @user = User.find params[:id]
+    @user = User.find(params.expect(:id))
   end
 
   def initialize_user

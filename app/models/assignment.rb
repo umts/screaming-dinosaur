@@ -40,9 +40,9 @@ class Assignment < ApplicationRecord
         all.each do |assignment| # rubocop:disable Rails/FindEach
           csv << {
             roster: assignment.roster.name,
-            email: assignment.user.email,
-            first_name: assignment.user.first_name,
-            last_name: assignment.user.last_name,
+            email: assignment.user&.email,
+            first_name: assignment.user&.first_name,
+            last_name: assignment.user&.last_name,
             start: assignment.start_datetime.iso8601,
             end: assignment.end_datetime.iso8601,
             created_at: assignment.created_at.iso8601,
