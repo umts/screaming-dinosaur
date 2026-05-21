@@ -157,10 +157,9 @@ RSpec.describe Assignment do
     let(:assignment) { create :assignment, user: recipient }
     let(:recipient) { create :user }
     let(:current_user) { create :user }
-    
+
     before { Current.user = current_user }
     after { Current.user = nil }
-
 
     context 'when the changer is the recipient' do
       let(:current_user) { recipient }
@@ -220,7 +219,7 @@ RSpec.describe Assignment do
   describe '#destroy' do
     subject(:destroy) { assignment.destroy }
 
-    let(:assignment) { create :assignment, user: recipient}
+    let(:assignment) { create :assignment, user: recipient }
     let(:recipient) { create :user }
     let(:current_user) { create :user }
 
