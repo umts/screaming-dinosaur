@@ -62,6 +62,8 @@ class Assignment < ApplicationRecord
         Arel::Nodes::Window.new.partition(arel_table[:roster_id]).order(arel_table[:end_datetime])
       ).as(arel_table[:start_datetime].name)
     end
+  end
+    private 
 
     def notify_user_of_assignment
       return unless user_id_previously_changed?
@@ -99,4 +101,3 @@ class Assignment < ApplicationRecord
                        .deliver_later
     end
   end
-end

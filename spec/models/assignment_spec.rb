@@ -154,9 +154,13 @@ RSpec.describe Assignment do
   describe '#save' do
     subject(:save) { assignment.save }
 
-    let(:assignment) { create :assignment }
-    let(:recipient) { assignment.user }
+    let(:assignment) { create :assignment, user: recipient }
+    let(:recipient) { create :user }
     let(:current_user) { create :user }
+    
+    before { Current.user = current_user }
+    after { Current.user = nil }
+
 
     context 'when the changer is the recipient' do
       let(:current_user) { recipient }
@@ -169,13 +173,11 @@ RSpec.describe Assignment do
     context 'when the changer is not the recipient' do
       context 'when creating a new assignment' do
         it 'sends the new_assignment mail' do
-          expect { create :assignment }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
+          expect { create :assignment, user: recipient }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
         end
       end
 
       context 'when the user is blank' do
-        let(:assignment) { create :assignment, user: nil }
-
         it 'does not send the new_assignment mail' do
           expect { create :assignment, user: nil }.not_to have_enqueued_email(AssignmentsMailer, :new_assignment)
         end
@@ -218,9 +220,12 @@ RSpec.describe Assignment do
   describe '#destroy' do
     subject(:destroy) { assignment.destroy }
 
-    let(:assignment) { create :assignment }
-    let(:recipient) { assignment.user }
+    let(:assignment) { create :assignment, user: recipient}
+    let(:recipient) { create :user }
     let(:current_user) { create :user }
+
+    before { Current.user = current_user }
+    after { Current.user = nil }
 
     it 'sends the deleted_assignment mail' do
       expect { destroy }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
