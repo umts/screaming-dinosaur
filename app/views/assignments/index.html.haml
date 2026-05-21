@@ -2,7 +2,7 @@
   .card.mb-3
     .card-header
       .d-flex
-        .flex-grow-1.fw-bold
+        .flex-grow-1
           Assignments
         .d-flex.align-items-center.gap-3
           = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-sm btn-text' do
@@ -16,24 +16,26 @@
       - if @assignments.present?
         - @assignments.each do |assignment|
           .list-group-item
-            .row.align-items-center
+            .row
               .col
-                = assignment.user&.full_name
-              .col.text= l assignment.start_datetime, format: :named
-              .col.text= l assignment.end_datetime, format: :named
-              .col-auto.d-flex.align-items-center.gap-2
-                - if allowed_to?(:edit?, assignment)
-                  = link_to edit_assignment_path(assignment), class: 'btn btn-sm btn-text' do
-                    %i.fa-solid.fa-edit
-                    Edit
-                - if allowed_to?(:destroy?, assignment)
-                  = button_to assignment_path(assignment),
-                              method: :delete,
-                              form_class: 'd-grid',
-                              class: 'btn btn-sm btn-text',
-                              'data-confirm': 'Are you sure?' do
-                    %i.fa-solid.fa-trash
-                    Delete
+                .row.row-cols-1.row-cols-md-3
+                  .col= l assignment.start_datetime
+                  .col= l assignment.end_datetime
+                  .col= assignment.user&.full_name
+              .col-auto
+                .d-flex.flex-nowrap.gap-3
+                  - if allowed_to?(:edit?, assignment)
+                    = link_to edit_assignment_path(assignment), class: 'btn btn-sm btn-text' do
+                      %i.fa-solid.fa-edit
+                      Edit
+                  - if allowed_to?(:destroy?, assignment)
+                    = button_to assignment_path(assignment),
+                                method: :delete,
+                                form_class: 'd-grid',
+                                class: 'btn btn-sm btn-text',
+                                'data-confirm': 'Are you sure?' do
+                      %i.fa-solid.fa-trash
+                      Delete
       - else
         .list-group-item No assignments found
   = paginate @assignments
