@@ -30,12 +30,6 @@ class Assignment < ApplicationRecord
                      .as(arel_table.name)
     end
 
-    def send_reminders!
-      assignments_in_next_week.group_by(&:user).each do |user, assignments|
-        AssignmentsMailer.upcoming_reminder(user, assignments).deliver_now
-      end
-    end
-
     def to_csv # rubocop:disable Metrics
       CSV.generate headers: %i[roster email first_name last_name start end created_at updated_at],
                    write_headers: true do |csv|
@@ -55,16 +49,6 @@ class Assignment < ApplicationRecord
     end
 
     private
-
-    def assignments_in_next_week # rubocop:disable Metrics/AbcSize
-      start_time = (Date.current.beginning_of_week(:monday) + 1.week).in_time_zone.beginning_of_day
-      end_time = start_time + 1.week
-      start_datetime = arel_table[:start_datetime]
-      with_start_datetimes.where(start_datetime.gteq(start_time))
-                          .where(start_datetime.lt(end_time))
-                          .where.not(user_id: nil)
-                          .includes(:roster, :user)
-    end
 
     def start_datetime_node
       Arel::Nodes::Over.new(
