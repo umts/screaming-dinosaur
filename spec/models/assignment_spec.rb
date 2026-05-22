@@ -150,4 +150,100 @@ RSpec.describe Assignment do
       )
     end
   end
+
+  describe '#save' do
+    subject(:save) { assignment.save }
+
+    let(:assignment) { create :assignment, user: recipient }
+    let(:recipient) { create :user }
+    let(:current_user) { create :user }
+
+    before { Current.user = current_user }
+    after { Current.user = nil }
+
+    context 'when the changer is the recipient' do
+      let(:current_user) { recipient }
+
+      it 'does not send an email' do
+        expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
+      end
+    end
+
+    context 'when the changer is not the recipient' do
+      context 'when creating a new assignment' do
+        it 'sends the new_assignment mail' do
+          expect { create :assignment, user: recipient }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
+        end
+      end
+
+      context 'when the user is blank' do
+        it 'does not send the new_assignment mail' do
+          expect { create :assignment, user: nil }.not_to have_enqueued_email(AssignmentsMailer, :new_assignment)
+        end
+      end
+
+      context 'when updating an assignment' do
+        before { assignment.assign_attributes end_datetime: assignment.end_datetime + 1.week }
+
+        it 'sends the changed_assignment mail' do
+          expect { save }.to have_enqueued_email(AssignmentsMailer, :changed_assignment)
+        end
+      end
+
+      context 'when updating the user' do
+        before { assignment.assign_attributes user: create(:user) }
+
+        it 'does not send the changed_assignment mail' do
+          expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
+        end
+
+        it 'sends the new_assignment mail to the new user' do
+          expect { save }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
+        end
+
+        it 'sends the deleted_assignment mail to the previous user' do
+          expect { save }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
+        end
+      end
+    end
+
+    context 'when change notifications are disabled' do
+      before { recipient.update change_notifications_enabled: false }
+
+      it 'does not send notifications' do
+        expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
+      end
+    end
+  end
+
+  describe '#destroy' do
+    subject(:destroy) { assignment.destroy }
+
+    let(:assignment) { create :assignment, user: recipient }
+    let(:recipient) { create :user }
+    let(:current_user) { create :user }
+
+    before { Current.user = current_user }
+    after { Current.user = nil }
+
+    it 'sends the deleted_assignment mail' do
+      expect { destroy }.to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
+    end
+
+    context 'when the changer is the recipient' do
+      let(:current_user) { recipient }
+
+      it 'does not send the deleted_assignment mail' do
+        expect { destroy }.not_to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
+      end
+    end
+
+    context 'when change notifications are disabled' do
+      before { recipient.update change_notifications_enabled: false }
+
+      it 'does not send the deleted_assignment mail' do
+        expect { destroy }.not_to have_enqueued_email(AssignmentsMailer, :deleted_assignment)
+      end
+    end
+  end
 end

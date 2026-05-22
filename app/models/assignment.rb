@@ -14,6 +14,10 @@ class Assignment < ApplicationRecord
                            presence: true,
                            uniqueness: { scope: :roster_id }
 
+  after_commit :notify_user_of_assignment
+  after_commit :notify_user_of_change
+  after_commit :notify_user_of_removal
+
   scope :ending_before, ->(time) { where(arel_table[:end_datetime].lt(time)) }
   scope :ending_after, ->(time) { where(arel_table[:end_datetime].gt(time)) }
 
@@ -58,5 +62,43 @@ class Assignment < ApplicationRecord
         Arel::Nodes::Window.new.partition(arel_table[:roster_id]).order(arel_table[:end_datetime])
       ).as(arel_table[:start_datetime].name)
     end
+  end
+
+  private
+
+  def notify_user_of_assignment
+    return unless user_id_previously_changed?
+    return if user.blank?
+    return if user == Current.user
+    return unless user.change_notifications_enabled?
+
+    AssignmentsMailer.new_assignment(roster, start_datetime, end_datetime, user, Current.user)
+                     .deliver_later
+  end
+
+  def notify_user_of_change
+    return if previously_new_record?
+    return if user_id_previously_changed?
+    return unless end_datetime_previously_changed?
+    return if user.blank?
+    return if user == Current.user
+    return unless user.change_notifications_enabled?
+
+    AssignmentsMailer.changed_assignment(roster, start_datetime, end_datetime, user, Current.user)
+                     .deliver_later
+  end
+
+  def notify_user_of_removal
+    return unless previously_persisted? || user_id_previously_changed?
+
+    previous_user = previously_persisted? ? user : User.find_by(id: user_id_previously_was)
+    return if previous_user.blank?
+    return if previous_user == Current.user
+    return unless previous_user.change_notifications_enabled?
+
+    AssignmentsMailer.deleted_assignment(roster,
+                                         start_datetime, end_datetime,
+                                         previous_user, Current.user)
+                     .deliver_later
   end
 end
