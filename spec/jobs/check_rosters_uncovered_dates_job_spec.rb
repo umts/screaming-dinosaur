@@ -6,34 +6,31 @@ RSpec.describe CheckRostersUncoveredDatesJob do
   subject(:job) { described_class.perform_now }
 
   let(:admin) { create :user }
-  let(:roster) { create :roster }
+  let(:roster) { create :roster, created_at: 3.weeks.ago }
 
-  before { create :membership, user: admin, roster: }
+  before { create :membership, user: admin, roster:, admin: true }
 
-  context 'with open assignments in the next two weeks' do
+  context 'with uncovered periods in the next two weeks' do
     before do
-      create :assignment, roster:, user: admin, start_date: 1.week.from_now, end_date: 2.weeks.from_now
+      create :assignment, roster:, user: admin, end_datetime: 1.day.from_now
     end
 
-    context 'with admins' do
-      before { admin.memberships.last.update(admin: true) }
-
-      it 'queues the email to be sent' do
-        expect { job }.to change { ActionMailer::Base.deliveries.size }.by 1
-      end
+    it 'queues the email to be sent' do
+      expect { job }.to change { ActionMailer::Base.deliveries.size }.by 1
     end
 
     context 'without admins' do
+      before { admin.memberships.last.update(admin: false) }
+
       it 'does not queue the email to be sent' do
         expect { job }.not_to(change { ActionMailer::Base.deliveries.size })
       end
     end
   end
 
-  context 'without open assignments in the next two weeks' do
+  context 'without uncovered periods in the next two weeks' do
     before do
-      admin.memberships.last.update(admin: true)
-      create :assignment, roster:, user: admin, start_date: Time.zone.today, end_date: 2.weeks.from_now
+      create :assignment, roster:, user: admin, end_datetime: 3.weeks.from_now
     end
 
     it 'does not queue the email to be sent' do
