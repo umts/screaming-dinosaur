@@ -33,8 +33,8 @@ class Feed
       e.dtstamp = DateTime.now.to_fs(:ical)
       e.created = assignment.created_at.to_fs(:ical)
       e.last_modified = assignment.updated_at.to_fs(:ical)
-      e.dtstart = Icalendar::Values::Date.new(assignment.start_date)
-      e.dtend = Icalendar::Values::Date.new(1.day.after(assignment.end_date))
+      e.dtstart = Icalendar::Values::DateTime.new(assignment.start_datetime.utc, 'tzid' => 'UTC')
+      e.dtend = Icalendar::Values::DateTime.new(assignment.end_datetime.utc, 'tzid' => 'UTC')
       e.summary = assignment.user.last_name
       e.description = <<~DESC.squish
         #{assignment.user.first_name} #{assignment.user.last_name} is on call for #{assignment.roster.name}.

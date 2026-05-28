@@ -6,11 +6,12 @@ RSpec.describe 'ICS views' do
   shared_examples 'an ics assignments feed' do
     subject(:lines) { page.html.split("\r\n") }
 
+    let(:now) { Time.current }
     let(:roster) { create :roster }
     let(:assignments) do
       Array.new(2) do |n|
-        create :assignment, roster:,
-                            start_date: n.weeks.from_now, end_date: (n.weeks + 6.days).from_now
+        create :assignment, roster:, user: (create :user),
+                            end_datetime: now + (n + 1).weeks
       end
     end
     let(:users) { assignments.map(&:user) }
@@ -41,15 +42,15 @@ RSpec.describe 'ICS views' do
     end
 
     def assignment_dates(assignment)
-      ["DTSTART;VALUE=DATE:#{assignment.start_date.to_fs(:number)}",
-       "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_fs(:number)}"]
+      ["DTSTART:#{assignment.start_datetime.utc.strftime('%Y%m%dT%H%M%SZ')}",
+       "DTEND:#{assignment.end_datetime.utc.strftime('%Y%m%dT%H%M%SZ')}"]
     end
   end
 
   describe 'viewing the ics feed' do
     let :submit do
-      name = roster.name.parameterize
-      visit "/feed/#{name}/#{users[0].calendar_access_token}.ics"
+      create :membership, roster: roster, user: users[0]
+      visit feed_path(roster_id: roster, token: users[0].calendar_access_token)
     end
 
     it_behaves_like 'an ics assignments feed'
