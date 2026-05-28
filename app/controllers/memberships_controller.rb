@@ -46,7 +46,7 @@ class MembershipsController < ApplicationController
   private
 
   def find_membership
-    @membership = Membership.find(params[:id])
+    @membership = Membership.find(params.expect(:id))
   end
 
   def initialize_membership
