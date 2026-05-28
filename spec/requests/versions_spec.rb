@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Versions' do
-  include ActiveSupport::Testing::TimeHelpers
-
   describe 'POST /versions/:id/undo', :versioning do
     subject(:submit) { post "/versions/#{version.id}/undo", headers: }
 
