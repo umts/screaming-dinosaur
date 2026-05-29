@@ -60,14 +60,14 @@ class AssignmentsController < ApplicationController
   private
 
   def find_assignment
-    @assignment = Assignment.find(params[:id])
+    @assignment = Assignment.find(params.expect(:id))
   end
 
   def initialize_assignment
     @assignment = roster.assignments.new
     return if params[:date].blank?
 
-    @assignment.start_date = params[:date].to_date
+    @assignment.start_date = params.expect(:date).to_date
     @assignment.end_date = @assignment.start_date + 6.days
   end
 

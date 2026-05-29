@@ -8,7 +8,7 @@ class MembershipsController < ApplicationController
 
   def index
     authorize!
-    @memberships = roster.memberships.joins(:user).order('users.first_name', 'users.last_name')
+    @memberships = roster.memberships.joins(:user).order('users.first_name', 'users.last_name').page(params[:page])
   end
 
   def create
@@ -46,7 +46,7 @@ class MembershipsController < ApplicationController
   private
 
   def find_membership
-    @membership = Membership.find(params[:id])
+    @membership = Membership.find(params.expect(:id))
   end
 
   def initialize_membership

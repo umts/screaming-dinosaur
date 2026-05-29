@@ -1,8 +1,8 @@
 exit unless Rails.env.development?
 
 # ROTATIONS
-it = FactoryBot.create :roster, name: 'Transit IT'
-ops = FactoryBot.create :roster, name: 'Transit Operations'
+it = FactoryBot.create :roster, name: 'Transit IT', created_at: Time.current.beginning_of_week(:friday)
+ops = FactoryBot.create :roster, name: 'Transit Operations', created_at: Time.current.beginning_of_week(:friday)
 
 # USERS
 names = {

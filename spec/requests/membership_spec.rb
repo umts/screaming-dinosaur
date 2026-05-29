@@ -11,6 +11,30 @@ RSpec.describe 'Memberships' do
     let(:attributes) { { user_id: nil } }
   end
 
+  describe 'GET /rosters/:roster_id/memberships' do
+    subject(:submit) { get "/rosters/#{roster.id}/memberships" }
+
+    let(:roster) { create :roster }
+
+    context 'when logged in as a user unrelated to the roster' do
+      include_context 'when logged in as a user unrelated to the roster'
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a member of the roster' do
+      include_context 'when logged in as a member of the roster'
+
+      it 'returns a success status' do
+        submit
+        expect(response).to be_successful
+      end
+    end
+  end
+
   describe 'POST /rosters/:roster_id/memberships' do
     subject(:submit) { post "/rosters/#{roster.id}/memberships", params: { membership: attributes } }
 

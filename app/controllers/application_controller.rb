@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
 
   def flash_success(flash, subject, action, undoable)
     flash[:notice] = success_message_for(subject, action)
-    flash[:undo] = subject.versions.last&.id if undoable
+    flash[:undo] = subject.versions.last&.id if undoable && (subject.saved_changes? || subject.destroyed?)
   end
 
   def flash_errors(flash, subject)

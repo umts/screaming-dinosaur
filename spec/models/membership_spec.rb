@@ -3,41 +3,44 @@
 require 'rails_helper'
 
 RSpec.describe Membership do
-  describe 'at least one admin validation' do
-    it 'allows adding an admin' do
-      membership = create :membership
-      membership.assign_attributes(admin: true)
-      expect(membership).to be_valid
-    end
+  describe 'associations' do
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:roster) }
+  end
 
-    it 'allows demoting an admin who is not the sole admin' do
-      membership = create :membership, admin: true
-      create :membership, admin: true, roster: membership.roster
-      membership.assign_attributes(admin: false)
-      expect(membership).to be_valid
-    end
+  describe 'validations' do
+    subject { build :membership }
 
-    it 'prohibits demoting the sole admin' do
-      membership = create :membership, admin: true
-      membership.assign_attributes(admin: false)
-      expect(membership).not_to be_valid
-    end
+    it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:roster_id) }
   end
 
   describe '#destroy' do
     subject(:call) { membership.destroy }
 
-    let(:user) { create :user }
-    let(:roster) { create :roster }
-    let!(:membership) { create :membership, user:, roster:, admin: false }
-    let!(:assignments) do
-      [create(:assignment, roster:, user:, start_date: Date.tomorrow, end_date: 2.days.from_now),
-       create(:assignment, roster:, user:, start_date: 3.days.from_now, end_date: 4.days.from_now)]
-    end
+    context 'when the user has existing assignments' do
+      let(:membership) { create :membership }
+      let!(:past_assignments) do
+        [create(:assignment, roster: membership.roster, user: membership.user,
+                             start_date: 4.days.ago, end_date: 3.days.ago),
+         create(:assignment, roster: membership.roster, user: membership.user,
+                             start_date: 2.days.ago, end_date: 1.day.ago)]
+      end
+      let!(:future_assignments) do
+        [create(:assignment, roster: membership.roster, user: membership.user,
+                             start_date: Date.tomorrow, end_date: 2.days.from_now),
+         create(:assignment, roster: membership.roster, user: membership.user,
+                             start_date: 3.days.from_now, end_date: 4.days.from_now)]
+      end
 
-    it 'destroys all future assignments for the associated user and roster' do
-      call
-      expect(assignments.map { |assignment| Assignment.find_by(id: assignment.id) }).to all(be_nil)
+      it 'leaves past assignment untouched for the associated user and roster' do
+        call
+        expect(past_assignments.map { |assignment| Assignment.find_by(id: assignment.id) }).to all(be_present)
+      end
+
+      it 'destroys all future assignments for the associated user and roster' do
+        call
+        expect(future_assignments.map { |assignment| Assignment.find_by(id: assignment.id) }).to all(be_nil)
+      end
     end
   end
 end

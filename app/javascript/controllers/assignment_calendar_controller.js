@@ -35,6 +35,15 @@ export default class extends Controller {
           date.setDate(date.getDate() + 1);
         }
       },
+      eventSourceFailure: function(response) {
+        if (response.status === 403) {
+          window.location.replace(window.location.origin);
+        } else if (response.status === 401) {
+          window.location.reload();
+        } else {
+          alert('Something has gone wrong. IT has been notified. Contact them if the problem persists.');
+        }
+      },
       datesSet: function(info) {
         const currentStart = info.view.currentStart.toISOString();
         sessionStorage.setItem('lastDate', currentStart);
