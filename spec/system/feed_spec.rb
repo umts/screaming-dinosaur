@@ -6,11 +6,12 @@ RSpec.describe 'ICS views' do
   shared_examples 'an ics assignments feed' do
     subject(:lines) { page.html.split("\r\n") }
 
-    let(:roster) { create :roster }
-    let(:assignments) do
+    let(:roster) { create :roster, created_at: 2.weeks.ago }
+    let!(:assignments) do
       Array.new(2) do |n|
         create :assignment, roster:,
-                            start_date: n.weeks.from_now, end_date: (n.weeks + 6.days).from_now
+                            user: create(:user, rosters: [roster]),
+                            end_datetime: (n + 1).weeks.from_now
       end
     end
     let(:users) { assignments.map(&:user) }
@@ -26,8 +27,8 @@ RSpec.describe 'ICS views' do
         expect(lines).to include(description(users[n], roster))
       end
 
-      it "contains the dates for assignment ##{n + 1}" do
-        expect(lines).to include(*assignment_dates(assignments[n]))
+      it "contains the datetimes for assignment ##{n + 1}" do
+        expect(lines).to include(*assignment_datetimes(assignments[n]))
       end
     end
 
@@ -40,9 +41,32 @@ RSpec.describe 'ICS views' do
         "is on call for #{roster.name}."
     end
 
-    def assignment_dates(assignment)
-      ["DTSTART;VALUE=DATE:#{assignment.start_date.to_fs(:number)}",
-       "DTEND;VALUE=DATE:#{(assignment.end_date + 1.day).to_fs(:number)}"]
+    def assignment_datetimes(assignment)
+      ["DTSTART:#{assignment.start_datetime.utc.strftime('%Y%m%dT%H%M%SZ')}",
+       "DTEND:#{assignment.end_datetime.utc.strftime('%Y%m%dT%H%M%SZ')}"]
+    end
+  end
+
+  shared_examples 'an ics feed that excludes unassigned rows' do
+    subject(:body) { page.html }
+
+    let(:roster) { create :roster, created_at: 2.weeks.ago }
+    let(:user) { create :user, rosters: [roster] }
+    let!(:unassigned) do
+      create :assignment, roster:, user: nil, end_datetime: 1.week.from_now
+    end
+    let!(:assigned) do
+      create :assignment, roster:, user:, end_datetime: 2.weeks.from_now
+    end
+
+    before { submit }
+
+    it 'includes the assigned event' do
+      expect(body).to include("#{assigned.id}@screaming-dinosaur")
+    end
+
+    it 'does not include the unassigned event' do
+      expect(body).not_to include("#{unassigned.id}@screaming-dinosaur")
     end
   end
 
@@ -53,5 +77,14 @@ RSpec.describe 'ICS views' do
     end
 
     it_behaves_like 'an ics assignments feed'
+  end
+
+  describe 'viewing the ics feed when the roster has unassigned rows' do
+    let :submit do
+      name = roster.name.parameterize
+      visit "/feed/#{name}/#{user.calendar_access_token}.ics"
+    end
+
+    it_behaves_like 'an ics feed that excludes unassigned rows'
   end
 end
