@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Roster do
+  before { freeze_time }
+
   describe '#on_call_user' do
     subject(:result) { roster.on_call_user }
 
@@ -11,10 +13,10 @@ RSpec.describe Roster do
     let(:assignment) { create :assignment, roster: }
 
     context 'when there is a current assignment' do
+      let(:assignment) { create(:assignment, roster:, user: create(:user)) }
+
       before do
-        assignments = roster.assignments
-        allow(roster).to receive(:assignments).and_return(assignments)
-        allow(assignments).to receive(:current).and_return(assignment)
+        allow(roster).to receive(:current_assignment).and_return(assignment)
       end
 
       it 'returns the user of the current assignment' do
@@ -85,17 +87,17 @@ RSpec.describe Roster do
     end
   end
 
-  describe '#uncovered_dates_between' do
-    subject(:call) { roster.uncovered_dates_between(start_date, end_date) }
+  describe '#uncovered_datetimes_between' do
+    subject(:call) { roster.uncovered_datetimes_between(start_datetime, end_datetime) }
 
     let(:roster) { create :roster }
-    let(:start_date) { Time.zone.today }
-    let(:end_date) { 1.week.from_now }
+    let(:start_datetime) { Time.current }
+    let(:end_datetime) { 1.week.from_now }
 
-    before { create :assignment, roster:, start_date: 1.day.from_now, end_date: 6.days.from_now }
+    before { create :assignment, roster:, start_datetime: 1.day.from_now, end_datetime: 6.days.from_now }
 
-    it 'returns the dates with no assignments between the given start and end date' do
-      expect(call).to eq [Time.zone.today.to_date, 7.days.from_now.to_date]
+    it 'returns the datetime with no assignments between the given start and end datetime' do
+      expect(call).to eq [7.days.from_now]
     end
   end
 
@@ -106,30 +108,28 @@ RSpec.describe Roster do
     let(:fallback_user) { create :user }
 
     context 'with existing assignments' do
-      before do
-        create :assignment, roster:, end_date: 1.week.from_now
-      end
+      before { create :assignment, roster:, end_datetime: 1.week.from_now }
 
       it 'returns the day after the last assignment ends' do
-        expect(result).to eq 8.days.since.to_date
+        expect(result).to eq 8.days.since
       end
     end
 
     context 'with no existing assignments' do
       it 'returns the upcoming Friday' do
-        travel_to Date.parse('Monday, May 8th, 2017')
-        expect(result).to eq Date.parse('Friday, May 12th, 2017')
+        travel_to Time.zone.parse('Monday, May 8th, 2017')
+        expect(result).to eq Time.current.next_occurring(:friday)
       end
     end
 
     context 'with multiple assignments' do
       before do
-        create :assignment, roster:, start_date: Time.zone.today, end_date: 2.days.from_now
-        create :assignment, roster:, start_date: 3.days.from_now, end_date: 10.days.from_now
+        create :assignment, roster:, end_datetime: 2.days.from_now
+        create :assignment, roster:, end_datetime: 10.days.from_now
       end
 
       it 'returns the day after the last assignment ends with latest end date' do
-        expect(result).to eq 11.days.from_now.to_date
+        expect(result).to eq 11.days.from_now
       end
     end
   end

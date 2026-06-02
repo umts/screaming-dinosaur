@@ -41,21 +41,21 @@ class Roster < ApplicationRecord
     end
   end
 
-  def uncovered_dates_between(start_date, end_date)
-    (start_date.to_date..end_date.to_date).to_a -
-      assignments.between(start_date.to_date, end_date.to_date).inject([]) do |dates, assignment|
-        dates | (assignment.start_date..assignment.end_date).to_a
+  def uncovered_datetimes_between(start_datetime, end_datetime)
+    (start_datetime..end_datetime).step(1.day).to_a -
+      assignments.ending_after(start_datetime).ending_before(end_datetime).inject([]) do |datetimes, assignment|
+        datetimes | (assignment.start_datetime..assignment.end_datetime).step(1.day).to_a
       end
   end
 
   # Returns the day AFTER the last assignment ends.
   # If there is no last assignment, returns the upcoming Friday.
   def next_rotation_start_date
-    last = assignments.order(:end_date).last
+    last = assignments.order(:end_datetime).last
     if last.present?
-      last.end_date + 1.day
+      last.end_datetime + 1.day
     else
-      Time.zone.today.next_occurring :friday
+      Time.current.next_occurring :friday
     end
   end
 
