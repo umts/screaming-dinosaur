@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe SendAssignmentRemindersJob do
-  include ActiveSupport::Testing::TimeHelpers
-
   subject(:job) { described_class.perform_now }
 
   before { travel_to(Time.zone.local(2026, 5, 24, 20, 0, 0)) }

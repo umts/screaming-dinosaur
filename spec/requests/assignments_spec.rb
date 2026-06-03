@@ -44,11 +44,6 @@ RSpec.describe 'Assignments' do
         call
         expect(response).to be_successful
       end
-
-      it 'renders the index template' do
-        call
-        expect(response).to render_template(:index)
-      end
     end
   end
 

@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Roster do
-  include ActiveSupport::Testing::TimeHelpers
-
   describe '#on_call_user' do
     subject(:result) { roster.on_call_user }
 

@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Assignment do
-  include ActiveSupport::Testing::TimeHelpers
-
   describe 'associations' do
     it { is_expected.to belong_to(:roster) }
     it { is_expected.to belong_to(:user).optional }
