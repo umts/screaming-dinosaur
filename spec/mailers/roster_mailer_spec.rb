@@ -4,11 +4,13 @@ require 'rails_helper'
 
 RSpec.describe RosterMailer do
   describe 'open_dates_alert' do
-    subject(:email) { described_class.with(roster:, open_dates:).open_dates_alert }
+    subject(:email) { described_class.with(roster:, open_periods:).open_dates_alert }
 
     let(:admin) { create :user }
     let(:roster) { create :roster }
-    let(:open_dates) { Time.zone.today.to_date..6.days.from_now.to_date }
+    let(:period_start) { Time.zone.local(2026, 6, 1, 17, 0, 0) }
+    let(:period_end) { Time.zone.local(2026, 6, 2, 17, 0, 0) }
+    let(:open_periods) { [{ start_datetime: period_start, end_datetime: period_end }] }
 
     before { create :membership, user: admin, roster:, admin: true }
 
@@ -31,11 +33,12 @@ RSpec.describe RosterMailer do
       expect(email.body.encoded).to include roster.name
     end
 
-    it 'includes the uncovered dates' do
-      open_dates_string = ''
-      open_dates.each { |date| open_dates_string += "\r\n#{date.to_fs(:short)}" }
+    it 'includes the start of each uncovered period' do
+      expect(email.body.encoded).to include I18n.l(period_start, format: :named)
+    end
 
-      expect(email.body.encoded).to have_text(open_dates_string)
+    it 'includes the end of each uncovered period' do
+      expect(email.body.encoded).to include I18n.l(period_end, format: :named)
     end
 
     context 'without a fallback user' do

@@ -41,11 +41,15 @@ class Roster < ApplicationRecord
     end
   end
 
-  def uncovered_dates_between(start_date, end_date)
-    (start_date.to_date..end_date.to_date).to_a -
-      assignments.between(start_date.to_date, end_date.to_date).inject([]) do |dates, assignment|
-        dates | (assignment.start_date..assignment.end_date).to_a
-      end
+  def uncovered_periods_between(start_time, end_time)
+    last = assignments.order(end_datetime: :desc).first
+    return [{ start_datetime: start_time, end_datetime: end_time }] if last.nil?
+
+    gaps = unassigned_periods_between(start_time, end_time)
+    if last.end_datetime < end_time
+      gaps << { start_datetime: [last.end_datetime, start_time].max, end_datetime: end_time }
+    end
+    gaps
   end
 
   # Returns the day AFTER the last assignment ends.
@@ -60,6 +64,19 @@ class Roster < ApplicationRecord
   end
 
   private
+
+  def unassigned_periods_between(start_time, end_time)
+    start_datetime = Assignment.arel_table[:start_datetime]
+    Assignment.with_start_datetimes.where(roster_id: id, user_id: nil)
+              .where(start_datetime.lt(end_time))
+              .where(Assignment.arel_table[:end_datetime].gt(start_time))
+              .map do |a|
+                {
+                  start_datetime: [a.start_datetime, start_time].max,
+                  end_datetime: [a.end_datetime, end_time].min
+                }
+              end
+  end
 
   def notify_fallback_number_changed
     return unless fallback_user_id_previously_changed?
