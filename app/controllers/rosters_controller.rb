@@ -67,7 +67,7 @@ class RostersController < ApplicationController
   end
 
   def roster_params
-    params.expect roster: %i[name phone fallback_user_id switchover_time]
+    params.expect roster: %i[name phone fallback_user_id]
   end
 
   def show_html
