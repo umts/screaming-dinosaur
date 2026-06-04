@@ -1,0 +1,33 @@
+<%
+  def project_root
+    KAMAL.configured?[:config_file].join('../..')
+  end
+
+  def user_for(host)
+    Net::SSH::Config.for(host).fetch(:user, ENV.fetch('USER', nil))
+  end
+%>
+
+service: screaming_dinosaur
+image: umts/screaming_dinosaur
+servers:
+  web:
+    - afs-umts-web4.admin.umass.edu
+proxy:
+  ssl: true
+  host: umts-oncall.admin.umass.edu
+registry:
+  server: localhost:5555
+builder:
+  arch: amd64
+  args:
+    RUBY_VERSION: <%= project_root.join('.ruby-version').read.strip %>
+    NODE_VERSION: <%= project_root.join('.node-version').read.strip %>
+env:
+  secret:
+    - RAILS_MASTER_KEY
+ssh:
+  user: <%= user_for 'afs-umts-web4.admin.umass.edu' %>
+volumes:
+  - "screaming_dinosaur_log:/rails/log"
+  - "screaming_dinosaur_storage:/rails/storage"
