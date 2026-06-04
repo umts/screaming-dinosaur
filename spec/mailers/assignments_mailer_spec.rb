@@ -9,7 +9,7 @@ RSpec.describe AssignmentsMailer do
                                          assignment.effective_end_datetime, recipient, changer
     end
 
-    let(:roster) { create :roster, switchover: 9 * 60 }
+    let(:roster) { create :roster }
     let :assignment do
       create :assignment, roster:,
                           start_date: Date.new(2017, 4, 21), end_date: Date.new(2017, 4, 27)
@@ -52,7 +52,7 @@ RSpec.describe AssignmentsMailer do
                                          assignment.effective_end_datetime, recipient, changer
     end
 
-    let(:roster) { create :roster, switchover: 10 * 60 }
+    let(:roster) { create :roster }
     let :assignment do
       create :assignment, roster:,
                           start_date: Date.new(2017, 4, 21), end_date: Date.new(2017, 4, 27)
@@ -95,7 +95,7 @@ RSpec.describe AssignmentsMailer do
                                      assignment.effective_end_datetime, recipient, changer
     end
 
-    let(:roster) { create :roster, switchover: 11 * 60 }
+    let(:roster) { create :roster }
     let :assignment do
       create :assignment, roster:,
                           start_date: Date.new(2017, 4, 21), end_date: Date.new(2017, 4, 27)

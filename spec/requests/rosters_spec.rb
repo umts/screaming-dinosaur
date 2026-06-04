@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe 'Rosters' do
   shared_context 'with valid attributes' do
-    let(:attributes) { { name: 'Test Roster', phone: '14135451451', switchover_time: '13:15' } }
+    let(:attributes) { { name: 'Test Roster', phone: '14135451451' } }
   end
 
   shared_context 'with invalid attributes' do
-    let(:attributes) { { name: nil, phone: nil, switchover_time: nil } }
+    let(:attributes) { { name: nil, phone: nil } }
   end
 
   describe 'GET /rosters' do
@@ -234,9 +234,7 @@ RSpec.describe 'Rosters' do
 
       it 'creates a roster with the given attributes' do
         submit
-        expect(Roster.last).to have_attributes(
-          attributes.except(:switchover_time).merge(switchover: (13.hours + 15.minutes).in_minutes)
-        )
+        expect(Roster.last).to have_attributes(attributes)
       end
     end
 
@@ -282,9 +280,7 @@ RSpec.describe 'Rosters' do
 
       it 'updates the roster with the given attributes' do
         submit
-        expect(roster.reload).to have_attributes(
-          attributes.except(:switchover_time).merge(switchover: (13.hours + 15.minutes).in_minutes)
-        )
+        expect(roster.reload).to have_attributes(attributes)
       end
     end
 
