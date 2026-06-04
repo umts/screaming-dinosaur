@@ -33,7 +33,7 @@ RSpec.describe CheckRostersUncoveredDatesJob do
   context 'without open assignments in the next two weeks' do
     before do
       admin.memberships.last.update(admin: true)
-      create :assignment, roster:, user: admin, end_datetime: 2.weeks.from_now 
+      create :assignment, roster:, user: admin, end_datetime: 2.weeks.from_now
     end
 
     it 'does not queue the email to be sent' do
