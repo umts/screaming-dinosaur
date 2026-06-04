@@ -6,7 +6,6 @@ class Roster < ApplicationRecord
   extend FriendlyId
 
   friendly_id :name, use: :slugged
-
   has_paper_trail
 
   belongs_to :fallback_user, class_name: 'User', optional: true, inverse_of: 'fallback_rosters'
@@ -22,24 +21,11 @@ class Roster < ApplicationRecord
   has_many :admins, through: :admin_memberships, source: :user
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
-  validates :switchover, numericality: { in: (0...(24 * 60)), message: :invalid_time }
   validates :phone, presence: true, phone: { allow_blank: true }
 
   after_commit :notify_fallback_number_changed, on: :update
 
   def on_call_user = current_assignment&.user || fallback_user
-
-  def switchover_time
-    switchover.presence && Time.zone.now.midnight.in(switchover.minutes)
-  end
-
-  def switchover_time=(value)
-    value.tap do |castable|
-      castable = castable.to_time if castable.respond_to?(:to_time)
-      castable = (castable.hour * 60) + castable.min if castable.is_a?(Time)
-      self.switchover = castable
-    end
-  end
 
   def uncovered_periods_between(start_time, end_time)
     last = assignments.order(end_datetime: :desc).first
@@ -50,17 +36,6 @@ class Roster < ApplicationRecord
       gaps << { start_datetime: [last.end_datetime, start_time].max, end_datetime: end_time }
     end
     gaps
-  end
-
-  # Returns the day AFTER the last assignment ends.
-  # If there is no last assignment, returns the upcoming Friday.
-  def next_rotation_start_date
-    last = assignments.order(:end_date).last
-    if last.present?
-      last.end_date + 1.day
-    else
-      Time.zone.today.next_occurring :friday
-    end
   end
 
   private
