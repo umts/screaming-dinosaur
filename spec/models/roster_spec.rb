@@ -87,17 +87,153 @@ RSpec.describe Roster do
     end
   end
 
-  describe '#uncovered_datetimes_between' do
-    subject(:call) { roster.uncovered_datetimes_between(start_datetime, end_datetime) }
+  describe '#uncovered_periods_between' do
+    subject(:call) { roster.uncovered_periods_between(start_time, end_time) }
 
-    let(:roster) { create :roster }
-    let(:start_datetime) { Time.current }
-    let(:end_datetime) { 1.week.from_now }
+    let(:roster) { create :roster, created_at: 3.weeks.ago }
+    let(:start_time) { Time.zone.local(2026, 6, 1, 0, 0, 0) }
+    let(:end_time) { Time.zone.local(2026, 6, 15, 0, 0, 0) }
 
-    before { create :assignment, roster:, start_datetime: 1.day.from_now, end_datetime: 6.days.from_now }
+    context 'when the roster has no assignments' do
+      it 'returns one period spanning the full input range' do
+        expect(call).to eq [{ start_datetime: start_time, end_datetime: end_time }]
+      end
+    end
 
-    it 'returns the datetime with no assignments between the given start and end datetime' do
-      expect(call).to eq [7.days.from_now]
+    context 'when the last assignment ends after the input range' do
+      before do
+        create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 25, 0, 0, 0)
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: Time.zone.local(2026, 6, 20, 0, 0, 0)
+      end
+
+      it 'returns an empty array' do
+        expect(call).to eq []
+      end
+    end
+
+    context 'with a user_id-nil assignment fully inside the range' do
+      let(:gap_start) { Time.zone.local(2026, 6, 5, 0, 0, 0) }
+      let(:gap_end) { Time.zone.local(2026, 6, 7, 0, 0, 0) }
+
+      before do
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: gap_start
+        create :assignment, roster:, user: nil, end_datetime: gap_end
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: Time.zone.local(2026, 6, 20, 0, 0, 0)
+      end
+
+      it 'returns one period matching the unassigned assignment' do
+        expect(call).to eq [{ start_datetime: gap_start, end_datetime: gap_end }]
+      end
+    end
+
+    context 'when the last assignment ends before the input range end' do
+      let(:last_end) { Time.zone.local(2026, 6, 10, 0, 0, 0) }
+
+      before do
+        create :assignment, roster:, user: create(:user, rosters: [roster]), end_datetime: last_end
+      end
+
+      it 'returns a tail period from the last end_datetime to end_time' do
+        expect(call).to eq [{ start_datetime: last_end, end_datetime: end_time }]
+      end
+    end
+
+    context 'with a user_id-nil assignment entirely before the input range' do
+      before do
+        create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 20, 0, 0, 0)
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: Time.zone.local(2026, 6, 30, 0, 0, 0)
+      end
+
+      it 'does not include the pre-range assignment' do
+        expect(call).to eq []
+      end
+    end
+
+    context 'with a user_id-nil assignment entirely after the input range' do
+      before do
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: Time.zone.local(2026, 6, 20, 0, 0, 0)
+        create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 6, 25, 0, 0, 0)
+      end
+
+      it 'does not include the post-range assignment' do
+        expect(call).to eq []
+      end
+    end
+
+    context 'with both a mid-range gap and a trailing tail' do
+      let(:gap_start) { Time.zone.local(2026, 6, 5, 0, 0, 0) }
+      let(:gap_end) { Time.zone.local(2026, 6, 7, 0, 0, 0) }
+      let(:last_end) { Time.zone.local(2026, 6, 10, 0, 0, 0) }
+
+      before do
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: gap_start
+        create :assignment, roster:, user: nil, end_datetime: gap_end
+        create :assignment, roster:, user: create(:user, rosters: [roster]), end_datetime: last_end
+      end
+
+      it 'returns both periods' do
+        expect(call).to contain_exactly(
+          { start_datetime: gap_start, end_datetime: gap_end },
+          { start_datetime: last_end, end_datetime: end_time }
+        )
+      end
+    end
+
+    context 'when the last assignment ends exactly at the input range end' do
+      before do
+        create :assignment, roster:, user: create(:user, rosters: [roster]), end_datetime: end_time
+      end
+
+      it 'does not return a zero-length tail' do
+        expect(call).to eq []
+      end
+    end
+
+    context 'with a user_id-nil assignment that starts before the input range' do
+      let(:gap_end) { Time.zone.local(2026, 6, 5, 0, 0, 0) }
+
+      before do
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: Time.zone.local(2026, 5, 25, 0, 0, 0)
+        create :assignment, roster:, user: nil, end_datetime: gap_end
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: Time.zone.local(2026, 6, 20, 0, 0, 0)
+      end
+
+      it 'clips the reported period to start at the input range start' do
+        expect(call).to eq [{ start_datetime: start_time, end_datetime: gap_end }]
+      end
+    end
+
+    context 'with a user_id-nil assignment that ends after the input range' do
+      let(:gap_start) { Time.zone.local(2026, 6, 10, 0, 0, 0) }
+
+      before do
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: gap_start
+        create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 6, 20, 0, 0, 0)
+      end
+
+      it 'clips the reported period to end at the input range end' do
+        expect(call).to eq [{ start_datetime: gap_start, end_datetime: end_time }]
+      end
+    end
+
+    context 'when the last assignment ended before the input range began' do
+      before do
+        create :assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: Time.zone.local(2026, 5, 20, 0, 0, 0)
+      end
+
+      it 'clips the tail to start at the input range start' do
+        expect(call).to eq [{ start_datetime: start_time, end_datetime: end_time }]
+      end
     end
   end
 
