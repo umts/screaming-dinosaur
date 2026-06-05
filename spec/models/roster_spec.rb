@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Roster do
+  before { freeze_time }
+
   describe '#on_call_user' do
     subject(:call) { roster.on_call_user }
 
