@@ -7,6 +7,7 @@
 .mb-3
   = fields.label :email, class: 'form-label'
   = fields.email_field :email, required: true, class: 'form-control'
+  %small.form-text.text-muted Used for contact only — not linked to login.
 .mb-3
   = fields.label :phone, class: 'form-label'
   = fields.phone_field :phone, required: true, class: 'form-control'

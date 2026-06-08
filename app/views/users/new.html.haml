@@ -3,6 +3,10 @@
     .card-header
       New User
     .card-body
+      - if session[:upn].present?
+        .mb-3
+          %label.form-label{ for: 'upn' } Microsoft account
+          %input#upn.form-control{ type: 'text', value: session[:upn], disabled: true }
       = form_with model: @user, html: { id: 'user-form' } do |f|
         = render partial: 'fields', object: f
       .row.g-3

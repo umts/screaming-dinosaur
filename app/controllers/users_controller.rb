@@ -51,7 +51,8 @@ class UsersController < ApplicationController
     @user = User.new entra_uid: session[:entra_uid],
                      email: session[:email],
                      first_name: session[:first_name],
-                     last_name: session[:last_name]
+                     last_name: session[:last_name],
+                     upn: session[:upn]
   end
 
   def user_params

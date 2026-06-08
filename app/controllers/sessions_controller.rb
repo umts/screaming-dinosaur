@@ -5,10 +5,8 @@ class SessionsController < ApplicationController
 
   def create
     authorize!
-    session[:entra_uid] = auth_hash.uid
-    session[:email] = auth_hash.info.email
-    session[:first_name] = auth_hash.info.first_name
-    session[:last_name] = auth_hash.info.last_name
+    store_auth_in_session
+    sync_user_upn
     redirect_to auth_referer || root_path
   end
 
@@ -25,6 +23,23 @@ class SessionsController < ApplicationController
   end
 
   private
+
+  def store_auth_in_session
+    session[:entra_uid] = auth_hash.uid
+    session[:email] = auth_hash.info.email
+    session[:first_name] = auth_hash.info.first_name
+    session[:last_name] = auth_hash.info.last_name
+    session[:upn] = auth_hash.extra&.dig(:raw_info, 'upn')
+  end
+
+  def sync_user_upn
+    return if session[:upn].blank?
+
+    user = User.find_by(entra_uid: session[:entra_uid])
+    return if user.nil? || user.upn == session[:upn]
+
+    user.update!(upn: session[:upn])
+  end
 
   def auth_hash = request.env['omniauth.auth']
 
