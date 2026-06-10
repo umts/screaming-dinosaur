@@ -56,6 +56,8 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.expect user: %i[first_name last_name email phone admin reminders_enabled change_notifications_enabled]
+    permitted = %i[first_name last_name email phone admin reminders_enabled change_notifications_enabled]
+    permitted << :entra_uid if allowed_to?(:change_entra_uid?, @user)
+    params.expect user: permitted
   end
 end

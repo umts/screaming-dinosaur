@@ -4,6 +4,12 @@
 .mb-3
   = fields.label :last_name, class: 'form-label'
   = fields.text_field :last_name, required: true, class: 'form-control'
+- if allowed_to?(:show_entra_uid?, fields.object)
+  .mb-3
+    = fields.label :entra_uid, class: 'form-label'
+    = fields.text_field :entra_uid,
+                        disabled: !allowed_to?(:change_entra_uid?, fields.object),
+                        class: 'form-control'
 .mb-3
   = fields.label :email, class: 'form-label'
   = fields.email_field :email, required: true, class: 'form-control'

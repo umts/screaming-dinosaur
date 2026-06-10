@@ -114,6 +114,23 @@ RSpec.describe 'Users' do
         call
         expect(response).to be_successful
       end
+
+      it 'displays the entra_uid as an editable field' do
+        call
+        expect(Capybara.string(response.body)).to have_field('user_entra_uid',
+                                                             with: user.entra_uid, disabled: false)
+      end
+    end
+
+    context 'when logged in as a system admin editing themselves' do
+      let(:current_user) { create :user, admin: true }
+      let(:user) { current_user }
+
+      it 'displays the entra_uid as a disabled field' do
+        call
+        expect(Capybara.string(response.body)).to have_field('user_entra_uid',
+                                                             with: user.entra_uid, disabled: true)
+      end
     end
 
     context 'when logged in as the user to edit' do
@@ -122,6 +139,11 @@ RSpec.describe 'Users' do
       it 'responds successfully' do
         call
         expect(response).to be_successful
+      end
+
+      it 'does not display the entra_uid field' do
+        call
+        expect(Capybara.string(response.body)).to have_no_field('user_entra_uid')
       end
     end
   end
@@ -285,6 +307,34 @@ RSpec.describe 'Users' do
       it 'responds with a forbidden status' do
         submit
         expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as a system admin editing another user with an entra_uid update' do
+      let(:current_user) { create :user, admin: true }
+      let(:attributes) { { entra_uid: 'rewritten-uid' } }
+
+      it 'updates the entra_uid' do
+        expect { submit }.to change { user.reload.entra_uid }.to('rewritten-uid')
+      end
+    end
+
+    context 'when logged in as a system admin editing themselves with an entra_uid update' do
+      let(:current_user) { create :user, admin: true }
+      let(:user) { current_user }
+      let(:attributes) { { entra_uid: 'rewritten-uid' } }
+
+      it 'does not update the entra_uid' do
+        expect { submit }.not_to(change { user.reload.entra_uid })
+      end
+    end
+
+    context 'when logged in as the user to edit with an entra_uid update' do
+      let(:current_user) { user }
+      let(:attributes) { { entra_uid: 'rewritten-uid' } }
+
+      it 'does not update the entra_uid' do
+        expect { submit }.not_to(change { user.reload.entra_uid })
       end
     end
   end
