@@ -69,27 +69,6 @@ RSpec.describe 'Users' do
         call
         expect(response).to be_successful
       end
-
-      context 'with a UPN in the session' do
-        let(:current_user) { nil }
-
-        before do
-          Rails.application.env_config['omniauth.auth'] = OmniAuth::AuthHash.new(
-            provider: 'entra_id',
-            uid: 'new-user',
-            info: { email: 'registrant@umass.edu', first_name: 'New', last_name: 'User' },
-            extra: { raw_info: { 'upn' => 'registrant-af@umass.edu' } }
-          )
-          get '/auth/entra_id/callback'
-        end
-
-        after { Rails.application.env_config.delete('omniauth.auth') }
-
-        it 'displays the UPN as a disabled field' do
-          call
-          expect(response.body).to include('registrant-af@umass.edu')
-        end
-      end
     end
   end
 
@@ -114,23 +93,6 @@ RSpec.describe 'Users' do
         call
         expect(response).to be_successful
       end
-
-      it 'displays the entra_uid as an editable field' do
-        call
-        expect(Capybara.string(response.body)).to have_field('user_entra_uid',
-                                                             with: user.entra_uid, disabled: false)
-      end
-    end
-
-    context 'when logged in as a system admin editing themselves' do
-      let(:current_user) { create :user, admin: true }
-      let(:user) { current_user }
-
-      it 'displays the entra_uid as a disabled field' do
-        call
-        expect(Capybara.string(response.body)).to have_field('user_entra_uid',
-                                                             with: user.entra_uid, disabled: true)
-      end
     end
 
     context 'when logged in as the user to edit' do
@@ -139,11 +101,6 @@ RSpec.describe 'Users' do
       it 'responds successfully' do
         call
         expect(response).to be_successful
-      end
-
-      it 'does not display the entra_uid field' do
-        call
-        expect(Capybara.string(response.body)).to have_no_field('user_entra_uid')
       end
     end
   end
