@@ -31,6 +31,9 @@
 
 en:
   activerecord:
+    attributes:
+      user:
+        entra_upn: "UMass account"
     models:
       version: "Change"
   assignments_mailer:

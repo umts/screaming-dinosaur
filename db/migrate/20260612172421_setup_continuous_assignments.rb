@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SetupContinuousAssignment < ActiveRecord::Migration[8.1]
+class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
   class Roster < ActiveRecord::Base
   end
 
