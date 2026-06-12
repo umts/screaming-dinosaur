@@ -36,6 +36,9 @@ en:
         entra_upn: "UMass account"
     models:
       version: "Change"
+  assignments_mailer:
+    upcoming_reminder:
+      subject: "Reminder: Upcoming on-call"
   errors:
     messages:
       invalid_time: "is not a valid time"

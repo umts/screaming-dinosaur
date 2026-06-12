@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_03_230635) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_12_172421) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -41,11 +41,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_230635) do
 
   create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
-    t.date "end_date", null: false
+    t.datetime "end_datetime", null: false
     t.bigint "roster_id", null: false
-    t.date "start_date", null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.bigint "user_id", null: false
+    t.bigint "user_id"
+    t.index ["end_datetime"], name: "index_assignments_on_end_datetime"
+    t.index ["roster_id", "end_datetime"], name: "index_assignments_on_roster_id_and_end_datetime", unique: true
     t.index ["roster_id"], name: "index_assignments_on_roster_id"
     t.index ["user_id"], name: "index_assignments_on_user_id"
   end
@@ -88,7 +89,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_230635) do
     t.string "name", null: false
     t.string "phone", null: false
     t.string "slug", null: false
-    t.integer "switchover", default: 1020, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["fallback_user_id"], name: "index_rosters_on_fallback_user_id"
     t.index ["name"], name: "index_rosters_on_name", unique: true

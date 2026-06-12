@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe 'Rosters' do
   shared_context 'with valid attributes' do
-    let(:attributes) { { name: 'Test Roster', phone: '14135451451', switchover_time: '13:15' } }
+    let(:attributes) { { name: 'Test Roster', phone: '14135451451' } }
   end
 
   shared_context 'with invalid attributes' do
-    let(:attributes) { { name: nil, phone: nil, switchover_time: nil } }
+    let(:attributes) { { name: nil, phone: nil } }
   end
 
   describe 'GET /rosters' do
@@ -111,7 +111,7 @@ RSpec.describe 'Rosters' do
 
       let(:on_call_user) { create :user, rosters: [roster] }
       let!(:assignment) do
-        create(:assignment, roster:, user: on_call_user, start_date: Date.yesterday, end_date: Date.tomorrow)
+        create(:assignment, roster:, user: on_call_user, end_datetime: 1.day.from_now)
       end
 
       it 'responds with roster data' do
@@ -124,7 +124,7 @@ RSpec.describe 'Rosters' do
           on_call: {
             last_name: on_call_user.last_name,
             first_name: on_call_user.first_name,
-            until: assignment.effective_end_datetime.iso8601
+            until: assignment.end_datetime.iso8601
           }
         }.deep_stringify_keys)
       end
@@ -133,10 +133,12 @@ RSpec.describe 'Rosters' do
     context 'when there is an upcoming assignment' do
       include_context 'when logged in as a member of the roster'
 
+      let(:on_call_user) { create :user, rosters: [roster] }
       let(:upcoming_user) { create :user, rosters: [roster] }
 
       before do
-        create(:assignment, roster:, user: upcoming_user, start_date: Date.tomorrow, end_date: 2.days.from_now)
+        create(:assignment, roster:, user: nil, end_datetime: 1.day.from_now)
+        create(:assignment, roster:, user: upcoming_user, end_datetime: 2.days.from_now)
       end
 
       it 'responds with roster data' do
@@ -232,9 +234,7 @@ RSpec.describe 'Rosters' do
 
       it 'creates a roster with the given attributes' do
         submit
-        expect(Roster.last).to have_attributes(
-          attributes.except(:switchover_time).merge(switchover: (13.hours + 15.minutes).in_minutes)
-        )
+        expect(Roster.last).to have_attributes(attributes)
       end
     end
 
@@ -280,9 +280,7 @@ RSpec.describe 'Rosters' do
 
       it 'updates the roster with the given attributes' do
         submit
-        expect(roster.reload).to have_attributes(
-          attributes.except(:switchover_time).merge(switchover: (13.hours + 15.minutes).in_minutes)
-        )
+        expect(roster.reload).to have_attributes(attributes)
       end
     end
 
