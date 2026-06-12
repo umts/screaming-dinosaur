@@ -1,19 +1,28 @@
 # frozen_string_literal: true
 
 class UserPolicy < ApplicationPolicy
-  skip_pre_check :allow_admins, only: %i[create? change_entra_uid?]
+  skip_pre_check :allow_admins, only: %i[create? update? update_access? update_auth?]
 
   def manage? = false
 
-  def create? = request.session[:entra_uid].present? && user.blank? && no_admin_changes?
+  def show_auth? = false
 
-  def update? = user == record && no_admin_changes?
+  def create? = request.session[:entra_uid].present? && user.blank? && no_access_changes?
 
-  def show_entra_uid? = user&.admin?
+  def update?
+    return false unless no_access_changes? || allowed_to?(:update_access?, record)
+    return false unless no_auth_changes? || allowed_to?(:update_auth?, record)
 
-  def change_entra_uid? = user&.admin? && record != user
+    user == record || allowed_to?(:manage?, record)
+  end
+
+  def update_access? = user&.admin && user != record
+
+  def update_auth? = user&.admin && user != record
 
   private
 
-  def no_admin_changes? = record.changes.slice('admin').blank?
+  def no_access_changes? = record.changes.slice('admin').blank?
+
+  def no_auth_changes? = record.changes.slice('entra_uid').blank?
 end

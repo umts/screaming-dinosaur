@@ -271,8 +271,14 @@ RSpec.describe 'Users' do
       let(:current_user) { create :user, admin: true }
       let(:attributes) { { entra_uid: 'rewritten-uid' } }
 
-      it 'updates the entra_uid' do
-        expect { submit }.to change { user.reload.entra_uid }.to('rewritten-uid')
+      it 'redirects to the edit user page' do
+        submit
+        expect(response).to redirect_to(edit_user_path(user))
+      end
+
+      it 'updates the user with the given attributes' do
+        submit
+        expect(user.reload).to have_attributes(attributes)
       end
     end
 
@@ -281,8 +287,9 @@ RSpec.describe 'Users' do
       let(:user) { current_user }
       let(:attributes) { { entra_uid: 'rewritten-uid' } }
 
-      it 'does not update the entra_uid' do
-        expect { submit }.not_to(change { user.reload.entra_uid })
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
@@ -290,8 +297,9 @@ RSpec.describe 'Users' do
       let(:current_user) { user }
       let(:attributes) { { entra_uid: 'rewritten-uid' } }
 
-      it 'does not update the entra_uid' do
-        expect { submit }.not_to(change { user.reload.entra_uid })
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
       end
     end
   end
