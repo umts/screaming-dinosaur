@@ -1,4 +1,7 @@
 .mb-3
+  = fields.label :entra_upn, class: 'form-label'
+  = fields.text_field :entra_upn, disabled: true, class: 'form-control'
+.mb-3
   = fields.label :first_name, class: 'form-label'
   = fields.text_field :first_name, required: true, class: 'form-control'
 .mb-3
@@ -7,6 +10,7 @@
 .mb-3
   = fields.label :email, class: 'form-label'
   = fields.email_field :email, required: true, class: 'form-control'
+  %small.form-text.text-muted For contact purposes (does not have to be @umass.edu).
 .mb-3
   = fields.label :phone, class: 'form-label'
   = fields.phone_field :phone, required: true, class: 'form-control'
@@ -26,5 +30,13 @@
     %legend.form-label.fs-6 Access
     .list-group
       = fields.label :admin, class: 'list-group-item' do
-        = fields.check_box :admin, disabled: !allowed_to?(:manage?, fields.object), class: 'form-check-input me-2'
+        = fields.check_box :admin, disabled: !allowed_to?(:update_access?, fields.object),
+                                   class: 'form-check-input me-2'
         Admin
+- if allowed_to?(:show_auth?, fields.object)
+  .mb-3
+    = fields.label :entra_uid, class: 'form-label'
+    = fields.text_field :entra_uid, disabled: !allowed_to?(:update_auth?, fields.object), class: 'form-control'
+    - if allowed_to?(:update_auth?, fields.object)
+      %small.form-text.text-muted
+        Remember to prefix with tenant id (#{Rails.application.credentials.dig(:entra_id, :tenant_id)}).

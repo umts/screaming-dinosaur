@@ -266,5 +266,41 @@ RSpec.describe 'Users' do
         expect(response).to have_http_status(:forbidden)
       end
     end
+
+    context 'when logged in as a system admin editing another user with an entra_uid update' do
+      let(:current_user) { create :user, admin: true }
+      let(:attributes) { { entra_uid: 'rewritten-uid' } }
+
+      it 'redirects to the edit user page' do
+        submit
+        expect(response).to redirect_to(edit_user_path(user))
+      end
+
+      it 'updates the user with the given attributes' do
+        submit
+        expect(user.reload).to have_attributes(attributes)
+      end
+    end
+
+    context 'when logged in as a system admin editing themselves with an entra_uid update' do
+      let(:current_user) { create :user, admin: true }
+      let(:user) { current_user }
+      let(:attributes) { { entra_uid: 'rewritten-uid' } }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context 'when logged in as the user to edit with an entra_uid update' do
+      let(:current_user) { user }
+      let(:attributes) { { entra_uid: 'rewritten-uid' } }
+
+      it 'responds with a forbidden status' do
+        submit
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
   end
 end
