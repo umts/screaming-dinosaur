@@ -6,6 +6,7 @@ RSpec.describe Assignment do
   describe 'associations' do
     it { is_expected.to belong_to(:roster) }
     it { is_expected.to belong_to(:user).optional }
+    it { is_expected.to belong_to(:assignment_group).optional }
   end
 
   describe 'validations' do
