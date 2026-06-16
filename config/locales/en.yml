@@ -58,3 +58,4 @@ en:
       update: "updated"
       destroy: "deleted"
       undo: "reverted"
+      take: "took"

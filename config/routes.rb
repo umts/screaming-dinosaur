@@ -11,7 +11,12 @@ Rails.application.routes.draw do
   mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 
   resources :rosters do
-    resources :assignments, only: %i[index new edit create update destroy], shallow: true
+    resources :assignments, only: %i[index new edit create update destroy], shallow: true do
+      member do
+        get :take, to: 'assignment_takers#prompt'
+        post :take, to: 'assignment_takers#perform'
+      end
+    end
 
     resources :memberships, only: %i[index create destroy update], shallow: true
 

@@ -1,0 +1,31 @@
+= render layout: 'layouts/roster', locals: { roster: @taker.assignment.roster, nav_item: 'assignments' } do
+  .card
+    .card-header
+      Take assignment
+    .card-body
+      .list-group.mb-3
+        .list-group-item
+          .row.row-cols-1.row-cols-md-3
+            .col= l @taker.assignment.start_datetime
+            .col= l @taker.assignment.end_datetime
+            .col= @taker.assignment.user&.full_name
+      = form_with model: @taker, url: take_assignment_path(@taker.assignment) do |f|
+        - if @taker.grouped?
+          .mb-3
+            .form-check
+              = f.check_box :whole_group, class: 'form-check-input'
+              = f.label :whole_group, 'Take the whole group', class: 'form-check-label'
+          .mb-3
+            = field_set_tag do
+              %legend.form-label.fs-6 Other assignments in this group
+              .list-group
+                - @taker.other_group_assignments.each do |assignment|
+                  .list-group-item
+                    .row.row-cols-1.row-cols-md-3
+                      .col= l assignment.start_datetime
+                      .col= l assignment.end_datetime
+                      .col= assignment.user&.full_name
+        .d-grid
+          = f.button type: :submit, class: 'btn btn-outline-primary' do
+            %i.fa-solid.fa-check
+            Take
