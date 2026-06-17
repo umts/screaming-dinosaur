@@ -18,9 +18,14 @@ RSpec.describe 'Taking assignments' do
   end
 
   describe 'taking a grouped assignment' do
-    let(:group) { create :assignment_group }
+    let(:group) { create :assignment_group, name: 'Morning shifts' }
     let!(:assignment) { create :assignment, roster:, user: nil, assignment_group: group }
     let!(:sibling) { create :assignment, roster:, user: nil, assignment_group: group }
+
+    it 'shows the group name' do
+      visit take_assignment_path(assignment)
+      expect(page).to have_text('Morning shifts')
+    end
 
     it 'takes only the target when the whole-group box is unchecked' do
       visit take_assignment_path(assignment)

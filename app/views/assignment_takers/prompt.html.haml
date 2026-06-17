@@ -12,6 +12,9 @@
       = form_with model: @taker, url: take_assignment_path(@taker.assignment) do |f|
         - if @taker.grouped?
           .mb-3
+            %p.mb-2
+              This assignment is part of
+              %strong= @taker.assignment.assignment_group.name
             .form-check
               = f.check_box :whole_group, class: 'form-check-input'
               = f.label :whole_group, 'Take the whole group', class: 'form-check-label'
