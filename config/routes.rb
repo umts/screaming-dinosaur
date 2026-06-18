@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   resources :rosters do
     resources :assignments, only: %i[index new edit create update destroy], shallow: true
 
+    get :assignment_generator, to: 'assignment_generator#prompt'
+    post :assignment_generator, to: 'assignment_generator#perform'
+
+
     resources :memberships, only: %i[index create destroy update], shallow: true
 
     get 'twilio/call', to: 'twilio#call', as: :twilio_call
