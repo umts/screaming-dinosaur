@@ -12,6 +12,10 @@
             = link_to new_roster_assignment_path(@roster), class: 'btn btn-sm btn-text' do
               %i.fa-solid.fa-plus
               New
+          - if allowed_to?(:prompt, AssignmentGenerator.new(roster_id: @roster.id))
+            = link_to roster_assignment_generator_path(@roster), class: 'btn btn-sm btn-text' do
+              %i.fa-solid.fa-bolt
+              Generate
     .list-group.list-group-flush
       - if @assignments.present?
         - @assignments.each do |assignment|
