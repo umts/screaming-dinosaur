@@ -40,7 +40,7 @@ RSpec.describe Roster do
   describe '#uncovered_periods_between' do
     subject(:call) { roster.uncovered_periods_between(start_time, end_time) }
 
-    let(:roster) { create :roster, created_at: 3.weeks.ago }
+    let(:roster) { create :roster, created_at: Time.zone.local(2026, 5, 1, 0, 0, 0) }
     let(:start_time) { Time.zone.local(2026, 6, 1, 0, 0, 0) }
     let(:end_time) { Time.zone.local(2026, 6, 15, 0, 0, 0) }
 
