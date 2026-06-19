@@ -179,6 +179,15 @@ RSpec.describe 'Users' do
 
     let(:user) { create :user }
 
+    context 'when not logged in with an entra_uid update' do
+      let(:attributes) { { entra_uid: 'rewritten-uid' } }
+
+      it 'responds with an unauthorized status' do
+        submit
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context 'when logged in as a roster admin' do
       let(:attributes) do
         { first_name: 'Bobo',
