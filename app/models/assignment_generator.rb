@@ -34,14 +34,6 @@ class AssignmentGenerator
     @roster = Roster.find_by(id: roster_id)
   end
 
-  private
-
-  def user
-    return @user if defined?(@user)
-
-    @user = User.find_by(id: user_id)
-  end
-
   def perform!
     validate!
     ActiveRecord::Base.transaction do
@@ -54,6 +46,14 @@ class AssignmentGenerator
   rescue ActiveRecord::RecordInvalid => e
     errors.merge! e.record.errors
     raise e
+  end
+
+  private
+
+  def user
+    return @user if defined?(@user)
+
+    @user = User.find_by(id: user_id)
   end
 
   def date_range
