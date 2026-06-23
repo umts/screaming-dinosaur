@@ -162,6 +162,8 @@ RSpec.describe Assignment do
     context 'when the changer is the recipient' do
       let(:current_user) { recipient }
 
+      before { assignment.assign_attributes end_datetime: assignment.end_datetime + 1.week }
+
       it 'does not send an email' do
         expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)
       end
@@ -206,7 +208,10 @@ RSpec.describe Assignment do
     end
 
     context 'when change notifications are disabled' do
-      before { recipient.update change_notifications_enabled: false }
+      before do
+        recipient.update change_notifications_enabled: false
+        assignment.assign_attributes end_datetime: assignment.end_datetime + 1.week
+      end
 
       it 'does not send notifications' do
         expect { save }.not_to have_enqueued_email(AssignmentsMailer, :changed_assignment)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SetupContinuousAssignment < ActiveRecord::Migration[8.1]
+class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
   class Roster < ActiveRecord::Base
   end
 
@@ -68,5 +68,7 @@ class SetupContinuousAssignment < ActiveRecord::Migration[8.1]
     change_column_null :assignments, :end_datetime, false
     remove_column :assignments, :start_date, :date
     remove_column :assignments, :end_date, :date
+
+    remove_column :rosters, :switchover, :integer, default: 1020, null: false
   end
 end
