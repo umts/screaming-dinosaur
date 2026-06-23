@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 exit unless Rails.env.development?
 
 # ROTATIONS
@@ -55,7 +57,7 @@ User.find_by(last_name: 'Sherson').update(admin: true)
 
 # ASSIGNMENTS
 unless ENV['SKIP_ASSIGNMENTS']
-  Roster.all.each do |roster|
+  Roster.find_each do |roster|
     roster.users.order(:last_name).each_with_index do |user, i|
       FactoryBot.create :assignment, user: user, roster: roster,
                                      start_date: i.weeks.since.beginning_of_week(:friday),
