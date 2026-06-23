@@ -12,6 +12,11 @@ Rails.application.routes.draw do
 
   resources :rosters do
     resources :assignments, only: %i[index new edit create update destroy], shallow: true do
+      collection do
+        get :generate, to: 'assignment_generator#prompt'
+        post :generate, to: 'assignment_generator#perform'
+      end
+
       member do
         get :take, to: 'assignment_takers#prompt'
         post :take, to: 'assignment_takers#perform'
