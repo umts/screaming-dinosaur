@@ -63,5 +63,21 @@ RSpec.describe AssignmentGenerator do
         expect(submit).to be(false)
       end
     end
+
+    context 'when invalid assignment attributes are used' do
+      let(:start_date) { Date.current }
+      let(:end_date) { Date.current }
+      let(:end_time) { Time.zone.parse('05:00') }
+      let(:weekdays) { Date::DAYNAMES }
+
+      before do
+        create :assignment, roster:,
+                            end_datetime: Time.zone.local(start_date.year, start_date.month, start_date.day, 5, 0)
+      end
+
+      it 'returns false' do
+        expect(submit).to be(false)
+      end
+    end
   end
 end
