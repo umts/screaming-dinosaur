@@ -87,7 +87,7 @@ RSpec.describe 'Assignment Takers' do
       let!(:sibling) { create :assignment, roster:, user: nil, assignment_group: group }
 
       context 'when taking the whole group' do
-        let(:attributes) { { whole_group: '1' } }
+        let(:attributes) { { group: '1' } }
 
         it 'assigns the current user to every member of the group' do
           submit

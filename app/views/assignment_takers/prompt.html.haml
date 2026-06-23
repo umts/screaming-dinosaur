@@ -10,19 +10,19 @@
             .col= l @taker.assignment.end_datetime
             .col= @taker.assignment.user&.full_name
       = form_with model: @taker, url: take_assignment_path(@taker.assignment) do |f|
-        - if @taker.grouped?
+        - if @taker.assignment.assignment_group.present?
           .mb-3
             %p.mb-2
               This assignment is part of
               %strong= @taker.assignment.assignment_group.name
             .form-check
-              = f.check_box :whole_group, class: 'form-check-input'
-              = f.label :whole_group, 'Take the whole group', class: 'form-check-label'
+              = f.check_box :group, class: 'form-check-input'
+              = f.label :group, 'Take the whole group', class: 'form-check-label'
           .mb-3
             = field_set_tag do
               %legend.form-label.fs-6 Other assignments in this group
               .list-group
-                - @taker.other_group_assignments.each do |assignment|
+                - (@taker.assignment.assignment_group.assignments - [@taker.assignment]).each do |assignment|
                   .list-group-item
                     .row.row-cols-1.row-cols-md-3
                       .col= l assignment.start_datetime
@@ -30,5 +30,5 @@
                       .col= assignment.user&.full_name
         .d-grid
           = f.button type: :submit, class: 'btn btn-outline-primary' do
-            %i.fa-solid.fa-check
+            %i.fa-solid.fa-hand
             Take

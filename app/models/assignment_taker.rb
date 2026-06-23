@@ -6,7 +6,7 @@ class AssignmentTaker
 
   attribute :assignment_id, :integer
   attribute :user_id, :integer
-  attribute :whole_group, :boolean, default: false
+  attribute :group, :boolean, default: false
 
   validates :assignment, presence: true
   validates :user, presence: true
@@ -23,32 +23,14 @@ class AssignmentTaker
     @user = User.find_by(id: user_id)
   end
 
-  def grouped? = assignment&.assignment_group.present?
-
-  def group_assignments = grouped? ? assignment.assignment_group.assignments : Assignment.none
-
-  def other_group_assignments = group_assignments.reject { |a| a.id == assignment&.id }
-
-  def perform
-    perform!
-    true
-  rescue ActiveModel::ValidationError, ActiveRecord::RecordInvalid
-    false
+  def perform!
+    validate!
+    ActiveRecord::Base.transaction { assignments.each { |assignment| assignment.update!(user:) } }
   end
 
   private
 
-  def targets
-    whole_group && grouped? ? group_assignments : [assignment]
-  end
-
-  def perform!
-    validate!
-    ActiveRecord::Base.transaction do
-      targets.each { |target| target.update!(user_id:) }
-    end
-  rescue ActiveRecord::RecordInvalid => e
-    errors.merge! e.record.errors
-    raise e
+  def assignments
+    assignment.assignment_group.present? && group ? assignment.assignment_group.assignments : [assignment]
   end
 end
