@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe 'Taking assignments' do
-  let(:roster) { create :roster }
-  let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: false)] }
+  let(:roster) { create(:roster) }
+  let(:current_user) { create(:user, memberships: [build(:membership, roster:, admin: false)]) }
 
   describe 'taking a single assignment from the index' do
-    let!(:assignment) { create :assignment, roster:, user: nil }
+    let!(:assignment) { create(:assignment, roster:, user: nil) }
 
     it 'assigns the current user' do
       visit roster_assignments_path(roster)
@@ -18,9 +18,9 @@ RSpec.describe 'Taking assignments' do
   end
 
   describe 'taking a grouped assignment' do
-    let(:group) { create :assignment_group, name: 'Morning shifts' }
-    let!(:assignment) { create :assignment, roster:, user: nil, assignment_group: group }
-    let!(:sibling) { create :assignment, roster:, user: nil, assignment_group: group }
+    let(:group) { create(:assignment_group, name: 'Morning shifts') }
+    let!(:assignment) { create(:assignment, roster:, user: nil, assignment_group: group) }
+    let!(:sibling) { create(:assignment, roster:, user: nil, assignment_group: group) }
 
     it 'shows the group name' do
       visit take_assignment_path(assignment)

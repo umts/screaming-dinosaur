@@ -14,8 +14,8 @@ RSpec.describe AssignmentGenerator do
     )
   end
 
-  let(:roster) { create :roster }
-  let(:user) { create :user, rosters: [roster] }
+  let(:roster) { create(:roster) }
+  let(:user) { create(:user, rosters: [roster]) }
 
   describe '#perform' do
     subject(:submit) { assignment_generator.perform }
@@ -71,8 +71,8 @@ RSpec.describe AssignmentGenerator do
       let(:weekdays) { Date::DAYNAMES }
 
       before do
-        create :assignment, roster:,
-                            end_datetime: Time.zone.local(start_date.year, start_date.month, start_date.day, 5, 0)
+        create(:assignment, roster:,
+                            end_datetime: Time.zone.local(start_date.year, start_date.month, start_date.day, 5, 0))
       end
 
       it 'returns false' do

@@ -10,7 +10,7 @@ RSpec.describe Assignment do
   end
 
   describe 'validations' do
-    subject(:assignment) { create :assignment }
+    subject(:assignment) { create(:assignment) }
 
     it { is_expected.not_to allow_value(assignment.roster.created_at).for(:end_datetime) }
     it { is_expected.to validate_presence_of(:end_datetime) }
@@ -20,13 +20,13 @@ RSpec.describe Assignment do
   describe '#previous' do
     subject(:call) { assignment.previous }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let(:assignment) { build_stubbed(:assignment, roster:) }
 
     before do
       create(:assignment, roster:, end_datetime: assignment.end_datetime + 10.minutes)
       create(:assignment, roster:, end_datetime: assignment.end_datetime + 5.minutes)
-      create :assignment, end_datetime: assignment.end_datetime - 5.minutes
+      create(:assignment, end_datetime: assignment.end_datetime - 5.minutes)
     end
 
     context 'when there are no other assignments that have the same roster and an earlier end datetime' do
@@ -47,11 +47,11 @@ RSpec.describe Assignment do
   describe '#next' do
     subject(:call) { assignment.next }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let(:assignment) { build_stubbed(:assignment, roster:) }
 
     before do
-      create :assignment, end_datetime: assignment.end_datetime + 5.minutes
+      create(:assignment, end_datetime: assignment.end_datetime + 5.minutes)
       create(:assignment, roster:, end_datetime: assignment.end_datetime - 5.minutes)
       create(:assignment, roster:, end_datetime: assignment.end_datetime - 10.minutes)
     end
@@ -75,7 +75,7 @@ RSpec.describe Assignment do
     subject(:call) { assignment.start_datetime }
 
     context 'when the attribute has been previously set' do
-      let(:assignment) { build_stubbed :assignment, start_datetime: value }
+      let(:assignment) { build_stubbed(:assignment, start_datetime: value) }
       let(:value) { Time.current }
 
       it 'returns the previously set value' do
@@ -84,7 +84,7 @@ RSpec.describe Assignment do
     end
 
     context 'when the assignment has a predecessor' do
-      let(:roster) { create :roster }
+      let(:roster) { create(:roster) }
       let(:assignment) { build_stubbed(:assignment, roster:) }
       let!(:predecessor) { create(:assignment, roster:, end_datetime: assignment.end_datetime - 5.minutes) }
 
@@ -92,7 +92,7 @@ RSpec.describe Assignment do
         create(:assignment, roster:, end_datetime: assignment.end_datetime + 10.minutes)
         create(:assignment, roster:, end_datetime: assignment.end_datetime + 5.minutes)
         create(:assignment, roster:, end_datetime: assignment.end_datetime - 10.minutes)
-        create :assignment, end_datetime: assignment.end_datetime - 5.minutes
+        create(:assignment, end_datetime: assignment.end_datetime - 5.minutes)
       end
 
       it "returns the predecessor's end datetime" do
@@ -101,7 +101,7 @@ RSpec.describe Assignment do
     end
 
     context 'when the assignment has no predecessor' do
-      let(:roster) { create :roster }
+      let(:roster) { create(:roster) }
       let(:assignment) { build_stubbed(:assignment, roster:) }
 
       it "returns the roster's create datetime" do
@@ -153,9 +153,9 @@ RSpec.describe Assignment do
   describe '#save' do
     subject(:save) { assignment.save }
 
-    let(:assignment) { create :assignment, user: recipient }
-    let(:recipient) { create :user }
-    let(:current_user) { create :user }
+    let(:assignment) { create(:assignment, user: recipient) }
+    let(:recipient) { create(:user) }
+    let(:current_user) { create(:user) }
 
     before { Current.user = current_user }
     after { Current.user = nil }
@@ -173,13 +173,13 @@ RSpec.describe Assignment do
     context 'when the changer is not the recipient' do
       context 'when creating a new assignment' do
         it 'sends the new_assignment mail' do
-          expect { create :assignment, user: recipient }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
+          expect { create(:assignment, user: recipient) }.to have_enqueued_email(AssignmentsMailer, :new_assignment)
         end
       end
 
       context 'when the user is blank' do
         it 'does not send the new_assignment mail' do
-          expect { create :assignment, user: nil }.not_to have_enqueued_email(AssignmentsMailer, :new_assignment)
+          expect { create(:assignment, user: nil) }.not_to have_enqueued_email(AssignmentsMailer, :new_assignment)
         end
       end
 
@@ -223,9 +223,9 @@ RSpec.describe Assignment do
   describe '#destroy' do
     subject(:destroy) { assignment.destroy }
 
-    let(:assignment) { create :assignment, user: recipient }
-    let(:recipient) { create :user }
-    let(:current_user) { create :user }
+    let(:assignment) { create(:assignment, user: recipient) }
+    let(:recipient) { create(:user) }
+    let(:current_user) { create(:user) }
 
     before { Current.user = current_user }
     after { Current.user = nil }

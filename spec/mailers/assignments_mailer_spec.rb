@@ -9,10 +9,10 @@ RSpec.describe AssignmentsMailer do
                                          assignment.end_datetime, recipient, changer
     end
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let :assignment do
-      create :assignment, roster:,
-                          start_datetime: 1.day.from_now, end_datetime: 7.days.from_now
+      create(:assignment, roster:,
+                          start_datetime: 1.day.from_now, end_datetime: 7.days.from_now)
     end
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
@@ -52,10 +52,10 @@ RSpec.describe AssignmentsMailer do
                                          assignment.end_datetime, recipient, changer
     end
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let :assignment do
-      create :assignment, roster:,
-                          start_datetime: 2.days.from_now, end_datetime: 7.days.from_now
+      create(:assignment, roster:,
+                          start_datetime: 2.days.from_now, end_datetime: 7.days.from_now)
     end
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
@@ -95,10 +95,10 @@ RSpec.describe AssignmentsMailer do
                                      assignment.end_datetime, recipient, changer
     end
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let :assignment do
-      create :assignment, roster:,
-                          start_datetime: 1.day.from_now, end_datetime: 7.days.from_now
+      create(:assignment, roster:,
+                          start_datetime: 1.day.from_now, end_datetime: 7.days.from_now)
     end
     let(:recipient) { roster_user roster }
     let(:changer) { roster_admin roster }
@@ -135,9 +135,9 @@ RSpec.describe AssignmentsMailer do
   describe 'upcoming_reminder' do
     subject(:output) { described_class.upcoming_reminder recipient, assignments }
 
-    let(:roster) { create :roster, created_at: 1.week.ago }
+    let(:roster) { create(:roster, created_at: 1.week.ago) }
     let(:recipient) { roster_user roster }
-    let(:assignment) { create :assignment, roster:, user: recipient, end_datetime: 2.days.from_now }
+    let(:assignment) { create(:assignment, roster:, user: recipient, end_datetime: 2.days.from_now) }
     let(:assignments) { [assignment] }
 
     it 'emails to the recipient' do
@@ -165,9 +165,9 @@ RSpec.describe AssignmentsMailer do
     end
 
     context 'when the recipient has assignments across multiple rosters' do
-      let(:second_roster) { create :roster, created_at: 1.week.ago }
+      let(:second_roster) { create(:roster, created_at: 1.week.ago) }
       let(:second_assignment) do
-        create :assignment, roster: second_roster, user: recipient, end_datetime: 3.days.from_now
+        create(:assignment, roster: second_roster, user: recipient, end_datetime: 3.days.from_now)
       end
       let(:assignments) { [assignment, second_assignment] }
 

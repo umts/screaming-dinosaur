@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe 'Twilio' do
-  let(:roster) { create :roster, created_at: 3.days.ago }
-  let(:user) { create :user, rosters: [roster], phone: '(413) 545-0056' }
+  let(:roster) { create(:roster, created_at: 3.days.ago) }
+  let(:user) { create(:user, rosters: [roster], phone: '(413) 545-0056') }
 
-  before { create :assignment, end_datetime: Date.tomorrow.beginning_of_day, roster:, user: }
+  before { create(:assignment, end_datetime: Date.tomorrow.beginning_of_day, roster:, user:) }
 
   describe 'GET /rosters/:roster_id/twilio/call.xml' do
     let(:call) { get "/rosters/#{roster.slug}/twilio/call", headers: { 'ACCEPT' => 'application/xml' } }

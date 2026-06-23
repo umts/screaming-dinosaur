@@ -33,7 +33,7 @@ RSpec.describe 'Sessions' do
     after { Rails.application.env_config.delete('omniauth.auth') }
 
     context 'when a user with the entra_uid exists' do
-      let!(:user) { create :user, entra_uid: auth_uid }
+      let!(:user) { create(:user, entra_uid: auth_uid) }
 
       it 'updates the user entra_upn from the auth hash' do
         expect { call }.to change { user.reload.entra_upn }.to('someone-upn@umass.edu')
