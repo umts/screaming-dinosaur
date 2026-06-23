@@ -49,12 +49,14 @@ class UsersController < ApplicationController
 
   def initialize_user
     @user = User.new entra_uid: session[:entra_uid],
+                     entra_upn: session[:entra_upn],
                      email: session[:email],
                      first_name: session[:first_name],
                      last_name: session[:last_name]
   end
 
   def user_params
-    params.expect user: %i[first_name last_name email phone admin reminders_enabled change_notifications_enabled]
+    params.expect user: %i[first_name last_name email phone admin reminders_enabled change_notifications_enabled
+                           admin entra_uid]
   end
 end

@@ -97,7 +97,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_205830) do
     t.string "name", null: false
     t.string "phone", null: false
     t.string "slug", null: false
-    t.integer "switchover", default: 1020, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["fallback_user_id"], name: "index_rosters_on_fallback_user_id"
     t.index ["name"], name: "index_rosters_on_name", unique: true
@@ -232,12 +231,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_17_205830) do
     t.datetime "created_at", precision: nil, null: false
     t.string "email", null: false
     t.string "entra_uid", null: false
+    t.string "entra_upn"
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.string "phone", null: false
     t.boolean "reminders_enabled", default: true, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.string "upn"
     t.index ["calendar_access_token"], name: "index_users_on_calendar_access_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["entra_uid"], name: "index_users_on_entra_uid", unique: true

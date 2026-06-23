@@ -166,6 +166,19 @@ RSpec.describe 'Assignments' do
         CSV
       end
     end
+
+    context 'when an assignment has no user' do
+      include_context 'when logged in as a member of the roster'
+
+      let(:roster) { create :roster, created_at: 2.days.ago.middle_of_day }
+      let!(:assignment) { create :assignment, roster:, user: nil, end_datetime: Date.current.middle_of_day }
+
+      it 'renders blank user columns' do
+        call
+        row = "#{roster.name},,,,#{roster.created_at.iso8601},#{assignment.end_datetime.iso8601}"
+        expect(response.body).to include(row)
+      end
+    end
   end
 
   describe 'GET /rosters/:roster_id/assignments/new' do

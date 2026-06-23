@@ -27,6 +27,15 @@ RSpec.describe 'Feeds' do
       end
     end
 
+    context 'with a blank token' do
+      let(:token) { '%20' }
+
+      it 'responds with a forbidden status' do
+        call
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
     context 'when logged in as a member of the roster using a calendar access token' do
       let(:token) { create(:user, rosters: [roster]).calendar_access_token }
 
