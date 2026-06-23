@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   end
 
   def success_message_for(subject, action)
-    subject = subject.model_name.human.downcase if subject.respond_to?(:model_name)
+    subject = subject.model_name.human.downcase
     action ||= action_name
     t('success.message', action: t("success.actions.#{action}"), subject:)
   end

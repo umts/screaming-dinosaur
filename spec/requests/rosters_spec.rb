@@ -29,6 +29,15 @@ RSpec.describe 'Rosters' do
         expect(response).to be_successful
       end
     end
+
+    context 'when logged in as a system admin' do
+      let(:current_user) { create :user, admin: true }
+
+      it 'responds successfully' do
+        call
+        expect(response).to be_successful
+      end
+    end
   end
 
   describe 'GET /rosters/:id' do
@@ -303,6 +312,13 @@ RSpec.describe 'Rosters' do
     subject(:submit) { delete "/rosters/#{roster.slug}" }
 
     let!(:roster) { create :roster }
+
+    context 'when not logged in' do
+      it 'responds with an unauthorized status' do
+        submit
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
