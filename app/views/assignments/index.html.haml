@@ -28,6 +28,9 @@
                   .col= assignment.user&.full_name
               .col-auto
                 .d-flex.flex-nowrap.gap-3
+                  = link_to take_assignment_path(assignment), class: 'btn btn-sm btn-text' do
+                    %i.fa-solid.fa-hand
+                    Take
                   - if allowed_to?(:edit?, assignment)
                     = link_to edit_assignment_path(assignment), class: 'btn btn-sm btn-text' do
                       %i.fa-solid.fa-edit

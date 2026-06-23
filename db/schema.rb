@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_12_172421) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_16_192359) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -39,12 +39,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_172421) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "assignment_groups", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|
+    t.bigint "assignment_group_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "end_datetime", null: false
     t.bigint "roster_id", null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["assignment_group_id"], name: "index_assignments_on_assignment_group_id"
     t.index ["end_datetime"], name: "index_assignments_on_end_datetime"
     t.index ["roster_id", "end_datetime"], name: "index_assignments_on_roster_id_and_end_datetime", unique: true
     t.index ["roster_id"], name: "index_assignments_on_roster_id"
@@ -249,6 +257,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_172421) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "assignments", "assignment_groups"
   add_foreign_key "assignments", "rosters"
   add_foreign_key "assignments", "users"
   add_foreign_key "memberships", "rosters"
