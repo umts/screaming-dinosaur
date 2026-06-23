@@ -35,7 +35,7 @@ RSpec.describe 'Assignment Generator' do
           start_date: Date.current,
           end_date: Date.current + 14.days,
           weekdays: %w[Monday Wednesday],
-          end_time: '4:30'
+          end_time: Time.zone.parse('04:30')
         }
       }
     end
@@ -60,14 +60,14 @@ RSpec.describe 'Assignment Generator' do
         expect(response).to redirect_to roster_path(roster, date: Date.current)
       end
 
-      it 'only creates assignments on Mondays and Wednesdays' do
+      it 'only create assignments on selected weekdays' do
         submit
         roster.assignments.each do |assignment|
           expect(assignment.end_datetime.strftime('%A')).to be_in(%w[Monday Wednesday])
         end
       end
 
-      it 'creates assignments ending at 04:30' do
+      it 'sets correct end_time for all the assignments' do
         submit
         roster.assignments.each do |assignment|
           expect(assignment.end_datetime).to have_attributes(hour: 4, min: 30)
@@ -111,7 +111,7 @@ RSpec.describe 'Assignment Generator' do
             start_date: Date.current,
             end_date: Date.current - 1.day,
             weekdays: %w[Monday Wednesday],
-            end_time: '04:30'
+            end_time: Time.zone.parse('04:30')
           }
         }
       end
