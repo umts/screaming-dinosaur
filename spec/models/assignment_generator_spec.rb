@@ -17,8 +17,8 @@ RSpec.describe AssignmentGenerator do
   let(:roster) { create :roster }
   let(:user) { create :user, rosters: [roster] }
 
-  describe '#perform!' do
-    subject(:submit) { assignment_generator.perform! }
+  describe '#perform' do
+    subject(:submit) { assignment_generator.perform }
 
     context 'when valid attributes are provided' do
       let(:start_date) { Date.current }
@@ -56,43 +56,6 @@ RSpec.describe AssignmentGenerator do
     context 'when invalid attributes are used' do
       let(:start_date) { Date.current }
       let(:end_date) { nil }
-      let(:end_time) { Time.zone.parse('05:00') }
-      let(:weekdays) { [] }
-
-      it 'raises validation error' do
-        expect { submit }.to raise_error(ActiveModel::ValidationError)
-      end
-    end
-
-    context 'when start_date is after end_date' do
-      let(:start_date) { Date.current + 10.days }
-      let(:end_date) { Date.current }
-      let(:end_time) { Time.zone.parse('05:00') }
-      let(:weekdays) { %w[Tuesday Thursday Friday] }
-
-      it 'raises validation error' do
-        expect { submit }.to raise_error(ActiveModel::ValidationError)
-      end
-    end
-  end
-
-  describe '#perform' do
-    subject(:submit) { assignment_generator.perform }
-
-    context 'when valid' do
-      let(:start_date) { Date.current }
-      let(:end_date) { Date.current + 14.days }
-      let(:end_time) { Time.zone.parse('05:00') }
-      let(:weekdays) { %w[Tuesday Thursday Friday] }
-
-      it 'returns true' do
-        expect(submit).to be(true)
-      end
-    end
-
-    context 'when invalid' do
-      let(:start_date) { Date.current + 14.days }
-      let(:end_date) { Date.current }
       let(:end_time) { Time.zone.parse('05:00') }
       let(:weekdays) { [] }
 

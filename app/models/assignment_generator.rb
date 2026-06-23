@@ -34,6 +34,8 @@ class AssignmentGenerator
     @roster = Roster.find_by(id: roster_id)
   end
 
+  private
+
   def perform!
     validate!
     ActiveRecord::Base.transaction do
@@ -47,8 +49,6 @@ class AssignmentGenerator
     errors.merge! e.record.errors
     raise e
   end
-
-  private
 
   def user
     return @user if defined?(@user)

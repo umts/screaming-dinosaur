@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Assignment Generator' do
-  describe 'GET /rosters/:roster_id/assignment_generator' do
-    subject(:call) { get "/rosters/#{roster.slug}/assignment_generator" }
+  describe 'GET /rosters/:roster_id/assignments/generate' do
+    subject(:call) { get "/rosters/#{roster.slug}/assignments/generate" }
 
     let(:roster) { create :roster }
 
@@ -27,9 +27,9 @@ RSpec.describe 'Assignment Generator' do
     end
   end
 
-  describe 'POST /rosters/:roster_id/assignment_generator' do
+  describe 'POST /rosters/:roster_id/assignments/generate' do
     subject(:submit) do
-      post "/rosters/#{roster.slug}/assignment_generator", params: {
+      post "/rosters/#{roster.slug}/assignments/generate", params: {
         assignment_generator: {
           user_id: user.id,
           start_date: Date.current,
@@ -77,7 +77,7 @@ RSpec.describe 'Assignment Generator' do
 
     context 'when logged in as an admin of the roster with invalid attributes' do
       subject(:submit) do
-        post "/rosters/#{roster.slug}/assignment_generator", params: {
+        post "/rosters/#{roster.slug}/assignments/generate", params: {
           assignment_generator: {
             user_id: user.id,
             start_date: nil,
@@ -105,7 +105,7 @@ RSpec.describe 'Assignment Generator' do
 
     context 'when logged in as an admin of the roster with end_date before start_date' do
       subject(:submit) do
-        post "/rosters/#{roster.slug}/assignment_generator", params: {
+        post "/rosters/#{roster.slug}/assignments/generate", params: {
           assignment_generator: {
             user_id: user.id,
             start_date: Date.current,
