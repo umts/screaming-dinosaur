@@ -81,30 +81,29 @@ RSpec.describe 'Assignment Takers' do
       end
     end
 
-    context 'with a grouped assignment' do
-      let(:group) { create(:assignment_group) }
-      let(:assignment) { create(:assignment, roster:, user: nil, assignment_group: group) }
-      let!(:sibling) { create(:assignment, roster:, user: nil, assignment_group: group) }
+    context 'when taking the whole group of a grouped assignment' do
+      let(:assignment) { create(:assignment, roster:, user: nil, assignment_group: create(:assignment_group)) }
+      let!(:sibling) { create(:assignment, roster:, user: nil, assignment_group: assignment.assignment_group) }
+      let(:attributes) { { group: '1' } }
 
-      context 'when taking the whole group' do
-        let(:attributes) { { group: '1' } }
+      it 'assigns the current user to every member of the group' do
+        submit
+        expect([assignment, sibling].map { |a| a.reload.user }).to all(eq(current_user))
+      end
+    end
 
-        it 'assigns the current user to every member of the group' do
-          submit
-          expect([assignment, sibling].map { |a| a.reload.user }).to all(eq(current_user))
-        end
+    context 'when taking a single assignment from a group' do
+      let(:assignment) { create(:assignment, roster:, user: nil, assignment_group: create(:assignment_group)) }
+      let!(:sibling) { create(:assignment, roster:, user: nil, assignment_group: assignment.assignment_group) }
+
+      it 'assigns the current user to the target assignment' do
+        submit
+        expect(assignment.reload.user).to eq current_user
       end
 
-      context 'when taking only the single assignment' do
-        it 'assigns the current user to the target assignment' do
-          submit
-          expect(assignment.reload.user).to eq current_user
-        end
-
-        it 'leaves the other group members unassigned' do
-          submit
-          expect(sibling.reload.user).to be_nil
-        end
+      it 'leaves the other group members unassigned' do
+        submit
+        expect(sibling.reload.user).to be_nil
       end
     end
   end

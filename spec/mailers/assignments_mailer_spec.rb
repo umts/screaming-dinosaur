@@ -165,15 +165,15 @@ RSpec.describe AssignmentsMailer do
     end
 
     context 'when the recipient has assignments across multiple rosters' do
-      let(:second_roster) { create(:roster, created_at: 1.week.ago) }
       let(:second_assignment) do
-        create(:assignment, roster: second_roster, user: recipient, end_datetime: 3.days.from_now)
+        create(:assignment, roster: create(:roster, created_at: 1.week.ago),
+                            user: recipient, end_datetime: 3.days.from_now)
       end
       let(:assignments) { [assignment, second_assignment] }
 
       it 'includes both roster names in the body' do
         body = output.body.encoded
-        expect(body).to include(roster.name).and include(second_roster.name)
+        expect(body).to include(roster.name).and include(second_assignment.roster.name)
       end
     end
   end

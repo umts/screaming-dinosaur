@@ -118,19 +118,19 @@ RSpec.describe Roster do
     context 'with both a mid-range gap and a trailing tail' do
       let(:gap_start) { Time.zone.local(2026, 6, 5, 0, 0, 0) }
       let(:gap_end) { Time.zone.local(2026, 6, 7, 0, 0, 0) }
-      let(:last_end) { Time.zone.local(2026, 6, 10, 0, 0, 0) }
 
       before do
         create(:assignment, roster:, user: create(:user, rosters: [roster]),
                             end_datetime: gap_start)
         create(:assignment, roster:, user: nil, end_datetime: gap_end)
-        create(:assignment, roster:, user: create(:user, rosters: [roster]), end_datetime: last_end)
+        create(:assignment, roster:, user: create(:user, rosters: [roster]),
+                            end_datetime: Time.zone.local(2026, 6, 10, 0, 0, 0))
       end
 
       it 'returns both periods' do
         expect(call).to contain_exactly(
           { start_datetime: gap_start, end_datetime: gap_end },
-          { start_datetime: last_end, end_datetime: end_time }
+          { start_datetime: Time.zone.local(2026, 6, 10, 0, 0, 0), end_datetime: end_time }
         )
       end
     end

@@ -3,12 +3,12 @@
 exit unless Rails.env.development?
 
 # ROTATIONS
-it = FactoryBot.create :roster, name: 'Transit IT', created_at: Time.current.beginning_of_week(:friday)
+transit_it = FactoryBot.create :roster, name: 'Transit IT', created_at: Time.current.beginning_of_week(:friday)
 ops = FactoryBot.create :roster, name: 'Transit Operations', created_at: Time.current.beginning_of_week(:friday)
 
 # USERS
 names = {
-  it => [
+  transit_it => [
     %w[Karin Eichelman],
     %w[David Faulkenberry],
     %w[Matt Moretti],
@@ -50,9 +50,9 @@ end
 
 # ADMINS
 ops.memberships.joins(:user).where(users: { last_name: %w[Barrington Noble] })
-   .update_all admin: true
-it.memberships.joins(:user).where(users: { last_name: 'Sherson' })
-  .update_all admin: true
+   .update_all admin: true # rubocop:disable Rails/SkipsModelValidations
+transit_it.memberships.joins(:user).where(users: { last_name: 'Sherson' })
+          .update_all admin: true # rubocop:disable Rails/SkipsModelValidations
 User.find_by(last_name: 'Sherson').update(admin: true)
 
 # ASSIGNMENTS
