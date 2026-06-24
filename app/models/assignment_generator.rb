@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WeekdayAssigner
+class AssignmentGenerator
   include ActiveModel::Model
   include ActiveModel::Attributes
 
@@ -8,18 +8,18 @@ class WeekdayAssigner
   attribute :user_id, :integer
   attribute :start_date, :date
   attribute :end_date, :date
-  attribute :start_weekday, :integer
-  attribute :end_weekday, :integer
+  attribute :end_time, :time
+  attribute :weekdays, default: -> { [] }
 
   validates :roster, presence: true
   validates :user, presence: true
+  validates :weekdays, presence: true
+  validates :end_time, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true,
                        comparison: { greater_than_or_equal_to: :start_date,
                                      if: -> { start_date.present? && end_date.present? },
                                      message: :must_not_be_before_start }
-  validates :start_weekday, numericality: { in: 0...7, message: :invalid_weekday }
-  validates :end_weekday, numericality: { in: 0...7, message: :invalid_weekday }
 
   def perform
     perform!
@@ -36,17 +36,13 @@ class WeekdayAssigner
 
   private
 
-  def user
-    return @user if defined?(@user)
-
-    @user = User.find_by(id: user_id)
-  end
-
   def perform!
     validate!
     ActiveRecord::Base.transaction do
-      date_ranges.each do |range|
-        roster.assignments.create! user:, start_date: range.begin, end_date: range.end
+      date_range.each do |date|
+        next unless selected_weekdays?(date)
+
+        roster.assignments.create! user:, end_datetime: combine(date, end_time)
       end
     end
   rescue ActiveRecord::RecordInvalid => e
@@ -54,20 +50,27 @@ class WeekdayAssigner
     raise e
   end
 
-  def date_ranges
-    Enumerator.new do |enum|
-      weeks.each do |sunday|
-        end_weekday_adjusted = end_weekday < start_weekday ? end_weekday + 7 : end_weekday
-        range_start = [start_date, sunday + start_weekday].max
-        range_end = [end_date, sunday + end_weekday_adjusted].min
-        next unless range_start <= range_end
+  def user
+    return @user if defined?(@user)
 
-        enum.yield range_start..range_end
-      end
-    end
+    @user = User.find_by(id: user_id)
   end
 
-  def weeks
-    (start_date.beginning_of_week(:sunday)..end_date.beginning_of_week(:sunday)).step(7)
+  def date_range
+    (start_date..end_date).to_a
+  end
+
+  def selected_weekdays?(date)
+    weekdays.include?(date.strftime('%A'))
+  end
+
+  def combine(date, time)
+    Time.zone.local(
+      date.year,
+      date.month,
+      date.day,
+      time.hour,
+      time.min
+    )
   end
 end

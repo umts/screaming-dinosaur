@@ -65,6 +65,8 @@ group :development do
 end
 
 group :development, :test do
+  gem 'pry'
+  gem 'pry-byebug'
   gem 'debug'
   gem 'dotenv'
   gem 'factory_bot_rails'
