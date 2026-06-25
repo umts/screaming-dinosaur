@@ -13,7 +13,7 @@
               %i.fa-solid.fa-plus
               New
           - if allowed_to?(:prompt, AssignmentGenerator.new(roster_id: @roster.id))
-            = link_to roster_assignment_generator_path(@roster), class: 'btn btn-sm btn-text' do
+            = link_to generate_roster_assignments_path(@roster), class: 'btn btn-sm btn-text' do
               %i.fa-solid.fa-bolt
               Generate
     .list-group.list-group-flush
@@ -28,6 +28,9 @@
                   .col= assignment.user&.full_name
               .col-auto
                 .d-flex.flex-nowrap.gap-3
+                  = link_to take_assignment_path(assignment), class: 'btn btn-sm btn-text' do
+                    %i.fa-solid.fa-hand
+                    Take
                   - if allowed_to?(:edit?, assignment)
                     = link_to edit_assignment_path(assignment), class: 'btn btn-sm btn-text' do
                       %i.fa-solid.fa-edit

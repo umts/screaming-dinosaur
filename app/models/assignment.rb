@@ -7,6 +7,7 @@ class Assignment < ApplicationRecord
 
   belongs_to :roster
   belongs_to :user, optional: true
+  belongs_to :assignment_group, optional: true
 
   validates :end_datetime, comparison: { greater_than: ->(assignment) { assignment.roster.created_at },
                                          if: ->(assignment) { assignment.roster.present? },
