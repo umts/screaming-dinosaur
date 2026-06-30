@@ -32,6 +32,7 @@ class AssignmentGeneratorController < ApplicationController
                                          :start_date,
                                          :end_date,
                                          :end_time,
+                                         :group,
                                          { weekdays: [] }]
   end
 end
