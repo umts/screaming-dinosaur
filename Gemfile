@@ -68,6 +68,8 @@ group :development, :test do
   gem 'debug'
   gem 'dotenv'
   gem 'factory_bot_rails'
+  gem 'pry'
+  gem 'pry-byebug'
   gem 'rspec-rails'
 end
 
