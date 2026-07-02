@@ -7,7 +7,7 @@ RSpec.describe SendAssignmentRemindersJob do
 
   before { travel_to(Time.zone.local(2026, 5, 24, 20, 0, 0)) }
 
-  let(:roster) { create :roster, created_at: 3.weeks.ago }
+  let(:roster) { create(:roster, created_at: 3.weeks.ago) }
 
   it 'sends no emails when no qualifying assignments exist' do
     expect { job }.not_to(change { ActionMailer::Base.deliveries.size })
@@ -17,8 +17,8 @@ RSpec.describe SendAssignmentRemindersJob do
     let(:recipient) { roster_user roster }
 
     before do
-      create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 26, 17, 0, 0)
-      create :assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 5, 27, 17, 0, 0)
+      create(:assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 26, 17, 0, 0))
+      create(:assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 5, 27, 17, 0, 0))
     end
 
     it 'sends one email to the recipient' do
@@ -35,8 +35,8 @@ RSpec.describe SendAssignmentRemindersJob do
     let(:recipient) { roster_user roster }
 
     before do
-      create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 22, 17, 0, 0)
-      create :assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 5, 23, 17, 0, 0)
+      create(:assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 22, 17, 0, 0))
+      create(:assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 5, 23, 17, 0, 0))
     end
 
     it 'does not send an email' do
@@ -48,8 +48,8 @@ RSpec.describe SendAssignmentRemindersJob do
     let(:recipient) { roster_user roster }
 
     before do
-      create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 6, 2, 17, 0, 0)
-      create :assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 6, 3, 17, 0, 0)
+      create(:assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 6, 2, 17, 0, 0))
+      create(:assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 6, 3, 17, 0, 0))
     end
 
     it 'does not send an email' do
@@ -59,8 +59,8 @@ RSpec.describe SendAssignmentRemindersJob do
 
   context 'with only anchor assignments (user_id nil) in the window' do
     before do
-      create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 26, 17, 0, 0)
-      create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 27, 17, 0, 0)
+      create(:assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 26, 17, 0, 0))
+      create(:assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 27, 17, 0, 0))
     end
 
     it 'does not send any emails' do
@@ -69,16 +69,16 @@ RSpec.describe SendAssignmentRemindersJob do
   end
 
   context 'when a recipient has assignments across multiple rosters in the window' do
-    let(:recipient) { create :user, rosters: [roster, other_roster] }
-    let(:other_roster) { create :roster, created_at: 3.weeks.ago }
+    let(:recipient) { create(:user, rosters: [roster, other_roster]) }
+    let(:other_roster) { create(:roster, created_at: 3.weeks.ago) }
 
     before do
-      create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 26, 17, 0, 0)
-      create :assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 5, 27, 17, 0, 0)
-      create :assignment, roster: other_roster, user: nil,
-                          end_datetime: Time.zone.local(2026, 5, 28, 17, 0, 0)
-      create :assignment, roster: other_roster, user: recipient,
-                          end_datetime: Time.zone.local(2026, 5, 29, 17, 0, 0)
+      create(:assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 26, 17, 0, 0))
+      create(:assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 5, 27, 17, 0, 0))
+      create(:assignment, roster: other_roster, user: nil,
+                          end_datetime: Time.zone.local(2026, 5, 28, 17, 0, 0))
+      create(:assignment, roster: other_roster, user: recipient,
+                          end_datetime: Time.zone.local(2026, 5, 29, 17, 0, 0))
     end
 
     it 'sends a single email to the recipient' do
@@ -96,8 +96,8 @@ RSpec.describe SendAssignmentRemindersJob do
     let(:recipient) { roster_user roster }
 
     before do
-      create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 25, 0, 0, 0)
-      create :assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 5, 26, 17, 0, 0)
+      create(:assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 5, 25, 0, 0, 0))
+      create(:assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 5, 26, 17, 0, 0))
     end
 
     it 'sends an email (Monday 00:00 is inclusive)' do
@@ -109,8 +109,8 @@ RSpec.describe SendAssignmentRemindersJob do
     let(:recipient) { roster_user roster }
 
     before do
-      create :assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 6, 1, 0, 0, 0)
-      create :assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 6, 2, 17, 0, 0)
+      create(:assignment, roster:, user: nil, end_datetime: Time.zone.local(2026, 6, 1, 0, 0, 0))
+      create(:assignment, roster:, user: recipient, end_datetime: Time.zone.local(2026, 6, 2, 17, 0, 0))
     end
 
     it 'does not send an email (next Monday 00:00 is exclusive)' do

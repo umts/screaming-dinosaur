@@ -22,7 +22,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in' do
-      let(:current_user) { create :user }
+      let(:current_user) { create(:user) }
 
       it 'responds successfully' do
         call
@@ -31,7 +31,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as a system admin' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
 
       it 'responds successfully' do
         call
@@ -43,7 +43,7 @@ RSpec.describe 'Rosters' do
   describe 'GET /rosters/:id' do
     subject(:call) { get "/rosters/#{roster.slug}" }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a user unrelated to the roster' do
       include_context 'when logged in as a user unrelated to the roster'
@@ -67,7 +67,7 @@ RSpec.describe 'Rosters' do
   describe 'GET /rosters/:id.json' do
     subject(:call) { get "/rosters/#{roster.id}.json", headers: headers, params: params }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let(:params) { nil }
     let(:headers) { nil }
 
@@ -118,7 +118,7 @@ RSpec.describe 'Rosters' do
     context 'when somebody is on call' do
       include_context 'when logged in as a member of the roster'
 
-      let(:on_call_user) { create :user, rosters: [roster] }
+      let(:on_call_user) { create(:user, rosters: [roster]) }
       let!(:assignment) do
         create(:assignment, roster:, user: on_call_user, end_datetime: 1.day.from_now)
       end
@@ -142,8 +142,8 @@ RSpec.describe 'Rosters' do
     context 'when there is an upcoming assignment' do
       include_context 'when logged in as a member of the roster'
 
-      let(:on_call_user) { create :user, rosters: [roster] }
-      let(:upcoming_user) { create :user, rosters: [roster] }
+      let(:on_call_user) { create(:user, rosters: [roster]) }
+      let(:upcoming_user) { create(:user, rosters: [roster]) }
 
       before do
         create(:assignment, roster:, user: nil, end_datetime: 1.day.from_now)
@@ -171,7 +171,7 @@ RSpec.describe 'Rosters' do
     subject(:call) { get '/rosters/new' }
 
     context 'when logged in as a roster admin' do
-      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+      let(:current_user) { create(:user, memberships: [build(:membership, admin: true)]) }
 
       it 'responds with a forbidden status' do
         call
@@ -180,7 +180,7 @@ RSpec.describe 'Rosters' do
     end
 
     context 'when logged in as a system admin' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
 
       it 'responds successfully' do
         call
@@ -192,7 +192,7 @@ RSpec.describe 'Rosters' do
   describe 'GET /rosters/:id/edit' do
     subject(:call) { get "/rosters/#{roster.slug}/edit" }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
@@ -219,7 +219,7 @@ RSpec.describe 'Rosters' do
     context 'when logged in as a roster admin' do
       include_context 'with valid attributes'
 
-      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+      let(:current_user) { create(:user, memberships: [build(:membership, admin: true)]) }
 
       it 'responds with a forbidden status' do
         submit
@@ -230,7 +230,7 @@ RSpec.describe 'Rosters' do
     context 'when logged in as a system admin with valid attributes' do
       include_context 'with valid attributes'
 
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
 
       it 'redirects to the roster edit page' do
         submit
@@ -250,7 +250,7 @@ RSpec.describe 'Rosters' do
     context 'when logged in as a system admin with invalid attributes' do
       include_context 'with invalid attributes'
 
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
 
       it 'responds with an unprocessable entity status' do
         submit
@@ -266,7 +266,7 @@ RSpec.describe 'Rosters' do
   describe 'PATCH /rosters/:id' do
     subject(:submit) { patch "/rosters/#{roster.slug}", params: { roster: attributes } }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
@@ -311,7 +311,7 @@ RSpec.describe 'Rosters' do
   describe 'DELETE /rosters/:id' do
     subject(:submit) { delete "/rosters/#{roster.slug}" }
 
-    let!(:roster) { create :roster }
+    let!(:roster) { create(:roster) }
 
     context 'when not logged in' do
       it 'responds with an unauthorized status' do

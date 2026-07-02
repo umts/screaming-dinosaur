@@ -9,7 +9,7 @@ RSpec.describe Membership do
   end
 
   describe 'validations' do
-    subject { build :membership }
+    subject { build(:membership) }
 
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:roster_id) }
   end
@@ -18,7 +18,7 @@ RSpec.describe Membership do
     subject(:call) { membership.destroy }
 
     context 'when the user has existing assignments' do
-      let(:membership) { create :membership }
+      let(:membership) { create(:membership) }
       let!(:past_assignments) do
         [create(:assignment, roster: membership.roster, user: membership.user,
                              end_datetime: 3.days.ago),

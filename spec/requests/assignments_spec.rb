@@ -18,7 +18,7 @@ RSpec.describe 'Assignments' do
       get "/rosters/#{roster.slug}/assignments.html"
     end
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a user unrelated to the roster' do
       include_context 'when logged in as a user unrelated to the roster'
@@ -32,8 +32,8 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
 
-      let(:roster) { create :roster, created_at: 2.days.ago.middle_of_day }
-      let(:users) { create_list :user, 2, rosters: [roster] }
+      let(:roster) { create(:roster, created_at: 2.days.ago.middle_of_day) }
+      let(:users) { create_list(:user, 2, rosters: [roster]) }
 
       before do
         create(:assignment, roster:, user: users.first, end_datetime: Date.current.middle_of_day)
@@ -52,7 +52,7 @@ RSpec.describe 'Assignments' do
       get "/rosters/#{roster.slug}/assignments.json", params: { start_date: Date.current, end_date: Date.tomorrow }
     end
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a user unrelated to the roster' do
       include_context 'when logged in as a user unrelated to the roster'
@@ -66,18 +66,18 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
 
-      let!(:past_assignment) { create :assignment, roster:, end_datetime: Date.yesterday.at_middle_of_day }
-      let!(:open_assignment) { create :assignment, roster:, end_datetime: Date.current.at_middle_of_day }
+      let!(:past_assignment) { create(:assignment, roster:, end_datetime: Date.yesterday.at_middle_of_day) }
+      let!(:open_assignment) { create(:assignment, roster:, end_datetime: Date.current.at_middle_of_day) }
       let!(:taken_assignment) do
-        create :assignment, roster:,
+        create(:assignment, roster:,
                             user: create(:user, rosters: [roster]),
-                            end_datetime: Date.tomorrow.at_middle_of_day
+                            end_datetime: Date.tomorrow.at_middle_of_day)
       end
       let!(:own_assignment) do
-        create :assignment, roster:, user: current_user, end_datetime: 2.days.from_now.at_middle_of_day
+        create(:assignment, roster:, user: current_user, end_datetime: 2.days.from_now.at_middle_of_day)
       end
 
-      before { create :assignment, roster:, end_datetime: 3.days.from_now.at_middle_of_day }
+      before { create(:assignment, roster:, end_datetime: 3.days.from_now.at_middle_of_day) }
 
       it 'responds successfully' do
         call
@@ -119,7 +119,7 @@ RSpec.describe 'Assignments' do
   describe 'GET /rosters/:roster_id/assignments.csv' do
     subject(:call) { get "/rosters/#{roster.slug}/assignments.csv" }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a user unrelated to the roster' do
       include_context 'when logged in as a user unrelated to the roster'
@@ -133,8 +133,8 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
 
-      let(:roster) { create :roster, created_at: 2.days.ago.middle_of_day }
-      let(:users) { create_list :user, 2, rosters: [roster] }
+      let(:roster) { create(:roster, created_at: 2.days.ago.middle_of_day) }
+      let(:users) { create_list(:user, 2, rosters: [roster]) }
       let!(:assignments) do
         [
           create(:assignment, roster:, user: users.first, end_datetime: Date.current.middle_of_day),
@@ -170,8 +170,8 @@ RSpec.describe 'Assignments' do
     context 'when an assignment has no user' do
       include_context 'when logged in as a member of the roster'
 
-      let(:roster) { create :roster, created_at: 2.days.ago.middle_of_day }
-      let!(:assignment) { create :assignment, roster:, user: nil, end_datetime: Date.current.middle_of_day }
+      let(:roster) { create(:roster, created_at: 2.days.ago.middle_of_day) }
+      let!(:assignment) { create(:assignment, roster:, user: nil, end_datetime: Date.current.middle_of_day) }
 
       it 'renders blank user columns' do
         call
@@ -184,7 +184,7 @@ RSpec.describe 'Assignments' do
   describe 'GET /rosters/:roster_id/assignments/new' do
     subject(:call) { get "/rosters/#{roster.slug}/assignments/new", params: params }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let(:params) { nil }
 
     context 'when logged in as a user unrelated to the roster' do
@@ -209,8 +209,8 @@ RSpec.describe 'Assignments' do
   describe 'GET /assignments/:id/edit' do
     subject(:call) { get "/assignments/#{assignment.id}/edit" }
 
-    let(:roster) { create :roster }
-    let(:assignment) { create :assignment, roster: }
+    let(:roster) { create(:roster) }
+    let(:assignment) { create(:assignment, roster:) }
 
     context 'when logged in as a user unrelated to the roster' do
       include_context 'when logged in as a user unrelated to the roster'
@@ -234,7 +234,7 @@ RSpec.describe 'Assignments' do
   describe 'POST /rosters/:roster_id/assignments' do
     subject(:submit) { post "/rosters/#{roster.slug}/assignments", params: { assignment: attributes } }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as user unrelated to the roster' do
       include_context 'when logged in as a user unrelated to the roster'
@@ -309,7 +309,7 @@ RSpec.describe 'Assignments' do
   describe 'PATCH /assignments/:id' do
     subject(:submit) { patch "/assignments/#{assignment.id}", params: { assignment: attributes } }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
     let(:assignment) { create(:assignment, roster:) }
 
     context 'when logged in as user unrelated to the roster' do
@@ -393,8 +393,8 @@ RSpec.describe 'Assignments' do
   describe 'DELETE /assignments/:id' do
     subject(:submit) { delete "/assignments/#{assignment.id}" }
 
-    let(:roster) { create :roster }
-    let(:assignment) { create :assignment, roster: }
+    let(:roster) { create(:roster) }
+    let(:assignment) { create(:assignment, roster:) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
