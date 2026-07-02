@@ -12,6 +12,7 @@ AllCops:
     - config/environments/**/*
     - db/schema.rb
     - db/migrate/**/*
+    - vendor/**/*
   NewCops: enable
 
 Metrics/AbcSize:
