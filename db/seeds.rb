@@ -2,8 +2,8 @@ exit unless Rails.env.development?
 
 # ROTATIONS
 it = FactoryBot.create :roster, name: 'Transit IT', created_at: Time.current.beginning_of_week(:friday)
-ops = FactoryBot.create :roster, name: 'Transit Operations', created_at: Time.current.beginning_of_week(:friday)
-
+ops_am = FactoryBot.create :roster, name: 'Transit Ops AM', created_at: Time.current.beginning_of_week(:friday), switchover_time: Time.zone.parse("4:30")
+ops_eve = FactoryBot.create :roster, name: 'Transit Ops EVE', created_at: Time.current.beginning_of_week(:friday), switchover_time: Time.zone.parse("12:00")
 # USERS
 names = {
   it => [
@@ -13,7 +13,25 @@ names = {
     %w(Adam Sherson),
     %w(Metin Yavuz)
   ],
-  ops => [
+  ops_am => [
+    %w(Glenn Barrington),
+    %w(Bridgette Bauer),
+    %w(Andrew Cathcart),
+    %w(Don Chapman),
+    %w(Karin Eichelman),
+    %w(David Faulkenberry),
+    %w(Graham Fortier-Dubé),
+    %w(Tabitha Golz),
+    %w(Jonathan McHatton),
+    %w(Matt Moretti),
+    %w(Diana Noble),
+    %w(Derek Pires),
+    %w(Evan Rife),
+    %w(Nathan Santana),
+    %w(Adam Sherson),
+    %w(Daren Two\ Feathers)
+  ],
+  ops_eve => [
     %w(Glenn Barrington),
     %w(Bridgette Bauer),
     %w(Andrew Cathcart),
@@ -47,8 +65,12 @@ names.each_pair do |roster, rot_names|
 end
 
 # ADMINS
-ops.memberships.joins(:user).where(users: { last_name: %w(Barrington Noble) })
-                            .update_all admin: true
+[ops_am, ops_eve].each do |ops|
+    ops.memberships.joins(:user)
+        .where(users: { last_name: %w(Barrington Noble) })
+        .update_all admin: true
+end
+
 it.memberships.joins(:user).where(users: { last_name: 'Sherson' })
                            .update_all admin: true
 User.find_by(last_name: 'Sherson').update(admin: true)
