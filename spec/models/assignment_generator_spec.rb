@@ -3,31 +3,22 @@
 require 'rails_helper'
 
 RSpec.describe AssignmentGenerator do
-  let(:roster) { create :roster }
-  let(:user) { create :user, rosters: [roster] }
-  let(:group) { nil }
-
-  let(:start_date) { Date.current }
-  let(:end_date) { Date.current + 14.days }
-  let(:end_time) { Time.zone.parse('05:00') }
-  let(:weekdays) { %w[Tuesday Thursday Friday] }
+  let(:roster) { create(:roster) }
+  let(:user) { create(:user, rosters: [roster]) }
 
   let(:assignment_generator) do
-    described_class.new(
-      roster_id: roster.id,
-      user_id: user.id,
-      start_date: start_date,
-      end_date: end_date,
-      end_time: end_time,
-      weekdays: weekdays,
-      group: group
-    )
+    described_class.new(roster_id: roster.id, user_id: user.id, **attributes)
   end
 
   describe '#perform' do
     subject(:submit) { assignment_generator.perform }
 
     context 'when valid attributes are provided' do
+      let(:attributes) do
+        { start_date: Date.current, end_date: Date.current + 14.days,
+          end_time: Time.zone.parse('05:00'), weekdays: %w[Tuesday Thursday Friday] }
+      end
+
       it 'creates assignments on selected weekdays' do
         submit
         roster.assignments.each do |assignment|
@@ -44,12 +35,14 @@ RSpec.describe AssignmentGenerator do
 
       it 'creates assignments only within the given date range' do
         submit
+        start_date, end_date = attributes.values_at(:start_date, :end_date)
         roster.assignments.each do |assignment|
           expect(assignment.end_datetime.to_date).to be_between(start_date, end_date).inclusive
         end
       end
 
       it 'creates new assignments' do
+        start_date, end_date, weekdays = attributes.values_at(:start_date, :end_date, :weekdays)
         count = (start_date..end_date).count { |date| weekdays.include?(date.strftime('%A')) }
         expect { submit }.to change(Assignment, :count).by(count)
       end
@@ -60,6 +53,11 @@ RSpec.describe AssignmentGenerator do
     end
 
     context 'when assignments generated without a group' do
+      let(:attributes) do
+        { start_date: Date.current, end_date: Date.current + 14.days,
+          end_time: Time.zone.parse('05:00'), weekdays: %w[Tuesday Thursday Friday] }
+      end
+
       it 'does not create any assignment groups' do
         expect { submit }.not_to change(AssignmentGroup, :count)
       end
@@ -70,7 +68,10 @@ RSpec.describe AssignmentGenerator do
     end
 
     context 'when assignments generated with group' do
-      let(:group) { 'Morning Shift' }
+      let(:attributes) do
+        { start_date: Date.current, end_date: Date.current + 14.days,
+          end_time: Time.zone.parse('05:00'), weekdays: %w[Tuesday Thursday Friday], group: 'Morning Shift' }
+      end
 
       let(:weekly_assignments) do
         submit
@@ -105,10 +106,9 @@ RSpec.describe AssignmentGenerator do
     end
 
     context 'when invalid attributes are used' do
-      let(:start_date) { Date.current }
-      let(:end_date) { nil }
-      let(:end_time) { Time.zone.parse('05:00') }
-      let(:weekdays) { [] }
+      let(:attributes) do
+        { start_date: Date.current, end_date: nil, end_time: Time.zone.parse('05:00'), weekdays: [] }
+      end
 
       it 'returns false' do
         expect(submit).to be(false)
@@ -116,14 +116,15 @@ RSpec.describe AssignmentGenerator do
     end
 
     context 'when invalid assignment attributes are used' do
-      let(:start_date) { Date.current }
-      let(:end_date) { Date.current }
-      let(:end_time) { Time.zone.parse('05:00') }
-      let(:weekdays) { Date::DAYNAMES }
+      let(:attributes) do
+        { start_date: Date.current, end_date: Date.current,
+          end_time: Time.zone.parse('05:00'), weekdays: Date::DAYNAMES }
+      end
 
       before do
-        create :assignment, roster:,
-                            end_datetime: Time.zone.local(start_date.year, start_date.month, start_date.day, 5, 0)
+        start = attributes[:start_date]
+        create(:assignment, roster:,
+                            end_datetime: Time.zone.local(start.year, start.month, start.day, 5, 0))
       end
 
       it 'returns false' do

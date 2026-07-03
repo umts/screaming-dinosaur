@@ -6,20 +6,20 @@ RSpec.describe RosterMailer do
   describe 'open_dates_alert' do
     subject(:email) { described_class.with(roster:, open_periods:).open_dates_alert }
 
-    let(:admin) { create :user }
-    let(:roster) { create :roster }
+    let(:admin) { create(:user) }
+    let(:roster) { create(:roster) }
     let(:period_start) { Time.zone.local(2026, 6, 1, 17, 0, 0) }
     let(:period_end) { Time.zone.local(2026, 6, 2, 17, 0, 0) }
     let(:open_periods) { [{ start_datetime: period_start, end_datetime: period_end }] }
 
-    before { create :membership, user: admin, roster:, admin: true }
+    before { create(:membership, user: admin, roster:, admin: true) }
 
     it 'queues the email to be sent' do
       expect { email.deliver_now }.to change { ActionMailer::Base.deliveries.size }.by 1
     end
 
     it 'sends the email to the correct users' do
-      admin2 = create :user, rosters: [roster]
+      admin2 = create(:user, rosters: [roster])
       admin2.memberships.last.update(admin: true)
 
       expect(email.to).to eq [admin.email, admin2.email]
@@ -48,7 +48,7 @@ RSpec.describe RosterMailer do
     end
 
     context 'with a fallback user' do
-      let(:roster) { create :roster, fallback_user: admin }
+      let(:roster) { create(:roster, fallback_user: admin) }
 
       it 'includes the fallback user name' do
         expect(email.body.encoded).to have_text "The fallback user is #{roster.fallback_user.full_name}."
@@ -59,8 +59,8 @@ RSpec.describe RosterMailer do
   describe 'fallback_number_changed' do
     subject(:email) { described_class.with(roster:).fallback_number_changed }
 
-    let(:admin) { create :user }
-    let(:roster) { create :roster, fallback_user: create(:user) }
+    let(:admin) { create(:user) }
+    let(:roster) { create(:roster, fallback_user: create(:user)) }
 
     before { admin.memberships.create(roster:, admin: true) }
 
@@ -69,7 +69,7 @@ RSpec.describe RosterMailer do
     end
 
     it 'sends the email to the correct users' do
-      admin2 = create :user
+      admin2 = create(:user)
       admin2.memberships.create(roster:, admin: true)
 
       expect(email.to).to eq [admin.email, admin2.email]

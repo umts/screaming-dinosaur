@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Rails.application.routes.draw do
+Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   root 'dashboard#index'
 
   get 'feed/:roster_id/:token' => 'feed#show', as: :feed
@@ -25,7 +25,6 @@ Rails.application.routes.draw do
 
     get :assignment_generator, to: 'assignment_generator#prompt'
     post :assignment_generator, to: 'assignment_generator#perform'
-
 
     resources :memberships, only: %i[index create destroy update], shallow: true
 

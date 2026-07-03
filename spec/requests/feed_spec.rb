@@ -8,7 +8,7 @@ RSpec.describe 'Feeds' do
   describe 'GET /feed/:roster_id/:token' do
     subject(:call) { get "/feed/#{roster.slug}/#{token}" }
 
-    let(:roster) { create :roster, created_at: 1.hour.ago }
+    let(:roster) { create(:roster, created_at: 1.hour.ago) }
     let!(:first_assignment) do
       create(:assignment, roster:, user: create(:user, rosters: [roster]), end_datetime: Time.current)
     end

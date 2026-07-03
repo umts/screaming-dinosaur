@@ -6,7 +6,7 @@ RSpec.describe 'Assignment Generator' do
   describe 'GET /rosters/:roster_id/assignments/generate' do
     subject(:call) { get "/rosters/#{roster.slug}/assignments/generate" }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
@@ -40,8 +40,8 @@ RSpec.describe 'Assignment Generator' do
       }
     end
 
-    let(:roster) { create :roster }
-    let(:user) { create :user, rosters: [roster] }
+    let(:roster) { create(:roster) }
+    let(:user) { create(:user, rosters: [roster]) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
@@ -74,8 +74,8 @@ RSpec.describe 'Assignment Generator' do
         }
       end
 
-      let(:roster) { create :roster }
-      let(:user) { create :user, rosters: [roster] }
+      let(:roster) { create(:roster) }
+      let(:user) { create(:user, rosters: [roster]) }
 
       include_context 'when logged in as an admin of the roster'
 
@@ -102,8 +102,8 @@ RSpec.describe 'Assignment Generator' do
         }
       end
 
-      let(:roster) { create :roster }
-      let(:user) { create :user, rosters: [roster] }
+      let(:roster) { create(:roster) }
+      let(:user) { create(:user, rosters: [roster]) }
 
       include_context 'when logged in as an admin of the roster'
 

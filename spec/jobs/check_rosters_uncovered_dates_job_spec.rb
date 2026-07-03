@@ -5,14 +5,14 @@ require 'rails_helper'
 RSpec.describe CheckRostersUncoveredDatesJob do
   subject(:job) { described_class.perform_now }
 
-  let(:admin) { create :user }
-  let(:roster) { create :roster, created_at: 3.weeks.ago }
+  let(:admin) { create(:user) }
+  let(:roster) { create(:roster, created_at: 3.weeks.ago) }
 
-  before { create :membership, user: admin, roster:, admin: true }
+  before { create(:membership, user: admin, roster:, admin: true) }
 
   context 'with uncovered periods in the next two weeks' do
     before do
-      create :assignment, roster:, user: admin, end_datetime: 1.day.from_now
+      create(:assignment, roster:, user: admin, end_datetime: 1.day.from_now)
     end
 
     it 'queues the email to be sent' do
@@ -30,7 +30,7 @@ RSpec.describe CheckRostersUncoveredDatesJob do
 
   context 'without uncovered periods in the next two weeks' do
     before do
-      create :assignment, roster:, user: admin, end_datetime: 3.weeks.from_now
+      create(:assignment, roster:, user: admin, end_datetime: 3.weeks.from_now)
     end
 
     it 'does not queue the email to be sent' do
