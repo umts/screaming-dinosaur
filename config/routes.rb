@@ -3,6 +3,8 @@
 Rails.application.routes.draw do
   root 'dashboard#index'
 
+  get '/up' => 'rails/health#show', as: :rails_health_check
+
   get 'feed/:roster_id/:token' => 'feed#show', as: :feed
 
   get '/auth/:provider/callback', to: 'sessions#create'
