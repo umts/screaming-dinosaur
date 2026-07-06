@@ -60,8 +60,7 @@ unless ENV['SKIP_ASSIGNMENTS']
   Roster.find_each do |roster|
     roster.users.order(:last_name).each_with_index do |user, i|
       FactoryBot.create :assignment, user: user, roster: roster,
-                                     start_date: i.weeks.since.beginning_of_week(:friday),
-                                     end_date: i.weeks.since.end_of_week(:friday)
+                                     end_datetime: (i + 1).weeks.since.beginning_of_week(:friday)
     end
   end
 end
