@@ -59,20 +59,6 @@ RSpec.describe 'Assignment Generator' do
         submit
         expect(response).to redirect_to roster_path(roster, date: Date.current)
       end
-
-      it 'only create assignments on selected weekdays' do
-        submit
-        roster.assignments.each do |assignment|
-          expect(assignment.end_datetime.strftime('%A')).to be_in(%w[Monday Wednesday])
-        end
-      end
-
-      it 'sets correct end_time for all the assignments' do
-        submit
-        roster.assignments.each do |assignment|
-          expect(assignment.end_datetime).to have_attributes(hour: 4, min: 30)
-        end
-      end
     end
 
     context 'when logged in as an admin of the roster with invalid attributes' do

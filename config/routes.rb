@@ -23,6 +23,9 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
       end
     end
 
+    get :assignment_generator, to: 'assignment_generator#prompt'
+    post :assignment_generator, to: 'assignment_generator#perform'
+
     resources :memberships, only: %i[index create destroy update], shallow: true
 
     get 'twilio/call', to: 'twilio#call', as: :twilio_call

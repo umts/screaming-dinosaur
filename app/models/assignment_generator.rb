@@ -10,6 +10,7 @@ class AssignmentGenerator
   attribute :end_date, :date
   attribute :end_time, :time
   attribute :weekdays, default: -> { [] }
+  attribute :group, :string
 
   validates :roster, presence: true
   validates :user, presence: true
@@ -39,11 +40,7 @@ class AssignmentGenerator
   def perform!
     validate!
     ActiveRecord::Base.transaction do
-      date_range.each do |date|
-        next unless selected_weekdays?(date)
-
-        roster.assignments.create! user:, end_datetime: combine(date, end_time)
-      end
+      generate_assignments_with_group
     end
   rescue ActiveRecord::RecordInvalid => e
     errors.merge! e.record.errors
@@ -72,5 +69,40 @@ class AssignmentGenerator
       time.hour,
       time.min
     )
+  end
+
+  def generate_assignments
+    date_range.each do |date|
+      next unless selected_weekdays?(date)
+
+      roster.assignments.create! user:, end_datetime: combine(date, end_time)
+    end
+  end
+
+  def each_week
+    week_start = start_date
+    while week_start <= end_date
+      week_end = [week_start.end_of_week(:monday), end_date].min
+      yield week_start, week_end
+      week_start = week_end + 1.day
+    end
+  end
+
+  def generate_assignments_with_group
+    return generate_assignments if group.blank?
+
+    each_week do |week_start, week_end|
+      assignment_group = AssignmentGroup.create!(name: group)
+
+      (week_start..week_end).each do |date|
+        next unless selected_weekdays?(date)
+
+        roster.assignments.create!(
+          user: user,
+          end_datetime: combine(date, end_time),
+          assignment_group: assignment_group
+        )
+      end
+    end
   end
 end
