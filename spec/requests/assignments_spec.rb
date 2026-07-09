@@ -93,7 +93,9 @@ RSpec.describe 'Assignments' do
             'url' => take_assignment_path(open_assignment),
             'start' => past_assignment.end_datetime.iso8601,
             'end' => open_assignment.end_datetime.iso8601,
-            'color' => 'var(--bs-secondary)'
+            'backgroundColor' => 'transparent',
+            'borderColor' => 'var(--bs-primary)',
+            'textColor' => 'var(--bs-primary)'
           ),
           a_hash_including(
             'id' => "assignment-#{taken_assignment.id}",
