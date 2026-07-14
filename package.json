@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@activeadmin/activeadmin": "^4.0.0-beta22",
     "@csstools/postcss-sass": "*",
     "@fortawesome/fontawesome-free": "*",
     "@fullcalendar/bootstrap5": "*",
@@ -9,12 +10,14 @@
     "@popperjs/core": "^2.11.8",
     "@rails/ujs": "*",
     "@rollup/plugin-node-resolve": "*",
+    "@tailwindcss/cli": "^4.3.2",
     "autoprefixer": "*",
     "bootstrap": "^5.3.8",
     "postcss": "*",
     "postcss-cli": "< 11",
     "postcss-scss": "*",
     "rollup": "< 4",
+    "tailwindcss": "^4.3.2",
     "tom-select": "*"
   },
   "devDependencies": {
@@ -28,8 +31,8 @@
     "stylelint-config-standard-scss": "< 12"
   },
   "scripts": {
-    "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -c",
-    "build:css": "postcss ./app/assets/stylesheets/application.scss -o ./app/assets/builds/application.css",
+    "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -c && rollup ./app/javascript/active_admin.js -o ./app/assets/builds/active_admin.js -c",
+    "build:css": "postcss ./app/assets/stylesheets/application.scss -o ./app/assets/builds/application.css && tailwindcss -i ./app/assets/stylesheets/active_admin.css -o ./app/assets/builds/active_admin.css --minify",
     "lint": "eslint .",
     "lint:css": "stylelint **/*.css **/*.scss"
   }

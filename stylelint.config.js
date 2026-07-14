@@ -9,5 +9,11 @@ module.exports = {
   overrides: [{
     files: ['**/*.scss'],
     extends: 'stylelint-config-standard-scss',
+  }, {
+    files: ['app/assets/stylesheets/active_admin.css'],
+    rules: {
+      'at-rule-no-unknown': [true, {ignoreAtRules: ['config']}],
+      'import-notation': 'string',
+    },
   }],
 };
