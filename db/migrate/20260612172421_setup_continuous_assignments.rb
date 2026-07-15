@@ -70,5 +70,12 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
     remove_column :assignments, :end_date, :date
 
     remove_column :rosters, :switchover, :integer, default: 1020, null: false
+
+    create_table :assignment_groups do |t|
+      t.string :name, null: false
+      t.timestamps
+    end
+
+    add_reference :assignments, :assignment_group, null: true, foreign_key: true
   end
 end
