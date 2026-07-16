@@ -22,6 +22,7 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
         Roster.find_each do |roster|
           assignments = Assignment.where(roster_id: roster.id).order(start_date: :asc)
           total_start_date = assignments.first.start_date
+          next if assignments.empty?
 
           # create "anchor" assignment
           prev = Assignment.create!(roster_id: roster.id,
@@ -52,7 +53,8 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
         ops = Roster.create!(
         name: 'Transit Operations',
         phone: am.phone,
-        created_at: [am.created_at, eve.created_at].min
+        created_at: [am.created_at, eve.created_at].min,
+        slug: 'transit-operations'
         )
 
         move_memberships(from: [am, eve], to: ops)
@@ -65,6 +67,7 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
       dir.down do
         Roster.find_each do |roster|
           assignments = Assignment.where(roster_id: roster.id).order(end_datetime: :asc)
+          next if assignments.empty?
 
           prev = assignments.first
 
@@ -82,8 +85,8 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
         ops = Roster.find_by(name: 'Transit Operations')
         next if ops.nil?
 
-        am = Roster.create!(name: 'Transit Ops AM', phone: ops.phone, created_at: ops.created_at)
-        eve = Roster.create!(name: 'Transit Ops EVE', phone: ops.phone, created_at: ops.created_at)
+        am = Roster.create!(name: 'Transit Ops AM', phone: ops.phone, created_at: ops.created_at, slug: 'transit-ops-am')
+        eve = Roster.create!(name: 'Transit Ops EVE', phone: ops.phone, created_at: ops.created_at, slug: 'transit-ops-eve')
 
         Membership.where(roster_id: ops.id).each do |membership|
         Membership.create!(roster_id: am.id, user_id: membership.user_id, admin: membership.admin)
