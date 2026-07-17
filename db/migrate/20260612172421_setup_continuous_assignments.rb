@@ -21,8 +21,9 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
       dir.up do
         Roster.find_each do |roster|
           assignments = Assignment.where(roster_id: roster.id).order(start_date: :asc)
-          total_start_date = assignments.first.start_date
           next if assignments.empty?
+
+          total_start_date = assignments.first.start_date
 
           # create "anchor" assignment
           prev = Assignment.create!(roster_id: roster.id,
