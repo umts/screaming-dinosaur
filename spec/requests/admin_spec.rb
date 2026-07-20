@@ -74,4 +74,35 @@ RSpec.describe 'Admin' do
       end
     end
   end
+
+  describe 'PATCH /admin/users/:id' do
+    subject(:call) { patch "/admin/users/#{user.id}", params: { user: attributes } }
+
+    let(:user) { create(:user, first_name: 'Old', admin: false) }
+
+    context 'when logged in as a system admin' do
+      let(:current_user) { create(:user, admin: true) }
+      let(:attributes) { { first_name: 'New' } }
+
+      it 'redirects to the user' do
+        call
+        expect(response).to redirect_to(admin_user_path(user))
+      end
+
+      it 'updates the permitted attribute' do
+        call
+        expect(user.reload.first_name).to eq('New')
+      end
+    end
+
+    context 'when a system admin submits guarded attributes' do
+      let(:current_user) { create(:user, admin: true) }
+      let(:attributes) { { admin: true, entra_uid: 'hijacked' } }
+
+      it 'ignores admin and entra_uid' do
+        call
+        expect(user.reload).to have_attributes(admin: false, entra_uid: user.entra_uid)
+      end
+    end
+  end
 end

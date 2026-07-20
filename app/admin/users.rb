@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register User do # rubocop:disable Metrics/BlockLength
-  permit_params :first_name, :last_name, :email, :phone, :admin,
-                :reminders_enabled, :change_notifications_enabled, :entra_uid
+  # admin and entra_uid are deliberately not mass-assignable here: UserPolicy
+  # guards them in the main app (an admin can't change their own admin flag or
+  # anyone's entra_uid without hitting update_access?/update_auth?), and this
+  # resource bypasses action_policy. A real adoption would wire ActiveAdmin's
+  # authorization adapter to action_policy instead of restricting fields here.
+  permit_params :first_name, :last_name, :email, :phone,
+                :reminders_enabled, :change_notifications_enabled
 
   index do
     selectable_column
@@ -41,8 +46,6 @@ ActiveAdmin.register User do # rubocop:disable Metrics/BlockLength
       f.input :last_name
       f.input :email
       f.input :phone
-      f.input :entra_uid
-      f.input :admin
       f.input :reminders_enabled
       f.input :change_notifications_enabled
     end
