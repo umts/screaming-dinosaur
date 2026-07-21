@@ -113,7 +113,7 @@ RSpec.describe 'Assignments' do
             'url' => take_assignment_path(own_assignment),
             'start' => taken_assignment.end_datetime.iso8601,
             'end' => own_assignment.end_datetime.iso8601,
-            'color' => 'var(--bs-primary)'
+            'color' => 'var(--bs-secondary)'
           )
         )
       end

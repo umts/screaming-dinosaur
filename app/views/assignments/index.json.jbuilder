@@ -7,7 +7,7 @@ json.array! @assignments do |assignment|
   json.start assignment.start_datetime.to_fs(:iso8601)
   json.end assignment.end_datetime.to_fs(:iso8601)
   if assignment.user == Current.user
-    json.color 'var(--bs-primary)'
+    json.color 'var(--bs-secondary)'
   else
     color = "var(--#{assignment.user.present? ? 'bs-secondary' : 'bs-primary'})"
     json.backgroundColor 'transparent'
