@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
+  class Assignment < ActiveRecord::Base
+  end
+
   class Roster < ActiveRecord::Base
   end
 
-  class Assignment < ActiveRecord::Base
+  class Membership < ActiveRecord::Base
   end
 
   def change
@@ -19,6 +22,7 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
 
     reversible do |dir|
       dir.up do
+        # convert dates to datetimes
         Roster.find_each do |roster|
           assignments = Assignment.where(roster_id: roster.id).order(start_date: :asc)
           total_start_date = assignments.first.start_date
@@ -44,11 +48,31 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
             end
           end
         end
+
+        # stitch am and eve roster together
+        am = Roster.find_by!(name: 'Transit Ops AM')
+        eve = Roster.find_by!(name: 'Transit Ops EVE')
+        ops = Roster.create!(name: 'Transit Operations',
+                             phone: am.phone,
+                             created_at: [am.created_at, eve.created_at].min,
+                             slug: 'transit-operations')
+        Membership.where(roster_id: [am.id, eve.id]).each do |old|
+          Membership.find_or_create_by!(roster_id: ops.id, user_id: old.user_id).tap do |new|
+            new.update!(admin: true) if old.admin?
+          end
+          old.destroy!
+        end
+        Assignment.where(roster_id: [am.id, eve.id]).each do |assignment|
+          assignment.update!(roster_id: ops.id)
+        end
+        am.destroy!
+        eve.destroy!
       end
 
       dir.down do
         Roster.find_each do |roster|
           assignments = Assignment.where(roster_id: roster.id).order(end_datetime: :asc)
+          next if assignments.empty?
 
           prev = assignments.first
 
@@ -70,5 +94,12 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
     remove_column :assignments, :end_date, :date
 
     remove_column :rosters, :switchover, :integer, default: 1020, null: false
+
+    create_table :assignment_groups do |t|
+      t.string :name, null: false
+      t.timestamps
+    end
+
+    add_reference :assignments, :assignment_group, null: true, foreign_key: true
   end
 end
