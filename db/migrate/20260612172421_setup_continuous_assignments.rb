@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
+  class Assignment < ActiveRecord::Base
+  end
+
   class Roster < ActiveRecord::Base
   end
 
-  class Assignment < ActiveRecord::Base
+  class Membership < ActiveRecord::Base
   end
 
   def change
@@ -19,10 +22,9 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
 
     reversible do |dir|
       dir.up do
+        # convert dates to datetimes
         Roster.find_each do |roster|
           assignments = Assignment.where(roster_id: roster.id).order(start_date: :asc)
-          next if assignments.empty?
-
           total_start_date = assignments.first.start_date
 
           # create "anchor" assignment
@@ -47,22 +49,24 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
           end
         end
 
-        am = Roster.find_by(name: 'Transit Ops AM')
-        eve = Roster.find_by(name: 'Transit Ops EVE')
-        next if am.nil? || eve.nil?
-
-        ops = Roster.create!(
-        name: 'Transit Operations',
-        phone: am.phone,
-        created_at: [am.created_at, eve.created_at].min,
-        slug: 'transit-operations'
-        )
-
-        move_memberships(from: [am, eve], to: ops)
-        move_assignments(from: [am, eve], to: ops)
-
-        am.delete
-        eve.delete
+        # stitch am and eve roster together
+        am = Roster.find_by!(name: 'Transit Ops AM')
+        eve = Roster.find_by!(name: 'Transit Ops EVE')
+        ops = Roster.create!(name: 'Transit Operations',
+                             phone: am.phone,
+                             created_at: [am.created_at, eve.created_at].min,
+                             slug: 'transit-operations')
+        Membership.where(roster_id: [am.id, eve.id]).each do |old|
+          Membership.find_or_create_by!(roster_id: ops.id, user_id: old.user_id).tap do |new|
+            new.update!(admin: true) if old.admin?
+          end
+          old.destroy!
+        end
+        Assignment.where(roster_id: [am.id, eve.id]).each do |assignment|
+          assignment.update!(roster_id: ops.id)
+        end
+        am.destroy!
+        eve.destroy!
       end
 
       dir.down do
@@ -82,21 +86,6 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
 
           assignments.where(user_id: nil).find_each(&:destroy!)
         end
-
-        ops = Roster.find_by(name: 'Transit Operations')
-        next if ops.nil?
-
-        am = Roster.create!(name: 'Transit Ops AM', phone: ops.phone, created_at: ops.created_at, slug: 'transit-ops-am')
-        eve = Roster.create!(name: 'Transit Ops EVE', phone: ops.phone, created_at: ops.created_at, slug: 'transit-ops-eve')
-
-        Membership.where(roster_id: ops.id).each do |membership|
-        Membership.create!(roster_id: am.id, user_id: membership.user_id, admin: membership.admin)
-        Membership.create!(roster_id: eve.id, user_id: membership.user_id, admin: membership.admin)
-       end
-
-        Assignment.where(roster_id: ops.id).delete_all
-        Membership.where(roster_id: ops.id).delete_all
-        ops.delete
       end
     end
 
@@ -112,33 +101,5 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
     end
 
     add_reference :assignments, :assignment_group, null: true, foreign_key: true
-  end
-
-  private
-
-  def move_memberships(from:, to:)
-    from.each do |roster|
-      Membership.where(roster_id: roster.id).to_a.each do |membership|
-        existing = Membership.find_by(
-          roster_id: to.id,
-          user_id: membership.user_id
-        )
-
-        if existing
-          existing.update!(admin: existing.admin || membership.admin)
-          membership.destroy!
-        else
-          membership.update!(roster_id: to.id)
-        end
-      end
-    end
-  end
-
-  def move_assignments(from:, to:)
-    from.each do |roster|
-      Assignment.where(roster_id: roster.id).to_a.each do |assignment|
-        assignment.update!(roster_id: to.id)
-      end
-    end
   end
 end
