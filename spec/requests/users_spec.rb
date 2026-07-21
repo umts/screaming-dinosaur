@@ -172,6 +172,26 @@ RSpec.describe 'Users' do
         expect(response).to have_http_status(:unprocessable_content)
       end
     end
+
+    context 'when logged in as a registrant submitting a different entra_uid' do
+      let(:current_user) { User.new(entra_uid: 'new-user') }
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056',
+          entra_uid: 'someone-elses-uid' }
+      end
+
+      it 'redirects to the registration page' do
+        submit
+        expect(response).to redirect_to(new_user_path)
+      end
+
+      it 'does not create a user' do
+        expect { submit }.not_to change(User, :count)
+      end
+    end
   end
 
   describe 'PATCH /users/:id' do
