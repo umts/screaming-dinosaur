@@ -3,9 +3,9 @@
 ActiveAdmin.register User do # rubocop:disable Metrics/BlockLength
   # admin and entra_uid are deliberately not mass-assignable here: UserPolicy
   # guards them in the main app (an admin can't change their own admin flag or
-  # anyone's entra_uid without hitting update_access?/update_auth?), and this
-  # resource bypasses action_policy. A real adoption would wire ActiveAdmin's
-  # authorization adapter to action_policy instead of restricting fields here.
+  # anyone's entra_uid without hitting update_access?/update_auth?). AdminController
+  # gates access to the panel, but ActiveAdmin's per-field authorization isn't
+  # wired to those rules, so we restrict the fields directly instead.
   permit_params :first_name, :last_name, :email, :phone,
                 :reminders_enabled, :change_notifications_enabled
 

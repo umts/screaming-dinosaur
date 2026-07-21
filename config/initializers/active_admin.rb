@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-# ActiveAdmin controllers descend from AdminController rather than
-# ApplicationController so they bypass Authorizable's verify_authorized.
+# ActiveAdmin controllers descend from AdminController, which wraps the engine
+# in the app's authorization framework (Authorizable) the same way
+# MaintenanceTasks does.
 InheritedResources.parent_controller = 'AdminController'
 
 ActiveAdmin.setup do |config|
   config.site_title = 'UMTS On-Call'
 
-  # Entra ID sessions instead of Devise: any logged-in app admin may enter.
-  config.authentication_method = :authenticate_admin_user!
+  # AdminController gates every action via `before_action :authorize!`, so
+  # ActiveAdmin's own authentication is disabled.
+  config.authentication_method = false
   config.current_user_method = :current_admin_user
   config.logout_link_path = :logout_path
 

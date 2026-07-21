@@ -6,19 +6,12 @@ RSpec.describe 'Admin' do
   describe 'GET /admin/users' do
     subject(:call) { get '/admin/users' }
 
-    context 'when logged out' do
-      it 'redirects to the root path' do
-        call
-        expect(response).to redirect_to(root_path)
-      end
-    end
-
     context 'when logged in as a roster admin' do
       let(:current_user) { create(:user, memberships: [build(:membership, admin: true)]) }
 
-      it 'redirects to the root path' do
+      it 'responds with a forbidden status' do
         call
-        expect(response).to redirect_to(root_path)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
