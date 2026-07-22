@@ -3,8 +3,6 @@
 FactoryBot.define do
   factory :assignment do
     roster
-    user { association :user, rosters: [roster] }
-    start_date { Date.yesterday }
-    end_date { Date.tomorrow }
+    sequence(:end_datetime) { |n| Date.current + n.days }
   end
 end

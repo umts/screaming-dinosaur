@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Rails.application.routes.draw do
+Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   root 'dashboard#index'
 
   get 'feed/:roster_id/:token' => 'feed#show', as: :feed
@@ -11,13 +11,20 @@ Rails.application.routes.draw do
   mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
 
   resources :rosters do
-    resources :assignments, only: %i[index new edit create update destroy], shallow: true
+    resources :assignments, only: %i[index new edit create update destroy], shallow: true do
+      collection do
+        get :generate, to: 'assignment_generator#prompt'
+        post :generate, to: 'assignment_generator#perform'
+      end
 
-    get :assign_weeks, to: 'week_assigners#prompt'
-    post :assign_weeks, to: 'week_assigners#perform'
+      member do
+        get :take, to: 'assignment_takers#prompt'
+        post :take, to: 'assignment_takers#perform'
+      end
+    end
 
-    get :assign_weekdays, to: 'weekday_assigners#prompt'
-    post :assign_weekdays, to: 'weekday_assigners#perform'
+    get :assignment_generator, to: 'assignment_generator#prompt'
+    post :assignment_generator, to: 'assignment_generator#perform'
 
     resources :memberships, only: %i[index create destroy update], shallow: true
 
