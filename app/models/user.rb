@@ -25,6 +25,11 @@ class User < ApplicationRecord
   before_save :regenerate_calendar_access_token, if: -> { calendar_access_token.blank? }
   after_commit :notify_fallback_rosters_of_phone_change, on: :update
 
+  # Ransack (ActiveAdmin search) requires an explicit allowlist.
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[first_name last_name email admin]
+  end
+
   def full_name
     "#{first_name} #{last_name}"
   end
