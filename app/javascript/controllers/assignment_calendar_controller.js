@@ -22,6 +22,8 @@ export default class extends Controller {
       startParam: 'start_date',
       endParam: 'end_date',
       dayCellClassNames: 'day-empty',
+      nextDayThreshold: '05:00',
+      eventDisplay: 'block',
       eventDidMount: function(info) {
         const date = info.event.start;
         while (date < info.event.end) {
