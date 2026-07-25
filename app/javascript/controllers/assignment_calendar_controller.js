@@ -1,6 +1,6 @@
-import {Calendar} from '@fullcalendar/core';
+import {Calendar} from 'fullcalendar';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
-import dayGridPlugin from '@fullcalendar/daygrid';
+import dayGridPlugin from 'fullcalendar/daygrid';
 import {Controller} from '@hotwired/stimulus';
 
 export default class extends Controller {
