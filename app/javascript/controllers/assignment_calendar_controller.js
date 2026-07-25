@@ -26,6 +26,7 @@ export default class extends Controller {
       startParam: 'start_date',
       endParam: 'end_date',
       dayCellClass: 'calendar-day calendar-day-empty',
+      toolbarTitleClass: 'calendar-title',
       eventDidMount: function(info) {
         const date = info.event.start;
         while (date < info.event.end) {
