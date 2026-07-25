@@ -12,33 +12,34 @@ export default class extends Controller {
   connect() {
     const calendar = new Calendar(this.element, {
       plugins: [dayGridPlugin, bootstrap5Plugin],
-      themeSystem: 'bootstrap5',
-      buttonIcons: {
-        prev: 'fa fa fa-chevron-left',
-        next: 'fa fa fa-chevron-right',
+      headerToolbar: {
+        start: 'title',
+        end: 'today prev,next',
       },
-      buttonText: {
-        today: 'Today',
+      buttons: {
+        today: {text: 'Today'},
+        prev: {iconClass: 'fa-solid fa-chevron-left'},
+        next: {iconClass: 'fa-solid fa-chevron-right'},
       },
       initialDate: sessionStorage.getItem('lastDate') || null,
       events: this.eventsUrlValue,
       startParam: 'start_date',
       endParam: 'end_date',
-      dayCellClassNames: 'day-empty',
+      dayCellClass: 'calendar-day calendar-day-empty',
       eventDidMount: function(info) {
         const date = info.event.start;
         while (date < info.event.end) {
           const dateString = date.toISOString().split('T')[0];
-          document.querySelectorAll(`td[data-date="${dateString}"]`).forEach((td) => {
-            td.classList.remove('day-empty');
+          document.querySelectorAll(`.calendar-day[data-date="${dateString}"]`).forEach((td) => {
+            td.classList.remove('calendar-day-empty');
           });
           date.setDate(date.getDate() + 1);
         }
       },
-      eventSourceFailure: function(response) {
-        if (response.status === 403) {
+      eventSourceFailure: function(error) {
+        if (error.response.status === 403) {
           window.location.replace(window.location.origin);
-        } else if (response.status === 401) {
+        } else if (error.response.status === 401) {
           window.location.reload();
         } else {
           alert('Something has gone wrong. IT has been notified. Contact them if the problem persists.');
@@ -53,7 +54,7 @@ export default class extends Controller {
     calendar.render();
 
     this.element.addEventListener('click', (e) => {
-      const dayElement = e.target.closest('td.day-empty');
+      const dayElement = e.target.closest('.calendar-day-empty');
       if (dayElement) {
         window.location = `${this.newAssignmentUrlValue}?date=` + dayElement.dataset.date;
       }
