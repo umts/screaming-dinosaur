@@ -24,18 +24,7 @@ export default class extends Controller {
       endParam: 'end_date',
       nextDayThreshold: '05:00',
       eventDisplay: 'block',
-      dayCellClass: 'calendar-day calendar-day-empty',
       toolbarTitleClass: 'calendar-title',
-      eventDidMount: function(info) {
-        const date = info.event.start;
-        while (date < info.event.end) {
-          const dateString = date.toISOString().split('T')[0];
-          document.querySelectorAll(`.calendar-day[data-date="${dateString}"]`).forEach((td) => {
-            td.classList.remove('calendar-day-empty');
-          });
-          date.setDate(date.getDate() + 1);
-        }
-      },
       eventSourceFailure: function(error) {
         if (error.response.status === 403) {
           window.location.replace(window.location.origin);
