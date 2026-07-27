@@ -14,9 +14,9 @@ class SessionsController < ApplicationController
     authorize!
     session.clear
     if Rails.env.development?
-      # :nocov:
+      # simplecov:disable
       redirect_to root_path
-      # :nocov:
+      # simplecov:enable
     else
       redirect_to entra_logout_url, allow_other_host: true
     end
