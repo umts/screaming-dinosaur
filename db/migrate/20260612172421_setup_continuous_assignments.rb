@@ -22,6 +22,17 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
 
     reversible do |dir|
       dir.up do
+        am = Roster.find_by!(name: 'Transit Ops AM')
+        eve = Roster.find_by!(name: 'Transit Ops EVE')
+
+        # make am/eve assignments per-day
+        Assignment.where(roster_id: [am.id, eve.id]).each do |assignment|
+          (assignment.start_date..assignment.end_date).each do |date|
+            Assignment.create!(assignment.attributes.except('id').merge(start_date: date, end_date: date))
+          end
+          assignment.destroy!
+        end
+
         # convert dates to datetimes
         Roster.find_each do |roster|
           assignments = Assignment.where(roster_id: roster.id).order(start_date: :asc)
@@ -50,8 +61,6 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
         end
 
         # stitch am and eve roster together
-        am = Roster.find_by!(name: 'Transit Ops AM')
-        eve = Roster.find_by!(name: 'Transit Ops EVE')
         ops = Roster.create!(name: 'Transit Operations',
                              phone: am.phone,
                              created_at: [am.created_at, eve.created_at].min,
