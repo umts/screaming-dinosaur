@@ -13,13 +13,13 @@ module Authorizable
         raise exception
       elsif session[:entra_uid].present?
         redirect_to main_app.new_user_path
-      # :nocov:
+      # simplecov:disable
       elsif Rails.env.production? || Rails.env.development?
         respond_to do |format|
           format.html { render "application/#{Rails.env}_login", layout: 'layouts/application', status: :unauthorized }
           format.all { head :unauthorized }
         end
-      # :nocov:
+      # simplecov:enable
       else
         head :unauthorized
       end
