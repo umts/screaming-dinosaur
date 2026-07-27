@@ -93,9 +93,9 @@ RSpec.describe 'Assignments' do
             'url' => take_assignment_path(open_assignment),
             'start' => past_assignment.end_datetime.iso8601,
             'end' => open_assignment.end_datetime.iso8601,
-            'backgroundColor' => 'transparent',
-            'borderColor' => 'var(--bs-primary)',
-            'textColor' => 'var(--bs-primary)'
+            'className' => 'event-outline',
+            'color' => 'var(--bs-primary)',
+            'contrastColor' => 'var(--bs-primary)'
           ),
           a_hash_including(
             'id' => "assignment-#{taken_assignment.id}",
@@ -103,9 +103,9 @@ RSpec.describe 'Assignments' do
             'url' => take_assignment_path(taken_assignment),
             'start' => open_assignment.end_datetime.iso8601,
             'end' => taken_assignment.end_datetime.iso8601,
-            'backgroundColor' => 'transparent',
-            'borderColor' => 'var(--bs-secondary)',
-            'textColor' => 'var(--bs-secondary)'
+            'className' => 'event-outline',
+            'color' => 'var(--bs-secondary)',
+            'contrastColor' => 'var(--bs-secondary)'
           ),
           a_hash_including(
             'id' => "assignment-#{own_assignment.id}",
