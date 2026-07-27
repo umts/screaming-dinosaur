@@ -8,4 +8,14 @@
 
     font-weight: bootstrap.$headings-font-weight;
   }
+
+  .calendar-event {
+    border-width: 1px;
+
+    &.event-outline {
+      border-style: solid;
+      border-color: var(--fc-event-color);
+      background-color: var(--bs-white);
+    }
+  }
 }

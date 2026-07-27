@@ -24,6 +24,7 @@ export default class extends Controller {
       endParam: 'end_date',
       nextDayThreshold: '05:00',
       eventDisplay: 'block',
+      eventClass: 'calendar-event',
       toolbarTitleClass: 'calendar-title',
       eventSourceFailure: function(error) {
         if (error.response.status === 403) {

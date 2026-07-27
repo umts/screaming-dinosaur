@@ -10,8 +10,8 @@ json.array! @assignments do |assignment|
     json.color 'var(--bs-secondary)'
   else
     color = "var(--#{assignment.user.present? ? 'bs-secondary' : 'bs-primary'})"
-    json.backgroundColor 'transparent'
-    json.borderColor color
-    json.textColor color
+    json.className 'event-outline'
+    json.color color
+    json.contrastColor color
   end
 end
