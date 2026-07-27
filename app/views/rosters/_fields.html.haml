@@ -17,6 +17,3 @@
                              class: 'form-select', 'data-controller': 'tom-select'
   - if fields.object.users.empty?
     .form-text To assign the fallback user, first create the roster, then add some users to it.
-.mb-3
-  = fields.label :switchover_time, class: 'form-label'
-  = fields.time_field :switchover_time, class: 'form-control', required: true

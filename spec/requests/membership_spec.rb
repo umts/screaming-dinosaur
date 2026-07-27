@@ -14,7 +14,7 @@ RSpec.describe 'Memberships' do
   describe 'GET /rosters/:roster_id/memberships' do
     subject(:submit) { get "/rosters/#{roster.id}/memberships" }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a user unrelated to the roster' do
       include_context 'when logged in as a user unrelated to the roster'
@@ -38,7 +38,7 @@ RSpec.describe 'Memberships' do
   describe 'POST /rosters/:roster_id/memberships' do
     subject(:submit) { post "/rosters/#{roster.id}/memberships", params: { membership: attributes } }
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
@@ -87,8 +87,8 @@ RSpec.describe 'Memberships' do
   describe 'PATCH /memberships/:id' do
     subject(:submit) { patch "/memberships/#{membership.id}", params: { membership: attributes } }
 
-    let(:roster) { create :roster }
-    let(:membership) { create :membership, roster: }
+    let(:roster) { create(:roster) }
+    let(:membership) { create(:membership, roster:) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
@@ -133,8 +133,8 @@ RSpec.describe 'Memberships' do
   describe 'DELETE /memberships/:id' do
     subject(:submit) { delete "/memberships/#{membership.id}" }
 
-    let(:roster) { create :roster }
-    let(:membership) { create :membership, roster: }
+    let(:roster) { create(:roster) }
+    let(:membership) { create(:membership, roster:) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'

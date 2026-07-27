@@ -11,7 +11,7 @@ RSpec.describe 'Users' do
     subject(:call) { get '/users' }
 
     context 'when logged in as a roster admin' do
-      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+      let(:current_user) { create(:user, memberships: [build(:membership, admin: true)]) }
 
       it 'responds with a forbidden status' do
         call
@@ -20,7 +20,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a system admin' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
 
       it 'responds successfully' do
         call
@@ -33,7 +33,7 @@ RSpec.describe 'Users' do
     subject(:call) { get '/users/new' }
 
     context 'when logged in as a user' do
-      let(:current_user) { create :user }
+      let(:current_user) { create(:user) }
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
@@ -48,7 +48,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a system admin' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
@@ -75,10 +75,10 @@ RSpec.describe 'Users' do
   describe 'GET /users/:id/edit' do
     subject(:call) { get "/users/#{user.id}/edit" }
 
-    let(:user) { create :user }
+    let(:user) { create(:user) }
 
     context 'when logged in as a roster admin' do
-      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+      let(:current_user) { create(:user, memberships: [build(:membership, admin: true)]) }
 
       it 'responds with a forbidden status' do
         call
@@ -87,7 +87,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a system admin' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
 
       it 'responds successfully' do
         call
@@ -109,7 +109,7 @@ RSpec.describe 'Users' do
     subject(:submit) { post '/users', params: { user: attributes } }
 
     context 'when logged in as a user' do
-      let(:current_user) { create :user }
+      let(:current_user) { create(:user) }
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
@@ -124,7 +124,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a system admin' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
@@ -172,12 +172,41 @@ RSpec.describe 'Users' do
         expect(response).to have_http_status(:unprocessable_content)
       end
     end
+
+    context 'when logged in as a registrant submitting a different entra_uid' do
+      let(:current_user) { User.new(entra_uid: 'new-user') }
+      let(:attributes) do
+        { first_name: 'Bobo',
+          last_name: 'Test',
+          email: 'bobo@test.com',
+          phone: '(413) 545-0056',
+          entra_uid: 'someone-elses-uid' }
+      end
+
+      it 'redirects to the registration page' do
+        submit
+        expect(response).to redirect_to(new_user_path)
+      end
+
+      it 'does not create a user' do
+        expect { submit }.not_to change(User, :count)
+      end
+    end
   end
 
   describe 'PATCH /users/:id' do
     subject(:submit) { patch "/users/#{user.id}", params: { user: attributes } }
 
-    let(:user) { create :user }
+    let(:user) { create(:user) }
+
+    context 'when not logged in with an entra_uid update' do
+      let(:attributes) { { entra_uid: 'rewritten-uid' } }
+
+      it 'responds with an unauthorized status' do
+        submit
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
 
     context 'when logged in as a roster admin' do
       let(:attributes) do
@@ -187,7 +216,7 @@ RSpec.describe 'Users' do
           phone: '(413) 545-0056' }
       end
 
-      let(:current_user) { create :user, memberships: [build(:membership, admin: true)] }
+      let(:current_user) { create(:user, memberships: [build(:membership, admin: true)]) }
 
       it 'responds with a forbidden status' do
         submit
@@ -196,7 +225,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a system admin with valid attributes' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
       let(:attributes) do
         { first_name: 'Bobo',
           last_name: 'Test',
@@ -218,7 +247,7 @@ RSpec.describe 'Users' do
     context 'when logged in as a system admin with invalid attributes' do
       include_context 'with invalid attributes'
 
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
 
       it 'responds with an unprocessable content status' do
         submit
@@ -268,7 +297,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a system admin editing another user with an entra_uid update' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
       let(:attributes) { { entra_uid: 'rewritten-uid' } }
 
       it 'redirects to the edit user page' do
@@ -283,7 +312,7 @@ RSpec.describe 'Users' do
     end
 
     context 'when logged in as a system admin editing themselves with an entra_uid update' do
-      let(:current_user) { create :user, admin: true }
+      let(:current_user) { create(:user, admin: true) }
       let(:user) { current_user }
       let(:attributes) { { entra_uid: 'rewritten-uid' } }
 

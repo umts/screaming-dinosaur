@@ -7,17 +7,16 @@
         %i.fa-solid.fa-triangle-exclamation
         Nobody
   is currently on call
-  - if roster.assignments.current.blank? && roster.on_call_user.present?
+  - if roster.current_assignment&.user.blank? && roster.on_call_user.present?
     %span.text-primary
       %i.fa-solid.fa-triangle-exclamation
       as a fallback
-  - if roster.assignments.current.present? && roster.fallback_user.blank?
+  - if roster.on_call_user.present? && roster.fallback_user.blank?
     %span.text-primary
       %i.fa-solid.fa-triangle-exclamation
       with no fallback
-
-- if roster.assignments.current.present?
+- if roster.current_assignment.present?
   %div
     %small
       Switches on
-      = l roster.assignments.current&.effective_end_datetime, format: :named
+      = l roster.current_assignment.end_datetime, format: :named

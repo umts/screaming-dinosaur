@@ -2,7 +2,7 @@ Hello <%= @recipient.first_name %>,
 
 <%= @changer&.full_name || 'Unknown User' %> has cancelled your upcoming on-call assignment.
 
-Beginning: <%= @start_date %>
-Ending: <%= @end_date %>
+Beginning: <%= @start_datetime %>
+Ending: <%= @end_datetime %>
 
 You are no longer responsible for on-call during this time.
