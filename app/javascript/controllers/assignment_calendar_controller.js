@@ -1,6 +1,6 @@
-import {Calendar} from '@fullcalendar/core';
+import {Calendar} from 'fullcalendar';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
-import dayGridPlugin from '@fullcalendar/daygrid';
+import dayGridPlugin from 'fullcalendar/daygrid';
 import {Controller} from '@hotwired/stimulus';
 
 export default class extends Controller {
@@ -9,35 +9,27 @@ export default class extends Controller {
   connect() {
     const calendar = new Calendar(this.element, {
       plugins: [dayGridPlugin, bootstrap5Plugin],
-      themeSystem: 'bootstrap5',
-      buttonIcons: {
-        prev: 'fa fa fa-chevron-left',
-        next: 'fa fa fa-chevron-right',
+      headerToolbar: {
+        start: 'title',
+        end: 'today prev,next',
       },
-      buttonText: {
-        today: 'Today',
+      buttons: {
+        today: {text: 'Today'},
+        prev: {iconClass: 'fa-solid fa-chevron-left'},
+        next: {iconClass: 'fa-solid fa-chevron-right'},
       },
       initialDate: sessionStorage.getItem('lastDate') || null,
       events: this.eventsUrlValue,
       startParam: 'start_date',
       endParam: 'end_date',
-      dayCellClassNames: 'day-empty',
       nextDayThreshold: '05:00',
       eventDisplay: 'block',
-      eventDidMount: function(info) {
-        const date = info.event.start;
-        while (date < info.event.end) {
-          const dateString = date.toISOString().split('T')[0];
-          document.querySelectorAll(`td[data-date="${dateString}"]`).forEach((td) => {
-            td.classList.remove('day-empty');
-          });
-          date.setDate(date.getDate() + 1);
-        }
-      },
-      eventSourceFailure: function(response) {
-        if (response.status === 403) {
+      eventClass: 'calendar-event',
+      toolbarTitleClass: 'calendar-title',
+      eventSourceFailure: function(error) {
+        if (error.response.status === 403) {
           window.location.replace(window.location.origin);
-        } else if (response.status === 401) {
+        } else if (error.response.status === 401) {
           window.location.reload();
         } else {
           alert('Something has gone wrong. IT has been notified. Contact them if the problem persists.');

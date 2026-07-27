@@ -1,0 +1,21 @@
+@use "bootstrap";
+@use "fullcalendar/skeleton";
+@use "@fullcalendar/bootstrap5/theme";
+
+#assignment-calendar {
+  .calendar-title {
+    @include bootstrap.rfs(bootstrap.$h2-font-size);
+
+    font-weight: bootstrap.$headings-font-weight;
+  }
+
+  .calendar-event {
+    border-width: 1px;
+
+    &.event-outline {
+      border-style: solid;
+      border-color: var(--fc-event-color);
+      background-color: var(--bs-white);
+    }
+  }
+}
