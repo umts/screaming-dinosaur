@@ -15,6 +15,7 @@ updates:
       fullcalendar-packages:
         patterns:
           - "@fullcalendar/*"
+          - 'fullcalendar'
   - package-ecosystem: github-actions
     directory: /
     schedule:
