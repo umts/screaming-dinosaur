@@ -56,12 +56,13 @@ class Assignment < ApplicationRecord
     private
 
     def start_datetime_node
-      Arel::Nodes::Over.new(
+      lag = Arel::Nodes::Over.new(
         Arel::Nodes::NamedFunction.new('LAG', [arel_table[:end_datetime],
-                                               Arel::Nodes::SqlLiteral.new('1'),
-                                               Roster.arel_table[:created_at]]),
+                                               Arel::Nodes::SqlLiteral.new('1')]),
         Arel::Nodes::Window.new.partition(arel_table[:roster_id]).order(arel_table[:end_datetime])
-      ).as(arel_table[:start_datetime].name)
+      )
+      Arel::Nodes::NamedFunction.new('COALESCE', [lag, Roster.arel_table[:created_at]])
+                                .as(arel_table[:start_datetime].name)
     end
   end
 
