@@ -1,0 +1,15 @@
+@use "bootstrap";
+@use "fullcalendar/skeleton";
+@use "@fullcalendar/bootstrap5/theme";
+
+#assignment-calendar {
+  .calendar-title {
+    @include bootstrap.rfs(bootstrap.$h2-font-size);
+
+    font-weight: bootstrap.$headings-font-weight;
+  }
+
+  .calendar-day-empty {
+    cursor: pointer;
+  }
+}
