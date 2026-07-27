@@ -11,6 +11,11 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
   end
 
   def up
+    create_table :assignment_groups do |t|
+      t.string :name, null: false
+      t.timestamps
+    end
+
     change_table :assignments do |t|
       t.datetime :end_datetime
       t.index :end_datetime
@@ -18,15 +23,28 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
       t.change_null :user_id, true
       t.change_null :start_date, true
       t.change_null :end_date, true
+      t.references :assignment_group, foreign_key: true
     end
 
     am = Roster.find_by!(name: 'Transit Ops AM')
     eve = Roster.find_by!(name: 'Transit Ops EVE')
 
     # make am/eve assignments per-day
-    Assignment.where(roster_id: [am.id, eve.id]).each do |assignment|
+    Assignment.where(roster_id: am.id).each do |assignment|
+      group = AssignmentGroup.create!(name: 'AM')
       (assignment.start_date..assignment.end_date).each do |date|
-        Assignment.create!(assignment.attributes.except('id').merge(start_date: date, end_date: date))
+        Assignment.create!(
+          assignment.attributes.except('id').merge(start_date: date, end_date: date, assignment_group_id: group.id)
+        )
+      end
+      assignment.destroy!
+    end
+    Assignment.where(roster_id: eve.id).each do |assignment|
+      group = AssignmentGroup.create!(name: 'EVE')
+      (assignment.start_date..assignment.end_date).each do |date|
+        Assignment.create!(
+          assignment.attributes.except('id').merge(start_date: date, end_date: date, assignment_group_id: group.id)
+        )
       end
       assignment.destroy!
     end
@@ -80,13 +98,6 @@ class SetupContinuousAssignments < ActiveRecord::Migration[8.1]
     remove_column :assignments, :end_date, :date
 
     remove_column :rosters, :switchover, :integer, default: 1020, null: false
-
-    create_table :assignment_groups do |t|
-      t.string :name, null: false
-      t.timestamps
-    end
-
-    add_reference :assignments, :assignment_group, null: true, foreign_key: true
   end
 
   def down
