@@ -32,10 +32,14 @@ RSpec.describe 'Assignment Generator' do
       post "/rosters/#{roster.slug}/assignments/generate", params: {
         assignment_generator: {
           user_id: user.id,
-          start_date: Date.current,
-          end_date: Date.current + 14.days,
-          weekdays: %w[Monday Wednesday],
-          end_time: Time.zone.parse('04:30')
+          definitions_attributes: [
+            {
+              start_date: Date.current,
+              end_date: Date.current + 14.days,
+              weekdays: %w[Monday Wednesday],
+              end_time: Time.zone.parse('04:30')
+            }
+          ]
         }
       }
     end
@@ -61,15 +65,57 @@ RSpec.describe 'Assignment Generator' do
       end
     end
 
+    context 'when logged in as the roster admin with multiple definitions' do
+      subject(:submit) do
+        post "/rosters/#{roster.slug}/assignments/generate", params: {
+          assignment_generator: {
+            user_id: user.id,
+            definitions_attributes: [
+              {
+                start_date: Date.current,
+                end_date: Date.current + 6.days,
+                weekdays: %w[Monday],
+                end_time: Time.zone.parse('04:30')
+              },
+              {
+                start_date: Date.current + 7.days,
+                end_date: Date.current + 13.days,
+                weekdays: %w[Wednesday],
+                end_time: Time.zone.parse('03:00')
+              }
+            ]
+          }
+        }
+      end
+
+      let(:roster) { create(:roster) }
+      let(:user) { create(:user, rosters: [roster]) }
+
+      include_context 'when logged in as an admin of the roster'
+
+      it 'creates assignments for both definitions' do
+        expect { submit }.to change(Assignment, :count).by(2)
+      end
+
+      it 'redirects to the earliest start date across definitions' do
+        submit
+        expect(response).to redirect_to roster_path(roster, date: Date.current)
+      end
+    end
+
     context 'when logged in as an admin of the roster with invalid attributes' do
       subject(:submit) do
         post "/rosters/#{roster.slug}/assignments/generate", params: {
           assignment_generator: {
             user_id: user.id,
-            start_date: nil,
-            end_date: nil,
-            weekdays: [],
-            end_time: nil
+            definitions_attributes: [
+              {
+                start_date: nil,
+                end_date: nil,
+                weekdays: [],
+                end_time: nil
+              }
+            ]
           }
         }
       end
@@ -94,10 +140,14 @@ RSpec.describe 'Assignment Generator' do
         post "/rosters/#{roster.slug}/assignments/generate", params: {
           assignment_generator: {
             user_id: user.id,
-            start_date: Date.current,
-            end_date: Date.current - 1.day,
-            weekdays: %w[Monday Wednesday],
-            end_time: Time.zone.parse('04:30')
+            definitions_attributes: [
+              {
+                start_date: Date.current,
+                end_date: Date.current - 1.day,
+                weekdays: %w[Monday Wednesday],
+                end_time: Time.zone.parse('04:30')
+              }
+            ]
           }
         }
       end
