@@ -121,31 +121,83 @@ RSpec.describe AssignmentGenerator do
         }
       end
 
-      let(:expected_assignment_count) do
-        definitions_attributes.values.sum do |definition|
-          (definition[:start_date]..definition[:end_date]).count do |date|
-            definition[:weekdays].include?(date.strftime('%A'))
-          end
+      def expected_assignment_count(definition)
+        (definition[:start_date]..definition[:end_date]).count do |date|
+          definition[:weekdays].include?(date.strftime('%A'))
         end
       end
 
-      it 'creates assignments for every definition' do
-        expect { submit }.to change(Assignment, :count).by(expected_assignment_count)
+      def assignments_for(definition)
+        roster.assignments.select do |assignment|
+          assignment.end_datetime.to_date.between?(definition[:start_date], definition[:end_date])
+        end
       end
 
-      it 'applies each definition\'s own end_time' do
-        submit
-        end_times = roster.assignments.map { |assignment| assignment.end_datetime.strftime('%H:%M') }
-        expect(end_times.uniq.sort).to eq(%w[05:00 06:00])
+      def weekly_assignments(assignments)
+        assignments.group_by do |assignment|
+          assignment.end_datetime.to_date.beginning_of_week(:monday)
+        end
       end
 
-      it 'creates assignment groups only for definitions with a group name' do
+      it 'creates the expected number of assignments for the first definition' do
         submit
-        expect(AssignmentGroup.pluck(:name)).to all(eq('Morning Shift'))
+        assignments = assignments_for(definitions_attributes['0'])
+        expect(assignments.size).to eq(expected_assignment_count(definitions_attributes['0']))
+      end
+
+      it 'uses the correct weekdays for the first definition' do
+        submit
+        assignments = assignments_for(definitions_attributes['0'])
+        expect(assignments.map do |a|
+          a.end_datetime.strftime('%A')
+        end.uniq.sort).to eq(definitions_attributes['0'][:weekdays].sort)
+      end
+
+      it 'uses the correct end time for the first definition' do
+        submit
+        assignments = assignments_for(definitions_attributes['0'])
+        expect(assignments.map { |a| a.end_datetime.strftime('%H:%M') }.uniq).to eq(['05:00'])
+      end
+
+      it 'creates assignment groups only for the first definition with a group name' do
+        submit
+        assignments = assignments_for(definitions_attributes['0'])
+        group_ids = assignments.map(&:assignment_group_id)
+        expect(AssignmentGroup.where(id: group_ids).pluck(:name)).to all(eq('Morning Shift'))
       end
 
       it 'uses one assignment group per week' do
-        expect { submit }.to change(AssignmentGroup, :count).by(2)
+        submit
+        assignments = assignments_for(definitions_attributes['0'])
+        weekly_assignments(assignments).each_value do |week_assignments|
+          expect(week_assignments.map(&:assignment_group_id).uniq.size).to eq(1)
+        end
+      end
+
+      it 'creates the expected number of assignments for the second definition' do
+        submit
+        assignments = assignments_for(definitions_attributes['1'])
+        expect(assignments.size).to eq(expected_assignment_count(definitions_attributes['1']))
+      end
+
+      it 'uses the correct weekdays for the second definition' do
+        submit
+        assignments = assignments_for(definitions_attributes['1'])
+        expect(assignments.map do |a|
+          a.end_datetime.strftime('%A')
+        end.uniq.sort).to eq(definitions_attributes['1'][:weekdays].sort)
+      end
+
+      it 'uses the correct end time for the second definition' do
+        submit
+        assignments = assignments_for(definitions_attributes['1'])
+        expect(assignments.map { |a| a.end_datetime.strftime('%H:%M') }.uniq).to eq(['06:00'])
+      end
+
+      it 'does not create assignment groups' do
+        submit
+        assignments = assignments_for(definitions_attributes['1'])
+        expect(assignments.map(&:assignment_group_id)).to all(be_nil)
       end
 
       it 'returns true' do
