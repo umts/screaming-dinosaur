@@ -1,0 +1,24 @@
+.card.mb-3{ data: { 'nested-form-target': 'item' } }
+  .card-body
+    .d-flex.justify-content-end
+      %button.btn.btn-sm.btn-outline-danger{ type: 'button', data: { action: 'nested-form#remove' } }
+        %i.fa-solid.fa-trash
+    .row.g-3
+      .mb-3.col-md
+        = f.label :group, 'Group Name', class: 'form-label'
+        = f.text_field :group, placeholder: 'Enter a group name (optional)', class: 'form-control'
+    .row.g-3
+      .mb-3.col-md
+        = f.label :start_date, 'Start Date', class: 'form-label'
+        = f.date_field :start_date, required: true, class: 'form-control'
+      .mb-3.col-md
+        = f.label :end_date, 'End Date', class: 'form-label'
+        = f.date_field :end_date, required: true, class: 'form-control'
+    .row.g-3
+      .mb-3.col-md
+        = f.label :weekdays, class: 'form-label'
+        = f.select :weekdays, Date::DAYNAMES, {},
+                   multiple: true, class: 'form-select', 'data-controller': 'tom-select'
+      .mb-3.col-md
+        = f.label :end_time, 'End Time', class: 'form-label'
+        = f.time_field :end_time, required: true, class: 'form-control'

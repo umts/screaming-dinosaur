@@ -6,21 +6,11 @@ class AssignmentGenerator
 
   attribute :roster_id, :integer
   attribute :user_id, :integer
-  attribute :start_date, :date
-  attribute :end_date, :date
-  attribute :end_time, :time
-  attribute :weekdays, default: -> { [] }
-  attribute :group, :string
 
   validates :roster, presence: true
   validates :user, presence: true
-  validates :weekdays, presence: true
-  validates :end_time, presence: true
-  validates :start_date, presence: true
-  validates :end_date, presence: true,
-                       comparison: { greater_than_or_equal_to: :start_date,
-                                     if: -> { start_date.present? && end_date.present? },
-                                     message: :must_not_be_before_start }
+  validates :definitions, presence: true
+  validate :definitions_are_valid
 
   def perform
     perform!
@@ -35,12 +25,29 @@ class AssignmentGenerator
     @roster = Roster.find_by(id: roster_id)
   end
 
+  def definitions
+    @definitions ||= []
+  end
+
+  def definitions_attributes=(attrs)
+    collection = attrs.is_a?(Array) ? attrs : attrs.sort_by { |key, _| key.to_i }.map { |_, value| value }
+    @definitions = collection.map { |attributes| AssignmentGeneratorDefinition.new(attributes) }
+  end
+
   private
+
+  def definitions_are_valid
+    definitions.each do |definition|
+      errors.merge!(definition.errors) unless definition.valid?
+    end
+  end
 
   def perform!
     validate!
     ActiveRecord::Base.transaction do
-      generate_assignments_with_group
+      definitions.each do |definition|
+        generate_assignments_with_group(definition)
+      end
     end
   rescue ActiveRecord::RecordInvalid => e
     errors.merge! e.record.errors
@@ -53,12 +60,12 @@ class AssignmentGenerator
     @user = User.find_by(id: user_id)
   end
 
-  def date_range
-    (start_date..end_date).to_a
+  def date_range(definition)
+    (definition.start_date..definition.end_date).to_a
   end
 
-  def selected_weekdays?(date)
-    weekdays.include?(date.strftime('%A'))
+  def selected_weekdays?(definition, date)
+    definition.weekdays.include?(date.strftime('%A'))
   end
 
   def combine(date, time)
@@ -71,35 +78,35 @@ class AssignmentGenerator
     )
   end
 
-  def generate_assignments
-    date_range.each do |date|
-      next unless selected_weekdays?(date)
+  def generate_assignments(definition)
+    date_range(definition).each do |date|
+      next unless selected_weekdays?(definition, date)
 
-      roster.assignments.create! user:, end_datetime: combine(date, end_time)
+      roster.assignments.create! user:, end_datetime: combine(date, definition.end_time)
     end
   end
 
-  def each_week
-    week_start = start_date
-    while week_start <= end_date
-      week_end = [week_start.end_of_week(:monday), end_date].min
+  def each_week(definition)
+    week_start = definition.start_date
+    while week_start <= definition.end_date
+      week_end = [week_start.end_of_week(:monday), definition.end_date].min
       yield week_start, week_end
       week_start = week_end + 1.day
     end
   end
 
-  def generate_assignments_with_group
-    return generate_assignments if group.blank?
+  def generate_assignments_with_group(definition)
+    return generate_assignments(definition) if definition.group.blank?
 
-    each_week do |week_start, week_end|
-      assignment_group = AssignmentGroup.create!(name: group)
+    each_week(definition) do |week_start, week_end|
+      assignment_group = AssignmentGroup.create!(name: definition.group)
 
       (week_start..week_end).each do |date|
-        next unless selected_weekdays?(date)
+        next unless selected_weekdays?(definition, date)
 
         roster.assignments.create!(
           user: user,
-          end_datetime: combine(date, end_time),
+          end_datetime: combine(date, definition.end_time),
           assignment_group: assignment_group
         )
       end
