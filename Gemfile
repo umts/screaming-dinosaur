@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 ruby file: '.ruby-version'
 
 gem 'action_policy'
+gem 'activeadmin', '4.0.0.beta22'
+gem 'activeadmin_assets'
 gem 'bootsnap', require: false
 # TODO: Unpin when we can actually compile a newer version (gcc >= 5).
 gem 'bigdecimal', '4.1.1'
