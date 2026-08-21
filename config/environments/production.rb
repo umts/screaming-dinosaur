@@ -89,7 +89,7 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   config.middleware.use ExceptionNotification::Rack,
-    email: { email_prefix: 'umts/screaming-dinosaur exception: ',
+    email: { email_prefix: 'umts/screaming_dinosaur exception: ',
              sender_address: 'Screaming Dinosaur <transit-it@admin.umass.edu>',
              exception_recipients: %w[programmers@admin.umass.edu] }
 end
