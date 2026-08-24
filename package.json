@@ -25,7 +25,7 @@
     "run-pty": "*",
     "stylelint": "< 16",
     "stylelint-config-standard": "< 35",
-    "stylelint-config-standard-scss": "< 12"
+    "stylelint-config-standard-scss": "< 18"
   },
   "scripts": {
     "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -c",
