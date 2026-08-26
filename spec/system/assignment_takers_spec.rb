@@ -41,7 +41,7 @@ RSpec.describe 'Taking assignments' do
 
     it 'takes the whole group when the box is checked' do
       visit take_assignment_path(assignment)
-      check 'Take the whole group'
+      check 'Take all'
       click_on 'Take'
       expect([assignment, sibling].map { |a| a.reload.user }).to all(eq(current_user))
     end
