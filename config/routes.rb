@@ -6,9 +6,11 @@ Rails.application.routes.draw do # rubocop:disable Metrics/BlockLength
   get 'feed/:roster_id/:token' => 'feed#show', as: :feed
 
   get '/auth/:provider/callback', to: 'sessions#create'
-  post :logout, to: 'sessions#destroy'
+  match :logout, to: 'sessions#destroy', via: %i[post delete]
 
   mount MaintenanceTasks::Engine, at: '/maintenance_tasks'
+
+  ActiveAdmin.routes(self)
 
   resources :rosters do
     resources :assignments, only: %i[index new edit create update destroy], shallow: true do
