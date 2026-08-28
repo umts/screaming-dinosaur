@@ -5,4 +5,4 @@ on:
   pull_request:
 jobs:
   integrate:
-    uses: umts/.github/.github/workflows/integrate-rails.yml@main
+    uses: umts/shared-workflows/.github/workflows/integrate-rails.yml@15c71ed09491317e4eee2a082634b70a245b5651
