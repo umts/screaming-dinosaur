@@ -20,8 +20,8 @@
     "tom-select": "*"
   },
   "devDependencies": {
-    "@eslint/js": "< 10",
-    "eslint": "< 10",
+    "@eslint/js": "*",
+    "eslint": "*",
     "eslint-config-google": "*",
     "eslint-formatter-compact": "*",
     "globals": "*",
