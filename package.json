@@ -1,4 +1,5 @@
 {
+  "private": true,
   "type": "module",
   "dependencies": {
     "@csstools/postcss-sass": "*",
@@ -28,6 +29,10 @@
     "stylelint": "*",
     "stylelint-config-standard": "*",
     "stylelint-config-standard-scss": "*"
+  },
+  "allowScripts": {
+    "@parcel/watcher": true,
+    "fsevents": true
   },
   "scripts": {
     "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -c",
