@@ -1,31 +1,38 @@
 {
+  "private": true,
+  "type": "module",
   "dependencies": {
     "@csstools/postcss-sass": "*",
     "@fortawesome/fontawesome-free": "*",
     "@fullcalendar/bootstrap5": "*",
     "@hotwired/stimulus": "*",
-    "@popperjs/core": "^2.11.8",
+    "@popperjs/core": "*",
     "@rails/ujs": "*",
     "@rollup/plugin-node-resolve": "*",
     "autoprefixer": "*",
-    "bootstrap": "^5.3.8",
+    "bootstrap": "*",
     "fullcalendar": "*",
     "postcss": "*",
-    "postcss-cli": "< 11",
+    "postcss-cli": "*",
     "postcss-scss": "*",
-    "rollup": "< 4",
+    "rollup": "*",
     "temporal-polyfill": "*",
     "tom-select": "*"
   },
   "devDependencies": {
-    "@eslint/js": "< 9",
-    "eslint": "< 9",
+    "@eslint/js": "*",
+    "eslint": "*",
     "eslint-config-google": "*",
+    "eslint-formatter-compact": "*",
     "globals": "*",
     "run-pty": "*",
-    "stylelint": "< 16",
-    "stylelint-config-standard": "< 35",
-    "stylelint-config-standard-scss": "< 12"
+    "stylelint": "*",
+    "stylelint-config-standard": "*",
+    "stylelint-config-standard-scss": "*"
+  },
+  "allowScripts": {
+    "@parcel/watcher": true,
+    "fsevents": true
   },
   "scripts": {
     "build": "rollup ./app/javascript/application.js -o ./app/assets/builds/application.js -c",
