@@ -4,8 +4,8 @@ linters:
   LineLength:
     max: 120
   TagName:
-    exclude: 'app/views/twilio/*.xml.haml'
+    exclude: "app/views/twilio/*.xml.haml"
 
 exclude:
-  - '.bundle/**/*'
-  - 'vendor/**/*'
+  - ".bundle/**/*"
+  - "vendor/**/*"

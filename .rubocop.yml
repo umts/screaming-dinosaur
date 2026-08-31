@@ -8,12 +8,12 @@ plugins:
 
 AllCops:
   Exclude:
-    - './*'
-    - 'bin/**/*'
-    - 'config/**/*'
-    - 'db/**/*'
-    - 'script/**/*'
-    - 'vendor/**/*'
+    - "./*"
+    - "bin/**/*"
+    - "config/**/*"
+    - "db/**/*"
+    - "script/**/*"
+    - "vendor/**/*"
   NewCops: enable
 
 Metrics/AbcSize:

@@ -1,11 +1,11 @@
 export default {
-  parser: 'postcss-scss',
+  parser: "postcss-scss",
   plugins: {
-    '@csstools/postcss-sass': {
-      includePaths: ['node_modules'],
+    "@csstools/postcss-sass": {
+      includePaths: ["node_modules"],
       quietDeps: true,
-      silenceDeprecations: ['import', 'legacy-js-api'],
+      silenceDeprecations: ["import", "legacy-js-api"],
     },
-    'autoprefixer': {},
+    autoprefixer: {},
   },
 };

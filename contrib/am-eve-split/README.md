@@ -6,11 +6,11 @@ rosters depending on the time of day.
 ## Development
 
 This application is developed using the [Twilio Serverless Toolkit][tst] and
-deployed as a [Serverless Function][sf]. 
+deployed as a [Serverless Function][sf].
 
 ### Requirements
 
-* `node.js`/`npm` matching the version in the `.node-version` file (just run
+- `node.js`/`npm` matching the version in the `.node-version` file (just run
   `nodenv install` if using nodenv)
 
 ### Setup
@@ -21,18 +21,18 @@ npm install # bundle dependencies
 
 Copy the `.env.example` file to `.env.dev` and edit values as appropriate:
 
-* `ACCOUNT_SID` and `AUTH_TOKEN`: Belong to the account that these functions
+- `ACCOUNT_SID` and `AUTH_TOKEN`: Belong to the account that these functions
   will be deployed under. Get them from the [developer's console][dc]. Note,
   however, that these aren't actually needed unless you're looking to deploy
   to "dev" for testing purposes.
-* `DAY_START_HOUR`: What hour the "day" starts at. Calls before this time will
+- `DAY_START_HOUR`: What hour the "day" starts at. Calls before this time will
   be considered "eve" calls, likely for the day before.
-* `SWITCHOVER_HOUR`: What hour the "eve" starts at. Calls after this time will
+- `SWITCHOVER_HOUR`: What hour the "eve" starts at. Calls after this time will
   be considered "eve" calls. This should probably match your "eve" roster's
   switch-over hour.
-* `DAY_ROSTER_ID`: the id of the "day" roster in the Rails app.
-* `EVE_ROSTER_ID`: the id of the "eve" roster in the Rails app.
-* `ROSTER_URL`: the URL in the Rails app that responds to Twilio web hooks.
+- `DAY_ROSTER_ID`: the id of the "day" roster in the Rails app.
+- `EVE_ROSTER_ID`: the id of the "eve" roster in the Rails app.
+- `ROSTER_URL`: the URL in the Rails app that responds to Twilio web hooks.
   The string, "`:id:`", will be replaced with the appropriate roster ID, the
   string, "`:type:`", will be replaced with "`voice`" or "`text`" depending on
   the function.

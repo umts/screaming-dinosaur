@@ -1,11 +1,10 @@
+CommitMsg:
+  ALL:
+    enabled: false
 PreCommit:
   ALL:
     problem_on_unmodified_line: ignore
     skip_if: ["test", "-f", ".git/MERGE_HEAD"]
-  EsLint:
-    enabled: true
-    required_executable: npx
-    command: ["npx", "eslint"]
   ForbiddenBranches:
     enabled: true
     branch_patterns: ["master", "main"]
@@ -14,6 +13,28 @@ PreCommit:
     on_warn: fail
     required_executable: bundle
     command: ["bundle", "exec", "haml-lint"]
+  OxFmt:
+    enabled: true
+    required_executable: npx
+    command: ["npx", "oxfmt"]
+    # TODO: Remove when upstreamed.
+    include:
+      - "**/*.js"
+      - "**/*.ts"
+      - "**/*.css"
+      - "**/*.scss"
+      - "**/*.html"
+      - "**/*.md"
+      - "**/*.json"
+      - "**/*.yml"
+  OxLint:
+    enabled: true
+    required_executable: npx
+    command: ["npx", "oxlint"]
+    # TODO: Remove when upstreamed.
+    include:
+      - "**/*.js"
+      - "**/*.ts"
   RuboCop:
     enabled: true
     required_executable: bundle
@@ -27,6 +48,3 @@ PrePush:
     enabled: true
     required_executable: bundle
     command: ["bundle", "exec", "brakeman", "--no-pager"]
-CommitMsg:
-  ALL:
-    enabled: false
