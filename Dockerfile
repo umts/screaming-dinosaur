@@ -2,14 +2,12 @@
 # check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build --tag screaming_dinosaur --build-arg RUBY_VERSION="$(cat .ruby-version)" --build-arg NODE_VERSION=$(cat .node-version) .
+# docker build --tag screaming_dinosaur .
 # docker run --interactive --tty --publish 80:80 --env RAILS_MASTER_KEY="$(cat config/credentials/production.key)" screaming_dinosaur
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=OVERRIDE_ME
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+FROM ruby:3.4.8-slim AS base
 
 # Rails app lives here
 WORKDIR /rails
@@ -39,10 +37,11 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install JavaScript dependencies
-ARG NODE_VERSION=OVERRIDE_ME
+COPY .node-version ./
+
 ENV PATH=/usr/local/node/bin:$PATH
 RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
-    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
+    /tmp/node-build-master/bin/node-build "$(cat .node-version)" /usr/local/node && \
     rm -rf /tmp/node-build-master
 
 # Install application gems

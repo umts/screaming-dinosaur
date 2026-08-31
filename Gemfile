@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby file: '.ruby-version'
+ruby '3.4.8'
 
 gem 'action_policy'
 gem 'bootsnap', require: false
