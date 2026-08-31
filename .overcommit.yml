@@ -1,3 +1,6 @@
+CommitMsg:
+  ALL:
+    enabled: false
 PreCommit:
   ALL:
     problem_on_unmodified_line: ignore
@@ -10,6 +13,14 @@ PreCommit:
     on_warn: fail
     required_executable: bundle
     command: ["bundle", "exec", "haml-lint"]
+  OxFmt:
+    enabled: true
+    required_executable: npx
+    command: ["npx", "oxfmt"]
+  OxLint:
+    enabled: true
+    required_executable: npx
+    command: ["npx", "oxlint"]
   RuboCop:
     enabled: true
     required_executable: bundle
@@ -23,6 +34,3 @@ PrePush:
     enabled: true
     required_executable: bundle
     command: ["bundle", "exec", "brakeman", "--no-pager"]
-CommitMsg:
-  ALL:
-    enabled: false
