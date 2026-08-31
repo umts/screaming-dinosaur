@@ -1,18 +1,18 @@
-const resolve = require('@rollup/plugin-node-resolve');
-const {defineConfig} = require('rollup');
+import resolve from "@rollup/plugin-node-resolve";
+import { defineConfig } from "rollup";
 
-module.exports = defineConfig({
+export default defineConfig({
   output: {
-    format: 'esm',
+    format: "esm",
     sourcemap: true,
   },
   plugins: [
     resolve(),
     {
-      name: 'ignore-css',
+      name: "ignore-css",
       load(id) {
-        if (id.endsWith('.css')) {
-          return '';
+        if (id.endsWith(".css")) {
+          return "";
         }
       },
     },

@@ -49,10 +49,10 @@ en:
       must_not_be_before_start: "must not be before start"
   date:
     formats:
-      default: '%-m/%-d/%Y'
+      default: "%-m/%-d/%Y"
   time:
     formats:
-      default: '%-m/%-d/%Y %-I:%M %P'
+      default: "%-m/%-d/%Y %-I:%M %P"
       named: "%a, %b %-d at %-I:%M %P"
   success:
     message: "Successfully %{action} %{subject}"

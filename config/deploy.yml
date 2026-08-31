@@ -1,0 +1,20 @@
+service: screaming_dinosaur
+image: umts/screaming_dinosaur
+servers:
+  web:
+    - afs-umts-web4.admin.umass.edu
+proxy:
+  ssl: true
+  host: umts-oncall.admin.umass.edu
+registry:
+  server: localhost:5555
+builder:
+  arch: amd64
+env:
+  secret:
+    - RAILS_MASTER_KEY
+ssh:
+  user: <%= Net::SSH::Config.for('afs-umts-web4.admin.umass.edu').fetch(:user, ENV.fetch('USER', nil)) %>
+volumes:
+  - "screaming_dinosaur_log:/rails/log"
+  - "screaming_dinosaur_storage:/rails/storage"
