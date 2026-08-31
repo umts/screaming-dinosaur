@@ -6,7 +6,7 @@ ruby '3.4.8'
 gem 'action_policy'
 gem 'bootsnap', require: false
 # TODO: Unpin when we can actually compile a newer version (gcc >= 5).
-gem 'bigdecimal', '4.1.1'
+gem 'bigdecimal', '4.1.2'
 gem 'cssbundling-rails'
 gem 'csv'
 gem 'friendly_id'
