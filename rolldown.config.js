@@ -1,10 +1,10 @@
-import {defineConfig} from 'rolldown';
+import { defineConfig } from "rolldown";
 
 export default defineConfig({
-  input: 'app/javascript/application.js',
+  input: "app/javascript/application.js",
   output: {
-    file: 'app/assets/builds/application.js',
-    format: 'esm',
+    file: "app/assets/builds/application.js",
+    format: "esm",
     sourcemap: true,
   },
 });
