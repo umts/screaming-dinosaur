@@ -1,9 +1,3 @@
-<%
-  def user_for(host)
-    Net::SSH::Config.for(host).fetch(:user, ENV.fetch('USER', nil))
-  end
-%>
-
 service: screaming_dinosaur
 image: umts/screaming_dinosaur
 servers:
@@ -20,7 +14,7 @@ env:
   secret:
     - RAILS_MASTER_KEY
 ssh:
-  user: <%= user_for 'afs-umts-web4.admin.umass.edu' %>
+  user: <%= Net::SSH::Config.for('afs-umts-web4.admin.umass.edu').fetch(:user, ENV.fetch('USER', nil)) %>
 volumes:
   - "screaming_dinosaur_log:/rails/log"
   - "screaming_dinosaur_storage:/rails/storage"
