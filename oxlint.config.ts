@@ -1,0 +1,21 @@
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  $schema: "./node_modules/oxlint/configuration_schema.json",
+  ignorePatterns: ["app/javascript/controllers/index.js", "contrib/**", "vendor/assets/**"],
+  plugins: ["eslint", "unicorn", "oxc", "import", "promise"],
+  categories: {
+    correctness: "error",
+    suspicious: "warn",
+    pedantic: "warn",
+    perf: "error",
+    restriction: "error",
+  },
+  rules: {
+    "eslint/no-alert": "off",
+    "import/no-default-export": "off",
+    "import/no-unassigned-import": "off",
+    "unicorn/no-anonymous-default-export": "off",
+    "unicorn/no-array-reduce": "off",
+  },
+});

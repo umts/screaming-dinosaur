@@ -12,12 +12,14 @@ A Rails app for the management of on-call schedules and interactions with Twilio
 ## Development
 
 ### Setup
+
 Run `bin/setup`
 
 ### Style guides
 
 This app comes bundled with [RuboCop](https://github.com/rubocop/rubocop) for ruby files,
-[haml-lint](https://github.com/sds/haml-lint) for haml files, [ESLint](https://eslint.org/) for JavaScript files,
+[haml-lint](https://github.com/sds/haml-lint) for haml files,
+[oxfmt/oxlint](https://github.com/oxc-project/oxc) for js files,
 and [Stylelint](https://github.com/stylelint/stylelint) for scss files.
 
 Many text editors have support for these linters and can show code violations in real time.
@@ -27,12 +29,19 @@ You can also run the linters from the command line:
 ```bash
 rubocop your_file.rb
 ```
+
 ```bash
 haml-lint your_file.html.haml
 ```
+
 ```bash
-npx eslint your_file.js
+npx oxfmt your_file.js
 ```
+
+```bash
+npx oxlint your_file.js
+```
+
 ```bash
 npx stylelint your_file.scss
 ```

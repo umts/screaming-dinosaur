@@ -1,5 +1,5 @@
-import {Controller} from '@hotwired/stimulus';
-import TomSelect from 'tom-select';
+import { Controller } from "@hotwired/stimulus";
+import TomSelect from "tom-select";
 
 export default class extends Controller {
   connect() {
@@ -13,16 +13,16 @@ export default class extends Controller {
       refreshThrottle: 0,
       allowEmptyOption: true,
       render: {
-        option: (data, escape) => `<div>${escape(data.text || '\u00A0')}</div>`,
+        option: (data, escape) => `<div>${escape(data.text || "\u00A0")}</div>`,
       },
     };
     if (this.element.multiple) {
-      options.plugins.push('clear_button');
+      options.plugins.push("clear_button");
     }
     if (this.element.dataset.search) {
-      options.plugins.push('dropdown_input');
+      options.plugins.push("dropdown_input");
 
-      if (!(this.element.dataset.truncate)) {
+      if (!this.element.dataset.truncate) {
         options.maxOptions = null;
       }
     } else {
