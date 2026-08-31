@@ -17,10 +17,24 @@ PreCommit:
     enabled: true
     required_executable: npx
     command: ["npx", "oxfmt"]
+    # TODO: Remove when upstreamed.
+    include:
+      - "**/*.js"
+      - "**/*.ts"
+      - "**/*.css"
+      - "**/*.scss"
+      - "**/*.html"
+      - "**/*.md"
+      - "**/*.json"
+      - "**/*.yml"
   OxLint:
     enabled: true
     required_executable: npx
     command: ["npx", "oxlint"]
+    # TODO: Remove when upstreamed.
+    include:
+      - "**/*.js"
+      - "**/*.ts"
   RuboCop:
     enabled: true
     required_executable: bundle
