@@ -31,9 +31,9 @@ export default class extends Controller {
         const date = info.event.start;
         while (date < info.event.end) {
           const dateString = date.toISOString().split("T")[0];
-          document.querySelectorAll(`.calendar-day[data-date="${dateString}"]`).forEach((td) => {
+          for (td of document.querySelectorAll(`.calendar-day[data-date="${dateString}"]`)) {
             td.classList.remove("calendar-day-empty");
-          });
+          }
           date.setDate(date.getDate() + 1);
         }
       },

@@ -6,6 +6,7 @@ export default defineConfig({
     ".bundle/**",
     "app/assets/builds/**",
     "app/javascript/controllers/index.js",
+    "contrib/**",
     "public/assets/**",
     "vendor/assets/**",
   ],
@@ -18,7 +19,10 @@ export default defineConfig({
     restriction: "error",
   },
   rules: {
+    "eslint/no-alert": "off",
     "import/no-default-export": "off",
+    "import/no-unassigned-import": "off",
+    "unicorn/no-anonymous-default-export": "off",
     "unicorn/no-array-reduce": "off",
   },
 });
