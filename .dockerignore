@@ -16,6 +16,6 @@
 !/package-lock.json
 !/postcss.config.js
 !/Rakefile
-!/rollup.config.js
+!/rolldown.config.js
 
 **/*.key
