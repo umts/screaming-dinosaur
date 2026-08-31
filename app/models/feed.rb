@@ -25,8 +25,7 @@ class Feed
 
   # It looks bad to Rubocop because every line is at least two method calls.
   # But, it's really just a builder pattern.
-  # rubocop:disable Metrics/AbcSize
-  def event(assignment)
+  def event(assignment) # rubocop:disable Metrics/AbcSize
     Icalendar::Event.new.tap do |e|
       e.uid = "#{assignment.id}@screaming-dinosaur"
       e.status = 'CONFIRMED'
@@ -41,5 +40,4 @@ class Feed
       DESC
     end
   end
-  # rubocop:enable Metrics/AbcSize
 end

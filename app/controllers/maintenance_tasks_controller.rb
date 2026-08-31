@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/ApplicationController
-class MaintenanceTasksController < ActionController::Base
+class MaintenanceTasksController < ActionController::Base # rubocop:disable Rails/ApplicationController
   include Authorizable
 
   before_action :authorize!
@@ -10,4 +9,3 @@ class MaintenanceTasksController < ActionController::Base
 
   def implicit_authorization_target = :maintenance_tasks
 end
-# rubocop:enable Rails/ApplicationController
