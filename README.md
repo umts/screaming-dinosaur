@@ -12,6 +12,7 @@ A Rails app for the management of on-call schedules and interactions with Twilio
 ## Development
 
 ### Setup
+
 Run `bin/setup`
 
 ### Style guides
@@ -27,9 +28,11 @@ You can also run the linters from the command line:
 ```bash
 rubocop your_file.rb
 ```
+
 ```bash
 haml-lint your_file.html.haml
 ```
+
 ```bash
 npx stylelint your_file.scss
 ```

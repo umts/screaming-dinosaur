@@ -2,19 +2,19 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from "./application";
 
-import AssignmentCalendarController from "./assignment_calendar_controller"
-application.register("assignment-calendar", AssignmentCalendarController)
+import AssignmentCalendarController from "./assignment_calendar_controller";
+application.register("assignment-calendar", AssignmentCalendarController);
 
-import ClipboardController from "./clipboard_controller"
-application.register("clipboard", ClipboardController)
+import ClipboardController from "./clipboard_controller";
+application.register("clipboard", ClipboardController);
 
-import LoginController from "./login_controller"
-application.register("login", LoginController)
+import LoginController from "./login_controller";
+application.register("login", LoginController);
 
-import PopoverController from "./popover_controller"
-application.register("popover", PopoverController)
+import PopoverController from "./popover_controller";
+application.register("popover", PopoverController);
 
-import TomSelectController from "./tom_select_controller"
-application.register("tom-select", TomSelectController)
+import TomSelectController from "./tom_select_controller";
+application.register("tom-select", TomSelectController);
