@@ -28,9 +28,8 @@ class AssignmentsMailer < ApplicationMailer
   private
 
   def set_defaults(roster, start_date, end_date, recipient = nil, changer = nil)
-    # rubocop:disable Style/ParallelAssignment
+    # rubocop:disable-next Style/ParallelAssignment
     @roster, @recipient, @changer = roster, recipient, changer
-    # rubocop:enable Style/ParallelAssignment
     @start_date = start_date.strftime '%A, %B %e at %-l:%M %P'
     @end_date = end_date.strftime '%A, %B %e at %-l:%M %P'
   end
