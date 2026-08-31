@@ -19,6 +19,7 @@ Run `bin/setup`
 
 This app comes bundled with [RuboCop](https://github.com/rubocop/rubocop) for ruby files,
 [haml-lint](https://github.com/sds/haml-lint) for haml files,
+[oxfmt/oxlint](https://github.com/oxc-project/oxc) for js files,
 and [Stylelint](https://github.com/stylelint/stylelint) for scss files.
 
 Many text editors have support for these linters and can show code violations in real time.
@@ -31,6 +32,14 @@ rubocop your_file.rb
 
 ```bash
 haml-lint your_file.html.haml
+```
+
+```bash
+npx oxfmt your_file.js
+```
+
+```bash
+npx oxlint your_file.js
 ```
 
 ```bash
