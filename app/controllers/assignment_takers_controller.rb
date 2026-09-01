@@ -11,7 +11,7 @@ class AssignmentTakersController < ApplicationController
     @taker.assign_attributes(taker_params)
     authorize! @taker
     @taker.perform!
-    flash_success_for(@taker.assignment, :take)
+    flash_success_for('assignment(s)', :take)
     redirect_to roster_path(@taker.assignment.roster)
   end
 

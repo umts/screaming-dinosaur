@@ -6,7 +6,7 @@ class AssignmentTaker
 
   attribute :assignment_id, :integer
   attribute :user_id, :integer
-  attribute :group, :boolean, default: false
+  attribute :group, :boolean, default: true
 
   validates :assignment, presence: true
   validates :user, presence: true

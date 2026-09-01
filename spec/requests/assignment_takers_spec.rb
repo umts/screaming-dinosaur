@@ -95,6 +95,7 @@ RSpec.describe 'Assignment Takers' do
     context 'when taking a single assignment from a group' do
       let(:assignment) { create(:assignment, roster:, user: nil, assignment_group: create(:assignment_group)) }
       let!(:sibling) { create(:assignment, roster:, user: nil, assignment_group: assignment.assignment_group) }
+      let(:attributes) { { group: '0' } }
 
       it 'assigns the current user to the target assignment' do
         submit
