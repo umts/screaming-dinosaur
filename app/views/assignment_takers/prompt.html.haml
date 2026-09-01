@@ -29,10 +29,9 @@
                     .col= l assignment.start_datetime
                     .col= l assignment.end_datetime
                     .col= assignment.user&.full_name
-          .mb-3
-            .form-check
-              = f.check_box :group, class: 'form-check-input'
-              = f.label :group, 'Take all', class: 'form-check-label'
+              = f.label :group, class: 'list-group-item' do
+                = f.check_box :group, class: 'form-check-input me-2'
+                Take all
         .d-grid
           = f.button type: :submit, class: 'btn btn-outline-primary' do
             %i.fa-solid.fa-hand
