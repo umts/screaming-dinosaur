@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 source 'https://rubygems.org'
-ruby file: '.ruby-version'
+ruby '3.4.10'
 
 gem 'action_policy'
 gem 'bootsnap', require: false
-# TODO: Unpin when we can actually compile a newer version (gcc >= 5).
-gem 'bigdecimal', '4.1.1'
 gem 'cssbundling-rails'
 gem 'csv'
 gem 'friendly_id'
@@ -19,8 +17,6 @@ gem 'jsbundling-rails'
 gem 'kaminari'
 gem 'maintenance_tasks'
 gem 'net-http'
-# TODO: Remove when we have modern glibc.
-gem 'nokogiri', force_ruby_platform: true
 gem 'omniauth'
 gem 'paper_trail'
 gem 'phonelib'
@@ -41,17 +37,11 @@ group :production, :development do
 end
 
 group :development do
-  gem 'bcrypt_pbkdf', require: false
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
-  gem 'capistrano', require: false
-  gem 'capistrano-bundler', require: false
-  gem 'capistrano-passenger', require: false
-  gem 'capistrano-pending', require: false
-  gem 'capistrano-rails', require: false
-  gem 'ed25519', require: false
   gem 'haml_lint', require: false
+  gem 'kamal', require: false
   gem 'listen'
   gem 'overcommit', require: false
   gem 'rb-readline', require: false
