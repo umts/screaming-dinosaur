@@ -27,6 +27,8 @@ PreCommit:
       - "**/*.md"
       - "**/*.json"
       - "**/*.yml"
+    exclude:
+      - "package-lock.json"
   OxLint:
     enabled: true
     required_executable: npx
