@@ -8,22 +8,22 @@ export default class extends Controller {
       .writeText(this.sourceTarget.innerText)
       .then(() => {
         this.#hideIndicators();
-        for (target of this.successIndicatorTargets) target.hidden = false;
+        for (const target of this.successIndicatorTargets) target.hidden = false;
         return null;
       })
       .catch(() => {
         this.#hideIndicators();
-        for (target of this.errorIndicatorTargets) target.hidden = false;
+        for (const target of this.errorIndicatorTargets) target.hidden = false;
       });
   }
 
   reset() {
     this.#hideIndicators();
-    for (target of this.promptIndicatorTarget) target.hidden = false;
+    for (const target of this.promptIndicatorTarget) target.hidden = false;
   }
 
   #hideIndicators() {
-    for (target of [
+    for (const target of [
       ...this.promptIndicatorTargets,
       ...this.successIndicatorTargets,
       ...this.errorIndicatorTargets,
