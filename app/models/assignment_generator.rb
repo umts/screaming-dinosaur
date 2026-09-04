@@ -5,12 +5,10 @@ class AssignmentGenerator
   include ActiveModel::Attributes
 
   attribute :roster_id, :integer
-  attribute :user_id, :integer
   attribute :start_date, :date
   attribute :end_date, :date
 
   validates :roster, presence: true
-  validates :user, presence: true
   validates :definitions, presence: true
   validate :definitions_are_valid
   validates :start_date, presence: true
@@ -61,12 +59,6 @@ class AssignmentGenerator
     raise e
   end
 
-  def user
-    return @user if defined?(@user)
-
-    @user = User.find_by(id: user_id)
-  end
-
   def date_range
     (start_date..end_date).to_a
   end
@@ -102,7 +94,6 @@ class AssignmentGenerator
         next unless selected_weekdays?(definition, date)
 
         roster.assignments.create!(
-          user: user,
           end_datetime: combine(date, definition.end_time),
           assignment_group: assignment_group
         )

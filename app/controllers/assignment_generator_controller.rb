@@ -29,7 +29,6 @@ class AssignmentGeneratorController < ApplicationController
   def assignment_generator_params
     params.expect(
       assignment_generator: [
-        :user_id,
         :start_date,
         :end_date,
         {
