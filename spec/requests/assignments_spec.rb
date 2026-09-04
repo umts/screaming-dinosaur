@@ -382,7 +382,7 @@ RSpec.describe 'Assignments' do
 
       it 'redirects to all assignments' do
         submit
-        expect(response).to redirect_to(roster_path(roster))
+        expect(response).to redirect_to(roster_assignments_path(roster))
       end
 
       it 'destroys the assignment' do
