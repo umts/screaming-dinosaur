@@ -6,11 +6,18 @@ class AssignmentGenerator
 
   attribute :roster_id, :integer
   attribute :user_id, :integer
+  attribute :start_date, :date
+  attribute :end_date, :date
 
   validates :roster, presence: true
   validates :user, presence: true
   validates :definitions, presence: true
   validate :definitions_are_valid
+  validates :start_date, presence: true
+  validates :end_date, presence: true,
+                       comparison: { greater_than_or_equal_to: :start_date,
+                                     if: -> { start_date.present? && end_date.present? },
+                                     message: :must_not_be_before_start }
 
   def perform
     perform!
@@ -60,8 +67,8 @@ class AssignmentGenerator
     @user = User.find_by(id: user_id)
   end
 
-  def date_range(definition)
-    (definition.start_date..definition.end_date).to_a
+  def date_range
+    (start_date..end_date).to_a
   end
 
   def selected_weekdays?(definition, date)
@@ -78,28 +85,18 @@ class AssignmentGenerator
     )
   end
 
-  def generate_assignments(definition)
-    date_range(definition).each do |date|
-      next unless selected_weekdays?(definition, date)
-
-      roster.assignments.create! user:, end_datetime: combine(date, definition.end_time)
-    end
-  end
-
-  def each_week(definition)
-    week_start = definition.start_date
-    while week_start <= definition.end_date
-      week_end = [week_start.end_of_week(:monday), definition.end_date].min
+  def each_week
+    week_start = start_date
+    while week_start <= end_date
+      week_end = [week_start.end_of_week(:monday), end_date].min
       yield week_start, week_end
       week_start = week_end + 1.day
     end
   end
 
   def generate_assignments_with_group(definition)
-    return generate_assignments(definition) if definition.group.blank?
-
-    each_week(definition) do |week_start, week_end|
-      assignment_group = AssignmentGroup.create!(name: definition.group)
+    each_week do |week_start, week_end|
+      assignment_group = AssignmentGroup.create!(name: definition.group) if definition.group.present?
 
       (week_start..week_end).each do |date|
         next unless selected_weekdays?(definition, date)

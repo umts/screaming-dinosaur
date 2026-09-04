@@ -11,6 +11,13 @@
           = f.collection_select :user_id,
                                 @assignment_generator.roster.users.order(:first_name, :last_name), :id, :full_name,
                                 {}, required: true, class: 'form-select', 'data-controller': 'tom-select'
+        .row.g-3
+          .mb-3.col-md
+            = f.label :start_date, 'Start Date', class: 'form-label'
+            = f.date_field :start_date, required: true, class: 'form-control'
+          .mb-3.col-md
+            = f.label :end_date, 'End Date', class: 'form-label'
+            = f.date_field :end_date, required: true, class: 'form-control'
 
         %div{ data: { 'nested-form-target': 'list' } }
           = f.fields_for :definitions do |definition_form|
