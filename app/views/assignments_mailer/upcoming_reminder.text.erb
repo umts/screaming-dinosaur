@@ -1,6 +1,11 @@
 Hello <%= @recipient.first_name %>,
 
-This is an automatically generated reminder that your on-call assignment in <%= @roster.name %> is upcoming.
+This is an automatically generated reminder of your upcoming on-call assignments:
 
-Beginning: <%= @start_date %>
-Ending: <%= @end_date %>
+<% @assignments.group_by(&:roster).each do |roster, assignments| -%>
+<%= roster.name %>:
+<% assignments.each do |assignment| -%>
+  - <%= l assignment.start_datetime, format: :named %> to <%= l assignment.end_datetime, format: :named %>
+<% end -%>
+
+<% end -%>

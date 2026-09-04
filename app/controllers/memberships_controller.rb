@@ -35,11 +35,8 @@ class MembershipsController < ApplicationController
 
   def destroy
     authorize! @membership
-    if @membership.destroy
-      flash_success_for(@membership, undoable: true)
-    else
-      flash_errors_for(@membership)
-    end
+    @membership.destroy!
+    flash_success_for(@membership, undoable: true)
     redirect_to roster_memberships_path(@membership.roster)
   end
 

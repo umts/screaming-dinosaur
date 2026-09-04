@@ -1,0 +1,31 @@
+= render layout: 'layouts/roster', locals: { roster: @assignment_generator.roster, nav_item: 'assignments' } do
+  .card
+    .card-header
+      Assignment Generator
+    .card-body
+      = form_with model: @assignment_generator,
+                  url: generate_roster_assignments_path(@assignment_generator.roster),
+                  data: { controller: 'nested-form' } do |f|
+        .mb-3
+          = f.label :user_id, class: 'form-label'
+          = f.collection_select :user_id,
+                                @assignment_generator.roster.users.order(:first_name, :last_name), :id, :full_name,
+                                {}, required: true, class: 'form-select', 'data-controller': 'tom-select'
+
+        %div{ data: { 'nested-form-target': 'list' } }
+          = f.fields_for :definitions do |definition_form|
+            = render 'definition_fields', f: definition_form
+
+        %template{ data: { 'nested-form-target': 'template' } }
+          = f.fields_for :definitions, AssignmentGeneratorDefinition.new, child_index: 'NEW_RECORD' do |definition_form|
+            = render 'definition_fields', f: definition_form
+
+        .mb-3
+          %button.btn.btn-outline-secondary{ type: 'button', data: { action: 'nested-form#add' } }
+            %i.fa-solid.fa-plus
+            Add another rotation
+
+        .d-grid
+          = f.button type: :submit, class: 'btn btn-outline-primary' do
+            %i.fa-solid.fa-check
+            Generate

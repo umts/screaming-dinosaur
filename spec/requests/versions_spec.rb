@@ -7,7 +7,7 @@ RSpec.describe 'Versions' do
     subject(:submit) { post "/versions/#{version.id}/undo", headers: }
 
     let(:headers) { {} }
-    let(:current_user) { create :user }
+    let(:current_user) { create(:user) }
 
     context 'when logged in as a user unrelated to the roster' do
       let(:version) { Current.set(user: create(:user)) { create(:assignment).versions.last } }
@@ -39,7 +39,7 @@ RSpec.describe 'Versions' do
 
     context 'when logged in as the author of a creation' do
       let(:version) { Current.set(user: current_user) { assignment.versions.last } }
-      let(:assignment) { create :assignment }
+      let(:assignment) { create(:assignment) }
 
       it 'destroys the record' do
         submit
@@ -50,20 +50,25 @@ RSpec.describe 'Versions' do
     context 'when logged in as the author of an update' do
       let(:version) do
         Current.set(user: current_user) do
-          assignment.tap { |assignment| assignment.update!(start_date: 2.days.ago) }.versions.last
+          assignment.tap { |assignment| assignment.update!(end_datetime: Time.current) }.versions.last
         end
       end
-      let!(:assignment) { create :assignment, start_date: 1.day.ago }
+      let(:assignment) { create(:assignment, end_datetime: 1.day.ago) }
+
+      before do
+        freeze_time
+        assignment
+      end
 
       it 'reverts the record' do
         submit
-        expect(assignment.reload).to have_attributes(start_date: 1.day.ago.to_date)
+        expect(assignment.reload).to have_attributes(end_datetime: 1.day.ago)
       end
     end
 
     context 'when logged in as the author of a deletion' do
       let(:version) { Current.set(user: current_user) { assignment.tap(&:destroy!).versions.last } }
-      let!(:assignment) { create :assignment }
+      let!(:assignment) { create(:assignment) }
 
       it 'restores the record' do
         submit

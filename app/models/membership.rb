@@ -13,6 +13,6 @@ class Membership < ApplicationRecord
   private
 
   def delete_future_assignments
-    user.assignments.where(roster:).future.each(&:destroy!)
+    Assignment.where(roster:, user:).ending_after(Time.current).find_each { |assignment| assignment.update!(user: nil) }
   end
 end

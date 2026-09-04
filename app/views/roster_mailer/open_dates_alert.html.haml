@@ -3,11 +3,14 @@
   %head
     %meta{ content: 'text/html; charset=UTF-8', 'http-equiv': 'Content-Type' }
   %body
-    %strong There are uncovered #{@roster.name} On-Call dates within the next two weeks.
-    %p The following dates are uncovered:
+    %strong There are uncovered #{@roster.name} On-Call periods within the next two weeks.
+    %p The following periods are uncovered:
     %ul
-      - @open_dates.each do |date|
-        %li= date.to_fs(:short)
+      - @open_periods.each do |period|
+        %li
+          = l period[:start_datetime], format: :named
+          to
+          = l period[:end_datetime], format: :named
     %p
       - if @roster.fallback_user_id
         The fallback user is #{content_tag(:b, @roster.fallback_user.full_name)}.
