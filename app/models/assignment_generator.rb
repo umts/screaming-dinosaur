@@ -35,7 +35,7 @@ class AssignmentGenerator
   end
 
   def definitions_attributes=(attrs)
-    collection = attrs.is_a?(Array) ? attrs : attrs.sort_by { |key, _| key.to_i }.map { |_, value| value }
+    collection = attrs.sort_by { |key, _| key.to_i }.map { |_, value| value }
     @definitions = collection.map { |attributes| AssignmentGeneratorDefinition.new(attributes) }
   end
 
@@ -57,10 +57,6 @@ class AssignmentGenerator
   rescue ActiveRecord::RecordInvalid => e
     errors.merge! e.record.errors
     raise e
-  end
-
-  def date_range
-    (start_date..end_date).to_a
   end
 
   def selected_weekdays?(definition, date)
