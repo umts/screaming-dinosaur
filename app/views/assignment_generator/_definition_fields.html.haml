@@ -4,6 +4,7 @@
       .mb-3.col-md
         = f.label :group, 'Group Name', class: 'form-label'
         = f.text_field :group, placeholder: 'Enter a group name (optional)', class: 'form-control'
+        %small.form-text.text-muted If you leave this blank, the assignments will be left ungrouped.
     .row.g-3
       .mb-3.col-md
         = f.label :weekdays, class: 'form-label'
