@@ -22,12 +22,13 @@
           = f.fields_for :definitions, AssignmentGeneratorDefinition.new, child_index: 'NEW_RECORD' do |definition_form|
             = render 'definition_fields', f: definition_form
 
-        .mb-3
-          %button.btn.btn-outline-secondary{ type: 'button', data: { action: 'nested-form#add' } }
-            %i.fa-solid.fa-plus
-            Add another rotation
+        .row.g-2
+          .col-md.d-grid
+            %button.btn.btn-outline-secondary{ type: 'button', data: { action: 'nested-form#add' } }
+              %i.fa-solid.fa-plus
+              Add another rotation
 
-        .d-grid
-          = f.button type: :submit, class: 'btn btn-outline-primary' do
-            %i.fa-solid.fa-check
-            Generate
+          .col-md.d-grid
+            = f.button type: :submit, class: 'btn btn-outline-primary' do
+              %i.fa-solid.fa-check
+              Generate

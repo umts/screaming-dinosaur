@@ -1,8 +1,5 @@
 .card.mb-3{ data: { 'nested-form-target': 'item' } }
   .card-body
-    .d-flex.justify-content-end
-      %button.btn.btn-sm.btn-outline-danger{ type: 'button', data: { action: 'nested-form#remove' } }
-        %i.fa-solid.fa-trash
     .row.g-3
       .mb-3.col-md
         = f.label :group, 'Group Name', class: 'form-label'
@@ -15,3 +12,7 @@
       .mb-3.col-md
         = f.label :end_time, 'End Time', class: 'form-label'
         = f.time_field :end_time, required: true, class: 'form-control'
+    .row.g-1
+      %button.btn.btn-outline-primary{ type: 'button', data: { action: 'nested-form#remove' } }
+        %i.fa-solid.fa-trash
+        Remove this rotation
