@@ -51,7 +51,7 @@ class AssignmentsController < ApplicationController
     authorize! @assignment
     @assignment.destroy
     flash_success_for(@assignment, undoable: true)
-    redirect_to roster_path(@assignment.roster)
+    redirect_to roster_assignments_path(@assignment.roster)
   end
 
   private
