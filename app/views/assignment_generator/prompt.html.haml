@@ -9,7 +9,10 @@
         .row.g-3
           .mb-3.col-md
             = f.label :start_date, 'Start Date', class: 'form-label'
-            = f.date_field :start_date, required: true, class: 'form-control'
+            = f.date_field :start_date, required: true, value: @last_assignment_end_datetime, class: 'form-control'
+            - if @last_assignment_end_datetime
+              .form-text.text-muted
+                The last existing assignment ends on #{l @last_assignment_end_datetime, format: :named_with_year}.
           .mb-3.col-md
             = f.label :end_date, 'End Date', class: 'form-label'
             = f.date_field :end_date, required: true, class: 'form-control'
