@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Memberships' do
   describe 'membership pagination' do
-    let(:roster) { create :roster }
-    let(:current_user) { create :user, memberships: [build(:membership, roster:, admin: true)] }
+    let(:roster) { create(:roster) }
+    let(:current_user) { create(:user, memberships: [build(:membership, roster:, admin: true)]) }
 
     before do
       30.times { create(:membership, roster:) }

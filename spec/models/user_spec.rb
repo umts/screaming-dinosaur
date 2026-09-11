@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe User do
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   describe 'full_name' do
     subject { user.full_name }
@@ -21,7 +21,7 @@ RSpec.describe User do
     subject(:call) { user.save }
 
     context 'when the user is a new user' do
-      let(:user) { build :user }
+      let(:user) { build(:user) }
 
       it 'does not send a notification' do
         expect { call }.not_to have_enqueued_email(RosterMailer, :fallback_number_changed)
@@ -29,8 +29,8 @@ RSpec.describe User do
     end
 
     context 'when the user is a fallback user and their phone changes' do
-      let(:user) { create :user }
-      let(:roster) { create :roster, fallback_user: user }
+      let(:user) { create(:user) }
+      let(:roster) { create(:roster, fallback_user: user) }
 
       before do
         create(:membership, roster:, admin: true)
@@ -45,8 +45,8 @@ RSpec.describe User do
     end
 
     context 'when the user is a fallback user but their phone does not change' do
-      let(:user) { create :user }
-      let(:roster) { create :roster, fallback_user: user }
+      let(:user) { create(:user) }
+      let(:roster) { create(:roster, fallback_user: user) }
 
       before do
         create(:membership, roster:, admin: true)
@@ -60,8 +60,8 @@ RSpec.describe User do
     end
 
     context 'when the user is a fallback user with no admins and their phone changes' do
-      let(:user) { create :user }
-      let(:roster) { create :roster, fallback_user: user }
+      let(:user) { create(:user) }
+      let(:roster) { create(:roster, fallback_user: user) }
 
       before do
         roster
@@ -74,7 +74,7 @@ RSpec.describe User do
     end
 
     context 'when the user is not a fallback user and their phone changes' do
-      let(:user) { create :user }
+      let(:user) { create(:user) }
 
       before { user.phone = '14135551234' }
 

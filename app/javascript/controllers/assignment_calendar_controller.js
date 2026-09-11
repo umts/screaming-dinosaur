@@ -4,10 +4,7 @@ import dayGridPlugin from "fullcalendar/daygrid";
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static values = {
-    eventsUrl: String,
-    newAssignmentUrl: String,
-  };
+  static values = { eventsUrl: String };
 
   connect() {
     const calendar = new Calendar(this.element, {
@@ -25,18 +22,10 @@ export default class extends Controller {
       events: this.eventsUrlValue,
       startParam: "start_date",
       endParam: "end_date",
-      dayCellClass: "calendar-day calendar-day-empty",
+      nextDayThreshold: "05:00",
+      eventDisplay: "block",
+      eventClass: "calendar-event",
       toolbarTitleClass: "calendar-title",
-      eventDidMount: function (info) {
-        const date = info.event.start;
-        while (date < info.event.end) {
-          const dateString = date.toISOString().split("T")[0];
-          for (const td of document.querySelectorAll(`.calendar-day[data-date="${dateString}"]`)) {
-            td.classList.remove("calendar-day-empty");
-          }
-          date.setDate(date.getDate() + 1);
-        }
-      },
       eventSourceFailure: function (error) {
         if (error.response.status === 403) {
           window.location.replace(window.location.origin);
@@ -55,12 +44,5 @@ export default class extends Controller {
     });
 
     calendar.render();
-
-    this.element.addEventListener("click", (e) => {
-      const dayElement = e.target.closest(".calendar-day-empty");
-      if (dayElement) {
-        window.location = `${this.newAssignmentUrlValue}?date=` + dayElement.dataset.date;
-      }
-    });
   }
 }

@@ -1,7 +1,12 @@
 = render layout: 'layouts/roster', locals: { roster: @assignment.roster, nav_item: 'assignments' } do
   .card.mb-3
     .card-header
-      Edit Assignment
+      .d-flex
+        .flex-grow-1 Edit Assignment
+        - if allowed_to?(:prompt?, AssignmentTaker.new(assignment_id: @assignment.id))
+          = link_to take_assignment_path(@assignment), class: 'btn btn-sm btn-text' do
+            %i.fa-solid.fa-hand
+            Take
     .card-body
       = form_with model: @assignment, html: { id: 'assignment-form' } do |f|
         = render partial: 'fields', object: f

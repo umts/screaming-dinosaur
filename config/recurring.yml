@@ -18,4 +18,4 @@ production:
     schedule: every day at 4 am
   send_assignment_reminders:
     class: SendAssignmentRemindersJob
-    schedule: every day at 9 am
+    schedule: every sunday at 8 pm

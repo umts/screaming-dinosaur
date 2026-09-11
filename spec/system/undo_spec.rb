@@ -6,7 +6,7 @@ RSpec.describe 'Undo', :versioning do
   describe 'saving a record' do
     include_context 'when logged in as an admin of the roster'
 
-    let(:roster) { create :roster }
+    let(:roster) { create(:roster) }
 
     before { visit edit_roster_path(roster) }
 

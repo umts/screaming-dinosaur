@@ -12,6 +12,7 @@ export default defineConfig({
     restriction: "error",
   },
   rules: {
+    "eslint/class-methods-use-this": "off",
     "eslint/no-alert": "off",
     "import/no-default-export": "off",
     "import/no-unassigned-import": "off",
