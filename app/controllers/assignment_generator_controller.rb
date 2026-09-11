@@ -29,11 +29,10 @@ class AssignmentGeneratorController < ApplicationController
   def assignment_generator_params
     params.expect(
       assignment_generator: [
-        :user_id,
+        :start_date,
+        :end_date,
         {
           definitions_attributes: [[
-            :start_date,
-            :end_date,
             :end_time,
             :group,
             { weekdays: [] }
@@ -46,7 +45,7 @@ class AssignmentGeneratorController < ApplicationController
   def redirect_after_success
     flash_success_for(Assignment.model_name.human.downcase.pluralize, :create)
     redirect_to roster_path(@assignment_generator.roster,
-                            date: @assignment_generator.definitions.map(&:start_date).min)
+                            date: @assignment_generator.start_date)
   end
 
   def handle_error

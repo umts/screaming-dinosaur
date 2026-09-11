@@ -31,21 +31,19 @@ RSpec.describe 'Assignment Generator' do
     subject(:submit) do
       post "/rosters/#{roster.slug}/assignments/generate", params: {
         assignment_generator: {
-          user_id: user.id,
-          definitions_attributes: [
-            {
-              start_date: Date.current,
-              end_date: Date.current + 14.days,
+          start_date: Date.current,
+          end_date: Date.current + 14.days,
+          definitions_attributes: {
+            '0': {
               weekdays: %w[Monday Wednesday],
               end_time: Time.zone.parse('04:30')
             }
-          ]
+          }
         }
       }
     end
 
     let(:roster) { create(:roster) }
-    let(:user) { create(:user, rosters: [roster]) }
 
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
@@ -69,27 +67,23 @@ RSpec.describe 'Assignment Generator' do
       subject(:submit) do
         post "/rosters/#{roster.slug}/assignments/generate", params: {
           assignment_generator: {
-            user_id: user.id,
-            definitions_attributes: [
-              {
-                start_date: Date.current,
-                end_date: Date.current + 6.days,
+            start_date: Date.current,
+            end_date: Date.current + 6.days,
+            definitions_attributes: {
+              '0': {
                 weekdays: %w[Monday],
                 end_time: Time.zone.parse('04:30')
               },
-              {
-                start_date: Date.current + 7.days,
-                end_date: Date.current + 13.days,
+              '1': {
                 weekdays: %w[Wednesday],
                 end_time: Time.zone.parse('03:00')
               }
-            ]
+            }
           }
         }
       end
 
       let(:roster) { create(:roster) }
-      let(:user) { create(:user, rosters: [roster]) }
 
       include_context 'when logged in as an admin of the roster'
 
@@ -107,21 +101,19 @@ RSpec.describe 'Assignment Generator' do
       subject(:submit) do
         post "/rosters/#{roster.slug}/assignments/generate", params: {
           assignment_generator: {
-            user_id: user.id,
-            definitions_attributes: [
-              {
+            definitions_attributes: {
+              '0': {
                 start_date: nil,
                 end_date: nil,
                 weekdays: [],
                 end_time: nil
               }
-            ]
+            }
           }
         }
       end
 
       let(:roster) { create(:roster) }
-      let(:user) { create(:user, rosters: [roster]) }
 
       include_context 'when logged in as an admin of the roster'
 
@@ -139,21 +131,19 @@ RSpec.describe 'Assignment Generator' do
       subject(:submit) do
         post "/rosters/#{roster.slug}/assignments/generate", params: {
           assignment_generator: {
-            user_id: user.id,
-            definitions_attributes: [
-              {
+            definitions_attributes: {
+              '0': {
                 start_date: Date.current,
                 end_date: Date.current - 1.day,
                 weekdays: %w[Monday Wednesday],
                 end_time: Time.zone.parse('04:30')
               }
-            ]
+            }
           }
         }
       end
 
       let(:roster) { create(:roster) }
-      let(:user) { create(:user, rosters: [roster]) }
 
       include_context 'when logged in as an admin of the roster'
 

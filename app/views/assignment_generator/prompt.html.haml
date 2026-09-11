@@ -6,11 +6,13 @@
       = form_with model: @assignment_generator,
                   url: generate_roster_assignments_path(@assignment_generator.roster),
                   data: { controller: 'nested-form' } do |f|
-        .mb-3
-          = f.label :user_id, class: 'form-label'
-          = f.collection_select :user_id,
-                                @assignment_generator.roster.users.order(:first_name, :last_name), :id, :full_name,
-                                {}, required: true, class: 'form-select', 'data-controller': 'tom-select'
+        .row.g-3
+          .mb-3.col-md
+            = f.label :start_date, 'Start Date', class: 'form-label'
+            = f.date_field :start_date, required: true, class: 'form-control'
+          .mb-3.col-md
+            = f.label :end_date, 'End Date', class: 'form-label'
+            = f.date_field :end_date, required: true, class: 'form-control'
 
         %div{ data: { 'nested-form-target': 'list' } }
           = f.fields_for :definitions do |definition_form|
@@ -20,12 +22,13 @@
           = f.fields_for :definitions, AssignmentGeneratorDefinition.new, child_index: 'NEW_RECORD' do |definition_form|
             = render 'definition_fields', f: definition_form
 
-        .mb-3
-          %button.btn.btn-outline-secondary{ type: 'button', data: { action: 'nested-form#add' } }
-            %i.fa-solid.fa-plus
-            Add another rotation
+        .row.g-2
+          .col-md.d-grid
+            %button.btn.btn-outline-secondary{ type: 'button', data: { action: 'nested-form#add' } }
+              %i.fa-solid.fa-plus
+              Add another rotation
 
-        .d-grid
-          = f.button type: :submit, class: 'btn btn-outline-primary' do
-            %i.fa-solid.fa-check
-            Generate
+          .col-md.d-grid
+            = f.button type: :submit, class: 'btn btn-outline-primary' do
+              %i.fa-solid.fa-check
+              Generate
