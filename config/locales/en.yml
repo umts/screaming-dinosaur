@@ -54,6 +54,7 @@ en:
     formats:
       default: "%-m/%-d/%Y %-I:%M %P"
       named: "%a, %b %-d at %-I:%M %P"
+      named_with_year: "%-m/%-d/%Y at %-I:%M %P"
   success:
     message: "Successfully %{action} %{subject}"
     actions:
