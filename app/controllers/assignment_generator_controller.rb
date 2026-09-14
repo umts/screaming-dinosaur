@@ -36,6 +36,7 @@ class AssignmentGeneratorController < ApplicationController
           definitions_attributes: [[
             :end_time,
             :group,
+            :overnight,
             { weekdays: [] }
           ]]
         }

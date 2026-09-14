@@ -56,6 +56,51 @@ RSpec.describe AssignmentGenerator do
       end
     end
 
+    context 'when the assignments run overnight' do
+      let(:start_date) { Date.current }
+      let(:end_date) { Date.current + 14.days }
+      let(:definitions_attributes) do
+        {
+          '0' => { end_time: Time.zone.parse('05:00'), weekdays: %w[Tuesday Thursday Friday], overnight: true }
+        }
+      end
+
+      it 'creates assignments on selected weekdays' do
+        submit
+        roster.assignments.each do |assignment|
+          original_end_datetime = assignment.end_datetime - 1.day
+          expect(original_end_datetime.strftime('%A')).to be_in(definitions_attributes['0'][:weekdays])
+        end
+      end
+
+      it 'sets correct end time for all the assignments' do
+        submit
+        roster.assignments.each do |assignment|
+          expect(assignment.end_datetime.strftime('%H:%M')).to eq '05:00'
+        end
+      end
+
+      it 'creates assignments only within the given date range' do
+        submit
+        roster.assignments.each do |assignment|
+          original_end_datetime = assignment.end_datetime - 1.day
+          expect(original_end_datetime.to_date).to be_between(start_date, end_date + 1.day).inclusive
+        end
+      end
+
+      it 'creates new assignments' do
+        expect { submit }.to change(Assignment, :count).by(
+          (start_date..end_date).count do |date|
+            definitions_attributes['0'][:weekdays].include?(date.strftime('%A'))
+          end
+        )
+      end
+
+      it 'returns true' do
+        expect(submit).to be(true)
+      end
+    end
+
     context 'when assignments generated without a group' do
       let(:start_date) { Date.current }
       let(:end_date) { Date.current + 14.days }

@@ -13,6 +13,11 @@
       .mb-3.col-md
         = f.label :end_time, 'End Time', class: 'form-label'
         = f.time_field :end_time, required: true, class: 'form-control'
+    .row.g-3
+      .mb-3.col-md
+        .form-check
+          = f.label :overnight, 'This assignment runs overnight', class: 'form-check-label'
+          = f.check_box :overnight, class: 'form-check-input'
     .row.g-1
       %button.btn.btn-outline-primary{ type: 'button', data: { action: 'nested-form#remove' } }
         %i.fa-solid.fa-trash

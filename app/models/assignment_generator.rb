@@ -89,8 +89,10 @@ class AssignmentGenerator
       (week_start..week_end).each do |date|
         next unless selected_weekdays?(definition, date)
 
+        end_datetime = combine(date, definition.end_time)
+        end_datetime += 1.day if definition.overnight?
         roster.assignments.create!(
-          end_datetime: combine(date, definition.end_time),
+          end_datetime:,
           assignment_group: assignment_group
         )
       end
