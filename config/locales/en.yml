@@ -34,6 +34,8 @@ en:
     attributes:
       user:
         entra_upn: "UMass account"
+      assignment:
+        end_datetime: "End time"
     models:
       version: "Change"
   assignments_mailer:
