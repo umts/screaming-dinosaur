@@ -7,6 +7,7 @@ class AssignmentGeneratorController < ApplicationController
 
   def prompt
     authorize! @assignment_generator
+    @last_assignment_end_datetime = @assignment_generator.roster.assignments.order(:end_datetime).first&.end_datetime
   end
 
   def perform
