@@ -1,4 +1,21 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>umts/renovate-config"]
+  "extends": ["local>umts/renovate-config"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["contrib/am-eve-split/.twilioserverlessrc"],
+      "matchStrings": ["\"runtime\"\\s*:\\s*\"node(?<currentValue>\\d+)\""],
+      "depNameTemplate": "node",
+      "datasourceTemplate": "node-version",
+      "versioningTemplate": "node"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchFileNames": ["contrib/am-eve-split/**"],
+      "matchPackageNames": ["node"],
+      "groupName": "twilio Node.js"
+    }
+  ]
 }
