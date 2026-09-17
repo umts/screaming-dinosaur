@@ -14,6 +14,11 @@
         - if @last_end_datetime.present?
           %small.form-text.text-muted
             The last existing assignment has an end time of #{l(@last_end_datetime)}.
+      .card-body.border-bottom
+        The generator will run for each week
+        %span.text-muted (Mon - Sun)
+        within the date range specified above.
+        For each week, it will create assignments ending on the weekdays/times specified below.
       %div{ 'data-controller': 'template' }
         %template{ 'data-template-target': 'template' }
           = f.fields_for :definitions, AssignmentGeneratorDefinition.new, child_index: 'INDEX' do |g|
