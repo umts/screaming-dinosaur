@@ -1,8 +1,7 @@
 /.bundle
 /app/assets/builds/*
 !/app/assets/builds/.keep
-/coverage/*
-!/coverage/.last_run.json
+/coverage/
 /log
 /node_modules/
 /public/assets/

@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe 'Dashboard' do
-  let(:user) { create :user }
+  let(:user) { create(:user) }
   let(:roster) { user.rosters.first }
 
   describe 'GET /' do
     subject(:call) { get '/' }
 
-    before { create_list :roster, 2 }
+    before { create_list(:roster, 2) }
 
     context 'when not logged in' do
       it 'responds with an unauthorized status' do
@@ -19,7 +19,7 @@ RSpec.describe 'Dashboard' do
     end
 
     context 'when logged in as a roster-less user' do
-      let(:current_user) { create :user }
+      let(:current_user) { create(:user) }
 
       it 'redirects to all rosters' do
         call
@@ -28,8 +28,8 @@ RSpec.describe 'Dashboard' do
     end
 
     context 'when logged in as a user with only one roster' do
-      let(:current_user) { create :user }
-      let(:roster) { create :roster }
+      let(:current_user) { create(:user) }
+      let(:roster) { create(:roster) }
 
       before { create(:membership, roster:, user: current_user) }
 
@@ -40,9 +40,9 @@ RSpec.describe 'Dashboard' do
     end
 
     context 'when logged in as a user with multiple rosters' do
-      let(:current_user) { create :user }
+      let(:current_user) { create(:user) }
 
-      before { create_list :membership, 2, user: current_user }
+      before { create_list(:membership, 2, user: current_user) }
 
       it 'redirects to all rosters' do
         call

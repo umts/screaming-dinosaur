@@ -8,7 +8,7 @@ class FeedController < ApplicationController
   def show
     feed = Feed.new(roster)
     authorize! feed
-    render plain: feed.output, content_type: 'text/calendar'
+    render plain: feed.to_ical, content_type: 'text/calendar'
   rescue ActionPolicy::Unauthorized
     skip_verify_authorized!
     head :forbidden

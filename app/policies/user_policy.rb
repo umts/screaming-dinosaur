@@ -7,7 +7,10 @@ class UserPolicy < ApplicationPolicy
 
   def show_auth? = false
 
-  def create? = request.session[:entra_uid].present? && user.blank? && no_access_changes?
+  def create?
+    request.session[:entra_uid].present? && user.blank? && no_access_changes? &&
+      record.entra_uid == request.session[:entra_uid]
+  end
 
   def update?
     return false unless no_access_changes? || allowed_to?(:update_access?, record)

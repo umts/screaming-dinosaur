@@ -34,8 +34,13 @@ en:
     attributes:
       user:
         entra_upn: "UMass account"
+      assignment:
+        end_datetime: "End time"
     models:
       version: "Change"
+  assignments_mailer:
+    upcoming_reminder:
+      subject: "Reminder: Upcoming on-call"
   errors:
     messages:
       invalid_time: "is not a valid time"
@@ -49,7 +54,7 @@ en:
       default: "%-m/%-d/%Y"
   time:
     formats:
-      default: "%-m/%-d/%Y %-I:%M %P"
+      default: "%-m/%-d/%Y at %-I:%M %P"
       named: "%a, %b %-d at %-I:%M %P"
   success:
     message: "Successfully %{action} %{subject}"
@@ -58,3 +63,4 @@ en:
       update: "updated"
       destroy: "deleted"
       undo: "reverted"
+      take: "took"

@@ -4,7 +4,7 @@ class RosterMailer < ApplicationMailer
   before_action { @roster = params[:roster] }
 
   def open_dates_alert
-    @open_dates = params[:open_dates]
+    @open_periods = params[:open_periods]
     mail to: @roster.admins.pluck(:email), subject: "Upcoming dates are uncovered for #{@roster.name} On-Call"
   end
 

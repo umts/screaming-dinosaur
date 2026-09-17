@@ -13,6 +13,9 @@ application.register("clipboard", ClipboardController)
 import LoginController from "./login_controller"
 application.register("login", LoginController)
 
+import NestedFormController from "./nested_form_controller"
+application.register("nested-form", NestedFormController)
+
 import PopoverController from "./popover_controller"
 application.register("popover", PopoverController)
 
