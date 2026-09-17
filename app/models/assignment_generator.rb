@@ -10,12 +10,12 @@ class AssignmentGenerator
 
   validates :roster, presence: true
   validates :definitions, presence: true
-  validate :definitions_are_valid
   validates :start_date, presence: true
   validates :end_date, presence: true,
                        comparison: { greater_than_or_equal_to: :start_date,
                                      if: -> { start_date.present? && end_date.present? },
                                      message: :must_not_be_before_start }
+  validate :definitions_are_valid
 
   def perform
     perform!
@@ -31,7 +31,7 @@ class AssignmentGenerator
   end
 
   def definitions
-    @definitions ||= []
+    @definitions ||= [AssignmentGeneratorDefinition.new]
   end
 
   def definitions_attributes=(attrs)

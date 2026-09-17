@@ -1,36 +1,30 @@
 = render layout: 'layouts/roster', locals: { roster: @assignment_generator.roster, nav_item: 'assignments' } do
   .card
     .card-header
-      Assignment Generator
-    .card-body
-      = form_with model: @assignment_generator,
-                  url: generate_roster_assignments_path(@assignment_generator.roster),
-                  data: { controller: 'nested-form' } do |f|
+      Generate assignments
+    = form_with model: @assignment_generator, url: generate_roster_assignments_path(@assignment_generator.roster) do |f|
+      .card-body.border-bottom
         .row.g-3
-          .mb-3.col-md
+          .col-md
             = f.label :start_date, 'Start Date', class: 'form-label'
-            = f.date_field :start_date, required: true, value: @last_assignment_end_datetime, class: 'form-control'
-            - if @last_assignment_end_datetime
-              .form-text.text-muted
-                The last existing assignment ends on #{l @last_assignment_end_datetime}.
-          .mb-3.col-md
+            = f.date_field :start_date, required: true, class: 'form-control'
+          .col-md
             = f.label :end_date, 'End Date', class: 'form-label'
             = f.date_field :end_date, required: true, class: 'form-control'
-
-        .border-top{ data: { 'nested-form-target': 'list' } }
-          = f.fields_for :definitions do |definition_form|
-            = render 'definition_fields', f: definition_form
-
-        %template{ data: { 'nested-form-target': 'template' } }
-          = f.fields_for :definitions, AssignmentGeneratorDefinition.new, child_index: 'NEW_RECORD' do |definition_form|
-            = render 'definition_fields', f: definition_form
-
-        %button.btn.btn-text.mt-3{ type: 'button', data: { action: 'nested-form#add' } }
-          %i.fa-solid.fa-plus
-          Add a rotation
-
-        .row.g-2.mt-2
-          .col-md.d-grid
-            = f.button type: :submit, class: 'btn btn-primary' do
-              %i.fa-solid.fa-bolt
-              Generate
+        - if @last_end_datetime.present?
+          %small.form-text.text-muted
+            The last existing assignment has an end time of #{l(@last_end_datetime)}.
+      %div{ 'data-controller': 'template' }
+        %template{ 'data-template-target': 'template' }
+          = f.fields_for :definitions, AssignmentGeneratorDefinition.new, child_index: 'INDEX' do |g|
+            = render partial: 'assignment_generator_definitions/fields', object: g, locals: { anchor: false }
+        %div{ 'data-template-target': 'append' }
+          = f.fields_for :definitions do |g|
+            = render partial: 'assignment_generator_definitions/fields',
+                     object: g,
+                     locals: { anchor: g.object == f.object.definitions.first }
+      .card-body.border-bottom
+        .d-grid
+          = f.button type: :submit, class: 'btn btn-outline-primary' do
+            %i.fa-solid.fa-bolt
+            Generate
