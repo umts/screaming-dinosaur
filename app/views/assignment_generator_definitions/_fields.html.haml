@@ -19,7 +19,8 @@
   .row.g-3
     .mb-3.col-md
       = f.label :weekdays, class: 'form-label'
-      = f.select :weekdays, Date::DAYNAMES, {}, multiple: true, class: 'form-select', 'data-controller': 'tom-select'
+      = f.select :weekdays, Date::DAYNAMES.rotate(1), {},
+                 multiple: true, class: 'form-select', 'data-controller': 'tom-select'
     .mb-3.col-md
       = f.label :end_time, class: 'form-label'
       = f.time_field :end_time, required: true, class: 'form-control'
