@@ -10,12 +10,12 @@ class AssignmentGenerator
 
   validates :roster, presence: true
   validates :definitions, presence: true
-  validate :definitions_are_valid
   validates :start_date, presence: true
   validates :end_date, presence: true,
                        comparison: { greater_than_or_equal_to: :start_date,
                                      if: -> { start_date.present? && end_date.present? },
                                      message: :must_not_be_before_start }
+  validate :definitions_are_valid
 
   def perform
     perform!
@@ -31,7 +31,7 @@ class AssignmentGenerator
   end
 
   def definitions
-    @definitions ||= []
+    @definitions ||= [AssignmentGeneratorDefinition.new]
   end
 
   def definitions_attributes=(attrs)
@@ -89,8 +89,10 @@ class AssignmentGenerator
       (week_start..week_end).each do |date|
         next unless selected_weekdays?(definition, date)
 
+        end_datetime = combine(date, definition.end_time)
+        end_datetime += 1.day if definition.overnight?
         roster.assignments.create!(
-          end_datetime: combine(date, definition.end_time),
+          end_datetime:,
           assignment_group: assignment_group
         )
       end

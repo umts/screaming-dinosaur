@@ -7,7 +7,10 @@ class AssignmentGeneratorDefinition
   attribute :end_time, :time
   attribute :weekdays, default: -> { [] }
   attribute :group, :string
+  attribute :overnight, :boolean
 
   validates :weekdays, presence: true
   validates :end_time, presence: true
+
+  alias :overnight? overnight
 end

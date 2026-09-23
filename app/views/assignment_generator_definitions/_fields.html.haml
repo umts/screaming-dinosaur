@@ -1,0 +1,31 @@
+- f ||= fields
+- anchor ||= local_assigns[:anchor]
+.card-body.border-bottom{ 'data-controller': 'removable' }
+  .float-end
+    - if anchor
+      = button_tag type: 'button', class: 'btn btn-sm btn-text', 'data-action': 'template#append' do
+        %i.fa-solid.fa-plus
+        Add
+    - else
+      = button_tag type: 'button', class: 'btn btn-sm btn-text', 'data-action': 'removable#remove' do
+        %i.fa-solid.fa-minus
+        Remove
+  .mb-3
+    = f.label :group, class: 'form-label'
+    = f.text_field :group, class: 'form-control'
+    %small.form-text.text-muted
+      Enter a name here to group these assignments together (e.g. allow users to take them all at once).
+      Leave blank otherwise.
+  .row.g-3
+    .mb-3.col-md
+      = f.label :weekdays, class: 'form-label'
+      = f.select :weekdays, Date::DAYNAMES.rotate(1), {},
+                 multiple: true, class: 'form-select', 'data-controller': 'tom-select'
+    .mb-3.col-md
+      = f.label :end_time, class: 'form-label'
+      = f.time_field :end_time, required: true, class: 'form-control'
+  .form-check
+    = f.label :overnight,
+              'These assignments run overnight (end times will be on the following day)',
+              class: 'form-check-label'
+    = f.check_box :overnight, class: 'form-check-input'
