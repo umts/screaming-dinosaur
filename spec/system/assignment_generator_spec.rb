@@ -13,7 +13,7 @@ RSpec.describe 'Assignment Generator' do
         visit generate_roster_assignments_path(roster)
       end
 
-      let(:last_assignment) { roster.assignments.order(:end_datetime).first }
+      let(:last_assignment) { roster.assignments.order(:end_datetime).last }
 
       it "fills in the start date field with the most recent assignment's end date" do
         expect(page).to have_field('Start Date', with: last_assignment.end_datetime.to_date)

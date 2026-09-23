@@ -7,7 +7,7 @@ class AssignmentGeneratorController < ApplicationController
 
   def prompt
     authorize! @assignment_generator
-    @assignment_generator.start_date = @last_end_datetime.to_date
+    @assignment_generator.start_date = @last_end_datetime&.to_date
   end
 
   def perform
