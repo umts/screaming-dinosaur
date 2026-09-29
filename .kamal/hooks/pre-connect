@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+exit 0 if ENV["CI"]
+
+require "bundler/inline"
+
+# true = install gems so this is fast on repeat invocations
+gemfile(true, quiet: true) do
+  source "https://rubygems.org"
+
+  gem "octokit"
+  gem "faraday-retry"
+end
+
+def exit_with_error(message)
+  $stderr.puts message
+  exit 1
+end
+
+$stdout.sync = true
+
+local_head = `git rev-parse HEAD`.strip
+remote_head = `git ls-remote origin HEAD`.split.first
+github_repo = `git config --get remote.origin.url`.strip
+                                                  .delete_prefix("git@github.com:")
+                                                  .delete_prefix("https://github.com/")
+                                                  .delete_suffix(".git")
+github_token = `gh auth token` rescue ''
+
+exit_with_error "Invalid HEAD (must be on up to date default branch)" if local_head != remote_head
+exit_with_error "Invalid github credentials (must be logged in to github cli)" if github_token.empty?
+
+github_check_runs = Octokit::Client.new(access_token: github_token)
+                                   .check_runs_for_ref(github_repo, remote_head)[:check_runs]
+                                   .map { |run| run[:conclusion] }
+
+exit_with_error "Github status checks pending" if github_check_runs.empty? || github_check_runs.any?(&:nil?)
+exit_with_error "Github status checks failed" if (github_check_runs - %w[success neutral skipped]).any?
