@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+bundle exec kamal deploy --skip-push
