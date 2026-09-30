@@ -1,20 +1,31 @@
+# <% def user_for(host) = Net::SSH::Config.for(host).fetch(:user, ENV.fetch('USER', nil)) %>
+
 service: screaming_dinosaur
 image: umts/screaming_dinosaur
+registry:
+  server: ghcr.io
+  username: not_needed
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+builder:
+  arch: amd64
+  provenance: false
+  sbom: false
+labels:
+  org.opencontainers.image.source: "https://github.com/umts/screaming-dinosaur"
 servers:
   web:
     - afs-umts-web4.admin.umass.edu
 proxy:
   ssl: true
   host: umts-oncall.admin.umass.edu
-registry:
-  server: localhost:5555
-builder:
-  arch: amd64
 env:
+  clear:
+    TZ: America/New_York
   secret:
     - RAILS_MASTER_KEY
 ssh:
-  user: <%= Net::SSH::Config.for('afs-umts-web4.admin.umass.edu').fetch(:user, ENV.fetch('USER', nil)) %>
+  user: <%= user_for 'afs-umts-web4.admin.umass.edu' %>
 volumes:
   - "screaming_dinosaur_log:/rails/log"
   - "screaming_dinosaur_storage:/rails/storage"
