@@ -77,7 +77,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_172421) do
     t.bigint "tick_total"
     t.float "time_running", default: 0.0, null: false
     t.datetime "updated_at", null: false
-    t.index ["task_name", "status", "created_at"], name: "index_maintenance_tasks_runs", order: { created_at: :desc }
+    t.index ["task_name", "status", "created_at"], name: "index_maintenance_tasks_runs"
   end
 
   create_table "memberships", charset: "utf8mb4", collation: "utf8mb4_unicode_520_ci", force: :cascade do |t|

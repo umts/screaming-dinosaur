@@ -7,16 +7,18 @@ class AssignmentGeneratorController < ApplicationController
 
   def prompt
     authorize! @assignment_generator
-    @last_assignment_end_datetime = @assignment_generator.roster.assignments.order(:end_datetime).first&.end_datetime
+    @assignment_generator.start_date = @last_end_datetime&.to_date
   end
 
   def perform
-    @assignment_generator.assign_attributes(assignment_generator_params)
     authorize! @assignment_generator
+    @assignment_generator.assign_attributes(assignment_generator_params)
     if @assignment_generator.perform
-      redirect_after_success
+      flash_success_for(Assignment.model_name.human.downcase.pluralize, :create)
+      redirect_to roster_path(@assignment_generator.roster, date: @assignment_generator.start_date)
     else
-      handle_error
+      flash_errors_now_for(@assignment_generator)
+      render :prompt, status: :unprocessable_content
     end
   end
 
@@ -24,7 +26,7 @@ class AssignmentGeneratorController < ApplicationController
 
   def initialize_assignment_generator
     @assignment_generator = AssignmentGenerator.new(roster_id: roster.id)
-    @assignment_generator.definitions << AssignmentGeneratorDefinition.new
+    @last_end_datetime = @assignment_generator.roster.assignments.order(end_datetime: :desc).first&.end_datetime
   end
 
   def assignment_generator_params
@@ -36,21 +38,11 @@ class AssignmentGeneratorController < ApplicationController
           definitions_attributes: [[
             :end_time,
             :group,
+            :overnight,
             { weekdays: [] }
           ]]
         }
       ]
     )
-  end
-
-  def redirect_after_success
-    flash_success_for(Assignment.model_name.human.downcase.pluralize, :create)
-    redirect_to roster_path(@assignment_generator.roster,
-                            date: @assignment_generator.start_date)
-  end
-
-  def handle_error
-    flash_errors_now_for(@assignment_generator)
-    render :prompt, status: :unprocessable_content
   end
 end
