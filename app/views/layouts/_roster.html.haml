@@ -22,5 +22,5 @@
       = link_to edit_roster_path(roster), class: ['nav-link', nav_item == 'settings' && 'active'] do
         %i.fa-solid.fa-gears
         Settings
-= render layout: 'layouts/resource', locals: { heading: roster.name, nav_expand: 'md', nav_items: } do
+= render layout: 'umts/brand/tabbed', locals: { heading: roster.name, nav_expand: 'md', nav_items: } do
   = yield
