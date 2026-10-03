@@ -5,15 +5,15 @@
         .flex-grow-1
           Assignments
         .d-flex.align-items-center.gap-3
-          = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-sm btn-text' do
+          = link_to roster_assignments_path(@roster, format: :csv), class: 'btn btn-sm nav-link' do
             %i.fa-solid.fa-download
             CSV
           - if allowed_to?(:new?, @roster.assignments.new)
-            = link_to new_roster_assignment_path(@roster), class: 'btn btn-sm btn-text' do
+            = link_to new_roster_assignment_path(@roster), class: 'btn btn-sm nav-link' do
               %i.fa-solid.fa-plus
               New
           - if allowed_to?(:prompt, AssignmentGenerator.new(roster_id: @roster.id))
-            = link_to generate_roster_assignments_path(@roster), class: 'btn btn-sm btn-text' do
+            = link_to generate_roster_assignments_path(@roster), class: 'btn btn-sm nav-link' do
               %i.fa-solid.fa-bolt
               Generate
     .list-group.list-group-flush
@@ -28,18 +28,18 @@
                   .col= assignment.user&.full_name
               .col-auto
                 .d-flex.flex-nowrap.gap-3
-                  = link_to take_assignment_path(assignment), class: 'btn btn-sm btn-text' do
+                  = link_to take_assignment_path(assignment), class: 'btn btn-sm nav-link' do
                     %i.fa-solid.fa-hand
                     Take
                   - if allowed_to?(:edit?, assignment)
-                    = link_to edit_assignment_path(assignment), class: 'btn btn-sm btn-text' do
+                    = link_to edit_assignment_path(assignment), class: 'btn btn-sm nav-link' do
                       %i.fa-solid.fa-edit
                       Edit
                   - if allowed_to?(:destroy?, assignment)
                     = button_to assignment_path(assignment),
                                 method: :delete,
                                 form_class: 'd-grid',
-                                class: 'btn btn-sm btn-text',
+                                class: 'btn btn-sm nav-link',
                                 'data-confirm': 'Are you sure?' do
                       %i.fa-solid.fa-trash
                       Delete
