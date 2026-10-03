@@ -4,7 +4,7 @@
       .d-flex
         .flex-grow-1 Take Assignment
         - if allowed_to?(:edit?, @taker.assignment)
-          = link_to edit_assignment_path(@taker.assignment), class: 'btn btn-sm btn-text' do
+          = link_to edit_assignment_path(@taker.assignment), class: 'btn btn-sm nav-link' do
             %i.fa-solid.fa-edit
             Edit
     .card-body
