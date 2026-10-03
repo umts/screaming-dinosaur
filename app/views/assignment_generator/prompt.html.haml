@@ -1,7 +1,7 @@
 = render layout: 'layouts/roster', locals: { roster: @assignment_generator.roster, nav_item: 'assignments' } do
   .card
     .card-header
-      Generate assignments
+      Generate Assignments
     = form_with model: @assignment_generator, url: generate_roster_assignments_path(@assignment_generator.roster) do |f|
       .card-body.border-bottom
         .row.g-3
@@ -28,7 +28,7 @@
             = render partial: 'assignment_generator_definitions/fields',
                      object: g,
                      locals: { anchor: g.object == f.object.definitions.first }
-      .card-body.border-bottom
+      .card-body
         .d-grid
           = f.button type: :submit, class: 'btn btn-primary' do
             %i.fa-solid.fa-bolt
