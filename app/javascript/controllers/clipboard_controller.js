@@ -19,7 +19,7 @@ export default class extends Controller {
 
   reset() {
     this.#hideIndicators();
-    for (const target of this.promptIndicatorTarget) target.hidden = false;
+    this.promptIndicatorTarget.hidden = false;
   }
 
   #hideIndicators() {

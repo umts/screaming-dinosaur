@@ -26,6 +26,7 @@ gem 'rails', '~> 8.1.3'
 gem 'stimulus-rails'
 gem 'thruster', require: false
 gem 'trilogy'
+gem 'umts-brand', '0.0.0.pre.dev', github: 'umts/brand', branch: 'main'
 
 group :production do
   gem 'exception_notification'

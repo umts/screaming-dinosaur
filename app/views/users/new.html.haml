@@ -1,4 +1,4 @@
-= render layout: 'layouts/resource', locals: { heading: 'Register' } do
+= render layout: 'umts/brand/tabbed', locals: { heading: 'Register' } do
   .card.mb-3
     .card-header
       New User
@@ -7,12 +7,12 @@
         = render partial: 'fields', object: f
       .row.g-3
         .col.d-grid
-          = button_tag type: :submit, form: 'user-form', class: 'btn btn-outline-primary' do
+          = button_tag type: :submit, form: 'user-form', class: 'btn btn-primary' do
             %i.fa-solid.fa-save
             Save
         .col.d-grid
           = button_to logout_path,
-                      class: 'btn btn-outline-secondary',
+                      class: 'btn btn-neutral',
                       form_class: 'd-grid' do
             %i.fa-solid.fa-times
             Cancel

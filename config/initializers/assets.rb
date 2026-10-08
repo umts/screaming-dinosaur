@@ -7,13 +7,3 @@ Rails.application.config.assets.version = '1.0'
 
 # Add additional assets to the asset load path.
 # Rails.application.config.assets.paths << Emoji.images_path
-
-Rails.application.configure do
-  config.after_initialize do
-    config.assets.paths = [
-      Rails.root.join('node_modules/@fortawesome/fontawesome-free/webfonts'),
-      Rails.root.join('app/assets/builds'),
-      Rails.root.join('app/assets/images')
-    ]
-  end
-end
