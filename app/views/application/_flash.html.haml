@@ -1,0 +1,21 @@
+- { alert: %w[primary fa-triangle-exclamation], notice: %w[neutral fa-circle-info] }.each do |type, (variant, icon)|
+  - next if flash[type].blank?
+
+  .alert.fade.show{ role: 'alert', class: "alert-#{variant}" }
+    .row.gx-3
+      .col-auto
+        %i.fa-solid.fa-fw{ class: icon }
+      .col= flash[type]
+      .col-12.col-md-auto
+        %hr.d-md-none
+        .row.gx-3.justify-content-center
+          - if type == :notice && flash[:undo].present?
+            .col-auto
+              = button_to undo_version_path(flash[:undo]), class: 'nav-link nav-underline', form_class: 'd-grid' do
+                %i.fa-solid.fa-rotate
+                Undo
+          .col-auto
+            .d-grid
+              = button_tag type: 'button', class: 'nav-link nav-underline', 'data-bs-dismiss': 'alert' do
+                %i.fa-solid.fa-times
+                = t('umts.brand.actions.dismiss')
