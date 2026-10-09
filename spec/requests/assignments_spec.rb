@@ -139,8 +139,8 @@ RSpec.describe 'Assignments' do
       let(:users) { create_list(:user, 2, rosters: [roster]) }
       let!(:assignments) do
         [
-          create(:assignment, roster:, user: users.first, end_datetime: Date.current.middle_of_day),
-          create(:assignment, roster:, user: users.second, end_datetime: Date.yesterday.middle_of_day)
+          create(:assignment, roster:, user: users.first, end_datetime: Date.current.middle_of_day, credits: 10),
+          create(:assignment, roster:, user: users.second, end_datetime: Date.yesterday.middle_of_day, credits: 1)
         ]
       end
 
@@ -152,17 +152,19 @@ RSpec.describe 'Assignments' do
       it 'responds with assignment data for the given roster' do
         call
         row1 = [roster.name, users.second.email, users.second.first_name, users.second.last_name,
+                assignments.second.credits,
                 roster.created_at.iso8601,
                 assignments.second.end_datetime.iso8601,
                 assignments.second.created_at.iso8601,
                 assignments.second.updated_at.iso8601].join(',')
         row2 = [roster.name, users.first.email, users.first.first_name, users.first.last_name,
+                assignments.first.credits,
                 assignments.second.end_datetime.iso8601,
                 assignments.first.end_datetime.iso8601,
                 assignments.first.created_at.iso8601,
                 assignments.first.updated_at.iso8601].join(',')
         expect(response.body).to eq(<<~CSV)
-          roster,email,first_name,last_name,start,end,created_at,updated_at
+          roster,email,first_name,last_name,credits,start,end,created_at,updated_at
           #{row1}
           #{row2}
         CSV
@@ -177,7 +179,7 @@ RSpec.describe 'Assignments' do
 
       it 'renders blank user columns' do
         call
-        row = "#{roster.name},,,,#{roster.created_at.iso8601},#{assignment.end_datetime.iso8601}"
+        row = "#{roster.name},,,,#{assignment.credits},#{roster.created_at.iso8601},#{assignment.end_datetime.iso8601}"
         expect(response.body).to include(row)
       end
     end
