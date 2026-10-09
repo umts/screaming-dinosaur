@@ -14,6 +14,7 @@ class Assignment < ApplicationRecord
                                          allow_nil: true },
                            presence: true,
                            uniqueness: { scope: :roster_id }
+  validates :credits, presence: true, comparison: { greater_than_or_equal_to: 0 }
 
   after_commit :notify_user_of_assignment
   after_commit :notify_user_of_change
