@@ -17,6 +17,7 @@
     "@popperjs/core": "*",
     "@rails/ujs": "*",
     "@umts/brand": "github:umts/brand#main",
+    "@umts/stimulus": "github:umts/stimulus#main",
     "autoprefixer": "*",
     "bootstrap": "*",
     "fullcalendar": "*",
