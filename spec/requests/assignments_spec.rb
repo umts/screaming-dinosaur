@@ -10,7 +10,7 @@ RSpec.describe 'Assignments' do
   end
 
   shared_context 'with invalid attributes' do
-    let(:attributes) { { user_id: nil, end_datetime: nil } }
+    let(:attributes) { { user_id: nil, end_datetime: nil, credits: -1 } }
   end
 
   describe 'GET /rosters/:roster_id/assignments.html' do
