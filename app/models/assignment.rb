@@ -37,7 +37,7 @@ class Assignment < ApplicationRecord
     end
 
     def to_csv # rubocop:disable Metrics
-      CSV.generate headers: %i[roster email first_name last_name start end created_at updated_at],
+      CSV.generate headers: %i[roster email first_name last_name credits start end created_at updated_at],
                    write_headers: true do |csv|
         all.each do |assignment| # rubocop:disable Rails/FindEach
           csv << {
@@ -45,6 +45,7 @@ class Assignment < ApplicationRecord
             email: assignment.user&.email,
             first_name: assignment.user&.first_name,
             last_name: assignment.user&.last_name,
+            credits: assignment.credits,
             start: assignment.start_datetime.iso8601,
             end: assignment.end_datetime.iso8601,
             created_at: assignment.created_at.iso8601,
