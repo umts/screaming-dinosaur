@@ -40,6 +40,10 @@ en:
         end_datetime: "End time"
     models:
       version: "Change"
+  assignments:
+    credits:
+      one: "%{count} credit"
+      other: "%{count} credits"
   assignments_mailer:
     upcoming_reminder:
       subject: "Reminder: Upcoming on-call"
