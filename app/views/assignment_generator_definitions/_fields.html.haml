@@ -24,6 +24,9 @@
     .mb-3.col-md
       = f.label :end_time, class: 'form-label'
       = f.time_field :end_time, required: true, class: 'form-control'
+    .mb-3.col-md
+      = f.label :credits, class: 'form-label'
+      = f.number_field :credits, required: true, class: 'form-control', min: 0
   .form-check
     = f.label :overnight,
               'These assignments run overnight (end times will be on the following day)',
