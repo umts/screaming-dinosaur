@@ -15,6 +15,14 @@ export default defineConfig({
         import.meta.dirname,
         "./node_modules/@umts/stimulus/lib/tom-select.ts",
       ),
+      "@umts/stimulus/template": path.resolve(
+        import.meta.dirname,
+        "./node_modules/@umts/stimulus/lib/template.ts",
+      ),
+      "@umts/stimulus/remove": path.resolve(
+        import.meta.dirname,
+        "./node_modules/@umts/stimulus/lib/remove.ts",
+      ),
       "@umts/stimulus/clipboard": path.resolve(
         import.meta.dirname,
         "./node_modules/@umts/stimulus/lib/clipboard.ts",
