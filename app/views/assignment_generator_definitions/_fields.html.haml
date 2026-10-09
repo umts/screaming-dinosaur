@@ -1,13 +1,13 @@
 - f ||= fields
 - anchor ||= local_assigns[:anchor]
-.card-body.border-bottom{ 'data-controller': 'removable' }
+.card-body.border-bottom{ 'data-controller': 'remove' }
   .float-end
     - if anchor
       = button_tag type: 'button', class: 'btn btn-sm', 'data-action': 'template#append' do
         %i.fa-solid.fa-plus
         Add
     - else
-      = button_tag type: 'button', class: 'btn btn-sm', 'data-action': 'removable#remove' do
+      = button_tag type: 'button', class: 'btn btn-sm', 'data-action': 'remove#remove' do
         %i.fa-solid.fa-minus
         Remove
   .mb-3
