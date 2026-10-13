@@ -18,7 +18,7 @@ RSpec.describe AssignmentGenerator do
       let(:end_date) { Date.current + 14.days }
       let(:definitions_attributes) do
         {
-          '0' => { end_time: Time.zone.parse('05:00'), weekdays: %w[Tuesday Thursday Friday] }
+          '0' => { end_time: Time.zone.parse('05:00'), weekdays: %w[Tuesday Thursday Friday], credits: 2 }
         }
       end
 
@@ -49,6 +49,13 @@ RSpec.describe AssignmentGenerator do
             definitions_attributes['0'][:weekdays].include?(date.strftime('%A'))
           end
         )
+      end
+
+      it 'sets the right credit count for each assignment' do
+        submit
+        roster.assignments.each do |assignment|
+          expect(assignment.credits).to eq 2
+        end
       end
 
       it 'returns true' do
@@ -158,7 +165,7 @@ RSpec.describe AssignmentGenerator do
       let(:definitions_attributes) do
         {
           '0' => { end_time: Time.zone.parse('05:00'), weekdays: %w[Monday Tuesday], group: 'Morning Shift' },
-          '1' => { end_time: Time.zone.parse('06:00'), weekdays: %w[Wednesday Thursday] }
+          '1' => { end_time: Time.zone.parse('06:00'), weekdays: %w[Wednesday Thursday], credits: 10 }
         }
       end
 
@@ -229,6 +236,12 @@ RSpec.describe AssignmentGenerator do
         end.uniq.sort).to eq(definitions_attributes['1'][:weekdays].sort)
       end
 
+      it 'uses the correct credit count for the second definition' do
+        submit
+        assignments = assignments_for(definitions_attributes['1'])
+        expect(assignments.map(&:credits).uniq).to eq([10])
+      end
+
       it 'uses the correct end time for the second definition' do
         submit
         assignments = assignments_for(definitions_attributes['1'])
@@ -279,7 +292,7 @@ RSpec.describe AssignmentGenerator do
       end
     end
 
-    context 'when invalid assignment attributes are used' do
+    context 'when an invalid date range is used' do
       let(:start_date) { Date.current }
       let(:end_date) { Date.current }
       let(:definitions_attributes) do
