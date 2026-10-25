@@ -7,10 +7,10 @@ on:
       - main
 jobs:
   integrate:
-    uses: umts/shared-workflows/.github/workflows/integrate-rails.yml@7ae11bc6464f7030bff7f930dc9b3e7a22f6bd68 # main
+    uses: umts/shared-workflows/.github/workflows/integrate-rails.yml@95544f1d59665121137103da8ad95ea3eafc1177 # main
   deploy:
     needs: integrate
     permissions:
       contents: read
       packages: write
-    uses: umts/shared-workflows/.github/workflows/ghcr-kamal.yml@7ae11bc6464f7030bff7f930dc9b3e7a22f6bd68 # main
+    uses: umts/shared-workflows/.github/workflows/ghcr-kamal.yml@95544f1d59665121137103da8ad95ea3eafc1177 # main
