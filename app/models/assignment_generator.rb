@@ -63,13 +63,14 @@ class AssignmentGenerator
     definition.weekdays.include?(date.strftime('%A'))
   end
 
-  def combine(date, time)
+  def end_datetime_for_assignment(date, definition)
+    date += 1.day if definition.overnight?
     Time.zone.local(
       date.year,
       date.month,
       date.day,
-      time.hour,
-      time.min
+      definition.end_time.hour,
+      definition.end_time.min
     )
   end
 
@@ -89,8 +90,7 @@ class AssignmentGenerator
       (week_start..week_end).each do |date|
         next unless selected_weekdays?(definition, date)
 
-        end_datetime = combine(date, definition.end_time)
-        end_datetime += 1.day if definition.overnight?
+        end_datetime = end_datetime_for_assignment(date, definition)
         roster.assignments.create!(
           end_datetime:,
           assignment_group:,
