@@ -40,6 +40,10 @@ class AssignmentGenerator
     @definitions = collection.map { |attributes| AssignmentGeneratorDefinition.new(attributes) }
   end
 
+  def peek_next_user
+    user_iterator.peek
+  end
+
   private
 
   def definitions_are_valid
@@ -84,9 +88,7 @@ class AssignmentGenerator
     end
   end
 
-  def user_for_assignment
-    return nil unless auto_assign && roster.users.present?
-
+  def user_iterator
     unless @user_iterator
       @user_iterator = roster.users.order(:last_name).cycle
       if roster.assignments.present?
@@ -95,7 +97,13 @@ class AssignmentGenerator
       end
     end
 
-    @user_iterator.next
+    @user_iterator
+  end
+
+  def next_user_for_assignment
+    return nil unless auto_assign && roster.users.present?
+
+    user_iterator.next
   end
 
   def generate_assignments_with_group(definition)
@@ -107,7 +115,7 @@ class AssignmentGenerator
           end_datetime: end_datetime_for_assignment(date, definition),
           assignment_group:,
           credits: definition.credits,
-          user: user_for_assignment
+          user: next_user_for_assignment
         )
       end
     end
