@@ -7,6 +7,7 @@ class AssignmentGenerator
   attribute :roster_id, :integer
   attribute :start_date, :date
   attribute :end_date, :date
+  attribute :auto_assign, :boolean
 
   validates :roster, presence: true
   validates :definitions, presence: true
@@ -16,6 +17,7 @@ class AssignmentGenerator
                                      if: -> { start_date.present? && end_date.present? },
                                      message: :must_not_be_before_start }
   validate :definitions_are_valid
+  validate :roster_has_users?, if: -> { auto_assign }
 
   def perform
     perform!
@@ -45,6 +47,10 @@ class AssignmentGenerator
     definitions.each do |definition|
       errors.merge!(definition.errors) unless definition.valid?
     end
+  end
+
+  def roster_has_users?
+    roster.users.present?
   end
 
   def perform!
