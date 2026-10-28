@@ -22,10 +22,11 @@
           .list-group-item
             .row
               .col
-                .row.row-cols-1.row-cols-md-3
+                .row.row-cols-1.row-cols-md-4
                   .col= l assignment.start_datetime
                   .col= l assignment.end_datetime
                   .col= assignment.user&.full_name
+                  .col= t 'assignments.credits', count: assignment.credits
               .col-auto
                 .d-flex.flex-nowrap.gap-3
                   = link_to take_assignment_path(assignment), class: 'btn btn-sm nav-link' do
