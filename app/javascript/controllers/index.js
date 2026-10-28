@@ -3,24 +3,24 @@
 // ./bin/rails generate stimulus controllerName
 
 import { application } from "./application"
+import TomSelect from "@umts/stimulus/tom-select"
+import Clipboard from "@umts/stimulus/clipboard"
+import Popover from "@umts/stimulus/popover"
+import Template from "@umts/stimulus/template"
+import Remove from "@umts/stimulus/remove"
 
 import AssignmentCalendarController from "./assignment_calendar_controller"
 application.register("assignment-calendar", AssignmentCalendarController)
 
-import ClipboardController from "./clipboard_controller"
-application.register("clipboard", ClipboardController)
+application.register("clipboard", Clipboard)
 
 import LoginController from "./login_controller"
 application.register("login", LoginController)
 
-import PopoverController from "./popover_controller"
-application.register("popover", PopoverController)
+application.register("popover", Popover)
 
-import RemovableController from "./removable_controller"
-application.register("removable", RemovableController)
+application.register("remove", Remove)
 
-import TemplateController from "./template_controller"
-application.register("template", TemplateController)
+application.register("template", Template)
 
-import TomSelectController from "./tom_select_controller"
-application.register("tom-select", TomSelectController)
+application.register("tom-select", TomSelect)
