@@ -17,7 +17,6 @@ class AssignmentGenerator
                                      if: -> { start_date.present? && end_date.present? },
                                      message: :must_not_be_before_start }
   validate :definitions_are_valid
-  validate :roster_has_users?, if: -> { auto_assign }
 
   def perform
     perform!
@@ -47,10 +46,6 @@ class AssignmentGenerator
     definitions.each do |definition|
       errors.merge!(definition.errors) unless definition.valid?
     end
-  end
-
-  def roster_has_users?
-    roster.users.present?
   end
 
   def perform!
@@ -89,18 +84,30 @@ class AssignmentGenerator
     end
   end
 
+  def user_for_assignment
+    return nil unless auto_assign && roster.users.present?
+
+    unless @user_iterator
+      @user_iterator = roster.users.order(:last_name).cycle
+      if roster.assignments.present?
+        @user_iterator.next while @user_iterator.peek != roster.assignments.order(:end_datetime).last.user
+        @user_iterator.next # The previous loop will halt on the last assigned user, we want the user after that!
+      end
+    end
+
+    @user_iterator.next
+  end
+
   def generate_assignments_with_group(definition)
     each_week do |week_start, week_end|
       assignment_group = AssignmentGroup.create!(name: definition.group) if definition.group.present?
 
-      (week_start..week_end).each do |date|
-        next unless selected_weekdays?(definition, date)
-
-        end_datetime = end_datetime_for_assignment(date, definition)
+      (week_start..week_end).select { |date| selected_weekdays?(definition, date) }.each do |date|
         roster.assignments.create!(
-          end_datetime:,
+          end_datetime: end_datetime_for_assignment(date, definition),
           assignment_group:,
-          credits: definition.credits
+          credits: definition.credits,
+          user: user_for_assignment
         )
       end
     end
