@@ -20,7 +20,7 @@
         within the date range specified above.
         For each week, it will create assignments ending on the weekdays/times specified below.
       %div{ 'data-controller': 'template' }
-        %template{ 'data-template-target': 'template' }
+        %template{ 'data-template-target': 'source' }
           = f.fields_for :definitions, AssignmentGeneratorDefinition.new, child_index: 'INDEX' do |g|
             = render partial: 'assignment_generator_definitions/fields', object: g, locals: { anchor: false }
         %div{ 'data-template-target': 'append' }
