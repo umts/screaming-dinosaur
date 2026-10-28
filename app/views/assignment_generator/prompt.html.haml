@@ -28,6 +28,14 @@
             = render partial: 'assignment_generator_definitions/fields',
                      object: g,
                      locals: { anchor: g.object == f.object.definitions.first }
+      .card-body.border-bottom
+        .form-check
+          = f.label :auto_assign, 'Automatically assign users to generated assignments', class: 'form-check-label'
+          = f.check_box :auto_assign, class: 'form-check-input'
+        %small.form-text.text-muted
+          Goes in chronological order of generated assignments.
+          Runs down the roster alphabetically, starting after the last assigned user,
+          #{@assignment_generator.roster.assignments.last.user.full_name}
       .card-body
         .d-grid
           = f.button type: :submit, class: 'btn btn-primary' do
