@@ -3,6 +3,8 @@
 class ApplicationController < ActionController::Base
   include Authorizable
 
+  layout 'umts/brand/private'
+
   protected
 
   def flash_success_for(subject, action = nil, undoable: false) = flash_success(flash, subject, action, undoable)

@@ -10,7 +10,7 @@
           Rosters
         - if allowed_to?(:new?, Roster.new)
           %div
-            = link_to new_roster_path, class: 'btn btn-sm btn-text' do
+            = link_to new_roster_path, class: 'btn btn-sm nav-link' do
               %i.fa-solid.fa-plus
               New
     - if @rosters.present?

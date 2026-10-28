@@ -7,7 +7,7 @@
     .text-nowrap.overflow-hidden{ 'data-clipboard-target': 'source' }
       = feed_url(roster_id: roster.slug, token: Current.user.calendar_access_token, format: :ics)
   = button_tag type: 'button',
-               class: 'btn btn-outline-secondary',
+               class: 'btn btn-neutral',
                'data-action': 'click->clipboard#copy mouseenter->clipboard#reset' do
     %i.fa-fw.fa-regular.fa-clipboard{ 'data-clipboard-target': 'promptIndicator' }
     %i.fa-fw.fa-solid.fa-check{ hidden: true, 'data-clipboard-target': 'successIndicator' }
