@@ -7,6 +7,7 @@ class AssignmentGenerator
   attribute :roster_id, :integer
   attribute :start_date, :date
   attribute :end_date, :date
+  attribute :auto_assign, :boolean
 
   validates :roster, presence: true
   validates :definitions, presence: true
@@ -39,6 +40,10 @@ class AssignmentGenerator
     @definitions = collection.map { |attributes| AssignmentGeneratorDefinition.new(attributes) }
   end
 
+  def peek_next_user
+    user_iterator.peek
+  end
+
   private
 
   def definitions_are_valid
@@ -63,13 +68,14 @@ class AssignmentGenerator
     definition.weekdays.include?(date.strftime('%A'))
   end
 
-  def combine(date, time)
+  def end_datetime_for_assignment(date, definition)
+    date += 1.day if definition.overnight?
     Time.zone.local(
       date.year,
       date.month,
       date.day,
-      time.hour,
-      time.min
+      definition.end_time.hour,
+      definition.end_time.min
     )
   end
 
@@ -82,19 +88,34 @@ class AssignmentGenerator
     end
   end
 
+  def user_iterator
+    unless @user_iterator
+      @user_iterator = roster.users.order(:last_name).cycle
+      if roster.assignments.present? && roster.users.include?(roster.assignments.order(:end_datetime).last.user)
+        @user_iterator.next while @user_iterator.peek != roster.assignments.order(:end_datetime).last.user
+        @user_iterator.next
+      end
+    end
+
+    @user_iterator
+  end
+
+  def next_user_for_assignment
+    return nil unless auto_assign && roster.users.present?
+
+    user_iterator.next
+  end
+
   def generate_assignments_with_group(definition)
     each_week do |week_start, week_end|
       assignment_group = AssignmentGroup.create!(name: definition.group) if definition.group.present?
 
-      (week_start..week_end).each do |date|
-        next unless selected_weekdays?(definition, date)
-
-        end_datetime = combine(date, definition.end_time)
-        end_datetime += 1.day if definition.overnight?
+      (week_start..week_end).select { |date| selected_weekdays?(definition, date) }.each do |date|
         roster.assignments.create!(
-          end_datetime:,
+          end_datetime: end_datetime_for_assignment(date, definition),
           assignment_group:,
-          credits: definition.credits
+          credits: definition.credits,
+          user: next_user_for_assignment
         )
       end
     end
