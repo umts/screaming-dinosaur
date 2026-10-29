@@ -91,9 +91,9 @@ class AssignmentGenerator
   def user_iterator
     unless @user_iterator
       @user_iterator = roster.users.order(:last_name).cycle
-      if roster.assignments.present?
+      if roster.assignments.present? && roster.users.include?(roster.assignments.order(:end_datetime).last.user)
         @user_iterator.next while @user_iterator.peek != roster.assignments.order(:end_datetime).last.user
-        @user_iterator.next # The previous loop will halt on the last assigned user, we want the user after that!
+        @user_iterator.next
       end
     end
 
