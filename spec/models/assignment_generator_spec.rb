@@ -118,7 +118,7 @@ RSpec.describe AssignmentGenerator do
       let(:attributes) do
         {
           start_date: Date.current,
-          end_date: Date.current + 7.days,
+          end_date: Date.current + 6.days,
           definitions_attributes: {
             '0' => { end_time: Time.zone.parse('05:00'), weekdays: %w[Monday Tuesday Wednesday Thursday Friday] }
           },
@@ -128,25 +128,26 @@ RSpec.describe AssignmentGenerator do
 
       before do
         create_list(:membership, 5, roster:)
+        create(:assignment, end_datetime: Date.current - 1.day, user: User.order(:last_name).third, roster:)
       end
 
       it 'creates assignments on selected weekdays' do
         submit
-        roster.assignments.each do |assignment|
+        roster.assignments.drop(1).each do |assignment|
           expect(assignment.end_datetime.strftime('%A')).to be_in(attributes[:definitions_attributes]['0'][:weekdays])
         end
       end
 
       it 'sets correct end time for all the assignments' do
         submit
-        roster.assignments.each do |assignment|
+        roster.assignments.drop(1).each do |assignment|
           expect(assignment.end_datetime.strftime('%H:%M')).to eq '05:00'
         end
       end
 
       it 'creates assignments only within the given date range' do
         submit
-        roster.assignments.each do |assignment|
+        roster.assignments.drop(1).each do |assignment|
           expect(assignment.end_datetime.to_date).to(
             be_between(attributes[:start_date], attributes[:end_date]).inclusive
           )
@@ -161,9 +162,11 @@ RSpec.describe AssignmentGenerator do
         )
       end
 
-      it 'assigns every assignment to a user' do
+      it 'assigns users in alphabetical order, starting after the last assigned user' do
         submit
-        expect(roster.assignments.all? { |assignment| assignment.user.present? }).to be true
+        last_names = User.order(:last_name).pluck(:last_name).rotate(3)
+        expect(roster.assignments.order(:end_datetime).drop(1)
+               .map { |assignment| assignment.user.last_name }).to eql last_names
       end
 
       it 'returns true' do
