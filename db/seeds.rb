@@ -59,7 +59,15 @@ transit_it.users.order(:last_name).each_with_index do |user, i|
                                  end_datetime: (i + 1).weeks.since.beginning_of_week(:friday)
 end
 
+am_group = FactoryBot.create :assignment_group, name: 'AM 0'
+pm_group = FactoryBot.create :assignment_group, name: 'PM 0'
 ops.users.order(:last_name).cycle.take(70).each_with_index do |user, i|
+  end_datetime = ops.created_at + ((i + 1) * 12).hours
+  if end_datetime.monday? && end_datetime.hour >= 12
+    am_group = FactoryBot.create :assignment_group, name: 'AM'
+    pm_group = FactoryBot.create :assignment_group, name: 'PM'
+  end
   FactoryBot.create :assignment, user: user, roster: ops,
-                                 end_datetime: ops.created_at + ((i + 1) * 12).hours
+                                 end_datetime:,
+                                 assignment_group: i.even? ? am_group : pm_group
 end
