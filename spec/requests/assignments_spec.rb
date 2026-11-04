@@ -66,18 +66,16 @@ RSpec.describe 'Assignments' do
     context 'when logged in as a member of the roster' do
       include_context 'when logged in as a member of the roster'
 
-      let!(:past_assignment) { create(:assignment, roster:, end_datetime: Date.yesterday.at_middle_of_day) }
-      let!(:open_assignment) { create(:assignment, roster:, end_datetime: Date.current.at_middle_of_day) }
-      let!(:taken_assignment) do
-        create(:assignment, roster:,
-                            user: create(:user, rosters: [roster]),
-                            end_datetime: Date.tomorrow.at_middle_of_day)
-      end
-      let!(:own_assignment) do
-        create(:assignment, roster:, user: current_user, end_datetime: 2.days.from_now.at_middle_of_day)
-      end
+      let(:assignment_group) { create(:assignment_group) }
 
-      before { create(:assignment, roster:, end_datetime: 3.days.from_now.at_middle_of_day) }
+      let!(:assignments) do
+        result = (Date.yesterday..3.days.from_now).map do |date|
+          build(:assignment, roster:, end_datetime: date.at_middle_of_day, assignment_group:)
+        end
+        result.third.user = create(:user, rosters: [roster])
+        result.fourth.user = current_user
+        result.each(&:save!)
+      end
 
       it 'responds successfully' do
         call
@@ -88,29 +86,29 @@ RSpec.describe 'Assignments' do
         call
         expect(response.parsed_body).to contain_exactly(
           a_hash_including(
-            'id' => "assignment-#{open_assignment.id}",
-            'title' => 'Open',
-            'url' => take_assignment_path(open_assignment),
-            'start' => past_assignment.end_datetime.iso8601,
-            'end' => open_assignment.end_datetime.iso8601,
+            'id' => "assignment-#{assignments.second.id}",
+            'title' => "#{assignment_group.name}: Open",
+            'url' => take_assignment_path(assignments.second),
+            'start' => assignments.first.end_datetime.iso8601,
+            'end' => assignments.second.end_datetime.iso8601,
             'className' => 'event-outline',
             'contrastColor' => 'var(--bs-body-color)'
           ),
           a_hash_including(
-            'id' => "assignment-#{taken_assignment.id}",
-            'title' => taken_assignment.user.last_name,
-            'url' => take_assignment_path(taken_assignment),
-            'start' => open_assignment.end_datetime.iso8601,
-            'end' => taken_assignment.end_datetime.iso8601,
+            'id' => "assignment-#{assignments.third.id}",
+            'title' => assignments.third.user.last_name,
+            'url' => take_assignment_path(assignments.third),
+            'start' => assignments.second.end_datetime.iso8601,
+            'end' => assignments.third.end_datetime.iso8601,
             'color' => 'var(--bs-secondary-bg)',
             'contrastColor' => 'var(--bs-body-color)'
           ),
           a_hash_including(
-            'id' => "assignment-#{own_assignment.id}",
-            'title' => own_assignment.user.last_name,
-            'url' => take_assignment_path(own_assignment),
-            'start' => taken_assignment.end_datetime.iso8601,
-            'end' => own_assignment.end_datetime.iso8601,
+            'id' => "assignment-#{assignments.fourth.id}",
+            'title' => assignments.fourth.user.last_name,
+            'url' => take_assignment_path(assignments.fourth),
+            'start' => assignments.third.end_datetime.iso8601,
+            'end' => assignments.fourth.end_datetime.iso8601,
             'color' => 'var(--bs-primary)'
           )
         )
