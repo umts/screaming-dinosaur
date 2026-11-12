@@ -7,8 +7,14 @@
   - else
     = fields.text_field :user_id, value: Current.user.full_name, disabled: true, class: 'form-control'
     = fields.hidden_field :user_id, value: Current.user.id
-.mb-3
-  = fields.label :end_datetime, class: 'form-label'
-  = fields.datetime_field :end_datetime, required: true,
-                                         disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
-                                         class: 'form-control'
+.mb-3.row
+  .col-md
+    = fields.label :end_datetime, class: 'form-label'
+    = fields.datetime_field :end_datetime, required: true,
+                                           disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
+                                           class: 'form-control'
+  .col-md
+    = fields.label :credits, class: 'form-label'
+    = fields.number_field :credits, required: true, min: 0,
+                                    disabled: fields.object.persisted? && !allowed_to?(:manage?, fields.object),
+                                    class: 'form-control'

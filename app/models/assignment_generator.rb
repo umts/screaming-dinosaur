@@ -93,7 +93,8 @@ class AssignmentGenerator
         end_datetime += 1.day if definition.overnight?
         roster.assignments.create!(
           end_datetime:,
-          assignment_group: assignment_group
+          assignment_group:,
+          credits: definition.credits
         )
       end
     end

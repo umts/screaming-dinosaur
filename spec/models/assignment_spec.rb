@@ -15,6 +15,7 @@ RSpec.describe Assignment do
     it { is_expected.not_to allow_value(assignment.roster.created_at).for(:end_datetime) }
     it { is_expected.to validate_presence_of(:end_datetime) }
     it { is_expected.to validate_uniqueness_of(:end_datetime).scoped_to(:roster_id) }
+    it { is_expected.to validate_comparison_of(:credits).is_greater_than_or_equal_to(0) }
   end
 
   describe '#previous' do
