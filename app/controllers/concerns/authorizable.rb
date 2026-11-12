@@ -16,7 +16,7 @@ module Authorizable
       # simplecov:disable
       elsif Rails.env.production? || Rails.env.development?
         respond_to do |format|
-          format.html { render "application/#{Rails.env}_login", layout: 'layouts/application', status: :unauthorized }
+          format.html { render "application/#{Rails.env}_login", layout: 'umts/brand/private', status: :unauthorized }
           format.all { head :unauthorized }
         end
       # simplecov:enable

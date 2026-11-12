@@ -6,7 +6,7 @@
           All Users
         - if allowed_to?(:new?, User.new)
           %div
-            = link_to new_user_path, class: 'btn btn-sm btn-text' do
+            = link_to new_user_path, class: 'btn btn-sm nav-link' do
               %i.fa-solid.fa-plus
               New
     .list-group.list-group-flush
@@ -19,7 +19,7 @@
                   .col
                     = user.full_name
                     - if user.admin
-                      %span.badge.text-bg-secondary
+                      %span.badge.text-bg-primary
                         %i.fa-solid.fa-user-tie
                         Admin
                   .col
@@ -28,7 +28,7 @@
                     .text-muted= user.email
               - if allowed_to?(:edit?, user)
                 .col-auto
-                  = link_to edit_user_path(user), class: 'btn btn-sm btn-text' do
+                  = link_to edit_user_path(user), class: 'btn btn-sm nav-link' do
                     %i.fa-solid.fa-edit
                     Edit
       - else

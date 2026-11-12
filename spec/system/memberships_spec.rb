@@ -8,7 +8,7 @@ RSpec.describe 'Memberships' do
     let(:current_user) { create(:user, memberships: [build(:membership, roster:, admin: true)]) }
 
     before do
-      30.times { create(:membership, roster:) }
+      50.times { create(:membership, roster:) }
     end
 
     it 'shows pagination controls' do
