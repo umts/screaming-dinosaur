@@ -34,6 +34,7 @@ class AssignmentGeneratorController < ApplicationController
       assignment_generator: [
         :start_date,
         :end_date,
+        :auto_assign,
         {
           definitions_attributes: [[
             :end_time,

@@ -97,6 +97,41 @@ RSpec.describe 'Assignment Generator' do
       end
     end
 
+    context 'when logged in as the roster admin with auto assignment requested' do
+      subject(:submit) do
+        post "/rosters/#{roster.slug}/assignments/generate", params: {
+          assignment_generator: {
+            start_date: Date.current,
+            end_date: Date.current + 6.days,
+            definitions_attributes: {
+              '0': {
+                weekdays: %w[Monday],
+                end_time: Time.zone.parse('04:30')
+              }
+            },
+            auto_assign: true
+          }
+        }
+      end
+
+      let(:roster) { create(:roster) }
+
+      before do
+        create(:membership, roster:)
+      end
+
+      include_context 'when logged in as an admin of the roster'
+
+      it 'creates an assignment' do
+        expect { submit }.to change(Assignment, :count).by(1)
+      end
+
+      it 'redirects to the earliest start date across definitions' do
+        submit
+        expect(response).to redirect_to roster_path(roster, date: Date.current)
+      end
+    end
+
     context 'when logged in as an admin of the roster with invalid attributes' do
       subject(:submit) do
         post "/rosters/#{roster.slug}/assignments/generate", params: {
