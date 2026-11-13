@@ -12,7 +12,7 @@
     "twilio": "4.23.0"
   },
   "devDependencies": {
-    "twilio-run": "^5.0.1"
+    "twilio-run": "^6.0.0"
   },
   "engines": {
     "node": "22"
