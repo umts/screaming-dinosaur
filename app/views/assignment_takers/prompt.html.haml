@@ -34,7 +34,17 @@
               = f.label :group, class: 'list-group-item' do
                 = f.check_box :group, class: 'form-check-input me-2'
                 Take all
-        .d-grid
-          = f.button type: :submit, class: 'btn btn-primary' do
-            %i.fa-solid.fa-hand
-            Take
+          .d-grid
+            - if allowed_to?(:assign?, @taker)
+              .input-group
+                = f.collection_select :user_id,
+                                      f.object.assignment.roster.users, :id, :full_name,
+                                      {},
+                                      class: 'form-select', 'data-controller': 'tom-select'
+                %button.btn.btn-primary
+                  %i.fa-solid.fa-forward
+                  Assign
+            - else
+              = f.button type: :submit, class: 'btn btn-primary' do
+                %i.fa-solid.fa-hand
+                Take
