@@ -22,6 +22,6 @@ class AssignmentTakersController < ApplicationController
   end
 
   def taker_params
-    params.fetch(:assignment_taker, {}).permit(:group)
+    params.fetch(:assignment_taker, {}).permit(:group, :user_id)
   end
 end
