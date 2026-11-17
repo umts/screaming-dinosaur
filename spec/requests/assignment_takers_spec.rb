@@ -107,5 +107,65 @@ RSpec.describe 'Assignment Takers' do
         expect(sibling.reload.user).to be_nil
       end
     end
+
+    context 'when assigning another user to an ungrouped assignment' do
+      let(:user_to_assign) { create(:membership, roster:).user }
+      let(:attributes) { { user_id: user_to_assign.id } }
+      let(:assignment) { create(:assignment, roster:, user: nil) }
+
+      it 'assigns the specified user' do
+        expect { submit }.to change { assignment.reload.user }.from(nil).to(user_to_assign)
+      end
+
+      it 'redirects to the roster' do
+        submit
+        expect(response).to redirect_to roster_path(roster)
+      end
+    end
+
+    context 'when assigning another user to an already-assigned assignment' do
+      let(:user_to_assign) { create(:membership, roster:).user }
+      let(:assignment) { create(:assignment, roster:) }
+      let(:attributes) { { user_id: user_to_assign.id } }
+
+      it 'reassigns it to the specified user' do
+        expect { submit }.to change { assignment.reload.user }.to(user_to_assign)
+      end
+    end
+
+    context 'when assigning another user to an entire assignment group' do
+      before do
+        assignment_group = create(:assignment_group)
+        create_list(:assignment, 5, roster:, user: nil, assignment_group:)
+      end
+
+      let(:assignment) { Assignment.first }
+      let(:user_to_assign) { create(:membership, roster:).user }
+      let(:attributes) { { group: '1', user_id: user_to_assign.id } }
+
+      it 'assigns the specified user to every member of the group' do
+        submit
+        expect(Assignment.all.map { |a| a.reload.user }).to all(eq(user_to_assign))
+      end
+    end
+
+    context 'when assigning another user to one assignment from a group' do
+      before do
+        assignment_group = create(:assignment_group)
+        create_list(:assignment, 5, roster:, user: nil, assignment_group:)
+      end
+
+      let(:assignment) { Assignment.first }
+      let(:user_to_assign) { create(:membership, roster:).user }
+      let(:attributes) { { group: '0', user_id: user_to_assign.id } }
+
+      it 'assigns the specified user to the target assignment' do
+        expect { submit }.to change { assignment.reload.user }.to(user_to_assign)
+      end
+
+      it 'leaves the other group members unassigned' do
+        expect { submit }.not_to(change { Assignment.where.not(id: Assignment.first.id).pluck(&:user_id) })
+      end
+    end
   end
 end
