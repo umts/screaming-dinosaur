@@ -7,7 +7,7 @@
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
-FROM ruby:3.4.12-slim@sha256:65680693964528b522a38d85ec5065538c7ab9e75268802aab9770f39ee56de0 AS base
+FROM ruby:3.4.13-slim@sha256:03e203fab47d495a1d0046d10040db89367b361328ecd4af469f0433e2dd9ce1 AS base
 
 # Rails app lives here
 WORKDIR /rails
